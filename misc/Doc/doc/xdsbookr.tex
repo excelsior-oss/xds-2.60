@@ -1,0 +1,48 @@
+% Generic XDS manual
+% Copyright (c) XDS Ltd 1992,96. All Rights Reserved.
+%
+% To create a new book:
+%   - create a subdirectory for a book
+%   - in this subdirectory, create a main file for the book, containing
+%     exactly the following string:
+%     \input{../xdsbookr}
+%   - create the file called 'preamble.tex', which will be included in the
+%     preamble
+%   - create the file 'body.tex', which will be included in the body of the
+%     document
+
+\documentclass[11pt,a4paper]{book}
+\usepackage{makeidx}
+\usepackage[T2A]{fontenc}
+\usepackage[cp866]{inputenc}
+\usepackage{fancyhdr}
+
+\newif\ifenglish\englishfalse
+
+\input{../def.tex}
+
+\input{preamble.tex}
+
+\ifonline\else
+  \lhead{}
+  \chead{\ProductName{}: \BookName{}\\\thepage}
+  \rhead{}
+  \lfoot{}
+  \cfoot{}
+  \rfoot{}
+\fi
+
+\begin{document}
+
+\setlength{\headheight}{50 pt}
+
+\input{../titler.tex}
+
+\setlength{\parskip}{0 pt}
+\tableofcontents
+% \listoftables !!!
+\setlength{\parskip}{6 pt}
+
+\input{body.tex}
+
+\end{document}

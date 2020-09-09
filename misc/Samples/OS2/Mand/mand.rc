@@ -1,0 +1,15 @@
+#include "mand.h"
+
+#define MIS_TEXT 0x0001
+
+ICON    RES_MAIN mand.ico
+POINTER IDP_MAGN magn.ptr
+
+MENU RES_MAIN
+
+{
+   MENUITEM    "~Refresh", REFRESH_ITEM, MIS_TEXT
+   MENUITEM    "Cop~y",    COPY_ITEM,    MIS_TEXT
+   MENUITEM    "~Back",    BACK_ITEM,    MIS_TEXT
+   MENUITEM    "~Forward", FORWARD_ITEM, MIS_TEXT
+}

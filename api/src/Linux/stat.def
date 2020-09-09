@@ -1,0 +1,169 @@
+(* Copyright (c) xTech 1997.  All Rights Reserved *)
+
+(* $RCSfile: stat.def,v $ $Revision: 6 $ $Date: 1/31/04 4:26p $ *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] stat;
+
+FROM SYSTEM IMPORT BOOL32, CARD16, CARD32, CARD64;
+FROM types IMPORT mode_t, ino_t, dev_t, nlink_t, uid_t, gid_t, off_t, ino64_t, off64_t;
+FROM time IMPORT time_t;
+
+TYPE
+<* IF __GEN_C__ THEN *>
+<*- GENTYPEDEF *>
+  stat_t = RECORD
+    st_mode:    mode_t;
+    st_ino:     ino_t;
+    st_dev:     dev_t;
+    st_nlink:   nlink_t;
+    st_uid:     uid_t;
+    st_gid:     gid_t;
+    st_size:    off_t;
+    st_atime:   time_t;
+    st_mtime:   time_t;
+    st_ctime:   time_t;
+<* ELSE *>
+  (* Structure got from LiNUX i386 as an XDS native compiler platform *)
+  stat_t = RECORD
+    st_dev:     dev_t;
+    __pad1:     CARD16;
+    st_ino:     ino_t;
+    st_mode:    mode_t;
+    st_nlink:   nlink_t;
+    st_uid:     uid_t;
+    st_gid:     gid_t;
+    st_rdev:    dev_t;
+    __pad2:     CARD16;
+    st_size:    off_t;
+    st_blksize: CARD32;
+    st_blocks:  CARD32;
+    st_atime:   time_t;
+    __unused1:  CARD32;
+    st_mtime:   time_t;
+    __unused2:  CARD32;
+    st_ctime:   time_t;
+    __unused3:  CARD32;
+    __unused4:  CARD32;
+    __unused5:  CARD32;
+<* END *>
+  END;
+
+  stat64_t = RECORD
+    st_dev:     dev_t;
+    __pad1:     CARD32;
+    __st_ino:   ino_t;
+    st_mode:    mode_t;
+    st_nlink:   nlink_t;
+    st_uid:     uid_t;
+    st_gid:     gid_t;
+    st_rdev:    dev_t;
+    __pad2:     CARD32;
+    st_size:    off64_t;
+    st_blksize: CARD32;
+    st_blocks:  CARD64;
+    st_atime:   time_t;
+    __unused1:  CARD32;
+    st_mtime:   time_t;
+    __unused2:  CARD32;
+    st_ctime:   time_t;
+    __unused3:  CARD32;
+    st_ino:     ino64_t;
+  END;
+
+
+<* IF __GEN_C__ THEN *>
+VAR
+  S_IRGRP -: INTEGER;
+  S_IROTH -: INTEGER;
+  S_IRUSR -: INTEGER;
+  S_IRWXG -: INTEGER;
+  S_IRWXO -: INTEGER;
+  S_IRWXU -: INTEGER;
+  S_ISUID -: INTEGER;
+  S_ISGID -: INTEGER;
+  S_IWGRP -: INTEGER;
+  S_IWOTH -: INTEGER;
+  S_IWUSR -: INTEGER;
+  S_IXGRP -: INTEGER;
+  S_IXOTH -: INTEGER;
+  S_IXUSR -: INTEGER;
+
+  S_IFMT   -: INTEGER;
+  S_IFSOCK -: INTEGER;
+  S_IFLNK  -: INTEGER;
+  S_IFREG  -: INTEGER;
+  S_IFBLK  -: INTEGER;
+  S_IFDIR  -: INTEGER;
+  S_IFCHR  -: INTEGER;
+  S_IFIFO  -: INTEGER;
+  S_ISVTX  -: INTEGER;
+
+  PROCEDURE S_ISREG  ( m: INTEGER ): BOOLEAN;
+  PROCEDURE S_ISBLK  ( m: INTEGER ): BOOLEAN;
+  PROCEDURE S_ISDIR  ( m: INTEGER ): BOOLEAN;
+  PROCEDURE S_ISCHR  ( m: INTEGER ): BOOLEAN;
+  PROCEDURE S_ISFIFO ( m: INTEGER ): BOOLEAN;
+
+<* ELSE *>
+CONST
+  S_IRWXU       = 700B;
+  S_IRUSR       = 400B;
+  S_IWUSR       = 200B;
+  S_IXUSR       = 100B;
+  S_IRWXG       = 70B;
+  S_IRGRP       = 40B;
+  S_IWGRP       = 20B;
+  S_IXGRP       = 10B;
+  S_IRWXO       = 7B;
+  S_IROTH       = 4B;
+  S_IWOTH       = 2B;
+  S_IXOTH       = 1B;
+
+  S_ISUID       = 4000B;
+  S_ISGID       = 2000B;
+
+  S_IFMT   = 170000B;
+  S_IFSOCK = 140000B;
+  S_IFLNK  = 120000B;
+  S_IFREG  = 100000B;
+  S_IFBLK  = 60000B;
+  S_IFDIR  = 40000B;
+  S_IFCHR  = 20000B;
+  S_IFIFO  = 10000B;
+  S_ISVTX  = 1000B;
+
+  _STAT_VER_LINUX_OLD   = 1;
+  _STAT_VER_KERNEL      = 1;
+  _STAT_VER_SVR4        = 2;
+  _STAT_VER_LINUX       = 3;
+  _STAT_VER             = _STAT_VER_LINUX;
+
+  PROCEDURE / S_ISREG  * ( m: INTEGER ): BOOLEAN;
+  PROCEDURE / S_ISBLK  * ( m: INTEGER ): BOOLEAN;
+  PROCEDURE / S_ISDIR  * ( m: INTEGER ): BOOLEAN;
+  PROCEDURE / S_ISCHR  * ( m: INTEGER ): BOOLEAN;
+  PROCEDURE / S_ISFIFO * ( m: INTEGER ): BOOLEAN;
+
+<* END *>
+
+
+PROCEDURE chmod (path: ARRAY OF CHAR; mode: mode_t): INTEGER;
+
+PROCEDURE __xstat  (ver : INTEGER; path: ARRAY OF CHAR; VAR buf : stat_t) : INTEGER;
+PROCEDURE __fxstat (ver, filedes : INTEGER; VAR buf : stat_t) : INTEGER;
+PROCEDURE __lxstat (ver : INTEGER; path: ARRAY OF CHAR; VAR buf : stat_t) : INTEGER;
+
+PROCEDURE __xstat64  (ver : INTEGER; path: ARRAY OF CHAR; VAR buf : stat64_t) : INTEGER;
+PROCEDURE __fxstat64 (ver, filedes : INTEGER; VAR buf : stat64_t) : INTEGER;
+PROCEDURE __lxstat64 (ver : INTEGER; path: ARRAY OF CHAR; VAR buf : stat64_t) : INTEGER;
+
+PROCEDURE mkdir (path: ARRAY OF CHAR; mode: mode_t): INTEGER;
+PROCEDURE mkfifo (path: ARRAY OF CHAR; mode: mode_t): INTEGER;
+PROCEDURE umask (cmask: mode_t): mode_t;
+
+
+END stat.

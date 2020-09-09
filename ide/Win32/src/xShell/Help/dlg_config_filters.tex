@@ -1,0 +1,518 @@
+\ifenglish
+\section{Configure message filters dialog}
+\else
+\section{Диалог настройки фильтров сообщений}
+\fi
+\public{FILTERS\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog allows you to work with \ref[message filters]{MessageFilters}.
+In the list box you see list of all message filters known to the system.
+You may do following actions in this dialog:
+\else                                  
+Этот диалог позволяет работать с \ref[фильтрами сообщений]{MessageFilters}.
+В списке вы видите все возможные фильтры сообщений, известные системе.
+В этом диалоге вы можете производить следующие действия:
+\fi
+\begin{itemize}
+\item 
+ \ifenglish
+ create new message filter by pressing {\bf New} pushbutton.
+\ref[New filter]{NEWFILTER\_DIALOG} dialog is displayed where you will be prompted
+ for new filter's name and file in which it is to
+be stored, and then \ref[edit filter]{EDITFILTER\_DIALOG} dialog is displayed.
+\else
+ создать новый фильтр сообщения путем нажатия кнопки {\bf New}. 
+ отобразится диалог \ref[New filter]{NEWFILTER\_DIALOG}, где будет запрошено 
+ имя нового фильтра и имя файла, в котором он будет сохранен,
+ а затем будет отображен диалог \ref[edit filter]{EDITFILTER\_DIALOG}.
+ \fi
+\item 
+ \ifenglish
+ edit existing message filter by selecting it in the list and pressing
+the {\bf Edit} pushbutton. \ref[Edit filter]{EDITFILTER\_DIALOG} dialog
+will be displayed.
+\else
+ редактировать существующий фильтр сообщений путем выбора его в списке и 
+ нажатия кнопки {\bf Edit}. Будет выведен диалог \ref[Edit filter]{EDITFILTER\_DIALOG}.
+ \fi
+\item 
+ \ifenglish
+ remove message filter and delete the file it is stored in by pressing the
+{\bf Remove} button.
+\else
+ удалить фильтр сообщения и стереть файл, в котором он хранится с помощью 
+ нажатия кнопки {\bf Remove}.
+ \fi
+\end{itemize}
+
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Message filters available}
+\else
+\caption{Доступные фильтры сообщений}
+\fi
+\public{FILTERS\_LIST}
+
+\ifenglish
+This list shows all message filters known to the system. You may add new
+message filter to the list, remove or edit selected message filter.
+\else
+Этот список отображает все фильтры сообщений, известные системе. Вы можете 
+добавить новый фильтр сообщений в список, удалить или отредактировать 
+выбранный фильтр сообщений.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{New}
+\public{FILTERS\_NEW}
+
+\ifenglish
+Create new message filter
+\else
+Создать новый фильтр сообщений. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Edit}
+\public{FILTERS\_EDIT}
+
+\ifenglish
+Edit currently selected message filter. {\bf Edit message filter} dialog is
+displayed.
+\else
+Редактировать выбранный фильтр сообщений. Выводится диалог {\bf Edit message filter}.
+{\bf Edit message filter}
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Remove}
+\public{FILTERS\_REMOVE}
+
+\ifenglish
+Remove currently selected message filter and delete file in which it
+is stored.
+\else
+Удалить выбранный фильтр сообщений и файл в котором он хранится.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Close}
+\public{FILTERS\_OK}
+
+\ifenglish
+Close the message filter configuration dialog.
+\else
+Закрыть диалог настройки фильтра сообщений. 
+\fi
+\end{popup}
+
+%===========================================================================
+
+\ifenglish
+\subsection{New filter dialog}
+\else
+\subsection{Диалог New filter}
+\fi
+\public{NEWFILTER\_DIALOG}
+
+\ifenglish
+To create new \ref[message filter]{MessageFilters}:
+\else
+Чтобы создать новый \ref[фильтр сообщений]{MessageFilters}:
+\fi
+\begin{enumerate}
+\item \ifenglish
+      type new message filter name in {\bf Filter name} entry field
+      \else
+      введите имя нового фильтра сообщений в поле ввода {\bf Filter name}
+      \fi
+\item \ifenglish
+      file name will appear in the {\bf File name} entry field. If you disagree
+with this suggestion type name you like or select a file using standard File
+dialog by pressing {\bf Browse} pushbutton
+      \else
+      В поле ввода {\bf File name} появится имя файла. Если предложенное имя вас не 
+устроит, введите нужное вам имя или выберите его, используя стандартный файловый 
+диалог путем нажатия кнопки {\bf Browse}.
+      \fi
+\item \ifenglish
+      message filters often look similar. If you wish your filter be based
+on some existing message filter select its name in the {\bf Based on} list.
+New filter will initially be the copy of selected filter. To create blank
+filter, select {\bf None} in the list box.
+      \else
+  фильтры сообщений часто выглядят схожими. Если вы хотите, чтобы ваш фильтр 
+основывался на каком-либо существующем фильтре сообщений, выберите его имя в 
+списке {\bf Based on}. Новый фильтр сначала будет копией выбранного. Чтобы создать
+пустой фильтр, выберите пункт {\bf None} списка.
+      \fi
+\item \ifenglish
+      press the {\bf OK} pushbutton.
+     \else
+      нажмите кнопку {\bf OK}.
+     \fi
+\end{enumerate}
+
+\ifenglish
+The \ref[Edit filter]{EDITFILTER\_DIALOG} dialog will appear allowing you to
+define new filter.
+\else
+Появится диалог \ref[Edit filter]{EDITFILTER\_DIALOG}, позволяющий определить 
+новый фильтр.                       
+\fi
+%---------------------------------------------------------------------
+\begin{popup}
+\ifenglish
+\caption{Filter name}
+\else
+\caption{Имя фильтра}
+\fi
+\public{NEWFILTER\_NAME}
+
+\ifenglish
+Type name for new filter here.
+\else
+Наберите имя нового фильтра.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{File name}
+\else
+\caption{Имя файла}
+\fi
+\public{NEWFILTER\_FILE}
+
+\ifenglish
+Type a name for new filter. By default the name is the same as the name of
+a filter with the suffix {\bf .fil}. If directory is not specified the filter
+is created in XDS home directory.
+\else
+Введите имя нового фильтра. По умолчанию имя задается тем же, что и у фильтра с 
+дополнением {\bf .fil}. Если директория не задана, то фильтр создается в коренной
+директории XDS.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{NEWFILTER\_BROWSE}
+
+\ifenglish
+Select file name for new filter using standard File dialog.
+\else
+Выберите имя файла для нового фильтра, используя стандартный файловый диалог. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Based On}
+\public{NEWFILTER\_LIST}
+
+\ifenglish
+Select the filter you wish your new filter to be based on from this list.
+This filter will be copied to new filter. Select {\bf None} if you wish to start
+from blank filter.
+\else
+Выберите из списка фильтр, на основе которого вы хотите создать новый.
+Этот фильтр будет скопирован в новый.  Выберите {\bf None}, если хотите начать 
+с пустого фильтра.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{NEWFILTER\_OK}
+
+\ifenglish
+Display edit filter dialog where you can actually define the filter.
+\else
+Отобразить диалог редактирования фильтра, где вы можете определить фильтр.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{NEWFILTER\_CANCEL}
+
+\ifenglish
+Cancel creating new filter
+\else
+Отменить создание нового фильтра.
+\fi
+\end{popup}
+
+%===========================================================================
+
+\ifenglish
+\subsection{Edit filter dialog}
+\else
+\subsection{диалог Edit filter}
+\fi
+\public{EDITFILTER\_DIALOG}
+
+\ifenglish
+This dialog allows you to edit the \ref[message filter]{MessageFilters}.
+Message filter is an ordered set of message filter
+\ref[regular expressions]{MessageFiltersRegExp} with a
+\ref[message class]{MessageClasses} assigned to each one.
+
+All the expressions are collected in a list here. The selected one is
+duplicated in the {\bf Filter expression} entry field. You can modify it
+and press {\bf Modify} button to store its value to the list. Set message class
+for current expression line by selecting it in the {\bf Message class} selection
+box.
+
+You can remove current line by pressing {\bf Remove} button or add new line
+by the {\bf Add} button. The new line is copied from currently selected line
+and is inserted in current place.
+
+You may change order of lines in the filter by moving them up and down using {\bf Up}
+and {\bf Down} buttons.
+\else
+Этот диалог позволяет вам редактировать \ref[фильтры сообщений]{MessageFilters}.
+Фильтр сообщений -- это упорядоченное множество
+\ref[регулярных выражений]{MessageFiltersRegExp} с привязанными к каждому
+\ref[классами сообщений]{MessageClasses}.
+
+Все выражения собраны здесь в список. Выбранное выражение дублируется в поле ввода 
+{\bf Filter expression}. Вы можете изменить его и нажать {\bf Modify}, чтобы 
+занести его значение в список. Установите класс сообщений для текущего выражения 
+путем выбора его в списке {\bf Message class}.
+
+Вы можете удалить текущую строку нажатием кнопки {\bf Remove} или добавить новую
+с помощью кнопки {\bf Add}. Новая строка копируется из выбранной в данный момент 
+строки и вставляется на текущую позицию.
+
+Вы можете менять порядок строк в фильтре путем передвижения их вверх и вниз
+с помощью кнопок {\bf Up} и {\bf Down}.
+\fi
+%---------------------------------------------------------------------
+
+
+\begin{popup}
+\caption{OK}
+\public{EDITFILTER\_OK}
+\ifenglish
+Accept the changes made in the message filter, write message filter file
+and close the dialog.
+\else
+Подтвердить изменения, произведенные в фильтре сообщений, сохранить файл фильтра
+сообщений и закрыть диалог.  
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{EDITFILTER\_CANCEL}
+
+\ifenglish
+Close the dialog without saving the message filter.
+\else
+Закрыть диалог без сохранения фильтра сообщений.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Filter expression}
+\else
+\caption{Выражение фильтра}
+\fi
+\public{EDITFILTER\_TEXT}
+
+\ifenglish
+Current regular expression is displayed here. It is the copy of the
+expression selected in a list box. If you wish to edit the line, modify
+this field and press the {\bf Modify} button.
+
+Press the arrow button to the right to insert regular expression patterns
+for current line, column etc.
+
+\else
+Здесь отображается текущее регулярное выражение. Это -- копия выражения,
+выбранного в списке. Если вы хотите отредактировать строку, внесите изменения 
+в это поле и нажмите кнопку {\bf Modify}.
+
+Нажмите кнопку со стрелкой справа, чтобы вставить шаблонные значения 
+регулярных выражений для текущей строки, столбца и т. д.
+\fi
+\end{popup}
+
+
+\begin{popup}
+\ifenglish
+\caption{Expressions list}
+\else
+\caption{Список выражений}
+\fi
+\public{EDITFILTER\_LIST}
+
+\ifenglish
+All expressions from current filter are collected here. To modify expression,
+select it in the list, edit the {\bf Filter expression} field and press {\bf Modify}
+button. To remove expression select it and press {\bf Remove} button. To add new
+expression at current point press {\bf Add} button. To change message class for selected
+expression select new value in the {\bf Message class} selection box.
+
+Note that expressions in message filters are ordered, and the order is significant.
+Use {\bf Up} and {\bf Down} buttons to move selected line up and down.
+
+\else
+Здесь собраны все выражения текущего фильтра. Чтобы изменить выражение, выберите 
+его в списке, отредактируйте поле {\bf Filter expression} и нажмите кнопку {\bf Modify}.
+Чтобы удалить выражение, выберите его и нажмите кнопку {\bf Remove}. Чтобы добавить
+новое выражение на текущей позиции, нажмите кнопку {\bf Add}. Чтобы изменить 
+класс сообщения для выражения, выберите новое значение в списке {\bf Message class}.
+
+Заметьте, что выражения в фильтре сообщений упорядочены, и порядок имеет значение. 
+Используйте кнопки {\bf Up} и {\bf Down} чтобы передвигать выбранные строки вверх и 
+вниз.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Add}
+\public{EDITFILTER\_ADD}
+
+\ifenglish
+Add new filter expression. Expression is initially equal to the selected
+expression. Modify it and press {\bf Modify} button. Choose message class for new
+expression in the {\bf Message class} selection box.
+
+\else
+Добавьте новое выражение в фильтр. Выражение сначала становится равным 
+выбранному выражению. Измените его и нажмите кнопку {\bf Modify}. Выберите класс
+для нового выражения в списке {\bf Message class}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Modify}
+\public{EDITFILTER\_MODIFY}
+
+\ifenglish
+Set selected expression in the list equal to the value of the
+{\bf Filter expression} entry field.
+
+\else
+Установить выбранное выражение равным значению поля ввода. 
+{\bf Filter expression}
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Remove}
+\public{EDITFILTER\_REMOVE}
+
+\ifenglish
+Remove selected filter expression.
+\else
+Удалить выбранное выражение фильтра. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Up}
+\public{EDITFILTER\_UP}
+
+\ifenglish
+Move selected expression up by swapping it with previous one.
+\else
+Передвинуть выбранное выражение путем перемены мест с предыдущим.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Down}
+\public{EDITFILTER\_DOWN}
+
+\ifenglish
+Move selected expression down by swapping it with next one.
+\else
+Передвинуть выбранное выражение путем перемены мест со следующим.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Message class}
+\else
+\caption{Класс сообщений}
+\fi
+\public{EDITFILTER\_CLASS}
+
+\ifenglish
+Set {\bf message class} for currently selected filter expression. Following choices
+are available:
+\else
+Установите {\bf класс сообщения} для выбранного в данный момент выражения. Доступны
+следующие варианты:
+\fi
+\begin{itemize}
+\item \ifenglish
+      Text
+      \else
+      Текст
+      \fi
+\item \ifenglish
+      Notice
+      \else
+      Замечание
+      \fi
+\item \ifenglish
+      Warning
+      \else
+      Предупреждение
+      \fi
+\item \ifenglish
+      Error
+      \else
+      Ошибка
+      \fi
+\item \ifenglish
+      Severe Error
+      \else
+      Грубая ошибка 
+      \fi
+\end{itemize}
+
+\ifenglish
+See help topic for message classes for details.
+\else
+Для более подробных сведений смотрите раздел подсказки, посвященный 
+классам сообщений.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Pop-up menu}
+\else
+\caption{Всплывающее меню}
+\fi
+\public{EDITFILTER\_MENU}
+
+\ifenglish
+Some character combination have special meaning in filter expressions.
+For example, {\tt"\&File"} means name of a file to which the message refers.
+To insert such combination in the text press this button and select it
+from pop-up menu.
+\else
+Некоторые сочетания символов имеют особенное значение в выражениях фильтра.
+Например, {\tt"\&File"} означает имя файла, на который ссылается сообщение.
+Чтобы вставить такое сочетание в текст, нажмите эту кнопку и выберите его
+во всплывающем меню.
+\fi
+\end{popup}
+
+%===========================================================================

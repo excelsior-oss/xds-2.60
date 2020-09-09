@@ -1,0 +1,300 @@
+\ifenglish
+\section{Run options dialog}
+ \else
+\section{диалог Run options}
+\fi
+\public{CFGRUN\_DIALOG}
+\nominitoc
+
+\ifenglish
+Use this dialog to set target program execution options:
+ \else
+В этом диалоге устанавливаются опции запуска целевой программы:  
+\fi
+\begin{itemize}
+\item 
+\ifenglish 
+Executable file name  \else   Имя исполняемого файла \fi
+\item 
+\ifenglish
+Startup directory    \else    Директория запуска   \fi
+\item 
+\ifenglish
+Command line arguments  \else Аргументы командной строки \fi
+\item 
+\ifenglish
+Window size        \else      Размер окна  \fi
+\item 
+\ifenglish
+Console creation mode  \else  Режим создания консоля \fi
+\end{itemize}
+
+\ifenglish
+All this settings are kept separately for each project in project configuration
+file. One set of settings is also kept for no-project configuration.
+ \else
+Все эти установки содержатся в отдельности для каждого проекта в файле настроек
+проекта. Один набор установок содержится также для непроектных настроек.
+\fi
+\ifenglish
+Following controlling elements are available:
+ \else
+Доступны следующие управляющие элементы:
+\fi
+
+{\bf EXE file} 
+\ifenglish
+-- name of executable file to be run or debugged.
+ \else
+-- имя исполняемого файла, который надлежит запустить или отлаживать
+\fi
+\ifenglish
+\ref{variables} may be used in this field. Default value of this field is
+ \else
+В этом поле могут быть использованы \ref[переменные]{variables}. 
+Значение по умолчанию для этого поля
+\fi
+\verb'$(projdir)\$(projname).exe'
+
+\ifenglish
+for project files,
+ \else
+для проектных файлов
+\fi
+\verb'$(filedir)\$(filename).exe'
+
+\ifenglish
+for no-project configurations.
+ \else
+для непроектных настроек.
+\fi
+\ifenglish
+The \verb'$(exefile)' \ref[substitution variable]{variables}
+is set equal to this field value. It may be used in command line of tools
+that work with the executable file, for example, in that of the debugger.
+ \else 
+Этим значением инициализируется \ref[переменная замены]{variables} \verb'$(exefile)'.
+Она может быть использована в командной строке утилит, которые работают с 
+исполняемым файлом, как, например, в отладчике.
+\fi
+\ifenglish
+{\bf Start Directory} -- the directory to be set as current when the program
+is run. \ref{variables} may be used in this field. Default value of this field is
+\verb'$(projdir)' for project files,
+\verb'$(filedir)' for no-project configurations.
+ \else
+-- директория, которая станет текущей во время работы программы.
+   В этом поле могут быть использованы \ref[переменные]{variables}. 
+   Значение по умолчанию для этого поля
+   \verb'$(projdir)' для проектных файлов,
+   \verb'$(filedir)' для непроектных файлов.
+\fi
+\ifenglish
+{\bf Arguments} -- optional command-line arguments to be passed to the program.
+The \verb'$(arguments)' \ref[substitution variable]{variables} is set equal to this field
+value.
+ \else
+--  аргументы командной строки, которые будут переданы программе  
+    этому значению приравниваетя переменная \verb'$(arguments)'.
+ \fi
+\ifenglish
+{\bf Run Mode} -- this group regulates how the main window should be opened.
+For GUI applications you may set main window to be either {\bf Normal} or
+{\bf Maximized}. For console application you may either configure the console
+to close automatically as program finishes or remain opened. In latter case
+output of new run session will be appended to old output.
+ \else
+-- этот набор настроек управляет тем, как будет открыто главное окно.
+ Для GUI приложений можно сделать главное окно как нормальным, так и  
+ максимизированным.
+ Для консольных приложений можно также настроить консоль так, чтобы он 
+ автоматически закрывался после окончания работы программы, или оставался  
+ открытым. В последнем случае вывод последующих запусков будет дополнять 
+ старый вывод.
+\fi
+%---------------------------------------------------------------------
+\begin{popup}
+\caption{Configuration file}
+\public{CFGRUN\_TITLE}
+
+\ifenglish
+This label shows the configuration file in which run options are stored.
+Separate configuration file is kept for each project.
+ \else
+Эта метка отбражает файл настроек, в котором хранятся опции запуска.
+Для каждого проекта заводится отдельный файл настроек.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{EXE file}
+\public{CFGRUN\_EXE}
+
+\ifenglish
+Type a name of an executable file to be run or debugged.
+You may also press the {\bf Browse} pushbutton to choose it using
+a standard file dialog.
+
+Substitution variables may be used in this field.
+ \else
+Введите имя исполняемого файла, который надлежит запустить или отладить.
+
+Вы также можете нажать кнопку {\bf Browse}, чтобы выбрать его с помощью
+стандартного файлового диалога.
+
+Здесь могут использоваться переменные замены.
+\fi
+\ifenglish
+The \verb'$(exefile)' substitution variable is set equal to this field value.
+\else
+Этому значению сопоставляется переменная замены \verb'$(exefile)'.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGRUN\_BROWSEEXE}
+
+\ifenglish
+Select the program to run using standard file dialog.
+ \else
+Выберите программу для запуска, пользуясь стандартным файловым диалогом.
+\fi
+\ifenglish
+The \verb'$(exefile)' substitution variable is set equal to this field value.
+ \else
+Этому полю ставится в соответствие переменная замены \verb'$(exefile)'.
+\fi
+\end{popup}
+\begin{popup}
+\caption{Startup directory}
+\public{CFGRUN\_STARTDIR}
+
+\ifenglish
+Type a full name of a directory which you want to be made current when
+your program is invoked.
+
+Substitution variables may be used in this field.
+ \else
+Введите полное имя директории, которую вы хотите сделать текущей на время
+работы вашей программы.
+
+В этом поле можно использовать переменные замены.
+\fi
+\ifenglish
+The \verb'$(rundir)' substitution variable is set equal to this field value.
+ \else
+Этому полю ставится в соответствие переменная замены \verb'$(rundir)'. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGRUN\_STARTBROWSE}
+
+\ifenglish
+Select startup directory for your program using standard directory
+selection dialog.
+ \else
+Выберите директорию запуска для вашей программы, используя стандартный 
+диалог выбора директории.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Argument}
+\public{CFGRUN\_ARGS}
+
+\ifenglish
+Type a string which you would like to be passed to your program
+as a command-line argument.
+ \else
+Введите строку, которую вы хотите передать вашей программе в качестве
+командной.
+\fi
+\ifenglish
+The \verb'$(arguments)' substitution variable is set equal to this field value.
+ \else
+Этому полю ставится в соответствие переменная замены \verb'$(arguments)'.
+ \fi
+\end{popup}
+
+
+\begin{popup}
+\caption{Normal}
+\public{CFGRUN\_NORMAL}
+
+\ifenglish
+Select this radio button if you
+want your program to be run in a normal size window.
+ \else
+Включите эту кнопку, если хотите, чтобы ваша программа выполнялась в окне 
+обычного размера.
+\fi
+\ifenglish
+This only applies to GUI applications that do not set their own window size.
+ \else
+Это применимо только к GUI приложениям, которые не устанавливают размер своего 
+окна сами.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Maximized}
+\public{CFGRUN\_MAXIMIZE}
+
+\ifenglish
+Select this radio button if you
+want your program to be run in a maximized window.
+
+This only applies to GUI applications that do not set their own window size.
+ \else
+Включите эту кнопку, если хотите, чтобы ваша программа выполнялась в 
+максимизированном окне.
+
+Это применимо только к GUI приложениям, которые не устанавливают размер своего 
+окна сами.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Maximized}
+\public{CFGRUN\_SAMECONSOLE}
+
+\ifenglish
+Normally, when a console application finishes, the console is closed.
+Select this checkbox if you want to prevent the console
+from closing.
+
+Note that the console is not cleared before program run, so program output
+immediately follows output from previous run sessions.
+ \else
+Обычно, когда завершается консольное приложение, консоль закрывается.
+Включите эту опцию, если не хотите, чтобы консоль закрылся.
+
+Заметьте, что когда консоль не очищен перед запуском, вывод порграммы
+будет отображен сразу за выводом предыдущих запусков.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{CFGRUN\_OK}
+
+\ifenglish
+Accept the changes you have made to the run options.
+ \else
+Подтверждение изменений, которые вы произвели в опциях запуска.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{CFGRUN\_CANCEL}
+
+\ifenglish
+Dismiss the dialog without saving any changes.
+ \else
+Закрытие диалога без сохранения изменений.
+\fi
+\end{popup}

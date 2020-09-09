@@ -1,0 +1,7 @@
+DEFINITION MODULE ["C"] Test;
+
+TYPE PCHAR = POINTER TO CHAR;
+
+PROCEDURE _StrToUpper (x: PCHAR);
+
+END Test.

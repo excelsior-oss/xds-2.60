@@ -1,0 +1,3 @@
+Severe=&file(&line) : Fatal error -- &body
+Error=&file(&line) : Error -- &body
+Warning=&file(&line) : Warning -- &body

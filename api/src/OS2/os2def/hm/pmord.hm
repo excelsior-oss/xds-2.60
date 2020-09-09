@@ -1,0 +1,869 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMORD.H
+*
+* OS/2 include file which defines all the structures and constants
+* that can be used to build or interpret GOCA orders for the GPI
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The orders fall into 4 categories :-
+*
+* 1) 1-byte orders
+*
+* 2) 2-byte orders    - second byte contains the value
+*
+* 3) Long orders      - second byte gives the order length, subsequent bytes
+*                       contain the values (up to 256 bytes long)
+*
+* 4) Very long orders - third and fourth bytes gives the order length,
+*                       subsequent bytes contain the values (up to 64K long)
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+
+#define ORD_INCLUDED
+
+<* ALIGNMENT = "1" *>      (* pack on byte boundary *)
+
+(***************************************************************************\
+*
+* Miscellaneous structures used in this file
+*
+\***************************************************************************)
+
+(* form of RECTL with shorts instead of longs *)
+TYPE RECT1S = RECORD        (* rcs *)
+   xLeft:   SHORT;
+   yBottom: SHORT;
+   xRight:  SHORT;
+   yTop:    SHORT;
+END;
+
+(* form of POINTL with 1 byte offsets instead of longs *)
+TYPE ODPOINT = RECORD         (* odpt *)
+   dx: CHAR;
+   dy: CHAR;
+END;
+
+(* form of SIZEL with shorts instead of longs *)
+TYPE SIZES = RECORD           (* sizs *)
+   cx: SHORT;
+   cy: SHORT;
+END;
+
+
+(* unsigned two-byte swapped integer *)
+TYPE SWPUSHORT = RECORD       (* swpus *)
+   HiByte: UCHAR;
+   LoByte: UCHAR;
+END;
+
+(***************************************************************************\
+*
+* 1-byte orders
+*
+\***************************************************************************)
+
+(* macro to tell whether this is a 1-byte order *)
+--CONST BYTE_ORDER(oc)   ((oc)==OCODE_GNOP1 || (oc)==OCODE_GESD)
+
+(* 1-byte order codes *)
+CONST OCODE_GNOP1  =  000H;            (* No-operation                *)
+CONST OCODE_GESD   =  0FFH;            (* End symbol definition       *)
+
+(***************************************************************************\
+*
+* 2-byte orders
+*
+\***************************************************************************)
+
+(* definitions to help determine whether an order code is a 2-byte order *)
+CONST OCODE2_1     =  080H;
+CONST OCODE2_2     =  088H;
+
+--CONST SHORT_ORDER(oc)  ((((oc)^OCODE2_1)&OCODE2_2)==OCODE2_2)
+
+(* General 2-byte order structure *)
+TYPE ORDER = RECORD           (* ord *)
+   idCode:  UCHAR;
+   uchData: UCHAR;
+END;
+
+(* 2-byte order codes *)
+CONST OCODE_GBAR    = 068H;            (* Begin area                  *)
+CONST OCODE_GCFIG   = 07DH;            (* Close figure                *)
+CONST OCODE_GEEL    = 049H;            (* End element                 *)
+CONST OCODE_GEPTH   = 07FH;            (* End path                    *)
+CONST OCODE_GEPROL  = 03EH;            (* End prologue                *)
+CONST OCODE_GPOP    = 03FH;            (* Pop                         *)
+CONST OCODE_GSBMX   = 00DH;            (* Set background mix          *)
+CONST OCODE_GPSBMX  = 04DH;            (* Push & set b/g mix          *)
+CONST OCODE_GSCD    = 03AH;            (* Set char direction          *)
+CONST OCODE_GPSCD   = 07AH;            (* Push & set char direction   *)
+CONST OCODE_GSCR    = 039H;            (* Set char precision          *)
+CONST OCODE_GPSCR   = 079H;            (* Push & set char precision   *)
+CONST OCODE_GSCS    = 038H;            (* Set char set                *)
+CONST OCODE_GPSCS   = 078H;            (* Push & set char set         *)
+CONST OCODE_GSCOL   = 00AH;            (* Set color                   *)
+CONST OCODE_GPSCOL  = 04AH;            (* Push & set color            *)
+CONST OCODE_GSLE    = 01AH;            (* Set line end                *)
+CONST OCODE_GPSLE   = 05AH;            (* Push & set line end         *)
+CONST OCODE_GSLJ    = 01BH;            (* Set line join               *)
+CONST OCODE_GPSLJ   = 05BH;            (* Push & set line join        *)
+CONST OCODE_GSLT    = 018H;            (* Set line type               *)
+CONST OCODE_GPSLT   = 058H;            (* Push & set line type        *)
+CONST OCODE_GSLW    = 019H;            (* Set line width              *)
+CONST OCODE_GPSLW   = 059H;            (* Push & set line width       *)
+CONST OCODE_GSMP    = 03BH;            (* Set marker precision        *)
+CONST OCODE_GPSMP   = 07BH;            (* Push & set marker precision *)
+CONST OCODE_GSMS    = 03CH;            (* Set marker set              *)
+CONST OCODE_GPSMS   = 07CH;            (* Push & set marker set       *)
+CONST OCODE_GSMT    = 029H;            (* Set marker symbol           *)
+CONST OCODE_GPSMT   = 069H;            (* Push & set marker symbol    *)
+CONST OCODE_GSMX    = 00CH;            (* Set mix                     *)
+CONST OCODE_GPSMX   = 04CH;            (* Push & set mix              *)
+CONST OCODE_GSPS    = 008H;            (* Set pattern set             *)
+CONST OCODE_GPSPS   = 048H;            (* Push & set pattern set      *)
+CONST OCODE_GSPT    = 028H;            (* Set pattern symbol          *)
+CONST OCODE_GPSPT   = 009H;            (* Push & set pattern symbol   *)
+
+(* constants for 2-byte orders *)
+
+(* Begin area *)
+CONST GBAR_RESERVED  = 080H;
+CONST GBAR_BOUNDARY  = 0C0H;
+CONST GBAR_NOBOUNDARY= 080H;
+CONST GBAR_WINDING   = 0A0H;
+CONST GBAR_ALTERNATE = 080H;
+
+(* Set Character Precision *)
+CONST GSCR_PRECISION = 00FH;
+
+(***************************************************************************\
+*
+* Long orders
+*
+\***************************************************************************)
+
+(* definitions to help determine whether an order code is a long order *)
+
+CONST OCODE_VLONG   = 0FEH;
+
+--CONST LONG_ORDER(oc) (!((oc)==OCODE_VLONG||BYTE_ORDER(oc)||SHORT_ORDER(oc)))
+
+(* long order structure *)
+CONST LORDER_ML = 253;
+TYPE LORDER = RECORD          (* lord *)
+   idCode:       UCHAR;
+   uchLength:    UCHAR;
+   uchData:      ARRAY [0..LORDER_ML-1] OF UCHAR;
+END;
+
+(* Long orders for which the length of data is normally zero *)
+CONST OCODE_GEAR   =  060H;            (* End Area                    *)
+CONST OCODE_GEIMG  =  093H;            (* End Image                   *)
+
+(* Long orders for which the data is contained in a type already defined *)
+
+(* Character String *)
+CONST OCODE_GCCHST =  083H;            (* char string at curr posn    *)
+CONST GCCHST_MC    =  255;              (* Max len of string in bytes  *)
+
+CONST OCODE_GCHST  =  0C3H;            (* char string at given pos    *)
+CONST GCHST_SMC    =  251;              (* Max len of string (S)       *)
+CONST GCHST_LMC    =  247;              (* Max len of string (L)       *)
+
+(* Character String Move *)
+CONST OCODE_GCCHSTM=  0B1H;            (* char string move at c.p.    *)
+CONST GCCHSTM_MC   =  255;              (* Max len of string in byte   *)
+
+CONST OCODE_GCHSTM =  0F1H;            (* char string move at g.p.    *)
+CONST GCHSTM_SMC   =  251;              (* Max len of string (S)       *)
+CONST GCHSTM_LMC   =  247;              (* Max len of string (L)       *)
+
+(* Comment *)
+CONST OCODE_GCOMT  =  001H;            (* Comment                     *)
+CONST GCOMT_ML     =  255;              (* Maximum len of comment data *)
+
+(* Image *)
+CONST OCODE_GIMD   =  092H;            (* Image data                  *)
+CONST GIMD_ML      =  255;              (* Maximum len of image data   *)
+
+(* Full Arc *)
+CONST OCODE_GCFARC =  087H;            (* full arc at current posn    *)
+CONST OCODE_GFARC  =  0C7H;            (* full arc at given posn      *)
+
+(* Label *)
+CONST OCODE_GLABL  =  0D3H;            (* Label                       *)
+
+(* Set Current Position *)
+CONST OCODE_GSCP   =  021H;            (* Set current position        *)
+CONST OCODE_GPSCP  =  061H;            (* Push and set curr posn      *)
+
+(* Bezier spline *)
+CONST OCODE_GCBEZ  =  0A5H;            (* Bezier spline at curr pos   *)
+CONST GCBEZ_SMB    =  21;               (* Max number of splines (S)   *)
+CONST GCBEZ_LMB    =  10;               (* Max number of splines (L)   *)
+
+CONST OCODE_GBEZ   =  0E5H;            (* Bezier spline at given pos  *)
+CONST GBEZ_SMB     =  20;               (* Max number of splines (S)   *)
+CONST GBEZ_LMB     =  10;               (* Max number of splines (L)   *)
+
+(* Fillet *)
+CONST OCODE_GCFLT  =  085H;            (* fillet at current posn      *)
+CONST GCFLT_SMP    =  63;               (* Max number of points (S)    *)
+CONST GCFLT_LMP    =  31;               (* Max number of points (L)    *)
+
+CONST OCODE_GFLT   =  0C5H;            (* fillet at given position    *)
+CONST GFLT_SMP     =  62;               (* Max number of points (S)    *)
+CONST GFLT_LMP     =  30;               (* Max number of points (L)    *)
+
+(* Polyline *)
+CONST OCODE_GCLINE =  081H;            (* polyline at current posn    *)
+CONST GCLINE_SMP   =  63;               (* Max number of points (S)    *)
+CONST GCLINE_LMP   =  31;               (* Max number of points (L)    *)
+
+CONST OCODE_GLINE  =  0C1H;            (* polyline at given posn      *)
+CONST GLINE_SMP    =  62;               (* Max number of points (S)    *)
+CONST GLINE_LMP    =  30;               (* Max number of points (L)    *)
+
+(* Polymarker *)
+CONST OCODE_GCMRK  =  082H;            (* marker at current posn      *)
+CONST GCMRK_SMP    =  63;               (* Max number of points (S)    *)
+CONST GCMRK_LMP    =  31;               (* Max number of points (L)    *)
+
+CONST OCODE_GMRK   =  0C2H;            (* marker at given posn        *)
+CONST GMRK_SMP     =  62;               (* Max number of points (S)    *)
+CONST GMRK_LMP     =  30;               (* Max number of points (L)    *)
+
+(* Relative Line *)
+CONST OCODE_GCRLINE=  0A1H;            (* Relative line at curr pos   *)
+CONST GCRLINE_MP   =  127;              (* Max number of points        *)
+
+CONST OCODE_GRLINE =  0E1H;            (* Relative line at givn pos   *)
+CONST GRLINE_SMP   =  125;              (* Max number of points (S)    *)
+CONST GRLINE_LMP   =  123;              (* Max number of points (L)    *)
+
+(* Set Background Color *)
+CONST OCODE_GSBCOL  = 025H;            (* Set background color        *)
+CONST OCODE_GPSBCOL = 065H;            (* Push and set b/g color      *)
+
+(* Set Extended Color *)
+CONST OCODE_GSECOL  = 026H;            (* Set extended color          *)
+CONST OCODE_GPSECOL = 066H;            (* Push and set ext color      *)
+
+(* Extended Color values *)
+CONST SECOL_DEFAULT0=  00000H;
+CONST SECOL_DEFAULT1=  0FF00H;
+CONST SECOL_NEUTRAL =  0FF07H;
+CONST SECOL_RESET   =  0FF08H;
+
+(* Set Character Angle *)
+CONST OCODE_GSCA    = 034H;            (* Set character angle         *)
+CONST OCODE_GPSCA   = 074H;            (* Push and set char angle     *)
+
+(* Set Character Shear *)
+CONST OCODE_GSCH    = 035H;            (* Set character shear         *)
+CONST OCODE_GPSCH   = 075H;            (* Push and set char shear     *)
+
+(* Set Fractional Line Width *)
+CONST OCODE_GSFLW   = 011H;            (* Set fractional line width   *)
+CONST OCODE_GPSFLW  = 051H;            (* Push and set frac l width   *)
+
+(* Set Pick Identifier *)
+CONST OCODE_GSPIK   = 043H;            (* Set pick identifier         *)
+CONST OCODE_GPSPIK  = 023H;            (* Push and set pick id        *)
+
+
+(* Long Orders for which a structure can be defined for the data *)
+
+(* Arc *)
+CONST OCODE_GCARC   = 086H;            (* Arc at Current Position     *)
+CONST OCODE_GARC    = 0C6H;            (* Arc at Given Position       *)
+
+TYPE ORDERS_GCARC = RECORD    (* osgcarc *)
+   ptInter: POINTS;
+   ptEnd:   POINTS;
+END;
+
+TYPE ORDERL_GCARC = RECORD     (* olgcarc *)
+   ptInter: POINTL;
+   ptEnd:   POINTL;
+END;
+
+(* Begin Element *)
+CONST OCODE_GBEL    = 0D2H;            (* Begin Element               *)
+
+CONST GBEL_DL       = 251;
+TYPE ORDER_GBEL = RECORD      (* ogbel *)
+   lElementType: LONG;
+   achDesc:      ARRAY [0..GBEL_DL-1] OF CHAR;
+END;
+
+(* Begin Image *)
+CONST OCODE_GCBIMG  = 091H;            (* Begin Image at curr posn    *)
+CONST OCODE_GBIMG   = 0D1H;            (* Begin Image at given posn   *)
+
+TYPE ORDER_GCBIMG = RECORD    (* ogbimg *)
+   uchFormat:     UCHAR;
+   uchReserved:   UCHAR;
+   cx:            SWPUSHORT;
+   cy:            SWPUSHORT;
+END;
+
+(* Begin Path *)
+CONST OCODE_GBPTH   = 0D0H;            (* Begin Path                  *)
+
+TYPE ORDER_GBPTH = RECORD     (* ogbpth *)
+   usReserved: USHORT;
+   idPath:     LONG;
+END;
+
+(* Box *)
+CONST OCODE_GCBOX   = 080H;            (* Box at current position     *)
+CONST OCODE_GBOX    = 0C0H;            (* Box at given position       *)
+
+TYPE ORDERS_GCBOX = RECORD    (* osgcbox *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   ptCorner:     POINTS;
+   hAxis:        SHORT;
+   vAxis:        SHORT;
+END;
+
+TYPE ORDERL_GCBOX = RECORD     (* olgcbox *)
+   fbFlags:       UCHAR;
+   uchReserved:   UCHAR;
+   ptCorner:      POINTL;
+   hAxis:         LONG;
+   vAxis:         LONG;
+END;
+
+CONST GCBOX_FILL    = 040H;
+CONST GCBOX_BOUNDARY= 020H;
+
+(* Call Segment *)
+CONST OCODE_GCALLS  = 007H;            (* call segment                *)
+
+TYPE ORDER_GCALLS = RECORD    (* ogcalls *)
+   sReserved: USHORT;
+   idSegment: LONG;
+END;
+
+(* Fill Path *)
+CONST OCODE_GFPTH   = 0D7H;            (* Fill path                   *)
+TYPE ORDER_GFPTH = RECORD    (* ogfpth *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   idPath:       LONG;
+END;
+
+CONST GFPTH_ALTERNATE= 000H;
+CONST GFPTH_WINDING  = 040H;
+CONST GFPTH_MODIFY   = 020H;
+
+(* Outline Path *)
+CONST OCODE_GOPTH   = 0D4H;            (* Outline Path                *)
+TYPE ORDER_GOPTH = RECORD    (* ogopth *)
+   fbFlags:     UCHAR;
+   uchReserved: UCHAR;
+   idPath:      LONG;
+END;
+
+(* Modify Path *)
+CONST OCODE_GMPTH= 0D8H;               (* modify path                 *)
+
+TYPE ORDER_GMPTH = RECORD     (* ogmpth *)
+   uchMode:      UCHAR;
+   uchReserved:  UCHAR;
+   idPath:       LONG;
+END;
+
+CONST GMPTH_STROKE   = 006H;
+
+(* Partial Arc *)
+CONST OCODE_GCPARC  = 0A3H;            (* Partial arc at curr posn    *)
+CONST OCODE_GPARC   = 0E3H;            (* Partial arc at given posn   *)
+
+TYPE ORDERS_GCPARC = RECORD   (* osgcparc *)
+   ptCenter:         POINTS;
+   ufx88Multiplier:  FIXED88;
+   usStartAngle:     LONG;
+   usSweepAngle:     LONG;
+END;
+
+TYPE ORDERL_GCPARC = RECORD   (* olgcparc *)
+   ptCenter:       POINTL;
+   ufxMultiplier:  FIXED;
+   usStartAngle:   LONG;
+   usSweepAngle:   LONG;
+END;
+
+(* Set Clip Path *)
+CONST OCODE_GSCPTH  = 0B4H;            (* Set clip path               *)
+
+TYPE ORDER_GSCPTH = RECORD    (* ogscpth *)
+   fbFlags:       UCHAR;
+   uchReserved:   UCHAR;
+   idPath:        LONG;
+END;
+
+CONST GSCPTH_ALTERNATE= 000H;
+CONST GSCPTH_WINDING  = 040H;
+CONST GSCPTH_RESET    = 000H;
+CONST GSCPTH_INTERSECT= 020H;
+
+(* Set Arc Parameters *)
+CONST OCODE_GSAP    = 022H;            (* Set arc parameters          *)
+CONST OCODE_GPSAP   = 062H;            (* Push and set arc params     *)
+
+TYPE ORDERS_GSAP = RECORD     (* osgsap *)
+   p: SHORT;
+   q: SHORT;
+   r: SHORT;
+   s: SHORT;
+END;
+
+TYPE ORDERL_GSAP = RECORD      (* olgsap *)
+   p: LONG;
+   q: LONG;
+   r: LONG;
+   s: LONG;
+END;
+
+(* Set Background Indexed Color *)
+CONST OCODE_GSBICOL = 0A7H;            (* Set b/g indexed color       *)
+CONST OCODE_GPSBICOL= 0E7H;            (* Push and set b/g ind color  *)
+CONST OCODE_GSICOL  = 0A6H;            (* Set indexed color           *)
+CONST OCODE_GPSICOL = 0E6H;            (* Push and set indexd color   *)
+
+TYPE ORDER_GSBICOL = RECORD   (* ogbicol *)
+   fbFlags:    UCHAR;
+   auchColor:  ARRAY [0..2] OF UCHAR;
+END;
+
+CONST SICOL_SPECIFY = 000H;
+CONST SICOL_SPECIAL = 040H;
+CONST SICOL_DEFAULT = 080H;
+CONST SICOL_BLACK   = 1;
+CONST SICOL_WHITE   = 2;
+CONST SICOL_ONES    = 4;
+CONST SICOL_ZEROES  = 5;
+
+(* Set Character Cell *)
+CONST OCODE_GSCC    = 033H;            (* Set character cell          *)
+CONST OCODE_GPSCC   = 003H;            (* Push and set char cell      *)
+
+TYPE ORDERS_GSCC = RECORD     (* osgscc *)
+   cxInt:        SHORT;
+   cyInt:        SHORT;
+   cxFract:      USHORT;
+   cyFract:      USHORT;
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+END;
+
+TYPE ORDERL_GSCC = RECORD     (* olgscc *)
+   cxInt:        LONG;
+   cyInt:        LONG;
+   cxFract:      USHORT;
+   cyFract:      USHORT;
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+END;
+
+CONST GSCC_ZERODEF  = 000H;
+CONST GSCC_ZEROZERO = 080H;
+
+(* Set Marker Cell *)
+CONST OCODE_GSMC    = 037H;            (* Set marker cell             *)
+CONST OCODE_GPSMC   = 077H;            (* Push and set marker cell    *)
+
+TYPE ORDERS_GSMC = RECORD     (* osgsmc *)
+   cx:           SHORT;
+   cy:           SHORT;
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+END;
+
+TYPE ORDERL_GSMC = RECORD     (* olgsmc *)
+   cx:           LONG;
+   cy:           LONG;
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+END;
+
+CONST GSMC_ZERODEF  = 000H;
+CONST GSMC_ZEROZERO = 080H;
+
+(* Set Pattern Reference Point *)
+CONST OCODE_GSPRP   = 0A0H;            (* Set pattern ref point       *)
+CONST OCODE_GPSPRP  = 0E0H;            (* Push and set patt ref pt    *)
+
+TYPE ORDERS_GSPRP = RECORD     (* osgsprp *)
+   fbFlags:     UCHAR;
+   uchReserved: UCHAR;
+   ptPos:       POINTS;
+END;
+TYPE ORDERL_GSPRP = RECORD    (* olgsprp *)
+   fbFlags:     UCHAR;
+   uchReserved: UCHAR;
+   ptPos:       POINTL;
+END;
+
+CONST GSPRP_DEFAULT = 080H;
+CONST GSPRP_SPECIFY = 000H;
+
+
+(* Set Individual Attribute *)
+CONST OCODE_GSIA    = 014H;            (* Set individual attribute    *)
+CONST OCODE_GPSIA   = 054H;            (* Push and set ind attr       *)
+
+CONST GSIA_VL  = 3;
+TYPE ORDER_GSIA = RECORD      (* ogsia *)
+   uchAttrType: UCHAR;
+   uchPrimType: UCHAR;
+   fbFlags:     UCHAR;
+   auchValue:   ARRAY [0..GSIA_VL-1] OF UCHAR;
+END;
+
+CONST GSIA_COLOR    = 001H;
+CONST GSIA_BCOLOR   = 002H;
+CONST GSIA_MIX      = 003H;
+CONST GSIA_BMIX     = 004H;
+CONST GSIA_LINE     = 001H;
+CONST GSIA_CHAR     = 002H;
+CONST GSIA_MARKER   = 003H;
+CONST GSIA_PATTERN  = 004H;
+CONST GSIA_IMAGE    = 005H;
+CONST GSIA_SPECIFY  = 000H;
+CONST GSIA_SPECIAL  = 040H;
+CONST GSIA_DEFAULT  = 080H;
+CONST GSIA_BLACK    = 1;
+CONST GSIA_WHITE    = 2;
+CONST GSIA_ONES     = 4;
+CONST GSIA_ZEROES   = 5;
+
+
+(* Set Model /Viewing Transform *)
+CONST OCODE_GSTM    = 024H;            (* Set model transform         *)
+CONST OCODE_GPSTM   = 064H;            (* Push and set model tfm      *)
+
+CONST OCODE_GSTV    = 031H;            (* Set Viewing Transform       *)
+
+CONST GSTM_ML       = 16;
+TYPE ORDERS_GSTM = RECORD      (* osgstm *)
+   uchReserved:  UCHAR;
+   fbFlags:      UCHAR;
+   fsMask:       USHORT;
+   asMatrix:     ARRAY [0..GSTM_ML-1] OF SHORT;
+END;
+
+TYPE ORDERL_GSTM = RECORD      (* olgstm *)
+   uchReserved: UCHAR;
+   fbFlags:     UCHAR;
+   fsMask:      USHORT;
+   alMatrix:    ARRAY [0..GSTM_ML-1] OF LONG;
+END;
+
+CONST GSTM_M11    = 08000H;
+CONST GSTM_M12    = 04000H;
+CONST GSTM_M13    = 02000H;
+CONST GSTM_M14    = 01000H;
+CONST GSTM_M21    = 00800H;
+CONST GSTM_M22    = 00400H;
+CONST GSTM_M23    = 00200H;
+CONST GSTM_M24    = 00100H;
+CONST GSTM_M31    = 00080H;
+CONST GSTM_M32    = 00040H;
+CONST GSTM_M33    = 00020H;
+CONST GSTM_M34    = 00010H;
+CONST GSTM_M41    = 00008H;
+CONST GSTM_M42    = 00004H;
+CONST GSTM_M43    = 00002H;
+CONST GSTM_M44    = 00001H;
+
+CONST GSTM_UNITY    = 000H;
+CONST GSTM_AFTER    = 001H;
+CONST GSTM_BEFORE   = 002H;
+CONST GSTM_OVERWRITE= 003H;
+
+CONST GSTV_OVERWRITE= 000H;
+CONST GSTV_AFTER    = 004H;
+
+(* Set Segment Boundary, Viewing Window *)
+
+CONST OCODE_GSSB    = 032H;            (* Set segment boundary        *)
+CONST OCODE_GSVW    = 027H;            (* Set viewing window          *)
+CONST OCODE_GPSVW   = 067H;            (* Push and set view window    *)
+
+CONST GSSB_ML       = 4;
+TYPE ORDERS_GSSB = RECORD     (* osgssb *)
+   fbFlags:   UCHAR;
+   fbMask:    UCHAR;
+   alMatrix:  ARRAY [0..GSSB_ML-1] OF SHORT;
+END;
+
+TYPE ORDERL_GSSB = RECORD     (* olgssb *)
+   fbFLags:  UCHAR;
+   fbMask:   UCHAR;
+   alMatrix: ARRAY [0..GSSB_ML-1] OF LONG;
+END;
+
+CONST GSSB_XLEFT    = 020H;
+CONST GSSB_XRIGHT   = 010H;
+CONST GSSB_YBOTTOM  = 008H;
+CONST GSSB_YTOP     = 004H;
+
+CONST GSVW_INTERSECT= 000H;
+CONST GSVW_REPLACE  = 080H;
+
+(* Set Segment Characteristics *)
+CONST OCODE_GSGCH   = 004H;            (* Set segment characteristics *)
+
+CONST GSGCH_ML      = 254;
+TYPE ORDER_GSGCH = RECORD     (* ogsgch *)
+   uchIdent: UCHAR;
+   auchData: ARRAY [0..GSGCH_ML-1] OF UCHAR;
+END;
+
+(* Set Stroke Line Width *)
+CONST OCODE_GSSLW   = 015H;            (* Set stroke line width       *)
+CONST OCODE_GPSSLW  = 055H;            (* Push and set strk l width   *)
+
+TYPE ORDERS_GSSLW = RECORD    (* osgsslw *)
+   fbFlags:     UCHAR;
+   uchReserved: UCHAR;
+   LineWidth:   SHORT;
+END;
+
+TYPE ORDERL_GSSLW = RECORD    (* olgsslw *)
+   fbFlags:       UCHAR;
+   uchReserved:   UCHAR;
+   LineWidth:     LONG;
+END;
+
+CONST GSSLW_DEFAULT = 080H;
+CONST GSSLW_SPECIFY = 000H;
+
+(* Sharp Fillet at Current Position *)
+CONST OCODE_GCSFLT  = 0A4H;            (* Sharp fillet at curr pos    *)
+CONST OCODE_GSFLT   = 0E4H;            (* Sharp fillet at given pos   *)
+
+CONST GCSFLT_SMF    = 21;
+CONST GSFLT_SMF     = 20;
+
+TYPE ORDERS_GCSFLT = RECORD   (* osgcsflt *)
+   apt:          ARRAY [0..2*GCSFLT_SMF-1] OF POINTS;
+   afxSharpness: ARRAY [0..GCSFLT_SMF-1]   OF FIXED;
+END;
+
+CONST GCSFLT_LMF    = 12;
+CONST GSFLT_LMF     = 12;
+
+TYPE ORDERL_GCSFLT = RECORD    (* olgcsflt *)
+   apt:           ARRAY [0..2*GCSFLT_SMF-1] OF POINTL;
+   afxSharpness:  ARRAY [0..GCSFLT_SMF-1]   OF FIXED;
+END;
+
+(* Bitblt *)
+CONST OCODE_GBBLT   = 0D6H;            (* Bitblt                      *)
+
+TYPE ORDERS_GBBLT = RECORD     (* osgbblt *)
+   fsFlags:       USHORT;
+   usMix:         USHORT;
+   hbmSrc:        HBITMAP;
+   lOptions:      LONG;
+   rcsTargetRect: RECT1S;
+   rclSourceRect: RECTL;
+END;
+
+TYPE ORDERL_GBBLT = RECORD     (* olgbblt *)
+   fsFlags:       USHORT;
+   usMix:         USHORT;
+   hbmSrc:        HBITMAP;
+   lOptions:      LONG;
+   rclTargetRect: RECTL;
+   rclSourceRect: RECTL;
+END;
+
+(* Char & break extra *)
+CONST OCODE_GSCE    = 017H;            (* Set char extra                *)
+CONST OCODE_GPSCE   = 057H;            (* Push and set char extra       *)
+CONST OCODE_GSCBE   = 005H;            (* Set char break extra          *)
+CONST OCODE_GPSCBE  = 045H;            (* Push and set char break extra *)
+
+TYPE ORDER_GSCBE = RECORD      (* osgscbe *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   ufxextra:     FIXED;
+END;
+
+TYPE ORDER_GPSCE = RECORD      (* osgpsce *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   ufxextra:     FIXED;
+END;
+
+TYPE ORDER_GSCE  = RECORD      (* osgsce *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   ufxextra:     FIXED;
+END;
+
+TYPE ORDER_GPSCBE = RECORD      (* osgpscbe *)
+   fbFlags:      UCHAR;
+   uchReserved:  UCHAR;
+   ufxextra:     FIXED;
+END;
+
+(* Escape *)
+CONST OCODE_GESCP   = 0D5H;            (* Escape                      *)
+
+(*
+* type describes type of escape order, identifier gives the escape
+* order if the type is registered
+*)
+CONST GESCP_ML      = 253;
+TYPE ORDER_GESCP = RECORD     (* ogescp *)
+   uchType:  UCHAR;
+   uchIdent: UCHAR;
+   auchData: ARRAY [0..GESCP_ML-1] OF UCHAR;    (* Escape data                 *)
+END;
+
+CONST GESCP_REG     = 080H;            (* identifier is registered    *)
+
+(* Escape (Bitblt) *)
+CONST GEBB_REGID    = 002H;            (* uchIdent - Bitblt           *)
+
+CONST ETYPE_GEBB    = 0800200D5H;
+CONST GEBB_LMP      = 29;
+TYPE ORDERL_GEBB = RECORD      (* olgebb *)
+   fbFlags:      UCHAR;
+   usMix:        USHORT;
+   cPoints:      UCHAR;
+   hbmSrc:       HBITMAP;
+   lReserved:    LONG;
+   lOptions:     LONG;
+   aptPoints:    ARRAY [0..GEBB_LMP-1] OF POINTL;
+END;
+
+(* Escape (Set Pel) *)
+CONST GEPEL_REGID   = 001H;            (* uchIdent - Set Pel          *)
+
+CONST ETYPE_GEPEL        = 0800100D5H;
+
+(* Escape (DrawBits) *)
+CONST GEDB_REGID    = 004H;          (* uchIdent - DrawBits *)
+
+CONST ETYPE_GEDB         = 0800400D5H;
+
+TYPE ORDERL_GEDB = RECORD     (* olgedb *)
+   fsFlags:       USHORT;
+   usMix:         USHORT;
+   pBits:         PVOID;
+   pbmi:          PBITMAPINFO2;
+   lOptions:      LONG;
+   rclTargetRect: RECTL;
+   rclSourceRect: RECTL;
+END;
+
+
+(* Escape (FloodFill) *)
+CONST GEFF_REGID    = 003H;        (* uchIdent - FloodFill *)
+
+CONST ETYPE_GEFF         = 0800300D5H;
+
+TYPE ORDERL_GEFF = RECORD      (* olgeff *)
+   fsFlags:   UCHAR;
+   auchColor: ARRAY [0..2] OF UCHAR;
+END;
+
+
+(* Element Types for attribute bundles *)
+CONST ETYPE_LINEBUNDLE   = 00000FD01H;
+CONST ETYPE_CHARBUNDLE   = 00000FD02H;
+CONST ETYPE_MARKERBUNDLE = 00000FD03H;
+CONST ETYPE_AREABUNDLE   = 00000FD04H;
+CONST ETYPE_IMAGEBUNDLE  = 00000FD05H;
+
+
+(***************************************************************************\
+*
+* Very long orders
+*
+\***************************************************************************)
+
+(* macro to tell whether this is a very long order *)
+--CONST VLONG_ORDER(oc)  ((oc)==OCODE_VLONG)
+
+(* Very long order structure *)
+CONST VORDER_ML= 65531;
+TYPE VORDER = RECORD          (* vord *)
+   idCode:       UCHAR;
+   uchQualifier: UCHAR;
+   uchLength:    SWPUSHORT;
+   uchData:      ARRAY [0..VORDER_ML-1] OF UCHAR;
+END;
+
+(* Character String Extended *)
+CONST OCODEQ_GCCHSTE = 0B0H;           (* Qualifier - current posn    *)
+CONST OCODEQ_GCHSTE  = 0F0H;           (* Qualifier - given position  *)
+
+CONST ETYPE_GCCHSTE      = 00000FEB0H;
+CONST ETYPE_GCHSTE       = 00000FEF0H;
+
+TYPE ORDERS_GCCHSTE = RECORD    (* osgcchste *)
+   fbFlags:     UCHAR;
+   uchReserved: UCHAR;
+   ptRect:      ARRAY [0..1] OF POINTS;
+   cchString:   SWPUSHORT;
+   achString:   ARRAY [0..0] OF CHAR;
+   adx:         ARRAY [0..0] OF SHORT;
+END;
+
+TYPE ORDERL_GCCHSTE = RECORD   (* olgcchste *)
+   fbFlags:         UCHAR;
+   uchReserved:     UCHAR;
+   ptRect:          ARRAY [0..1] OF POINTL;
+   cchString:       SWPUSHORT;
+   achString:       ARRAY [0..0] OF CHAR;
+   adx:             ARRAY [0..0] OF LONG;
+END;
+
+CONST GCCHSTE_DRAWRECT     = 080H;
+CONST GCCHSTE_NORECT       = 000H;
+CONST GCCHSTE_CLIP         = 040H;
+CONST GCCHSTE_NOCLIP       = 000H;
+CONST GCCHSTE_DEEMPHASIZE  = 020H;          (* Reserved *)
+CONST GCCHSTE_NODEEMPHASIZE= 000H;
+CONST GCCHSTE_LEAVEPOS     = 010H;
+CONST GCCHSTE_MOVEPOS      = 000H;
+CONST GCCHSTE_UNDERSCORE   = 008H;
+CONST GCCHSTE_NOUNDERSCORE = 000H;
+CONST GCCHSTE_STRIKEOUT    = 004H;
+CONST GCCHSTE_NOSTRIKEOUT  = 000H;
+
+(* Extended Escape *)
+CONST OCODEQ_GEESCP  = 0D5H;         (* Qualifier - extended escape *)
+
+CONST GEESCP_ML     = 65533;
+TYPE ORDER_GEESCP = RECORD    (* ogeescp *)
+   uchType:  UCHAR;
+   uchIdent: UCHAR;
+   auchData: ARRAY [0..GEESCP_ML-1] OF UCHAR;
+END;
+
+
+(**************************** end of file **********************************)

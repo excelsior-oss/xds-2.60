@@ -1,0 +1,63 @@
+(*      SCCSID = @(#)bsetib.h   6.9 92/03/15 *)
+(***************************************************************************\
+*
+* Module Name: BSETIB.H
+*
+* OS/2 Thread Information Block Include File
+*
+* Copyright (c) 1989, 1992  IBM Corporation
+* Copyright (c) 1989  Microsoft Corporation
+*
+*****************************************************************************)
+
+(*
+ *      Thread Information Block (TIB)
+ *)
+
+TYPE tib2_s = RECORD
+       tib2_ultid:        ULONG;   (* Thread I.D. *)
+       tib2_ulpri:        ULONG;   (* Thread priority *)
+       tib2_version:      ULONG;   (* Version number for this structure *)
+       tib2_usMCCount:    USHORT;  (* Must Complete count *)
+       tib2_fMCForceFlag: USHORT;  (* Must Complete force flag *)
+END;
+
+TYPE TIB2  = tib2_s;
+TYPE PTIB2 = POINTER TO TIB2;
+
+TYPE tib_s = RECORD                   (* TIB Thread Information Block *)
+        tib_pexchain:    PVOID;       (* Head of exception handler chain *)
+        tib_pstack:      PVOID;       (* Pointer to base of stack *)
+        tib_pstacklimit: PVOID;       (* Pointer to end of stack *)
+        tib_ptib2:       PTIB2;       (* Pointer to system specific TIB *)
+        tib_version:     ULONG;       (* Version number for this TIB structure *)
+        tib_ordinal:     ULONG;       (* Thread ordinal number        *)
+END;
+
+
+TYPE tib_t = tib_s;
+TYPE TIB   = tib_s;
+TYPE PTIB  = POINTER TO tib_s;
+
+
+(*
+ *      Process Information Block (PIB)
+ *)
+
+
+TYPE pib_s = RECORD                         (* PIB Process Information Block *)
+       pib_ulpid:    ULONG;          (* Process I.D. *)
+       pib_ulppid:   ULONG;          (* Parent process I.D. *)
+       pib_hmte:     ULONG;          (* Program (.EXE) module handle *)
+       pib_pchcmd:   PCHAR;          (* Command line pointer *)
+       pib_pchenv:   PCHAR;          (* Environment pointer *)
+       pib_flstatus: ULONG;          (* Process' status bits *)
+       pib_ultype:   ULONG;          (* Process' type code *)
+END;
+
+
+TYPE pib_t  = pib_s;
+TYPE PIB    = pib_s;
+TYPE PPIB   = POINTER TO pib_s;
+
+(***************************** End of file ************************************)

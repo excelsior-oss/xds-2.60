@@ -1,0 +1,10 @@
+<* M2EXTENSIONS+ *>
+
+DEFINITION MODULE dll2;
+
+VAR 
+  Var[]["C"] : CARDINAL;
+
+PROCEDURE ["C"] Proc;
+
+END dll2.

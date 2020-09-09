@@ -1,0 +1,488 @@
+% Copyright (c) 1999-2008 Excelsior.
+%
+% XDS TopSpeed-like library project file
+% mode     = debug ! nodebug ! work ! port ! user
+%
+% Some comments about modes:
+%     debug - used to build enduser versions of all executables
+%     nodebug - final enduser version
+%     work (default) - developers' version
+%     port - to port with __GEN_C__
+%     user - to create makefiles for enduser package
+
+!if not defined mode then
+  -mode := work
+!end
+!if not defined bits then
+  -bits :=
+!end
+!if not defined multithread then
+  -multithread:-
+!end
+
+!if not defined gendll then
+  -gendll:-
+!end
+!if not defined useedf then
+  -useedf:+
+!end
+!if not defined genlib then
+  -genlib:-
+!end
+!if not defined libname then
+  -libname:=
+!end
+
+!if not defined placement then
+  !if mode="user" then
+    -placement := makefile
+  !elsif (mode="debug") or (mode="nodebug") then
+    -placement := release
+  !else
+    -placement := current
+  !end
+!end
+
+!if (mode="user") or (mode="nodebug") then
+  -opt_checks := none
+  -opt_debug  := none
+!elsif mode="port" then
+  -opt_checks := full
+  -opt_debug  := full
+!elsif mode="debug" then
+  -opt_checks := min
+  -opt_debug  := min
+!elsif mode="enduser" then
+  -opt_checks := none
+  -opt_debug  := full
+!else
+  -opt_checks := work
+  -opt_debug  := work
+!end
+
+!if (target_family="UNIX") or (env_target="x86djgpp") then
+  -asmext=s
+!else
+  -asmext=asm
+!end
+
+!if (env_target="x86djgpp") then 
+  -objext=o
+  -libext=a
+  -target_fs=unix
+  -target_dosfs- 
+  -native_library:+ 
+!end
+
+!if not defined native_library then
+  -native_library:-
+  % Libraries for native code, but built with converter.
+!end
+
+-compile=
+-makefile+
+-longname+
+-o2isopragma+
+!if __GEN_C__ then
+%  -woff354+
+!end
+
+-__libsyms__:+
+
+!if defined mkf_name and (mkf_name#"") then
+  -mkfname=$(mkf_name)
+!else
+  -mkfname=tslib
+!end
+
+-template = $!/xds.tem
+
+!if gendll then
+  -usedll+
+  -implib+
+  -dllexport+
+  !if multithread then
+    -dllname:=xts26m
+  !else
+    -dllname:=xts26
+  !end
+!else 
+  -genlib+
+  !if multithread then
+    -libname=libtsmt
+  !else
+    -libname=libts
+  !end
+!end
+
+% ======================================================
+% Target directory settings
+% ======================================================
++makedirs
+
+!if placement="release" then
+  -makedef+
+  -xcomments+
+  -tscpdir := $!/../../enduser/xds
+  -xdsdir = $!/../../enduser/xds
+  !if    bits="16" then
+    -lookup = *.sym   = $!/../../enduser/xds/sym/16
+    -lookup = *.h     = $!/../../enduser/xds/include/16; $!/../../enduser/xds/include
+  !elsif bits="32m16" then
+    -lookup = *.sym = $!/../../enduser/xds/sym/32m16
+    -lookup = *.h   = $!/../../enduser/xds/include/32m16; $!/../../enduser/xds/include
+  !else
+    !if __GEN_X86__ or native_library then
+      -lookup = *.sym = $!/../../enduser/xds/sym/x86
+      -lookup = *.h   = $!/../../enduser/xds/include/x86
+      -include=$!/../../enduser/xds/include/x86
+    !elsif __GEN_C__ then
+      -lookup = *.sym = $!/../../enduser/xds/sym/C
+      -lookup = *.h   = $!/../../enduser/xds/include/C
+      -include=$!/../../enduser/xds/include/C
+    !end
+  !end
+  -lookup = *.lnk = $!/../../enduser/tmp
+  -lookup = *.obj = $!/../../enduser/tmp
+  -lookup = *.dbg = $!/../../enduser/tmp
+  -lookup = *.edi = $!/../../enduser/xds/bin
+  -lookup = *.o   = $!/../../enduser/tmp
+  !if env_target = "x86os2" then
+    -lookup  = *.dll = $!/../../enduser/xds/dll
+  !else
+    -lookup  = *.dll = $!/../../enduser/xds/bin
+  !end
+  !if    bits="16" then
+    -lookup = *.mkf = $!/../../enduser/xds/lib/16
+    -lookup = *.lib = $!/../../enduser/xds/lib/16
+    -lookup = *.a   = $!/../../enduser/xds/lib/16
+    -lookup = *.c   = $!/../../enduser/xds/C/16; $!/../../enduser/xds/C
+  !elsif bits="32m16" then
+    -lookup = *.mkf = $!/../../enduser/xds/lib/32m16
+    -lookup = *.lib = $!/../../enduser/xds/lib/32m16
+    -lookup = *.a   = $!/../../enduser/xds/lib/32m16
+    -lookup = *.c   = $!/../../enduser/xds/C/32m16; $!/../../enduser/xds/C
+  !else
+    !if __GEN_X86__ or native_library then
+      -lookup = *.mkf = $!/../../enduser/tmp
+      -lookup = *.lib = $!/../../enduser/xds/lib/x86
+      -lookup = *.a   = $!/../../enduser/xds/lib/x86
+      -lookup = *.c   = $!/../../enduser/xds/C/x86
+    !elsif __GEN_C__ then
+      -lookup = *.mkf = $!/../../enduser/xds/lib/C
+      -lookup = *.lib = $!/../../enduser/xds/lib/C
+      -lookup = *.a   = $!/../../enduser/xds/lib/C
+      -lookup = *.c   = $!/../../enduser/xds/C/C
+    !end
+  !end
+!elsif placement="makefile" then
+  !if target_fs="UNIX" then
+    -xdsdir = ../..
+    -tscpdir := ../..
+  !elsif (target_fs="UNC") or (target_fs="FATFS") then
+    -xdsdir = ..\..
+    -tscpdir := ..\..
+  !else
+    -xdsdir = ../..
+    -tscpdir := ../..
+  !end
+
+  !if gendll then
+    -mkfname  = dll
+  !end
+  -lookup = *.lib  = .
+
+  !if env_target = "x86os2" then
+    -lookup = *.dll  = ../../bin
+  !else
+    -lookup = *.dll  = ../../dll
+  !end
+  -lookup = *.a    = .
+  -lookup = *.odf = $!/../../enduser/xds/def/ob2
+  !if    bits="16" then
+    -lookup = *.sym = ../../sym/16
+    -lookup = *.h   = ../../include/16; ../../include
+    -lookup = *.c    = ../../C/16; ../../C
+    -lookup = *.obj  = ../../C/16
+    -lookup = *.o    = ../../C/16
+  !elsif bits="32m16" then
+    -lookup = *.sym = ../../sym/32m16
+    -lookup = *.h   = ../../include/32m16; ../../include
+    -lookup = *.c    = ../../C/32m16; ../../C
+    -lookup = *.obj  = ../../C/32m16
+    -lookup = *.o    = ../../C/32m16
+  !else
+    !if __GEN_X86__ or native_library then
+      -lookup = *.sym = ../../sym/x86
+      -lookup = *.h   = ../../include/x86
+      -lookup = *.c   = ../../C/x86
+      -lookup = *.s   = ../../C/x86
+      -lookup = *.obj  = ../../C/x86
+      -lookup = *.o    = ../../C/x86
+    !else
+      -lookup = *.sym = ../../sym/C
+      -lookup = *.h   = ../../include/C
+      -lookup = *.c   = ../../C/C
+      -lookup = *.s   = ../../C/C
+      -lookup = *.obj  = ../../C/C
+      -lookup = *.o    = ../../C/C
+    !end
+  !end
+
+!elsif __GEN_X86__ or native_library then
+  -xdsdir =
+  -lookup = *.mkf = $!/../../ch/x86
+
+  -lookup = *.odf = $!/../../enduser/def/ob2
+
+  -lookup = *.edi = $!/../../enduser/bin
+  -lookup = *.dll = $!/../../enduser/lib/x86
+  -lookup = *.lib = $!/../../enduser/lib/x86
+
+  -lookup = *.sym = $!/../../enduser/sym/x86
+
+  -lookup = *.h   = $!/../../ch/x86
+  -lookup = *.lnk = $!/../../ch/x86
+  -lookup = *.obj = $!/../../ch/x86
+  -lookup = *.o   = $!/../../ch/x86
+  -lookup = *.tmp = $!/../../ch/x86
+  -lookup = *.dbg = $!/../../ch/x86
+
+!else
+  -xdsdir =
+  -lookup = *.mkf = $!/../../enduser/lib/C
+
+  -lookup = *.odf = $!/../../enduser/def/ob2
+
+  -lookup = *.edi = $!/../../enduser/bin
+  -lookup = *.dll = $!/../../enduser/lib/C
+  -lookup = *.lib = $!/../../enduser/lib/C
+
+  -lookup = *.sym = $!/../../sym/C
+
+  -lookup = *.h   = $!/../../include/C
+  -lookup = *.c   = $!/../../ch/C/C
+  -lookup = *.lnk = $!/../../ch/C
+  -lookup = *.obj = $!/../../ch/C
+  -lookup = *.o   = $!/../../ch/C
+  -lookup = *.tmp = $!/../../ch/C
+  -lookup = *.dbg = $!../..//ch/C
+!end
+
+% ======================================================
+% Lookup sources setup
+% ======================================================
+
+-lookup = *.def = $!
+-lookup = *.mod = $!
+!if backend="C" then
+  !if target_family="LINUX" then
+    -lookup = *.def = $!/Linux
+    -lookup = *.mod = $!/Linux
+    -lookup = *.c   = $!/Linux
+  !end
+  -lookup = *.def = $!/POSIX
+  -lookup = *.mod = $!/POSIX
+  -lookup = *.c   = $!/POSIX
+!else
+  !if    (target_family="WIN32") then
+    -lookup = *.def = $!/Win32
+    -lookup = *.mod = $!/Win32
+    -lookup = *.edf = $!/Win32
+  !elsif (target_family="OS2") then
+    -lookup = *.def = $!/OS2
+    -lookup = *.mod = $!/OS2
+    -lookup = *.edf = $!/OS2
+  !else
+    !if target_os="LINUX" then
+      -lookup = *.def = $!/Linux
+      -lookup = *.mod = $!/Linux
+      -lookup = *.c   = $!/Linux
+    !end
+    -lookup = *.def = $!/POSIX
+    -lookup = *.mod = $!/POSIX
+    -lookup = *.c   = $!/POSIX
+  !end
+!end
+
+!if (mode="port") or ((mode="nodebug") and (bits#"")) then
+  -link =
+!elsif (env_host="winnt") or (env_host="winntpp") or (env_host="winntpl") then
+  -link = "nmake /nologo /f %s",mkfname#mkfext
+!elsif (env_host="os2icc") or (env_host="os2vacpp") then
+  -link = "nmake /f %s",mkfname#mkfext
+!elsif env_host="x86os2" then
+  -link = "nmake /nologo /f %s",mkfname#mkfext
+!elsif (env_host="watcom") or (env_host="watcomnt") or \
+       (env_host="x86dos") or (env_host="os2watcom") then
+  -link = "wmake -f %s",mkfname#mkfext
+!elsif env_host="x86nt" then
+   !if (gendll) then 
+     -link = "nmake /f %s",mkfname#mkfext
+   !else
+     -link = "nmake /f %s",mkfname#mkfext
+   !end
+!elsif env_host="x86djgpp" then
+  -link = "make -f %s",mkfname#mkfext
+!else
+  -link = "make -f %s",mkfname#mkfext
+!end
+
+!if opt_checks="full" then
+  -assert+
+  -checkindex+
+  -checkdindex+
+  -checkrange+
+  -checkset+
+  -checknil+
+  -checkproc+
+  -checkdiv+
+  -checktype+
+  -ioverflow+
+  -coverflow+
+  -foverflow+
+  -xmm_debug:-
+!elsif opt_checks="min" then
+  -assert+
+  -checkindex-
+  -checkdindex-
+  -checkrange-
+  -checkset-
+  -checknil-
+  -checkproc-
+  -checkdiv-
+  -checktype-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+  -xmm_debug:-
+!elsif opt_checks="none" then
+  -assert-
+  -checkindex-
+  -checkdindex-
+  -checkrange-
+  -checkset-
+  -checknil-
+  -checkproc-
+  -checkdiv-
+  -checktype-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+  -xmm_debug:-
+!else
+  -assert+
+  -checkindex+
+  -checkdindex+
+  -checkrange+
+  -checkset+
+  -checknil+
+  -checkproc+
+  -checkdiv+
+  -checktype+
+  -ioverflow+
+  -coverflow+
+  -foverflow+
+  -xmm_debug:-
+!end
+
+!if    opt_debug="full" then
+  -gendebug+
+  -lineno+
+  !if backend#"C" then
+    -genframe+
+    -genhistory+
+  !end
+!elsif opt_debug="min" then
+  !if backend="C" then
+    -gendebug-
+    -lineno+
+  !else
+    -gendebug+
+    -lineno+
+    -genframe+
+    -genhistory+
+  !end
+!elsif opt_debug="none" then
+  -gendebug-
+  -lineno-
+  !if backend#"C" then
+    -genframe-
+    -genhistory-
+  !end
+!else
+  -gendebug+
+  -lineno+
+  !if backend#"C" then
+    -genframe+
+    -genhistory+
+  !end
+!end
+
+!if backend="C" then
+  !if bits="16" then
+    -index16+
+    -target16+
+    -m2base16+
+  !elsif bits="32m16" then
+    -index16-
+    -target16-
+    -m2base16+
+  !elsif env_target="msdos" then
+    -index16-
+    -target16-
+    -m2base16-
+  !end
+
+  -copyright=XDS v2.60: Copyright (c) 1999-2011 Excelsior, LLC. All Rights Reserved.
+
+  !if (env_target="msdos") then
+    -gencpp-
+  !end
+
+  !if (env_target="winnt") and (cc="MSVC") then
+    % to be compatible with MSVC 4.2
+    -int64suffix=i64
+  !end
+
+!end
+
+-m2cmpsym+
+-changesym+
+-compilerheap=36000000
+
+% ======================================================
+% ============= List of project modules ================
+% ======================================================
+
+!module BiosIO FIO FIOR Lib MATHLIB ShtHeap Str SysErr
+
+!if (backend="C") and ((target_family="OS2") or (target_family="WIN32")) then
+  % to avoid conflict with <io.h>
+  !module IO_
+!elsif (defined escape_io_h) and escape_io_h then
+  % to avoid conflict with <io.h>
+  !module IO_
+!else
+  !module IO
+!end
+
+!if (backend="x86") then
+  !module Window
+
+  !if (target_family="OS2") or (target_family="WIN32") then
+    !module MsMouse Graph
+  !end
+!end
+
+% ======================================================
+% DLL export definition
+% ======================================================
+
+!if (gendll and useedf) and (backend#"C") then
+  !if multithread then
+    !module xts26m.edf
+  !else
+    !module xts26.edf
+  !end
+!end

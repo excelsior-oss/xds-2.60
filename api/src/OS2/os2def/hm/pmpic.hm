@@ -1,0 +1,42 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMPIC.H
+*
+* OS/2 Presentation Manager Picture functions include file.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* Comments at the end of each typedef line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+#define PIC_INCLUDED
+
+(*** type of picture to print **********************************************)
+CONST PIP_MF     =  1;
+CONST PIP_PIF    =  2;
+
+(*** type of conversion required *******************************************)
+CONST PIC_PIFTOMET = 0;
+CONST PIC_SSTOFONT = 2;
+
+PROCEDURE PicPrint(hab         : HAB
+                  ;pszFilename : PCSZ
+                  ;lType       : LONG
+                  ;pszParams   : PCSZ
+                  ): BOOL;
+
+PROCEDURE PicIchg(hab          : HAB
+                 ;pszFilename1 : PCSZ
+                 ;pszFilename2 : PCSZ
+                 ;lType        : LONG
+                 ): BOOL;
+
+
+(**************************** end of file **********************************)

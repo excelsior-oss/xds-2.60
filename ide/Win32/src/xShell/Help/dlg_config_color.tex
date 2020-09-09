@@ -1,0 +1,1236 @@
+\ifenglish
+\section{Configure Colors and Fonts}
+\else
+\section{Настройка цветов и шрифтов}
+\fi
+\public{COLOR\_DIALOG}
+\nominitoc
+
+\ifenglish
+Use this dialog to select fonts and colors used in IDE windows.
+
+The dialog contains following pages:
+\else
+Используйте этот диалог, чтобы выбирать шрифты и цвета, используемые в 
+окнах IDE.
+
+Диалог содержит следующие страницы:
+\fi
+
+\ref[Workspace]{COLOR\_WORKSPACE\_DIALOG} 
+\ifenglish
+-- set main window background color
+\else
+-- установка цвета фона главного окна
+\fi
+\ref[Windows]{COLOR\_WINDOWS\_DIALOG} 
+\ifenglish
+-- set default text and background color
+   for all windows
+\else
+-- установка цвета текста и фона, принимаемых по умолчанию для всех окон
+\fi
+
+\ref[Editor]{COLOR\_EDIT\_DIALOG} 
+ \ifenglish
+ -- set text and background colors for
+        normal, selected and  highlighted text for different syntax elements
+        in different programming languages in the editor windows
+ \else
+-- установка цвета текста и фона для обычного, отмеченного и выcвеченного текста
+   в окнах редактирования, содержащего различные синтаксические элементы 
+   различных языков программирования 
+\fi
+
+\ref[Messages]{COLOR\_MESSAGES\_DIALOG} 
+\ifenglish
+-- set colors for {\bf Messages} window
+\else                                                         
+-- установка цветов для окна {\bf Messages}
+\fi
+\ref[File list]{COLOR\_FLIST\_DIALOG} 
+\ifenglish
+-- set colors for {\bf File list} window
+        and search results windows.
+\else
+-- Установка цветов для окна {\bf File list} и окон результатов поиска.
+\fi
+\ifenglish
+Fonts are selected using standard font selection dialog. Colors are selected
+using \ref[Color Boxes]{ColorBoxes}.
+
+Colors for editor window are assigned based on \ref{Languages}. The set of
+languages may be configured, and the editor knows to which language each text
+file belongs. It calls \ref[language driver]{LangDriver} to parse the text
+and paints each syntax element in its own color. This dialog allows setting
+different colors for all syntax elements and all languages.
+
+Setting all the colors would be incredibly difficult if reasonable and
+convinient \ref[Auto color assignment]{AutoColor} scheme was not implemented.
+\else
+Шрифты выбираются с помощью стандартного диалога выбора шрифта. Цвета выбираются
+с помощью \ref[таблиц выбора цвета]{ColorBoxes}.
+
+Выбор цветов для окон редактирования основывается на списке \ref[языков]{Languages}
+Набор языков может быть перенастроен, и редактору известно, какому языку 
+принадлежит каждый текстовый файл. Он вызывает \ref[драйвер языка]{LangDriver}
+для анализа синтаксиса текста, и раскрашивает каждый синтаксический элемент в 
+его собственный цвет. Этот диалог позволяет устанавливать различные цвета для
+всех синтаксических элементов всех языков.
+
+Установка всех цветов была бы невероятно затруднительной без удобной схемы
+\ref[автоматического присваивания цветов]{AutoColor}
+\fi
+\ifenglish
+Sample windows are provided to preview changes you make. There is sample
+message window, sample file list window and one sample window for each language
+you have configured and one for default language. You may work with
+those windows as you will normally work with IDE child windows. You may even
+type text in sample editor windows.
+
+Selecting the page in the dialog as well as selecting the language automatically
+brings corresponding sample window to the top. Opposite is also true: activating
+sample window by the mouse automatically activates corresponding page in the
+dialog and the language (if editor window was activated). Moving cursor within
+editor sample window also selects syntax element which is under the cursor.
+\else
+Существует возможность предварительного просмотра произведенных вами изменений на
+примере шаблонных окон. Для каждого настроенного вами языка и языка по умолчанию
+будет создано по одному окну списка файлов и шаблонному окну. Вы можете работать 
+с этими окнами так же, как вы обычно работаете с дочерними окнами IDE, и даже 
+набирать текст в шаблонных окнах редактирования.
+
+Выбор страницы диалога, как и выбор языка, автоматически выводит соответствующее
+шаблонное окно. Обратное также верно, активация мышью шаблонного окна 
+автоматически активирует соответствующую страницу диалога и язык (если было
+активировано окно редактирования). Перемещение курсора внутри шаблонного окна
+редактирования показывает также, на каком синтаксичексом элементе находится 
+курсор.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{Workspace}
+\else
+\subsection{Рабочая среда}
+\fi
+\public{COLOR\_WORKSPACE\_DIALOG}
+
+\ifenglish
+This page contains one \ref[Color Box]{ColorBoxes} that allows setting color
+for application workspace (the part of main IDE window that is not obscured
+by child windows).
+
+Setting the color to {\bf Auto} sets the color to the default system color.
+Default system color for the workspace is the color that is 
+set for {\bf Application Background} item in the {\bf Appearance} tab of
+{\bf Display Properties} dialog from the Control Panel.
+
+Both solid and dithered colors are allowed for the Workspace.
+
+Changes made for this color are immediately reflected in sample
+window in the right part of the dialog.
+
+\else
+Эта страница содержит \ref[таблицу выбора цвета]{ColorBoxes}, которая позволяет 
+устанавливать цвет рабочей среды (не скрытой дочерними окнами части главного 
+окна IDE).
+
+Установка цвета с помощью {\bf Auto} задает систему принимаемых по умолчанию 
+цветов. Цвет рабочей среды, принимаемый по умолчанию, -- это цвет, установленный
+в опции {\bf Application Background} закладки {\bf Appearance} диалога 
+{\bf Display Properties} панели управления.
+
+Для рабочей среды можно использовать как цельные, так и смешанные цвета.
+
+Изменения, произведенные с этим цветом, немедленно отображаются в шаблонном 
+окне в правой части диалога.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{Windows}
+\else
+\subsection{Окна}
+\fi
+\public{COLOR\_WINDOWS\_DIALOG}
+
+\ifenglish
+This page contains two \ref[Color Box]{ColorBoxes} that allow setting
+colors for all windows in the IDE. Any particular kind of window can override
+these settings.
+
+See \ref{AutoColor} to know how these settings affect resulting colors and
+what happens if they are set to {\bf Auto}.
+
+Only solid colors are allowed here.
+
+Changes made for these colors are immediately reflected in sample
+windows in the right part of the dialog.
+
+\else
+Эта страница содержит две \ref[таблицы выбора цвета]{ColorBoxes}, которые 
+позволяют устанавливать цвета всех окон IDE. Установки для любого особенного 
+типа окна могут подавить эти изменения.
+
+Посмотрите сведения по \ref{AutoColor} чтобы понять, как эти установки влияют 
+на получающиеся в результате цвета, и что происходит, если они заданы как {\bf Auto}.
+
+Здесь доступны только цельные цвета.
+
+Изменения, произведенные с этими цветами, немедленно отображаются в шаблонных 
+окнах в правой части диалога.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{Editor}
+\else
+\subsection{Редактор}
+\fi
+\public{COLOR\_EDIT\_DIALOG}
+
+\ifenglish
+This page allows setting colors for editor windows. Setting colors is based
+on \ref[programming languages]{Languages}. You select language in the {\bf Language}
+box, then you select syntax element you wish to set colors to in {\bf Syntax element}
+box. After that you can select six colors for this element:
+\else
+Эта страница позволяет устанавливать цвета для окон редактирования. Установка
+цветов основывается на \ref[языках программирования]{Languages}. Вы выбираете
+язык в списке {\bf Language}, затем выбираете элемент синтаксиса, для которого 
+хотите задать цвет в списке {\bf Syntax element}. После этого вы можете выбрать
+для этого элемента шесть цветов:
+\fi
+\begin{itemize}
+\item \ifenglish
+      {\bf Background} color
+     \else
+      Цвет {\bf фона}
+      \fi
+\item \ifenglish
+      {\bf Text} color
+     \else
+      Цвет {\bf текста}
+      \fi
+\item \ifenglish
+      {\bf Selection} color (background color of text in editor block)
+    \else
+      Цвет {\bf блока отметки} (цвет фона в блоке редактирования)
+     \fi
+\item \ifenglish
+      {\bf Selected text} color (foreground color of text in editor block)
+      \else
+      Цвет {\bf отмеченного текста} (цвет текста в блоке редактирования)
+      \fi
+\item \ifenglish
+     {\bf Highlight} color (background color of text in a line that corresponds
+to current error or warning message)
+      \else
+      Цвет {\bf подсветки} (цвет фона текста в строке, соответсвующей текущему
+сообщению об ошибке или предупреждении) 
+      \fi
+\item \ifenglish
+      {\bf Highlighted text} color (foreground color of text in a line that corresponds
+to current error or warning message)
+      \else
+      Цвет {\bf подсвеченного текста} (цвет текста в строке, соответсвующей текущему
+сообщению об ошибке или предупреждении) 
+      \fi
+\end{itemize}
+\ifenglish
+Each of these colors may be configured in each syntax element of each language
+separately. To minimize configuration necessary to achieve good results use
+the \ref{AutoColor}.
+
+Only solid colors are allowed here.
+
+Note that instead of selecting language and syntax element in selection box you
+may activate corresponding sample window and select corresponding syntax element
+in the sample text.
+
+Sample texts for various languages are supplied by language drivers. If you
+don't have language driver for some language default sample text will be supplied
+by system. Of course, this language will have only one syntax element --
+{\bf Generic Text}.
+
+You may also set font for editor window by pressing {\bf Set Font} button.
+There is only one font you may set for all the editors. This version of editor
+doesn't support different fonts in different parts of a window or even in
+different windows.
+
+\else
+Каждый из этих цветов может быть настроен отдельно для каждого синтаксического 
+элемента каждого языка. Чтобы минимизировать объем настройки, используйте 
+\ref{AutoColor}.
+
+Здесь доступны только цельные цвета.
+
+Заметьте, что, вместо выбора языка и синтаксического элемента в списке, вы можете
+активировать соответствующее шаблонное окно и выбрать соответсвующий 
+синтаксический элемент в тексте-образце.
+
+Тексты-образцы различных языков предоставляются драйверами этих языков.
+Если у вас нет драйвера для какого-то из языков, то система сама составит текст-
+-образец. Разумеется в этом тексте будет только один синтаксичечкий элемент -- 
+{\bf Generic Text}.
+
+Вы также можете установить шрифт для окна редактирования путем нажатия кнопки
+{\bf Set Font}. Для всех редакторов можно установить только один шрифт. Данная
+версия редактора не поддерживает использование различных шрифтов в различных
+участках окна, или даже в разных окнах.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{Messages}
+\else
+\subsection{Сообщения}
+\fi
+\public{COLOR\_MESSAGES\_DIALOG}
+
+\ifenglish
+This page contains two \ref[Color Box]{ColorBoxes} that allow setting
+colors for message window in the IDE. These settings override default windows
+colors defined in {\bf Windows} page of this dialog.
+
+See \ref{AutoColor} to know details of color assignment and overriding.
+
+Only solid colors are allowed here.
+
+The font for message window can also be configured here.
+The default is {\bf System} font.
+
+Changes made for these colors and fonts are immediately reflected in sample
+message window in the right part of the dialog.
+
+\else
+Эта страница содержит две \ref[таблицы цветов]{ColorBoxes}, которые позволяют 
+устанавливать цвета для окон сообщений в IDE. Эти установки подавляют установки
+оконных цветов по умолчанию, содержащиеся в странице {\bf Windows} этого диалога.
+
+Посмотрите сведения по \ref{AutoColor}, чтобы ознакомиться с заданием
+и подавлением цветов подробнее.
+ 
+Здесь доступны только цельные цвета.
+
+Здесь также можно настроить шрифт окна сообщений. По умолчанию
+задается шрифт {\bf System}.
+
+Изменения, производимые с этими цветами и шрифтами немедленно отображаются в 
+шаблонном окне в правой части диалога.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{File list}
+\else
+\subsection{Список файлов}
+\fi
+\public{COLOR\_FLIST\_DIALOG}
+
+\ifenglish
+This page contains two \ref[Color Box]{ColorBoxes} that allow setting
+colors for file list window in the IDE. These settings override default windows
+colors defined in {\bf Windows} page of this dialog.
+
+See \ref{AutoColor} to know details of color assignment and overriding.
+
+Only solid colors are allowed here. The colors defined here apply also for
+search results windows.
+
+The font for file list window can also be configured here.
+The default is {\bf System} font.
+
+Changes made for these colors and fonts are immediately reflected in sample
+file list window in the right part of the dialog.
+
+\else
+Эта страница содержит две \ref[таблицы выбора цвета]{ColorBoxes}, которые 
+позволяют устанавливать цвета для окон списков файлов IDE. Эти установки 
+подавляют установки оконных цветов по умолчанию, 
+содержащиеся на странице {\bf Windows} этого диалога.
+
+Посмотрите сведения по \ref{AutoColor} чтобы ознакомиться с заданием
+и подавлением цветов подробнее.
+ 
+Здесь доступны только цельные цвета.
+
+Здесь также можно настроить шрифт окна списка файлов. По умолчанию
+задается шрифт {\bf System}.                                 
+
+Изменения, производимые с этими цветами и шрифтами, немедленно отображаются в 
+шаблонном окне в правой части диалога.
+\fi
+%===========================================================================
+\ifenglish
+\subsection{Color Boxes}
+\else
+\subsection{Таблицы выбора цвета}
+\fi
+\public{ColorBoxes}
+
+\ifenglish
+Color box control is the drop-down list filled with colors. It contains 16 basic
+colors such as green, blue, magenta etc. It also contains {\bf Custom} element.
+Selecting this element invokes the standard Color selection dialog. After the
+color is selected the control will show current selection as "Custom" and it
+will be filled with selected color.
+
+The control also contains {\bf Auto} element. Selecting this element assigns
+default color to the element whose color is selected. {\bf Auto} is the
+default value for all color boxes.
+
+Different elements have different default values but all have some reasonable
+defaults. If nothing is selected at all, those default values originate from
+Control Panel.
+
+The {\bf Auto} item in the color box has color that would be assigned if
+this item is selected.
+
+Note that only solid colors are available for all settings with the only
+exception of the Workspace.
+
+\else
+Контроль "таблица цветов" -- это ниспадающий список, содержащий цвета Он содержит
+16 основных цветов, таких как зеленый, синий, магента и т. д. Он также содержит 
+элемент {\bf Custom}. Выбор этого элемента вызывает стандартный диалог выбора
+цвета. После выбора цвета контроль отобразит текущую позицию цвета как "Custom"
+и заполнит ее выбранным цветом.
+
+Контроль содержит также элемент {\bf Auto}. Выбор этого элемента присваивает
+цвет по умолчанию выбранной позиции цвета. {\bf Auto} -- это значение по 
+умолчанию для всех списков цветов.
+
+Различные элементы обладают различными значениями, принятыми по умолчанию, но
+все эти значения обоснованы. Если цвет не выбран, то эти значения по умолчанию 
+соответствуют установкам, заданным на панели управления.
+
+Пункт {\bf Auto} списка цветов имеет цвет, который будет задан при выборе этого 
+пункта.
+
+Заметьте, что только цельные цвета доступны для всех установок, за исключением 
+рабочей среды.
+\fi
+%---------------------------------------------------------------------------
+\ifenglish
+\subsection{Auto Color Assignment}
+\else
+\subsection{Автоматическое задание цвета}
+\fi
+\public{AutoColor}
+
+\ifenglish
+The following rules are used to determine colors for the elements in the IDE
+for which colors are not set explicitly:
+
+\else
+Следующие правила используются чтобы определять цвета элементов IDE, для которых 
+цвета явно не заданы:
+\fi
+\ifenglish
+{\bf The Workspace} color, if set to {\bf Auto}, is the color that is 
+set for {\bf Application Background} item in the {\bf Appearance} tab.
+
+\else
+Цвет {\bf The Workspace}, установленный в {\bf Auto} есть цвет установленный 
+в пункте {\bf Application Background} закладки {\bf Appearance}.
+\fi
+\ifenglish
+{\bf The Messages Window} color, if set to {\bf Auto}, is the color that
+is set for all windows in {\bf Windows} page. This applies to both
+foreground and background colors.
+
+{\bf The File Lists Window} color, if set to {\bf Auto}, is the color that
+is set for all windows in {\bf Windows} page. This applies to both
+foreground and background colors.
+
+{\bf The color of some syntax element of some language}, if set to {\bf Auto},
+is the color set for the {\bf Generic Text} element for this language. This applies
+to background, text, selection and selected text colors.
+
+\else
+Цвет {\bf The Messages Window}, установленный в {\bf Auto}, есть цвет, 
+установленный для всех окон в странице {\bf Windows}. Это касается как цвета 
+фона, так и цвета текста.
+
+Цвет {\bf The File Lists Window}, установленный в {\bf Auto}, есть цвет, 
+установленный для всех окон в странице {\bf Windows}. Это касается как цвета 
+фона, так и цвета текста.
+
+{\bf Цвет некоторого синтаксического элемента некоторого языка}, установленный 
+в {\bf Auto}, есть цвет, установленный для элемента {\bf Generic Text} этого 
+языка. Это касается цветов фона, текста, отметки и отмеченного текста.
+\fi
+\ifenglish
+{\bf The highlight color} of some syntax element of some language,
+if set to {\bf Auto} is calculated by following rule. It is set to
+highlight color of {\bf Generic Text} element of the current language if it is
+not set to {\bf Auto}. Otherwise it is set to {\bf Default} language highlight
+color if it is not set to {\bf Auto}. Otherwise the color is set to 
+the enlightened color of selection for the same
+element of the same language. Enlightening is achieved by adding 128 to
+color's red, green and blue component with the only exception:
+white color, when enlightened, is set to light gray (192, 192, 192).
+
+\else
+{\bf Цвет высвечивания} некоторого синтаксического элемента некоторого языка, 
+установленный в {\bf Auto}, вычисляется по следующему правилу. Он совпадает с 
+цветом элемента {\bf Generic Text} текущего языка, если тот не установлен в 
+{\bf Auto}. Иначе он совпадает с цветом высвечивания языка {\bf Default}, если
+тот не установлен в {\bf Auto}. Иначе цвет принимает значение, равное 
+осветленному тексту отметки этого же элемента этого же языка. Осветление 
+достигается путем увеличения красной, зеленой и синей компонент цвета на 128,
+за одним исключением -- осветленный белый становится светло-серым (192, 192, 192).
+\fi
+\ifenglish
+{\bf The highlighted text color} of some syntax element of some language,
+if set to {\bf Auto} is calculated by following rule. It is set to
+highlighted text color of {\bf Generic Text} element of the current language if it is
+not set to {\bf Auto}. Otherwise it is set to {\bf Default} language highlighted text
+color if it is not set to {\bf Auto}. Otherwise the color is set to
+the normal text color of the same
+element of the same language.
+
+{\bf The Generic Text element of some language} color, if set to {\bf Auto},
+is the color set for the {\bf Default} language.  This applies
+to background, text, selection, selected text, highlight and highlighted text
+colors.
+
+\else
+{\bfЦвет высвеченного текста} некоторого синтаксического элемента некоторого
+языка, установленный в {\bf Auto}, вычисляется по следующему правилу. Он совпадает
+с цветом высвеченного текста элемента {\bf Generic Text} текущего языка, если тот
+не установлен в {\bf Auto}. Иначе он совпадает с цветом высвеченного текста языка
+{\bf Default}, если тот не установлен в {\bf Auto}. Иначе цвет принимает значение
+цвета обычного текста этого же элемента этого же языка.
+
+{\bf Элемент Generic Text некоторого языка}, установленный в {\bf Auto},
+есть цвет, установленный для языка {\bf Default}. Это касается цветов фона,
+текста, отметки, отмеченного текста, высветки и высвеченного текста.
+\fi
+\ifenglish
+{\bf The Default Language} color, if set to {\bf Auto},
+is the color that is set for all windows in {\bf Windows} page.
+This applies to normal text and background colors.
+
+{\bf The Default Language selection and selection text colors},
+if set to {\bf Auto}, are the colors
+set for {\bf Selected Items} item in the {\bf Appearance} tab of
+{\bf Display Properties} dialog from the Control Panel.
+
+{\bf The default windows colors}, if set to {\bf Auto}, are the colors
+set for {\bf Window} item in the {\bf Appearance} tab of
+{\bf Display Properties} dialog from the Control Panel.
+
+\else
+Цвет языка {\bf Default}, установленный в {\bf Auto}, есть цвет, установленный
+для всех окон в странице {\bf Windows}. Это касается обычных цветов текста и
+фона.
+
+{\bf Цвета отметки и отмеченного текста языка Default}, установленные в {\bf Auto}
+есть цвета, установленные в пункте {\bf Selected Items} закладки {\bf Appearance}
+диалога {\bf Display Properties} панели управления.
+
+{\bf Цвета окон, задаваемые по умолчанию}, установленные в {\bf Auto}, есть цвета,
+установленные в пункте {\bf Window} закладки {\bf Appearance}
+диалога {\bf Display Properties} панели управления.
+\fi
+%===========================================================================
+
+\begin{popup}
+\caption{Apply}
+\public{COLOR\_APPLY}
+
+\ifenglish
+Select the {\bf Apply} pushbutton to apply the changes you've made to
+font and color settings to IDE windows without dismissing the dialog.
+
+\else
+Нажмите кнопку {\bf Apply}, чтобы применить измененные вами установки
+для окон IDE, не закрывая диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{COLOR\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to confirm the changes you've made to
+color and font settings.
+
+\else
+Нажмите кнопку {\bf OK}, чтобы подтвердить произведенные вами изменения
+установок цвета и шрифта.
+\fi
+\end{popup}
+
+\begin{popup}
+\subsection{Cancel}
+\public{COLOR\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to change
+fonts and colors.
+
+\else
+Нажмите кнопку {\bf Cancel}, если решили не производить изменений установок
+цвета и шрифта.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Sample screen}
+\else
+\caption{Область шаблонных окон}
+\fi
+\public{COLOR\_SAMPLE}
+
+\ifenglish
+This area contains sample windows of three types - editor, messages, and
+project files list. You may change their position, size, and z-order in
+a regular way - using the mouse or the system menus. The system menus also
+contain commands which may be used to change the colors and font used
+in every window type.
+
+\else
+Эта область содержит шаблонные окна трех типов - редактирования, сообщений и
+списка файлов проекта. Вы можете изменять их положение и размер
+стандартным образом - используя мышь и системные меню. Системные меню содержат
+также команды, которые можно использовать, чтобы менять цвета и шрифт,
+используемые в каждом типе окна.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------------
+\begin{popup}
+\ifenglish
+\caption{Workspace color}
+\else
+\caption{Цвет рабочей среды}
+\fi
+\public{COLOR\_WORKSPACE\_BACK}
+
+\ifenglish
+Select the color for the workspace, that is, the color of a space within
+the IDE frame that is free from MDI windows.
+
+Selecting {\bf Auto} here sets the color to the default system color (the color
+set for {\bf Application Background} item in the {\bf Appearance} tab of
+{\bf Display Properties} dialog from the Control Panel)
+
+\else
+Выберите цвет для рабочей среды, то есть, цвет пространства IDE, не занятого
+MDI окнами.
+
+Здесь выбор {\bf Auto} устанавливает выбираемый системой по умолчанию цвет.
+(цвет, установленный в пункте {\bf Application Background} закладки
+{\bf Appearance} диалога {\bf Display Properties} контрольной панели).
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Background}
+\else
+\caption{Фон}
+\fi
+\public{COLOR\_WINDOWS\_BACK}
+
+\ifenglish
+Select the color for background of all windows in the IDE.
+You may override this color for particular types of windows (messages window,
+file list or editors for different languages).
+
+Selecting {\bf Auto} here sets the color to the default system color
+(the background color set for {\bf Window} item in the {\bf Appearance} page of
+{\bf Display Properties} dialog from the Control Panel)
+
+\else
+Выберите цвет фона всех окон IDE.
+Вы можете подавить этот выбор в случае отдельных типов окон
+(окон сообщений списков файлов или редакторов для различных языков).
+
+Здесь выбор {\bf Auto} устанавливает выбираемый системой по умолчанию цвет
+(цвет, установленный в пункте {\bf Application Background} закладки
+{\bf Appearance} диалога {\bf Display Properties} контрольной панели).
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Text}
+\else
+\caption{Текст}
+\fi
+\public{COLOR\_WINDOWS\_FORE}
+
+\ifenglish
+Select the color for text of all windows in the IDE.
+You may override this color for particular types of windows (messages window,
+file list or editors for different languages).
+
+Selecting {\bf Auto} here sets the color to the default system color
+(the text color set for {\bf Window} item in the {\bf Appearance} page of
+{\bf Display Properties} dialog from the Control Panel)
+
+\else
+Выберите цвет текста для всех окон IDE.
+Вы можете подавить этот выбор в случае отдельных типов окон
+(окон сообщений списков файлов или редакторов для различных языков).
+
+Здесь выбор {\bf Auto} устанавливает выбираемый системой по умолчанию цвет.
+(цвет, установленный в пункте {\bf Application Background} закладки
+{\bf Appearance} диалога {\bf Display Properties} контрольной панели).
+\fi
+\end{popup}
+%---------------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Background}
+\else
+\caption{Фон}
+\fi
+\public{COLOR\_MESSAGES\_BACK}
+
+\ifenglish
+Select the color for background of messages window.
+
+Selecting {\bf Auto} here sets the color to the default window color
+defined in {\bf Background} selection box of the {\bf Windows} page of this
+dialog.
+
+\else
+Выберите цвет фона окна сообщений.
+
+Здесь выбор {\bf Auto} устанавливает выбираемый по умолчанию цвет,
+определенный в списке {\bf Background} страницы {\bf Windows} этого диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Text}
+\else
+\caption{Текст}
+\fi
+\public{COLOR\_MESSAGES\_FORE}
+
+\ifenglish
+Select the color for text of messages window.
+
+Selecting {\bf Auto} here sets the color to the default window text color
+defined in {\bf Text} selection box of the {\bf Windows} page of this
+dialog.
+
+\else
+Выберите цвет текста для окна сообщений.
+
+Здесь выбор {\bf Auto} устанавливает выбираемый по умолчанию цвет,
+определенный в списке {\bf Background} страницы {\bf Windows} этого диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Set Font}
+\else
+\caption{Установить шрифт}
+\fi
+\public{COLOR\_MESSAGES\_FONT}
+\ifenglish
+Set the font for messages window. The default is the {\bf System} font.
+\else
+Установите шрифт окна собщений. По умолчанию устанавливается шрифт {\bf System}.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Background}
+\else
+\caption{Фон}
+\fi
+\public{COLOR\_FLIST\_BACK}
+\ifenglish
+Select the color for background of file list window.
+
+Selecting {\bf Auto} here sets the color to the default window color
+defined in {\bf Background} selection box of the {\bf Windows} page of this
+dialog.
+
+\else
+Выберите цвет фона для окна списка файлов.
+
+Здесь выбор {\bf Auto} устанавливает выбираемый по умолчанию цвет,
+определенный в списке {\bf Background} страницы {\bf Windows} этого диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Text}
+\else
+\caption{Текст}
+\fi
+\public{COLOR\_FLIST\_FORE}
+\ifenglish
+Select the color for text of file list window.
+
+Selecting {\bf Auto} here sets the color to the default window text color
+defined in {\bf Text} selection box of the {\bf Windows} page of this
+dialog.
+\else
+
+Выберите цвет текста для окна списка файлов.
+
+Здесь выбор {\bf Auto} устанавливает выбираемый по умолчанию цвет текста,
+определенный в списке {\bf Text} страницы {\bf Windows} этого диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Set Font}
+\else
+\caption{Установить шрифт}
+\fi
+\public{COLOR\_FLIST\_FONT}
+
+\ifenglish
+Set the font for file list window. The default is the {\bf System} font.
+
+\else
+Установите шрифт для окна списка файлов. По умолчанию устанавливается шрифт
+{\bf System}.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Language}
+\else
+\caption{Язык}
+\fi
+\public{COLOR\_EDIT\_LANG}
+
+\ifenglish
+Select the language for which you wish to select colors.
+List of languages is configured by {\bf Configure Languages} dialog.
+
+Selecting {\bf Default} language allows setting of default colors values.
+These values will be applied for all windows for which the language is unknown.
+Besides, these values will be used as default values for languages elements
+that you left unspecified.
+
+\else
+Выберите язык, для которого хотите определить цвета.
+Список языков настраивается с помощью диалога {\bf Configure Languages}.
+
+Выбор языка {\bf Default} позволяет устаналивать значения цветов, выбираемые
+по умолчанию. Эти значения будут применены ко всем окнам, язык которых
+неизвестен. Кроме того, эти значения будут применяться как значения,
+используемые по умолчанию, для всех элементов языков, которые вы не определите
+сами.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Syntax elements}
+\else
+\caption{Синтаксические элементы}
+\fi
+\public{COLOR\_EDIT\_ELEM}
+
+\ifenglish
+Once you have selected a {\bf Language}, you may choose {\bf Syntax element}
+you wish to define colors to. The list of allowed elements depends on the
+languages. If {\bf Default} is selected in a language selection box this
+list is empty. Otherwise it is filled by values supplied by {\bf Language Driver}.
+Typically the elements correspond to classes of tokens in which text is
+parsed, such as identifiers, keywords, comments, etc.
+
+The first element is always {\bf "Generic text"}. It corresponds to the text
+that doesn't belong to any known syntax element. The formatting you define
+for this element becomes default for all other syntax elements and applies
+to them unless you explicitly override it.
+
+\else
+Определив {\bf Язык} вы можете выбрать {\bf Синтаксический элемент} для,
+которого вы хотите определить цвета. Список доступных элементов зависит от
+языка. Если в списке выбора языка выбран язык {\bf Default}, то этот список пуст.
+Иначе он заполнен значениями, поставляемыми {\bf Драйвером языка}. Обычно элементы
+соответствуют классам лексем, на которые разбивается язык, таким как
+идентификаторы, ключевые слова, комментарии и т. д.
+
+Первый элемент -- это всегда {\bf "Generic text"}. Он соответствует тексту,
+который не принадлежит ни одному известному синтаксическому элементу.
+Формат, который вы определите для этого элемента, станет принимаемым по
+умолчанию для всех остальных синтаксических элементов, и применяется к ним,
+если вы явно его для них не перезададите.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Background}
+\else
+\caption{Фон}
+\fi
+\public{COLOR\_EDIT\_BACK}
+
+\ifenglish
+Select background color for currently selected syntax element of currently selected
+language.
+
+\else
+Выберите цвет фона для выбранного в настоящий момент синтаксического элемента
+текущего языка.
+\fi
+\ifenglish
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+
+\else
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета
+Значение принимаемое по умолчанию это:
+\fi
+\begin{itemize}
+\item 
+ 
+ \ifenglish
+ the background color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет фона элемента {\bf Generic text} текущего языка, если он задан
+ отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+
+ \ifenglish
+ the background color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет фона для языка {\bf Default}, если он задан отличным от {\bf Auto}
+ значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the background color specified in {\bf Windows} page of a dialog
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет фона, определенный страницей {\bf Windows} диалога, если он
+ задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the system default window color defined in Control Panel
+ \else
+ принимаемый системой по умолчанию цвет, определенный в панели упраления
+ \fi
+\end{itemize}
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Text}
+\else
+\caption{Текст}
+\fi
+\public{COLOR\_EDIT\_FORE}
+
+\ifenglish
+Select text color for currently selected syntax element of currently selected
+language.
+\else
+Выберите цвет текста для выбранного в настоящий момент синтаксического элемента
+текущего языка.
+\fi
+
+\ifenglish
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+\else
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета.
+Значение принимаемое по умолчанию это:
+\fi
+\begin{itemize}
+\item 
+ \ifenglish
+ the text color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет текста элемента {\bf Generic text} текущего языка, если он задан
+ отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the text color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+  цвет фона для языка {\bf Default}, если он задан отличным от {\bf Auto}
+ значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the text color specified in {\bf Windows} page of a dialog
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет фона, определенный страницей {\bf Windows} диалога, если он
+ задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the system default window text color defined in Control Panel
+ \else
+ принимаемый системой по умолчанию цвет, определенный в панели упраления
+ \fi
+\end{itemize}
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Selection}
+\else
+\caption{Отметка}
+\fi
+\public{COLOR\_EDIT\_SELBACK}
+
+\ifenglish
+Set background color for currently selected syntax element of currently selected
+language when it appears within the editor block.
+\else
+Установите цвет фона отмеченого в данный момент синтаксического элемента
+текущего языка, когда он появится в области редактирования.
+\fi
+\ifenglish
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+
+\else
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета.
+Значение, принимаемое по умолчанию это: 
+\fi
+
+\begin{itemize}
+\item 
+ \ifenglish
+ the selection color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет отметки элемента {\bf Generic text} текущего языка, если он задан
+  отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the selection color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ цвет отметки для языка {\bf Default}, если он задан отличным от {\bf Auto}
+ значением, иначе
+ \fi
+\item 
+ \ifenglish
+the system default {\bf Selected Items} background color defined
+in Control Panel
+  \else
+  принимаемый системой по умолчанию цвет  {\bf Selected Items},
+  определенный в панели упраления
+  \fi
+\end{itemize}
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Selected text}
+\else
+\caption{Отмеченный текст}
+\fi
+\public{COLOR\_EDIT\_SELFORE}
+
+\ifenglish
+Set text color for currently selected syntax element of currently selected
+language when it appears within the editor block.
+
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+
+\begin{itemize}
+\item the selected text color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+\item the selected text color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+\item the system default {\bf Selected Items} text color defined
+in Control Panel
+\end{itemize}
+
+\else
+Установите цвет текста выбранного в данный момент синтаксического элемента
+текущего языка, когда он появится в области редактирования.
+
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета.
+Значение принимаемое по умолчанию это:
+
+\begin{itemize}
+\item
+ цвет отмеченного текста элемента {\bf Generic text} текущего языка, если он задан
+ отличным от {\bf Auto} значением, иначе
+\item
+ цвет отмеченного текста для языка {\bf Default}, если он задан отличным от {\bf Auto}
+ значением, иначе
+\item
+  принимаемый системой по умолчанию цвет  {\bf Selected Items},
+  определенный в панели упраления
+
+\end{itemize}
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Highlight}
+\else
+\caption{Подсветка}
+\fi
+\public{COLOR\_EDIT\_HIGHBACK}
+
+\ifenglish
+Set background color for currently selected syntax element of currently selected
+language when it appears within the editor highlighted line.
+A line with current error is highlighted when the error is selected in the
+messages window.
+
+\else
+Установите цвет фона для выбранного в настоящий момент синтаксического элемента,
+когда он появляется внутри строки подсветки редактора.
+Строка, содержащая текущую ошибку, высвечивается, когда ошибка выбрана в окне
+сообщений.
+\fi
+\ifenglish
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+
+\else
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета.
+Значение принимаемое по умолчанию это:
+\fi
+\begin{itemize}
+\item 
+ \ifenglish
+ the highlight color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ Цвет высвечивания для элемента {\bf Generic text} текущего языка, если он
+ задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the highlight color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+ Цвет высвечивания языка {\bf Default}, если он
+ задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the enlightened color of selection set for current syntax element for
+current language.
+ \else
+ осветленный цвет отметки, установленный для текущего синтаксического
+ элемента текущего языка.
+  \fi
+ \ifenglish
+The color is enlightened by adding some values for its red,
+green and blue components.
+ \else
+ Осветление цвета происходит путем увеличивания на определенное значение
+ его красной, зеленой и синей компонент.
+ \fi
+\end{itemize}
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Hihlighted text}
+\else
+\caption{Подсвеченный текст}
+\fi
+\public{COLOR\_EDIT\_HIGHFORE}
+
+\ifenglish
+Set text color for currently selected syntax element of currently selected
+language when it appears within the editor highlighted line.
+A line with current error is highlighted when the error is selected in the
+messages window.
+
+\else
+Установите цвет текста для выбранного в настоящий момент синтаксического элемента,
+когда он появляется внутри строки подсветки редактора.
+Строка, содержащая текущую ошибку, высвечивается, когда ошибка выбрана в окне
+сообщений.
+\fi
+\ifenglish
+Selecting {\bf Auto} value here sets the default value for the color. The default
+value is:
+
+\else
+Здесь выбор {\bf Auto} устанавливает принимаемое по умолчанию значение цвета
+Значение принимаемое по умолчанию это:
+\fi
+\begin{itemize}
+\item 
+ \ifenglish
+ the highlight text color for {\bf Generic text} element for current language
+ if it is set  to value other than {\bf Auto}, otherwise
+\else
+  Цвет высвеченного текста для элемента {\bf Generic text} текущего языка, если он
+ задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the highlight text color for {\bf Default} language
+ if it is set  to value other than {\bf Auto}, otherwise
+ \else
+  Цвет высвеченного текста языка {\bf Default}, если он
+  задан отличным от {\bf Auto} значением, иначе
+ \fi
+\item 
+ \ifenglish
+ the normal text color for current syntax element for current language.
+ \else
+ обычный цвет текста текущего синтаксического элемента текущего языка.
+ \fi
+\end{itemize}
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Set Font}
+\else
+\caption{Установить шрифт}
+\fi
+\public{COLOR\_EDIT\_FONT}
+\ifenglish
+Select font for all edit windows using standard font selection dialog.
+Only fixed-pitch fonts are available. The default is the system fixed font
+(usually {\bf FixedSys}).
+
+In current version of the editor font can only be selected for all windows
+at once.
+
+\else
+Выберите шрифт для всех окон редактирования, используя стандартный диалог
+выбора шрифта. Доступны только моноширинные шрифты. По умолчанию устанавливается 
+системный шрифт (обычно {\bf FixedSys}).
+
+В настоящей версии редактора шрифт может быть выбран только для всех окон сразу.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------------
+

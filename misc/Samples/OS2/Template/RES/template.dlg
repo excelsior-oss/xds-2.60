@@ -1,0 +1,20 @@
+DLGINCLUDE 1 "dlgres.h"
+
+DLGTEMPLATE IDD_PRODUCTINFO LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Product information", IDD_PRODUCTINFO, 9, 3, 276, 137, 
+            FS_NOBYTEALIGN | WS_VISIBLE, FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+        CONTROL         IDR_BITMAP, IDC_BITMAP, 111, 84, 21, 21, WC_STATIC, 
+                        SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CTEXT           "(C) Copyright xTech Ltd. 1996. All Rights reserved.", 
+                        1002, 8, 64, 255, 8
+        CTEXT           "(C) Copyright IBM Corporation 1993. All Rights rese"
+                        "rved.", 256, 7, 54, 255, 8
+        CTEXT           "OS/2 is a registered trademark of", 258, 7, 44, 255, 
+                        8
+        CTEXT           "International Business Machines Corp.", 257, 7, 34, 
+                        255, 8
+        DEFPUSHBUTTON   "OK", IDC_OK, 111, 8, 45, 15
+    END
+END

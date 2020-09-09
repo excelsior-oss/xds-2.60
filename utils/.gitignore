@@ -1,0 +1,17 @@
+/*/.project
+/*/.settings/
+
+/*/ch/
+/*/log/
+/*/sym/
+/*/Tmp/
+
+/*/*.exe
+
+/*/*.exe
+/*/*.dll
+/*/*.lib
+/*/*.pdb
+/*/*.ilk
+/*/*.bsc
+/*/*.exp

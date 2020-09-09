@@ -1,0 +1,3 @@
+/.env-*.bsc
+
+!/.env-COMPUTERNAME.bsc

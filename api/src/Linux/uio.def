@@ -1,0 +1,26 @@
+(* Copyright (c) Excelsior 2005.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE ["C"] uio; (* Jek *)
+
+FROM SYSTEM IMPORT ADDRESS;
+
+FROM types IMPORT size_t, ssize_t;
+
+
+TYPE
+  iovec = RECORD
+    iov_base :ADDRESS;   -- Starting address
+    iov_len  :size_t;    -- Length in bytes  
+  END;
+
+  p_iovec = POINTER TO iovec;
+
+       
+PROCEDURE readv  (fd :INTEGER; vector :p_iovec; count :INTEGER): ssize_t;
+PROCEDURE writev (fd :INTEGER; vector :p_iovec; count :INTEGER): ssize_t;
+
+END uio.

@@ -1,0 +1,262 @@
+\ifenglish
+\section{Tools}
+\else
+\section{Утилиты}
+\fi
+\public{Tools}
+\nominitoc
+
+\ifenglish
+{\em Tools} are external programs, such as an XDS compiler, which you
+may quickly invoke from within the IDE. Use the \ref[Configure Tools]{CFGTOOLS\_DIALOG}
+dialog that is displayed by selecting
+\ref[Configure]{M\_CONFIGURE}:\ref[Tools]{IDM\_CONFIGURETOOLS} menu
+to add and remove tools and to modify their settings.
+\else
+{\em Утилиты} -- это внешние программы, вроде XDS-компилятора, которые вы
+можете быстро вызвать в IDE. Используйте диалог \ref[Configure Tools]{CFGTOOLS\_DIALOG},
+который выводится посредством меню \ref[Configure]{M\_CONFIGURE}:\ref[Tools]{IDM\_CONFIGURETOOLS},
+чтобы добавлять, удалять утилиты и менять их установки.
+\fi
+\ifenglish
+Each tool have unique name that identifies it.
+There are nine {\em predefined} tools which can not be removed:
+{\bf Compile}, {\bf Compile\_NoProj}, {\bf Make}, {\bf Make\_NoProj},
+{\bf Build}, {\bf Build\_NoProj}, {\bf MakeList}, {\bf MakeList\_NoProj},
+and {\bf Debug}.
+
+Tools may have items in \ref[Tools]{M\_TOOLS} menu and keyboard shortcuts
+associated with them.
+Predefined tools may also have toolbar buttons.
+\else
+Каждая утилита имеет уникальное имя, которое ее идентифицирует.
+Девять {\em стандартных} утилит нельзя удалять: 
+{\bf Compile}, {\bf Compile\_NoProj}, {\bf Make}, {\bf Make\_NoProj},
+{\bf Build}, {\bf Build\_NoProj}, {\bf MakeList}, {\bf MakeList\_NoProj},
+и {\bf Debug}.
+\fi
+
+\ifenglish
+Tools may be configured to be enabled:
+\else
+Утилиты можно настроить так, что они будут действовать:
+\fi
+\begin{itemize}
+\item \ifenglish
+      permanently
+      \else
+      постоянно
+      \fi
+\item \ifenglish
+      when some project is opened
+      \else
+      когда открыт какой-нибудь проект
+      \fi
+\item \ifenglish
+      when current window is edit window
+      \else
+      когда текущее окно -- это окно редактирования
+      \fi
+\item \ifenglish
+      when current window is edit window and file of specific type is loaded in it
+      \else
+      когда текущее окно -- это окно редактирования, и в него загружен файл 
+      особенного типа
+      \fi
+\end{itemize}
+
+\ifenglish
+Tools are invoked on basis of {\bf Category} property. Category is a text string
+defined for each tool. Several tools may share one category. When some tool
+is invoked its category is first looked up. All tools with this category are
+checked. The first enabled tool is actually invoked.
+
+\else
+Утилиты вызываются на основе свойства {\bf Category}. Категория -- это текстовая
+строка, определенная для каждой утилиты. К одной категории можно относить несколько 
+утилит. Когда запускается некоторая утилита, в первую очередь проверяется ее 
+категория. Просматриваются все утилиты этой категории, запускается первая 
+годная к употреблению. 
+\fi
+\ifenglish
+Since tools are searched in top-down order it is reasonable to place the
+most specific tool first and the most general last. For example, if tool {\bf A}
+requires file with extension {\bf .mod}, tool {\bf B} works on files with
+extensions {\bf .ob2}, tool {\bf C} on any files, tool {\bf D} doesn't require
+file at all, just needs a project, and tool {\bf E} doesn't need even project,
+it is reasonable to order tools like this:
+
+\else
+Поскольку поиск утилит происходит в нисходящем порядке, разумно помещать 
+наиболее специфические утилиты первыми, а наиболее общие -- последними.
+Например, если утилита {\bf A} требует файл с расширением {\bf .mod}, утилита
+{\bf B} работает с файлами с расширениями{ \bf .ob2}, утилита {\bf C} -- 
+с любыми файлами, утилите {\bf D} файлы вовсе не нужны, нужен только проект, 
+а утилите {\bf E} не нужен даже проект, то имеет смысл упорядочить утилиты 
+так:
+\fi
+ {\bf A B C D E F}
+
+\ifenglish
+or like this:
+\else
+или так:
+\fi
+ {\bf B A C D E F}
+
+\ifenglish
+Note that invocation of any tool with given category actually invokes the
+first enabled tool. There is no way to invoke specific tool. If all the
+tools in a category have keyboard shortcut, all the shortcuts will work
+the same way (invoke first enabled tool).
+
+The inclusion of tools into \ref[Tools]{M\_TOOLS} menu is also controlled by their
+category. Each tool may have two strings associated with it: menu string for
+enabled and disabled state. If any of the tools with given category is enabled
+its enabled menu string (if it has any) is included into {\bf Tools} menu.
+If no tool is enabled, first tool's disabled menu string (if it has any) is
+included into {\bf Tools} menu in the grayed state. So at any given time no
+more than one menu item exist for each category.
+
+\else
+Заметьте, что вызов любой утилиты данной категории на самом деле вызывает 
+первую разрешенную к использованию утилиту. Способа запустить определенную утилиту не 
+существует. Если всем утилитам в категории сопоставлена комбинация клавиш,
+все комбинации будут действовать одинаково (запустят первую годную к 
+употреблению утилиту).
+
+Включение утилит в меню \ref[Tools]{M\_TOOLS} также управляется их категорией.
+С каждой утилитой можно ассоциировать две строчки: строчку меню для 
+действительного и недействительного состояний. Если какая-то из утилит данной
+категории разрешена к использованию, в меню {\bf Tools} включается относящаяся к 
+ней строчка дейсвительного состояния (если такая имеется). Если разрешенных к 
+использованию утилит нет, то в меню {\bf Tools} включается относящаяся к 
+первой утилите серая строчка недейсвительного состояния. Таким образом, в 
+данный момент для каждой категории существует не более одного пункта меню.
+\fi
+\ifenglish
+This procedure allows polymorphic menu. Consider three tools, {\bf Ob2Compiler},
+{\bf Assembler} and {\bf Compiler}. Let {\bf Ob2Compiler} work on {\bf .ob2} files,
+{\bf Assembler} on {\bf .asm} files and {\bf Compiler} on any files. Then we can assign
+string
+
+\verb'Compile module $(filename)'
+
+to Ob2Compiler, string
+
+\verb'Assemble $(file)'
+
+to Assembler and
+
+\verb'Compile file $(file)'
+
+to Compiler. Now active menu item will show what exactly will happen if we
+select it.
+
+\else
+Эта процедура допускает полиморфное меню. Возьмем три утилиты, {\bf Ob2Compiler},
+{\bf Assembler} и {\bf Compiler}. Пусть {\bf Ob2Compiler} работает с файлами 
+{\bf .ob2}, {\bf Assembler} с {\bf .asm} файлами, и {\bf Compiler} с любыми
+файлами. Тогда мы можем сопоставить строчку
+
+\verb'Compile module $(filename)'
+
+утилите Ob2Compiler, строчку 
+
+\verb'Assemble $(file)'
+
+утилите Assembler и 
+
+утилите Compiler. Теперь активный пункт меню покажет что в точности случится,
+если его выбрать.
+\fi
+\ifenglish
+Presence of two menu string may seem strange and unnecessary. But consider
+{\bf Make} tool that has
+
+\verb'Make $(projwholename)'
+
+as active menu item and
+
+\verb'Make current project'
+
+as inactive menu item. When the project is not opened the menu item is
+visible as {\bf Make current project} not as just {\bf Make}.
+
+\else
+Присутствие двух строчек меню может показаться странным и ненужным. Но 
+рассмотрим утилиту {\bf Make} для которой 
+
+\verb'Make $(projwholename)'
+
+-- активный пункт меню, а 
+
+\verb'Make current project'
+
+-- неактивный пункт. Когда проект не открыт, этот пункт меню отображается
+как {\bf Make current project} а не просто как  {\bf Make}.
+\fi
+\ifenglish
+All standard tools (with exceptions of {\bf Debug}) have a companion that is
+defined in the same way as original tool but doesn't require open project
+to work. Tool search order leads to main tool being invoked when there is
+a project opened and the companion to be invoked otherwise. The companion has
+the same category as main tool and the same name with addition of suffix
+{\bf \_NoProj}.
+
+{\bf Debug} is specific tool. Most of the options are not applicable to debug tool.
+You can't specify if it requires a project or a file. Debug tool is invoked from
+\ref[Debug]{M\_DEBUG} menu, not from \ref[Tools]{M\_TOOLS} menu. But still
+debugger is considered a tool and configured where all the tools are.
+
+\else
+Все стандартные утилиты (за исключением {\bf Debug}) имеют спутника, который 
+определяется так же, как и первоначальная, но не требует для работы открытого 
+проекта. Процедура поиска утилиты приводит к вызову главной утилиты, когда 
+открыт проект, и к вызову спутника -- в противном случае. Спутник относится к 
+той же категории, что и главная утилита, и имеет то же имя с добавлением 
+суффикса {\bf \_NoProj}.
+
+{\bf Debug} -- особенная утилита. Большинство опций неприменимо к утилите отладки. 
+Нельзя указать, нуждается ли она в проекте или в файле. Утилита отладки 
+вызывается посредством меню \ref[Debug]{M\_DEBUG}, а не \ref[Tools]{M\_TOOLS}.
+Но все же отладчик считается утилитой и настраивается там же, где все утилиты.
+\fi
+\ifenglish
+For each tool you can configure starting directory. For most tools it is usually
+project directory, for tools that run without project - current file directory.
+
+You may use \ref{variables} when defining tools command lines and directories.
+That allows these to depend on current project and file.
+
+\else
+Для каждой утилиты вы можете указывать директорию запуска. Для большинства утилит
+это обычно директория проекта, для утилит, запускаемых без проекта, -- директория
+текущего файла. 
+
+При оределении командных строк и директорий утилит вы можете использовать 
+\ref[переменные]{variables}. Это позволяет делать их зависимыми от текущего 
+проекта и файла.
+\fi
+\ifenglish
+Tools can be run in two modes: in their own window and in pop-up window. The latter
+is reasonable if the tool has the ability to send progress information to the IDE.
+The interface is provided ({\bf xShell} module) that allows all custom-written
+tools to send error messages to the shell and to display progress on
+the progress indicator.
+
+If a tool doesn't use the interface it still can supply IDE with error and warning messages.
+That requires parsing of its standard output. \ref{MessageFilters} are introduced for
+this purpose.
+
+\else
+Утилиты могут запускаться в двух режимах: в своем собственном окне и во всплывающем.
+Последний режим имеет смысл если утилита способна передавать IDE сведения о
+ходе работы. Предоставляется интерфейс (модуль {\bf xShell}), который позволяет
+всем заказным утилитам посылать оболочке сообщения об ошибках и отображать 
+сведения о ходе работы.
+
+Если утилита не использует этот интерфейс, она все же может передавать IDE сообщения
+об ошибках и предупреждениях. Для этого требуется проанализировать ее стандартный
+вывод. Для этой цели служат \ref[фильтры сообщений]{MessageFilters}.
+\fi

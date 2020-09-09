@@ -1,0 +1,14 @@
+WriteInit ALIAS gosub,O,Write
+          RETURN
+
+Registers MODE PAK-
+          PRINT "\nÚÄÄÄÄÄÄÄÄ Registers ÄÄÄÄÄÄÄÄÄ¿\n³\t\t\t     ³"
+          PRINT "³ EAX %$8X  EBX %$8X ³",@EAX,@EBX
+          PRINT "³ ECX %$8X  EDX %$8X ³",@ECX,@EDX
+          PRINT "³ ESI %$8X  EDI %$8X ³",@ESI,@EDI
+          PRINT "³ EBP %$8X  ESP %$8X ³",@EBP,@ESP
+          PRINT "³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³"
+          PRINT "³ EIP %$8X  EFL %$8X ³",@EIP,@EFL
+          PRINT "ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ\n"
+          MODE PAK+
+          RETURN

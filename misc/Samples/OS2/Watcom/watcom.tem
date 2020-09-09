@@ -1,0 +1,38 @@
+! "MAKEFILE\t= %s\n",mkfname#>mkfext
+TARGET=cmain.exe
+!if gendebug then
+  !"CFLAGS=-mf -3s -d2 -hc\n"
+!else
+  !"CFLAGS=-mf -3s\n"
+!end
+CMDFILE=cdemo.mki
+! "XDSLIB=%s\n","libxds"#"lib"
+! "\n"
+# ============ OBJ enumeration ==============
+! "\n"
+! "OBJ=\n"
+! { imp oberon c : "OBJ = $+$(OBJ)$- %s\n",#>objext }
+! "\n"
+# ============ target make rules ============
+! "\n"
+$(TARGET) : $(MAKEFILE) $(OBJ)
+! "\t@%write  $(CMDFILE) sys os2v2\n"
+! "\t@%append $(CMDFILE) op case\n"
+! "\t@%append $(CMDFILE) op el\n"
+! "\t@%append $(CMDFILE) op stack=%s\n",stacklimit
+! "\t@%append $(CMDFILE) debug codeview\n"
+! { main imp oberon c : "\t@%append $(CMDFILE) file %s\n",#>objext }
+! "\t@%append $(CMDFILE) name $(TARGET)\n"
+! "\t@%append $(CMDFILE) lib clib3s.lib\n"
+! "\t@%append $(CMDFILE) lib os2386.lib\n"
+! "\t@%append $(CMDFILE) lib $(XDSLIB)\n"
+! "\t@wlink @$(CMDFILE)\n"
+! "\t@del $(CMDFILE)\n"
+!if gendebug then
+  ! "\tcvpack $(TARGET)\n"
+!end
+! "\n"
+# ========= Dependency information ==========
+! "\n"
+! { c : "%s : $(MAKEFILE)",#>objext; " %s\n\t",#code; \
+  "wcc386 $(CFLAGS) %s",#code; " -fo=%s\n",#>objext; "\n" }

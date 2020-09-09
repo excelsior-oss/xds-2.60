@@ -1,0 +1,21 @@
+<* + M2EXTENSIONS *>
+
+DEFINITION MODULE ["StdCall"] resource;
+CONST
+       IDC_FIELD     = 1000;
+       IDC_DRAW      = 1001;
+       IDC_PLAY      = 1002;
+       IDC_HOME      = 1005;
+       IDC_SOLVE     = 1006;
+       IDC_CLEAR     = 1007;
+       IDC_SOLUTIONS = 1008;
+       IDC_TIME      = 1009;
+       IDC_STOP      = 1010;
+       IDC_SCROLL    = 1011;
+       IDC_CURSOL    = 1013;
+       IDC_CLOSE     = 1014;
+       IDC_READ      = 1015;
+       IDC_WRITE     = 1016;
+
+END resource.
+

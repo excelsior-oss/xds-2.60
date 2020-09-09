@@ -1,0 +1,31 @@
+ PRINT "--- Example 5 ---"
+
+;---------------------------------------------------------------
+ GOSUB Pause              По умолчанию Pause=FALSE
+
+;---------------------------------------------------------------
+ ALIAS Pause,S,TRUE       Пусть Pause=TRUE
+ GOSUB Pause              Теперь будет пауза
+  
+;---------------------------------------------------------------
+ ALIAS Pause,S,TRUE       Пусть опять Pause=TRUE
+ ALIAS PauseDelay,S,10    Но теперь только 10 секунд
+ GOSUB Pause              Теперь будет пауза 10 секунд
+
+ QUIT    
+         
+
+Pause      SIGNAL +176,EndPause
+           IF Pause THEN DoPause
+           GOTO EndPause
+DoPause    SIGNAL -176
+           SIGNAL +176,PauseInf
+           IF PauseDelay>0 THEN PauseDelay
+PauseInf   PAUSE
+           GOTO EndPause            
+PauseDelay PAUSE PauseDelay
+EndPause   SIGNAL -176
+           RETURN    
+
+
+           

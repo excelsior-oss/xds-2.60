@@ -1,0 +1,5595 @@
+
+\newcommand{\Class}[1]{
+  \section{Class \CurClass}
+  \ifonline
+    \public{\CurClass}
+  \fi
+  \label{class:\CurClass}
+  \index{\CurClass}
+  \index{Classes!\CurClass}
+}
+
+\newcommand{\Method}[1]{
+  \subsubsection{#1}
+  \ifonline
+    \public{\CurClass.#1}
+  \fi
+  \label{class:\CurClass:#1}
+  \index{\CurClass!#1}
+}
+
+\newcommand{\Variable}[1]{
+  \subsubsection{#1}
+  \label{class:\CurClass:#1}
+  \index{\CurClass!#1}
+  {\tt #1}
+}
+
+\newcommand{\ClassRef}[1]{\ref[#1]{class:#1}}
+\newcommand{\MethodRef}[2]{\ref[#2]{class:#1:#2}}
+\newcommand{\MyMethodRef}[1]{\ref[#1]{class:\CurClass:#1}}
+
+\newcommand{\Var}[1]{\item[{\bf #1}]}
+
+\newcommand{\MIitem}[2]{\item[{\bf \ref{class:\CurClass:#1}}#2]}
+\newcommand{\VIitem}[1]{\item[{\bf \ref{class:\CurClass:#1}}]}
+
+\chapter{XDBC Class reference}
+
+XDBC classes:
+
+\begin{description}
+\item[{\ClassRef{Connection}}] 
+\item[{\ClassRef{DatabaseMetaData}}] 
+\item[{\ClassRef{PreparedStatement}}] 
+\item[{\ClassRef{ResultSet}}]        
+\item[{\ClassRef{ResultSetMetaData}}] 
+\item[{\ClassRef{Statement}}] 
+\item[{\ClassRef{Date}}] 
+\item[{\ClassRef{Time}}] 
+\item[{\ClassRef{Timestamp}}] 
+\end{description}
+
+XDBC types:
+
+\begin{description}
+\item[typeCHAR]
+\item[typeVARCHAR]
+\item[typeLONGVARCHAR]
+\end{description}
+
+\begin{description}
+\item[typeINTEGER]
+\item[typeNUMERIC]
+\item[typeDECIMAL]
+\item[typeFLOAT]
+\item[typeREAL]
+\item[typeDOUBLE]
+\item[typeBIGINT]
+\item[typeTINYINT]
+\item[typeSMALLINT]
+\item[typeBIT]
+\end{description}
+
+\begin{description}
+\item[typeDATE]
+\item[typeTIME]
+\item[typeTIMESTAMP]
+\end{description}
+
+\begin{description}
+\item[typeBINARY]
+\item[typeVARBINARY]
+\item[typeLONGVARBINARY]
+\end{description}
+
+{\bf See also: }
+  \MethodRef{DatabaseMetaData}{getTypeInfo}
+
+%-----------------------------------------
+% class CONNECTION
+%-----------------------------------------
+
+\renewcommand{\CurClass}{Connection}
+\Class{}
+
+A Connection represents a session with a specific database.
+Within the context of a Connection, SQL statements are executed and
+results are returned.
+
+A Connection's database is able to provide information describing
+its tables, its supported SQL grammar, its stored procedures,
+the capabilities of this connection, etc. This information is obtained
+with the \MyMethodRef{getMetaData} method.
+
+{\bf Note}: By default the Connection automatically commits changes after
+executing each statement. If auto commit has been disabled
+an explicit commit must be done or database changes will not be saved.
+
+{\bf See Also}: \\
+     \ClassRef{Statement}, \ClassRef{ResultSet}, \ClassRef{DatabaseMetaData} % ???
+
+\subsection{Constant Index}
+
+\begin{description}
+\VIitem{TRANSACTION\_NONE} 
+     Transactions are not supported. 
+\VIitem{TRANSACTION\_READ\_COMMITTED} 
+     Only reads on the current row are repeatable 
+\VIitem{TRANSACTION\_READ\_UNCOMMITTED} 
+     Dirty reads are done 
+\VIitem{TRANSACTION\_REPEATABLE\_READ} 
+     Reads on all rows of a result are repeatable 
+\VIitem{TRANSACTION\_SERIALIZABLE} 
+     Reads on all rows of a transaction are repeatable 
+\end{description}
+
+\Variable{TRANSACTION\_NONE} 
+     Transactions are not supported. 
+
+\Variable{TRANSACTION\_READ\_UNCOMMITTED} 
+     Dirty reads are done 
+
+\Variable{TRANSACTION\_READ\_COMMITTED}
+     Only reads on the current row are repeatable 
+
+\Variable{TRANSACTION\_REPEATABLE\_READ}
+     Reads on all rows of a result are repeatable 
+
+\Variable{TRANSACTION\_SERIALIZABLE}
+     Reads on all rows of a transaction are repeatable 
+     
+\subsection{Method index}
+
+\begin{description}
+\MIitem{connect}{()}
+   Creates Connection object and connects it to data source.
+\MIitem{close}{()}
+     In some cases, it is desirable to immediately release a Connection's database and XDBC resources instead of waiting for
+     them to be automatically released; the close method provides this immediate release.
+\MIitem{commit}{()}
+     Commit makes all changes made since the previous commit/rollback permanent and releases any database locks
+     currently held by the Connection.
+\MIitem{createStatement}{()}
+     SQL statements without parameters are normally executed using Statement objects.
+\MIitem{isAutoCommit}{()}
+     Get the current auto-commit state.
+\MIitem{getCatalog}{()}
+     Return the Connection's current catalog name
+\MIitem{getMetaData}{()}
+     A Connection's database is able to provide information describing its tables, its supported SQL grammar, its stored
+     procedures, the capabilities of this connection, etc.
+\MIitem{getTransactionIsolation}{()}
+     Get this Connection's current transaction isolation mode
+\MIitem{isReadOnly}{()}
+     Test if the connection is in read-only mode
+\MIitem{nativeSQL}{(String)}
+     A driver may convert the ODBC sql grammar into its system's native SQL grammar prior to sending it; nativeSQL returns the
+     native form of the statement that the driver would have sent.
+\MIitem{prepareStatement}{(String)}
+     A SQL statement with or without IN parameters can be pre-compiled and stored in a PreparedStatement object.
+\MIitem{rollback}{()}
+     Rollback drops all changes made since the previous commit/rollback and releases any database locks currently held by
+     the Connection.
+\MIitem{setAutoCommit}{(boolean)}
+     If a connection is in auto-commit mode, then all its SQL statements will be executed and committed as individual
+     transactions.
+\MIitem{setCatalog}{(String)}
+     A sub-space of this Connection's database may be selected by setting a catalog name.
+\MIitem{setReadOnly}{(boolean)}
+     You can put a connection in read-only mode as a hint to enable database optimizations.
+\MIitem{setTransactionIsolation}{(int)}
+     You can call this method to try to change the transaction isolation level on a newly opened connection, using one of the
+     TRANSACTION\_* values.
+\end{description}
+
+
+%Method{setTransactionIsolation}
+%
+%\verb'PROCEDURE(connection:Connection)setTransactionIsolation(level:INTEGER);'
+%
+%You can call this method to try to change the transaction isolation
+%level on a newly opened connection, using one of the TRANSACTION\_* values.
+%
+%Note: setTransactionIsolation cannot be called while in the middle of a transaction.
+%
+%{\bf Parameters:}
+%
+%\begin{description}
+%\item[level] one of the TRANSACTION\_* isolation values with the exception of
+%    TRANSACTION\_NONE; some databases may not support other values
+%\end{description}
+%
+%{\bf See Also:}
+%
+%   \MyMethodRef{supportsTransactionIsolationLevel}
+   
+   
+\Method{connect}
+\verb'PROCEDURE connect*(dsn, user, password:ARRAY OF CHAR):Connection;'
+   Creates Connection object and connects it to data source.
+
+{\bf Parameters:} 
+\begin{description}
+\item[dsn] Data Source Name
+\item[user] user name
+\item[password] user password
+\end{description}
+
+     {\bf Returns:} 
+          a new Connection object 
+
+\Method{createStatement} 
+
+\verb'PROCEDURE(connection:Connection)createStatement():Statement;'
+
+     SQL statements without parameters are normally executed using Statement objects. If the same SQL statement is executed
+     many times it is more efficient to use a PreparedStatement 
+
+     {\bf Returns:} 
+%\begin{description}
+          a new Statement object 
+%\end{description}
+
+\Method{prepareStatement} 
+\verb'PROCEDURE(connection:Connection)prepareStatement(sql:ARRAY OF CHAR):PreparedStatement;'
+
+     A SQL statement with or without IN parameters can be pre-compiled and stored in a PreparedStatement object. This object can
+     then be used to efficiently execute this statement multiple times. 
+
+     {\bf Note:} This method is optimized for handling parametric SQL statements that benefit from precompilation. If the driver supports
+     precompilation, prepareStatement will send the statement to the database for precompilation. Some drivers may not support
+     precompilation. In this case, the statement may not be sent to the database until the PreparedStatement is executed. This has
+     no direct affect on users; however, it does affect which method throws certain SQLExceptions. 
+
+     {\bf Parameters:} 
+\begin{description}
+\item[sql] a SQL statement that may contain one or more '?' IN parameter placeholders 
+\end{description}
+
+     {\bf Returns:} 
+          a new PreparedStatement object containing the pre-compiled statement 
+
+\Method{nativeSQL} 
+
+\verb'PROCEDURE(connection:Connection)nativeSQL(query:ARRAY OF CHAR):STRING;'
+
+     A driver may convert the ODBC sql grammar into its system's native SQL grammar prior to sending it; nativeSQL returns the
+     native form of the statement that the driver would have sent. 
+
+     {\bf Parameters:} 
+\begin{description}
+\item[sql] a SQL statement that may contain one or more '?' parameter placeholders 
+\end{description}
+
+     {\bf Returns:} 
+          the native form of this statement 
+
+\Method{setAutoCommit} 
+
+\verb'PROCEDURE(connection:Connection)setAutoCommit(enableAutoCommit:BOOLEAN);'
+
+     If a connection is in auto-commit mode, then all its SQL statements will be executed and committed as individual transactions.
+     Otherwise, its SQL statements are grouped into transactions that are terminated by either commit() or rollback(). By default, new
+     connections are in auto-commit mode. The commit occurs when the statement completes or the next execute occurs,
+     whichever comes first. In the case of statements returning a ResultSet, the statement completes when the last row of the
+     ResultSet has been retrieved or the ResultSet has been closed. In advanced cases, a single statement may return multiple
+     results as well as output parameter values. Here the commit occurs when all results and output param values have been
+     retrieved. 
+
+     {\bf Parameters:} 
+\begin{description}
+\item[autoCommit] TRUE enables auto-commit; FALSE disables auto-commit. 
+\end{description}
+
+\Method{isAutoCommit} 
+
+\verb'PROCEDURE(connection:Connection)isAutoCommit():BOOLEAN;'
+
+     Get the current auto-commit state. 
+
+     {\bf Returns:}
+          Current state of auto-commit mode. 
+
+     {\bf See Also:} 
+          \MyMethodRef{setAutoCommit} 
+
+\Method{commit} 
+
+\verb'PROCEDURE(connection:Connection)commit;'
+
+     Commit makes all changes made since the previous commit/rollback permanent and releases any database locks currently
+     held by the Connection. 
+
+     {\bf Note:} By default, a Connection's PreparedStatements and ResultSets are implicitly closed when it is
+     committed. 
+
+     {\bf See Also:} 
+          \MyMethodRef{setAutoCommit} 
+
+\Method{rollback} 
+
+\verb'PROCEDURE(connection:Connection)rollback;'
+
+     Rollback drops all changes made since the previous commit/rollback and releases any database locks currently held by the
+     Connection. 
+
+     {\bf Note:} By default, a Connection's PreparedStatements, CallableStatements and ResultSets are implicitly closed when it is
+     committed. 
+
+     {\bf See Also:} 
+          \MyMethodRef{setAutoCommit} 
+
+\Method{close} 
+
+\verb'PROCEDURE(connection:Connection)close;'
+
+     In some cases, it is desirable to immediately release a Connection's database and XDBC resources instead of waiting for
+     them to be automatically released; the close method provides this immediate release. 
+
+     {\bf Note:} A Connection is automatically closed when it is garbage collected. Certain fatal errors also result in a closed Connection. 
+
+\Method{getMetaData} 
+
+\verb'PROCEDURE(connection:Connection)getMetaData():DatabaseMetaData;'
+
+     A Connection's database is able to provide information describing its tables, its supported SQL grammar, its stored
+     procedures, the capabilities of this connection, etc. This information is made available through a DatabaseMetaData object. 
+
+     {\bf Returns:} 
+          a DatabaseMetaData object for this Connection 
+
+\Method{setReadOnly} 
+
+\verb'PROCEDURE(connection:Connection)setReadOnly(readOnly:BOOLEAN);'
+
+     You can put a connection in read-only mode as a hint to enable database optimizations. 
+
+     {\bf Note:} setReadOnly cannot be called while in the middle of a transaction. 
+
+     {\bf Parameters:} 
+\begin{description}
+\item[readOnly] true enables read-only mode; false disables read-only mode. 
+\end{description}
+
+\Method{isReadOnly} 
+
+\verb'PROCEDURE(connection:Connection)isReadOnly():BOOLEAN;'
+
+     Test if the connection is in read-only mode 
+
+     {\bf Returns:} 
+          TRUE if connection is read-only 
+
+\Method{setCatalog} 
+
+\verb'PROCEDURE(connection:Connection)setCatalog(catalog:ARRAY OF CHAR);'
+
+     A sub-space of this Connection's database may be selected by setting a catalog name. If the driver does not support catalogs it
+     will silently ignore this request. 
+
+\Method{getCatalog} 
+
+\verb'PROCEDURE(connection:Connection)getCatalog():STRING;'
+
+     Return the Connection's current catalog name 
+
+     {\bf Returns:} 
+          the current catalog name or null 
+
+\Method{setTransactionIsolation} 
+
+\verb'PROCEDURE(connection:Connection)setTransactionIsolation(level:INTEGER);'
+
+     You can call this method to try to change the transaction isolation level on a newly opened connection, using one of the
+     TRANSACTION\_* values. 
+
+     {\bf Note:} setTransactionIsolation cannot be called while in the middle of a transaction. 
+
+     {\bf Parameters:} 
+\begin{description}
+\item[level] one of the TRANSACTION\_* isolation values with the exception of TRANSACTION\_NONE; some databases may
+          not support other values 
+\end{description}
+
+     {See Also:} 
+          \MethodRef{DatabaseMetaData}{supportsTransactionIsolationLevel} 
+
+\Method{getTransactionIsolation} 
+
+\verb'PROCEDURE(connection:Connection)getTransactionIsolation():INTEGER;'
+
+     Get this Connection's current transaction isolation mode 
+
+     {Returns:} 
+          the current TRANSACTION\_* mode value 
+
+%-----------------------------------------
+% class STATEMENT
+%-----------------------------------------
+
+\renewcommand{\CurClass}{Statement}
+\Class{}
+
+A Statement object is used for executing a static SQL statement and obtaining the results produced by it. 
+
+Only one ResultSet per Statement can be open at any point in time. Therefore, if the reading of one ResultSet is interleaved with the reading
+of another, each must have been generated by different Statements. All statement execute methods implicitly close a statment's current
+ResultSet if an open one exists. 
+
+{\bf See Also:} 
+     \MethodRef{Connection}{createStatement}, \ClassRef{ResultSet} 
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{close}{()}
+
+\MIitem{cancel}{()}
+     Cancel can be used by one thread to cancel a statement that is being executed by another thread. 
+\MIitem{close}{()}
+     In many cases, it is desirable to immediately release a Statements's database and XDBC resources instead of waiting for this to
+     happen when it is automatically closed; the close method provides this immediate release. 
+\MIitem{execute}{(String)}
+     Execute a SQL statement that may return multiple results. 
+\MIitem{executeQuery}{(String)}
+     Execute a SQL statement that returns a single ResultSet. 
+\MIitem{executeUpdate}{(String)}
+     Execute a SQL INSERT, UPDATE or DELETE statement. 
+\MIitem{getMaxFieldSize}{()}
+     The maxFieldSize limit (in bytes) is the maximum amount of data returned for any column value; it only applies to BINARY,
+     VARBINARY, LONGVARBINARY, CHAR, VARCHAR, and LONGVARCHAR columns. 
+\MIitem{getMaxRows}{()}
+     The maxRows limit is the maximum number of rows that a ResultSet can contain. 
+\MIitem{getQueryTimeout}{()}
+     The queryTimeout limit is the number of seconds the driver will wait for a Statement to execute. 
+\MIitem{getResultSet}{()}
+     getResultSet returns the current result as a ResultSet. 
+\MIitem{getUpdateCount}{()}
+     getUpdateCount returns the current result as an update count; if the result is a ResultSet or there are no more results -1 is returned. 
+\MIitem{isEscapeProcessing}{()}
+     If escape scanning is on (the default) the driver will do escape substitution before sending the SQL to the database. 
+\MIitem{setCursorName}{(String)}
+     setCursorname defines the SQL cursor name that will be used by subsequent Statement execute methods. 
+\MIitem{setEscapeProcessing}{(boolean)}
+     If escape scanning is on (the default) the driver will do escape substitution before sending the SQL to the database. 
+\MIitem{setMaxFieldSize}{(int)}
+     The maxFieldSize limit (in bytes) is set to limit the size of data that can be returned for any column value; it only applies to BINARY,
+     VARBINARY, LONGVARBINARY, CHAR, VARCHAR, and LONGVARCHAR fields. 
+\MIitem{setMaxRows}{(int)}
+     The maxRows limit is set to limit the number of rows that any ResultSet can contain. 
+\MIitem{setQueryTimeout}{(int)}
+     The queryTimeout limit is the number of seconds the driver will wait for a Statement to execute. 
+\end{description}
+
+                    
+
+\Method{executeQuery}
+
+\verb'PROCEDURE(statement:Statement)executeQuery(sql:ARRAY OF CHAR):ResultSet;'
+
+     Execute a SQL statement that returns a single ResultSet. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[sql] typically this is a static SQL SELECT statement 
+\end{description}
+
+     {\bf Returns: } 
+          a ResultSet that contains the data produced by the query; never null 
+
+\Method{executeUpdate}
+
+\verb'PROCEDURE(statement:Statement)executeUpdate(sql:ARRAY OF CHAR):LONGINT;'
+
+     Execute a SQL INSERT, UPDATE or DELETE statement. In addition, SQL statements that return nothing such as SQL DDL
+     statements can be executed. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[sql] a SQL INSERT, UPDATE or DELETE statement or a SQL statement that returns nothing 
+\end{description}
+
+     {\bf Returns: } 
+          either the row count for INSERT, UPDATE or DELETE; or 0 for SQL statements that return nothing 
+
+\Method{close}
+
+\verb'PROCEDURE(statement:Statement)close;'
+
+     In many cases, it is desirable to immediately release a Statements's database and XDBC resources instead of waiting for this to
+     happen when it is automatically closed; the close method provides this immediate release. 
+
+     {\bf Note: } A Statement is automatically closed when it is garbage collected. When a Statement is closed its current ResultSet, if one
+     exists, is also closed. 
+
+\Method{getMaxFieldSize}
+
+\verb'PROCEDURE(statement:Statement)getMaxFieldSize():LONGINT;'
+
+     The maxFieldSize limit (in bytes) is the maximum amount of data returned for any column value; it only applies to BINARY,
+     VARBINARY, LONGVARBINARY, CHAR, VARCHAR, and LONGVARCHAR columns. If the limit is exceeded, the excess data is silently
+     discarded. 
+
+     {\bf Returns: } 
+          the current max column size limit; zero means unlimited 
+
+\Method{setMaxFieldSize}
+
+\verb'PROCEDURE(statement:Statement)setMaxFieldSize(max:LONGINT);'
+
+     The maxFieldSize limit (in bytes) is set to limit the size of data that can be returned for any column value; it only applies to BINARY,
+     VARBINARY, LONGVARBINARY, CHAR, VARCHAR, and LONGVARCHAR fields. If the limit is exceeded, the excess data is silently
+     discarded. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[max] the new max column size limit; zero means unlimited 
+\end{description}
+
+\Method{getMaxRows}
+
+\verb'PROCEDURE(statement:Statement)getMaxRows():LONGINT;'
+
+     The maxRows limit is the maximum number of rows that a ResultSet can contain. If the limit is exceeded, the excess rows are
+     silently dropped. 
+
+     {\bf Returns: } 
+          the current max row limit; zero means unlimited 
+
+\Method{setMaxRows}
+
+\verb'PROCEDURE(statement:Statement)setMaxRows(max:LONGINT);'
+
+     The maxRows limit is set to limit the number of rows that any ResultSet can contain. If the limit is exceeded, the excess rows are
+     silently dropped. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[max] the new max rows limit; zero means unlimited 
+\end{description}
+
+\Method{setEscapeProcessing}
+
+\verb'PROCEDURE(statement:Statement)setEscapeProcessing(enable:BOOLEAN);'
+
+     If escape scanning is on (the default) the driver will do escape substitution before sending the SQL to the database. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[enable] true to enable; false to disable 
+\end{description}
+
+\Method{isEscapeProcessing}
+
+\verb'PROCEDURE(statement:Statement)isEscapeProcessing():BOOLEAN;'
+
+     If escape scanning is on (the default) the driver will do escape substitution before sending the SQL to the database. 
+
+     {\bf Returns: } 
+          the current escape scanning mode 
+
+\Method{getQueryTimeout}
+
+\verb'PROCEDURE(statement:Statement)getQueryTimeout():LONGINT;'
+
+     The queryTimeout limit is the number of seconds the driver will wait for a Statement to execute. If the limit is exceeded a
+     SQLException is thrown. 
+
+     {\bf Returns: } 
+          the current query timeout limit in seconds; zero means unlimited 
+
+\Method{setQueryTimeout}
+
+\verb'PROCEDURE(statement:Statement)setQueryTimeout(seconds:LONGINT);'
+
+     The queryTimeout limit is the number of seconds the driver will wait for a Statement to execute. If the limit is exceeded a
+     SQLException is thrown. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[seconds] the new query timeout limit in seconds; zero means unlimited 
+\end{description}
+
+\Method{cancel}
+
+\verb'PROCEDURE(statement:Statement)cancel;'
+
+     Cancel can be used by one thread to cancel a statement that is being executed by another thread. 
+
+\Method{setCursorName}
+
+\verb'PROCEDURE(statement:Statement)setCursorName(name:ARRAY OF CHAR);'
+
+     setCursorname defines the SQL cursor name that will be used by subsequent Statement execute methods. This name can then be
+     used in SQL positioned update/delete statements to identify the current row in the ResultSet generated by this statement. If the
+     database doesn't support positioned update/delete, this method is a noop. 
+
+     {\bf Note: } By definition, positioned update/delete execution must be done by a different Statement than the one which generated the
+     ResultSet being used for positioning. Also, cursor names must be unique within a Connection. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[name] the new cursor name. 
+\end{description}
+
+\Method{execute}
+
+\verb'PROCEDURE(statement:Statement)execute(sql:ARRAY OF CHAR):BOOLEAN;'
+
+     Execute a SQL statement that may return multiple results. Under some (uncommon) situations a single SQL statement may return
+     multiple result sets and/or update counts. Normally you can ignore this, unless you're executing a stored procedure that you know
+     may return multiple results, or unless you're dynamically executing an unknown SQL string. The "execute", "getMoreResults",
+     "getResultSet" and "getUpdateCount" methods let you navigate through multiple results. The "execute" method executes a SQL
+     statement and indicates the form of the first result. You can then use getResultSet or getUpdateCount to retrieve the result, and
+     getMoreResults to move to any subsequent result(s). 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[sql] any SQL statement 
+\end{description}
+
+     {\bf Returns: } 
+          true if the first result is a ResultSet; false if it is an integer 
+
+     {\bf See Also:} 
+          \MyMethodRef{getResultSet}, \MyMethodRef{getUpdateCount}, \MyMethodRef{getMoreResults} 
+
+\Method{getResultSet}
+
+\verb'PROCEDURE(statement:Statement)getResultSet():ResultSet;'
+
+     getResultSet returns the current result as a ResultSet. It should only be called once per result. 
+
+     {\bf Returns: } 
+          the current result as a ResultSet; null if the result is an update count or there are no more results 
+
+     {\bf See Also:} 
+          \MyMethodRef{execute} 
+
+\Method{getUpdateCount}
+
+\verb'PROCEDURE(statement:Statement)getUpdateCount():LONGINT;'
+
+     getUpdateCount returns the current result as an update count; if the result is a ResultSet or there are no more results -1 is returned.
+     It should only be called once per result. 
+
+     The only way to tell for sure that the result is an update count is to first test to see if it is a ResultSet. If it is not a ResultSet it is either
+     an update count or there are no more results. 
+
+     {\bf Returns: } 
+          the current result as an update count; -1 if it is a ResultSet or there are no more results 
+
+     {\bf See Also:} 
+          \MyMethodRef{execute} 
+
+%-----------------------------------------
+% class RESULTSET
+%-----------------------------------------
+
+\renewcommand{\CurClass}{ResultSet}
+\Class{}
+
+A ResultSet provides access to a table of data generated by executing a Statement. The table rows are retrieved in sequence. Within a row
+its column values can be accessed in any order. 
+
+A ResultSet maintains a cursor pointing to its current row of data. Initially the cursor is positioned before the first row. The 'next' method
+moves the cursor to the next row. 
+
+The getXXX methods retrieve column values for the current row. You can retrieve values either using the index number of the column, or by
+using the name of the column. In general using the column index will be more efficient. Columns are numbered from 1. 
+
+For maximum portability, ResultSet columns within each row should be read in left-to-right order and each column should be read only once.
+
+For the getXXX methods, the ODBC driver attempts to convert the underlying data to the specified type and returns a suitable value.
+See the ODBC specification for allowable mappings from SQL types to Oberon-2 types with the ResultSet.getXXX methods. 
+
+Column names used as input to getXXX methods are case insensitive. When performing a getXXX using a column name if several columns
+have the same name then the value of the first matching column will be returned. 
+
+A ResultSet is automatically closed by the Statement that generated it when that Statement is closed, re-executed, or is used to retrieve the
+next result from a sequence of multiple results. 
+
+The number, types and properties of a ResultSet's columns are provided by the ResulSetMetaData object returned by the getMetaData
+method. 
+
+{\bf See Also:} 
+     \MethodRef{Statement}{executeQuery}, \MethodRef{Statement}{getResultSet}, \ClassRef{ResultSetMetaData}
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{close}{()}
+     In some cases, it is desirable to immediately release a ResultSet's database and XDBC resources instead of waiting for this to
+     happen when it is automatically closed; the close method provides this immediate release. 
+\MIitem{findColumn}{(String)}
+     Map a Resultset column name to a ResultSet column index. 
+\MIitem{getAsciiStream}{(int)}
+     A column value can be retrieved as a stream of ASCII characters and then read in chunks from the stream. 
+\MIitem{getAsciiStreamStr}{(String)}
+     A column value can be retrieved as a stream of ASCII characters and then read in chunks from the stream. 
+\MIitem{getBinaryStream}{(int)}
+     A column value can be retrieved as a stream of uninterpreted bytes and then read in chunks from the stream. 
+\MIitem{getBinaryStreamStr}{(String)}
+     A column value can be retrieved as a stream of uninterpreted bytes and then read in chunks from the stream. 
+\MIitem{getBoolean}{(int)}
+     Get the value of a column in the current row as a BOOLEAN. 
+\MIitem{getBooleanStr}{(String)}
+     Get the value of a column in the current row as a BOOLEAN. 
+\MIitem{getByte}{(int)}
+     Get the value of a column in the current row as a CHAR. 
+\MIitem{getByteStr}{(String)}
+     Get the value of a column in the current row as a CHAR. 
+\MIitem{getCursorName}{()}
+     Get the name of the SQL cursor used by this ResultSet. 
+\MIitem{getDate}{(int)}
+     Get the value of a column in the current row as a \ClassRef{Date} object. 
+\MIitem{getDateStr}{(String)}
+     Get the value of a column in the current row as a \ClassRef{Date} object. 
+\MIitem{getDouble}{(int)}
+     Get the value of a column in the current row as a LONGREAL. 
+\MIitem{getDoubleStr}{(String)}
+     Get the value of a column in the current row as a LONGREAL. 
+\MIitem{getFloat}{(int)}
+     Get the value of a column in the current row as a REAL. 
+\MIitem{getFloatStr}{(String)}
+     Get the value of a column in the current row as a REAL. 
+\MIitem{getInt}{(int)}
+     Get the value of a column in the current row as a INTEGER. 
+\MIitem{getIntStr}{(String)}
+     Get the value of a column in the current row as a INTEGER. 
+\MIitem{getLong}{(int)}
+     Get the value of a column in the current row as a LONGINT. 
+\MIitem{getLongStr}{(String)}
+     Get the value of a column in the current row as a LONGINT. 
+\MIitem{getLongreal}{(int)}
+     Get the value of a column in the current row as a LONGREAL. 
+\MIitem{getLongrealStr}{(String)}
+     Get the value of a column in the current row as a LONGREAL. 
+\MIitem{getMetaData}{()}
+     The number, types and properties of a ResultSet's columns are provided by the getMetaData method. 
+\MIitem{getReal}{(int)}
+     Get the value of a column in the current row as a REAL. 
+\MIitem{getRealStr}{(String)}
+     Get the value of a column in the current row as a REAL. 
+\MIitem{getString}{(int)}
+     Get the value of a column in the current row as a STRING. 
+\MIitem{getStringStr}{(String)}
+     Get the value of a column in the current row as a STRING. 
+\MIitem{getTime}{(int)}
+     Get the value of a column in the current row as a \ClassRef{Time} object. 
+\MIitem{getTimeStr}{(String)}
+     Get the value of a column in the current row as a \ClassRef{Time} object. 
+\MIitem{getTimestamp}{(int)}
+     Get the value of a column in the current row as a \ClassRef{Timestamp} object. 
+\MIitem{getTimestampStr}{(String)}
+     Get the value of a column in the current row as a \ClassRef{Timestamp} object. 
+\MIitem{next}{()}
+     A ResultSet is initially positioned before its first row; the first call to next makes the first row the current row; the second call makes
+     the second row the current row, etc. 
+\MIitem{wasNull}{()}
+     A column may have the value of SQL NULL; wasNull reports whether the last column read had this special value. 
+\end{description}
+
+\Method{next}
+
+\verb'PROCEDURE(resultSet:ResultSet)next():BOOLEAN;'
+
+     A ResultSet is initially positioned before its first row; the first call to next makes the first row the current row; the second call makes
+     the second row the current row, etc. 
+
+     If an input stream from the previous row is open it is implicitly closed. The ResultSet's warning chain is cleared when a new row is
+     read. 
+
+     {\bf Returns: } 
+          true if the new current row is valid; false if there are no more rows 
+
+\Method{close}
+
+\verb'PROCEDURE(resultSet:ResultSet)close;'
+
+     In some cases, it is desirable to immediately release a ResultSet's database and XDBC resources instead of waiting for this to
+     happen when it is automatically closed; the close method provides this immediate release. 
+
+     {\bf Note: } A ResultSet is automatically closed by the Statement that generated it when that Statement is closed, re-executed, or is used to
+     retrieve the next result from a sequence of multiple results. A ResultSet is also automatically closed when it is garbage collected. 
+
+\Method{wasNull}
+
+\verb'PROCEDURE(resultSet:ResultSet)wasNull():BOOLEAN;'
+
+     A column may have the value of SQL NULL; wasNull reports whether the last column read had this special value. Note that you must
+     first call getXXX on a column to try to read its value and then call wasNull() to find if the value was the SQL NULL. 
+
+     {\bf Returns: } 
+          true if last column read was SQL NULL 
+
+\Method{getString}
+
+\verb'PROCEDURE(resultSet:ResultSet)getString(columnIndex:INTEGER): STRING;'
+
+     Get the value of a column in the current row as a STRING. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getBoolean}
+
+\verb'PROCEDURE(resultSet:ResultSet)getBoolean(columnIndex:INTEGER): BOOLEAN;'
+
+     Get the value of a column in the current row as a BOOLEAN. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is false 
+
+\Method{getByte}
+
+\verb'PROCEDURE(resultSet:ResultSet)getByte(columnIndex:INTEGER): CHAR;'
+
+     Get the value of a column in the current row as a CHAR. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getInt}
+
+\verb'PROCEDURE(resultSet:ResultSet)getInt(columnIndex:INTEGER): INTEGER;'
+
+     Get the value of a column in the current row as a INTEGER. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getLong}
+
+\verb'PROCEDURE(resultSet:ResultSet)getLong(columnIndex:INTEGER): LONGINT;'
+
+     Get the value of a column in the current row as a LONGINT. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getFloat}
+
+\verb'PROCEDURE(resultSet:ResultSet)getFloat(columnIndex:INTEGER): REAL;'
+
+     Get the value of a column in the current row as a REAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getReal}
+
+\verb'PROCEDURE(resultSet:ResultSet)getReal(columnIndex:INTEGER): REAL;'
+
+     Get the value of a column in the current row as a REAL. 
+     
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getLongreal}
+
+\verb'PROCEDURE(resultSet:ResultSet)getLongreal(columnIndex:INTEGER): LONGREAL;'
+
+     Get the value of a column in the current row as a LONGREAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getDouble}
+
+\verb'PROCEDURE(resultSet:ResultSet)getDouble(columnIndex:INTEGER): LONGREAL;'
+
+     Get the value of a column in the current row as a LONGREAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getDate}
+
+\verb'PROCEDURE(resultSet:ResultSet)getDate(columnIndex:INTEGER):Date;'
+
+     Get the value of a column in the current row as a \ClassRef{Date} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getTime}
+
+\verb'PROCEDURE(resultSet:ResultSet)getTime(columnIndex:INTEGER):Time;'
+
+     Get the value of a column in the current row as a \ClassRef{Time} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getTimestamp}
+
+\verb'PROCEDURE(resultSet:ResultSet)getTimestamp(columnIndex:INTEGER):Timestamp;'
+
+     Get the value of a column in the current row as a \ClassRef{Timestamp} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getAsciiStream}
+
+\verb'PROCEDURE(resultSet:ResultSet)getAsciiStream(columnIndex:INTEGER):Stream.Stream;'
+
+     A column value can be retrieved as a stream of ASCII characters and then read in chunks from the stream. This method is particularly
+     suitable for retrieving large LONGVARCHAR values. The ODBC driver will do any necessary conversion from the database format into
+     ASCII. 
+
+     {\bf Note: } All the data in the returned stream must be read prior to getting the value of any other column. The next call to a get method
+     implicitly closes the stream. . Also, a stream may return 0 for available() whether there is data available or not. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          an input stream that delivers the database column value as a stream of one byte ASCII characters. If the value is SQL
+          NULL then the result is null. 
+
+\Method{getBinaryStream}
+
+\verb'PROCEDURE(resultSet:ResultSet)getBinaryStream(columnIndex:INTEGER):Stream.Stream;'
+
+     A column value can be retrieved as a stream of uninterpreted bytes and then read in chunks from the stream. This method is
+     particularly suitable for retrieving large LONGVARBINARY values. 
+
+     {\bf Note: } All the data in the returned stream must be read prior to getting the value of any other column. The next call to a get method
+     implicitly closes the stream. Also, a stream may return 0 for available() whether there is data available or not. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+     {\bf Returns: } 
+          an input stream that delivers the database column value as a stream of uninterpreted bytes. If the value is SQL NULL then
+          the result is null. 
+
+\Method{getStringStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getStringStr(columnName:ARRAY OF CHAR): STRING;'
+
+     Get the value of a column in the current row as a STRING. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getBooleanStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getBooleanStr(columnName:ARRAY OF CHAR): BOOLEAN;'
+
+     Get the value of a column in the current row as a BOOLEAN. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is false 
+
+\Method{getByteStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getByteStr(columnName:ARRAY OF CHAR): CHAR;'
+
+     Get the value of a column in the current row as a CHAR. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getIntStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getIntStr(columnName:ARRAY OF CHAR): INTEGER;'
+
+     Get the value of a column in the current row as a INTEGER. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getLongStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getLongStr(columnName:ARRAY OF CHAR): LONGINT;'
+
+     Get the value of a column in the current row as a LONGINT. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getFloatStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getFloatStr(columnName:ARRAY OF CHAR): REAL;'
+
+     Get the value of a column in the current row as a REAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getRealStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getRealStr(columnName:ARRAY OF CHAR): REAL;'
+
+     Get the value of a column in the current row as a REAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getLongrealStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getLongrealStr(columnName:ARRAY OF CHAR): LONGREAL;'
+
+     Get the value of a column in the current row as a LONGREAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getDoubleStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getDoubleStr(columnName:ARRAY OF CHAR): LONGREAL;'
+
+     Get the value of a column in the current row as a LONGREAL. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is 0 
+
+\Method{getDateStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getDateStr(columnName:ARRAY OF CHAR):Date;'
+
+     Get the value of a column in the current row as a \ClassRef{Date} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getTimeStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getTimeStr(columnName:ARRAY OF CHAR):Time;'
+
+     Get the value of a column in the current row as a \ClassRef{Time} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getTimestampStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getTimestampStr(columnName:ARRAY OF CHAR):Timestamp;'
+
+     Get the value of a column in the current row as a \ClassRef{Timestamp} object. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column value; if the value is SQL NULL the result is null 
+
+\Method{getAsciiStreamStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getAsciiStreamStr(columnName:ARRAY OF CHAR):Stream.Stream;'
+
+     A column value can be retrieved as a stream of ASCII characters and then read in chunks from the stream. This method is particularly
+     suitable for retrieving large LONGVARCHAR values. The ODBC driver will do any necessary conversion from the database format into
+     ASCII. 
+
+     {\bf Note: } All the data in the returned stream must be read prior to getting the value of any other column. The next call to a get method
+     implicitly closes the stream. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          an input stream that delivers the database column value as a stream of one byte ASCII characters. If the value is SQL
+          NULL then the result is null. 
+
+\Method{getBinaryStreamStr}
+
+\verb'PROCEDURE(resultSet:ResultSet)getBinaryStreamStr(columnName:ARRAY OF CHAR):Stream.Stream;'
+
+     A column value can be retrieved as a stream of uninterpreted bytes and then read in chunks from the stream. This method is
+     particularly suitable for retrieving large LONGVARBINARY values. 
+
+     {\bf Note: } All the data in the returned stream must be read prior to getting the value of any other column. The next call to a get method
+     implicitly closes the stream. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] is the SQL name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          an input stream that delivers the database column value as a stream of uninterpreted bytes. If the value is SQL NULL then
+          the result is null. 
+
+\Method{getCursorName}
+
+\verb'PROCEDURE(resultSet:ResultSet)getCursorName():STRING;'
+
+     Get the name of the SQL cursor used by this ResultSet. 
+
+     In SQL, a result table is retrieved through a cursor that is named. The current row of a result can be updated or deleted using a
+     positioned update/delete statement that references the cursor name. 
+
+     XDBC supports this SQL feature by providing the name of the SQL cursor used by a ResultSet. The current row of a ResultSet is also
+     the current row of this SQL cursor. 
+
+     {\bf Note: } If positioned update is not supported a SQLException is thrown 
+
+     {\bf Returns: } 
+          the ResultSet's SQL cursor name 
+
+\Method{getMetaData}
+
+\verb'PROCEDURE(resultSet:ResultSet)getMetaData():ResultSetMetaData;'
+
+     The number, types and properties of a ResultSet's columns are provided by the getMetaData method. 
+     {\bf Returns: } 
+          the description of a ResultSet's columns 
+
+\Method{findColumn}
+
+\verb'PROCEDURE(resultSet:ResultSet)findColumn(columnName:ARRAY OF CHAR):INTEGER;'
+
+     Map a Resultset column name to a ResultSet column index. 
+
+     {\bf Parameters: } 
+\begin{description}
+\item[columnName] the name of the column 
+\end{description}
+
+     {\bf Returns: } 
+          the column index 
+
+%-----------------------------------------
+% class ResultSetMetaData
+%-----------------------------------------
+
+\renewcommand{\CurClass}{ResultSetMetaData}
+\Class{}
+ 
+\subsection{Constant Index}
+
+\begin{description}
+\VIitem{columnNoNulls} 
+  Does not allow NULL values. 
+\VIitem{columnNullable} 
+  Allows NULL values. 
+\VIitem{columnNullableUnknown} 
+  Nullability unknown. 
+\end{description}
+
+\Variable{columnNoNulls}
+  Does not allow NULL values. 
+
+\Variable{columnNullable} 
+  Allows NULL values. 
+
+\Variable{columnNullableUnknown} 
+  Nullability unknown. 
+
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{getCatalogName}{(int)}
+  What's a column's table's catalog name? 
+
+\MIitem{getColumnCount}{()}
+  What's the number of columns in the ResultSet? 
+
+\MIitem{getColumnDisplaySize}{(int)}
+  What's the column's normal max width in chars? 
+
+\MIitem{getColumnLabel}{(int)}
+What's the suggested column title for use in printouts and displays? 
+
+\MIitem{getColumnName}{(int)}
+What's a column's name? 
+
+\MIitem{getColumnType}{(int)}
+What's a column's SQL type? 
+
+\MIitem{getColumnTypeName}{(int)}
+What's a column's data source specific type name? 
+
+\MIitem{getPrecision}{(int)}
+What's a column's number of decimal digits? 
+
+\MIitem{getScale}{(int)}
+What's a column's number of digits to right of decimal? 
+
+\MIitem{getSchemaName}{(int)}
+What's a column's table's schema? 
+
+\MIitem{getTableName}{(int)}
+What's a column's table name? 
+
+\MIitem{isAutoIncrement}{(int)}
+Is the column automatically numbered, thus read-only? 
+
+\MIitem{isCaseSensitive}{(int)}
+Does a column's case matter? 
+
+\MIitem{isCurrency}{(int)}
+Is the column a cash value? 
+
+\MIitem{isDefinitelyWritable}{(int)}
+Will a write on the column definitely succeed? 
+
+\MIitem{isNullable}{(int)}
+Can you put a NULL in this column? 
+
+\MIitem{isReadOnly}{(int)}
+Is a column definitely not writable? 
+
+\MIitem{isSearchable}{(int)}
+Can the column be used in a where clause? 
+
+\MIitem{isSigned}{(int)}
+Is the column a signed number? 
+
+\MIitem{isWritable}{(int)}
+Is it possible for a write on the column to succeed? 
+
+\end{description}
+
+
+\Method{getColumnCount}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnCount(): INTEGER;'
+
+What's the number of columns in the ResultSet? 
+
+{\bf Returns: } 
+the number 
+
+
+\Method{isAutoIncrement}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isAutoIncrement(columnIndex:INTEGER): BOOLEAN;'
+
+Is the column automatically numbered, thus read-only? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isCaseSensitive}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isCaseSensitive(columnIndex:INTEGER): BOOLEAN;'
+
+Does a column's case matter? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isSearchable}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isSearchable(columnIndex:INTEGER): BOOLEAN;'
+
+Can the column be used in a where clause? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isCurrency}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isCurrency(columnIndex:INTEGER): BOOLEAN;'
+
+Is the column a cash value? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isNullable}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isNullable(columnIndex:INTEGER): Nullability;'
+
+Can you put a NULL in this column? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+columnNoNulls, columnNullable or columnNullableUnknown 
+
+
+\Method{isSigned}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isSigned(columnIndex:INTEGER): BOOLEAN;'
+
+Is the column a signed number? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getColumnDisplaySize}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnDisplaySize(columnIndex:INTEGER):LONGINT;'
+
+What's the column's normal max width in chars? 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+max width 
+
+
+\Method{getColumnLabel}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnLabel(columnIndex:INTEGER): STRING;'
+
+What's the suggested column title for use in printouts and displays? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getColumnName}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnName(columnIndex:INTEGER): STRING;'
+
+What's a column's name? 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+column name 
+
+
+\Method{getSchemaName}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getSchemaName(columnIndex:INTEGER): STRING;'
+
+What's a column's table's schema? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+schema name or "" if not applicable 
+
+
+\Method{getPrecision}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getPrecision(columnIndex:INTEGER): INTEGER;'
+
+What's a column's number of decimal digits? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+precision 
+
+
+\Method{getScale}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getScale(columnIndex:INTEGER): INTEGER;'
+
+What's a column's number of digits to right of decimal? 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+scale 
+
+
+\Method{getTableName}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getTableName(columnIndex:INTEGER): STRING;'
+
+What's a column's table name? 
+
+
+{\bf Returns: } 
+table name or "" if not applicable 
+
+
+\Method{getCatalogName}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getCatalogName(columnIndex:INTEGER): STRING;'
+
+What's a column's table's catalog name? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+column name or "" if not applicable. 
+
+
+\Method{getColumnType}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnType(columnIndex:INTEGER): SqlType;'
+
+What's a column's SQL type? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+SQL type 
+
+
+\Method{getColumnTypeName}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)getColumnTypeName(columnIndex:INTEGER): STRING;'
+
+What's a column's data source specific type name? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+type name 
+
+
+\Method{isReadOnly}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isReadOnly(columnIndex:INTEGER): BOOLEAN;'
+
+Is a column definitely not writable? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isWritable}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isWritable(columnIndex:INTEGER): BOOLEAN;'
+
+Is it possible for a write on the column to succeed? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{isDefinitelyWritable}
+
+\verb'PROCEDURE(resultSetMetaData:ResultSetMetaData)isDefinitlyWritable(columnIndex:INTEGER):BOOLEAN;'
+
+Will a write on the column definitely succeed? 
+
+{\bf Parameters: }
+\begin{description}
+\item[columnIndex] the first column is 1, the second is 2, ... 
+\end{description}
+
+{\bf Returns: } 
+true if so
+
+%-----------------------------------------
+% class PreparedStatement
+%-----------------------------------------
+
+\renewcommand{\CurClass}{PreparedStatement}
+\Class{}
+
+A SQL statement is pre-compiled and stored in a PreparedStatement object. This object can then be used to efficiently execute this statement multiple times. 
+
+{\bf {\bf Note: } } The setXXX methods for setting IN parameter values must specify types that are compatible with the defined SQL type of the input parameter. For instance, if the IN parameter has SQL type Integer then setInt should be used. 
+
+If arbitrary parameter type conversions are required then the setObject method should be used with a target SQL type. 
+
+{\bf See Also:}
+\MethodRef{Connection}{prepareStatement}, \ClassRef{ResultSet}
+
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{clearParameters}{()}
+ In general parameter values remain in force for repeated use of a Statement. 
+\MIitem{executeStmt}{()}
+ Some prepared statements return multiple results; the execute method handles these complex statements as well as the simpler form of statements handled by executeQuery and executeUpdate. 
+\MIitem{executeQuery}{()}
+ A prepared SQL query is executed and its ResultSet is returned. 
+\MIitem{executeUpdate}{()}
+ Execute a SQL INSERT, UPDATE or DELETE statement. 
+\MIitem{setAsciiStream}{(int, Stream, int)}
+ When a very large ASCII value is input to a LONGVARCHAR parameter it may be more practical to send it via a Stream. 
+\MIitem{setBinaryStream}{(int, Stream, int)}
+ When a very large binary value is input to a LONGVARBINARY parameter it may be more practical to send it via a Stream. 
+\MIitem{ setBoolean}{(int, boolean)}
+Set a parameter to a BOOLEAN value. 
+
+\MIitem{setByte}{(int, char)}
+Set a parameter to a CHAR value. 
+
+\MIitem{setDate}{(int, Date)}
+Set a parameter to a Date value. 
+
+\MIitem{setDouble}{(int, longreal)}
+Set a parameter to a LONGREAL value. 
+
+\MIitem{setFloat}{(int, real)}
+Set a parameter to a REAL value. 
+
+\MIitem{setInt}{(int, int)}
+Set a parameter to a INTEGER value. 
+
+\MIitem{setLong}{(int, longint)}
+Set a parameter to a LONGINT value. 
+
+\MIitem{setNull}{(int, int)}
+Set a parameter to SQL NULL. 
+
+\MIitem{setString}{(int, String)}
+Set a parameter to a String value. 
+
+\MIitem{setTime}{(int, Time)}
+Set a parameter to a Time value. 
+
+\MIitem{setTimestamp}{(int, Timestamp)}
+Set a parameter to a Timestamp value. 
+
+\end{description}
+
+
+\Method{executeQuery}
+
+\verb'PROCEDURE(statement:PreparedStatement)execQuery():ResultSet;'
+
+A prepared SQL query is executed and its ResultSet is returned. 
+
+
+{\bf Returns: } 
+a ResultSet that contains the data produced by the query; never null 
+
+
+\Method{executeUpdate}
+
+PROCEDURE(statement:PreparedStatement)execUpdate():LONGINT;
+
+Execute a SQL INSERT, UPDATE or DELETE statement. In addition, SQL statements that return nothing such as SQL DDL statements can be executed. 
+
+{\bf Returns: } 
+either the row count for INSERT, UPDATE or DELETE; or 0 for SQL statements that return nothing 
+
+
+\Method{setNull}
+
+\verb'PROCEDURE(statement:PreparedStatement)setNull(parameterIndex:INTEGER; sqlType:SqlType);'
+
+Set a parameter to SQL NULL. 
+
+{\bf Note: } You must specify the parameter's SQL type. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[sqlType] SQL type code defined by ypes 
+\end{description}
+
+
+\Method{setBoolean}
+
+\verb'PROCEDURE(statement:PreparedStatement)setBoolean(parameterIndex:INTEGER; x:BOOLEAN);'
+
+Set a parameter to a BOOLEAN value. The driver converts this to a SQL BIT value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setByte}
+
+\verb'PROCEDURE(statement:PreparedStatement)setByte(parameterIndex:INTEGER; x:CHAR);'
+
+Set a parameter to a CHAR value. The driver converts this to a SQL TINYINT value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setInt}
+
+\verb'PROCEDURE(statement:PreparedStatement)setInt(parameterIndex:INTEGER; x:INTEGER);'
+
+Set a parameter to a INTEGER value. The driver converts this to a SQL INTEGER value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setLong}
+
+\verb'PROCEDURE(statement:PreparedStatement)setLong(parameterIndex:INTEGER; x:LONGINT);'
+
+Set a parameter to a LONGINT value. The driver converts this to a SQL BIGINT value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setFloat}
+
+\verb'PROCEDURE(statement:PreparedStatement)setFloat(parameterIndex:INTEGER; x:REAL);'
+
+Set a parameter to a REAL value. The driver converts this to a SQL FLOAT value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setDouble}
+
+\verb'PROCEDURE(statement:PreparedStatement)setDouble(parameterIndex:INTEGER; x:LONGREAL);'
+
+Set a parameter to a LONGREAL value. The driver converts this to a SQL DOUBLE value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setString}
+
+\verb'PROCEDURE(statement:PreparedStatement)setString(parameterIndex:INTEGER; x:ARRAY OF CHAR);'
+
+Set a parameter to a String value. The driver converts this to a SQL VARCHAR or LONGVARCHAR value (depending on the arguments size relative to the driver's limits on VARCHARs) when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setDate}
+
+\verb'PROCEDURE(statement:PreparedStatement)setDate(parameterIndex:INTEGER; x:Date);'
+
+Set a parameter to a Date value. The driver converts this to a SQL DATE value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setTime}
+
+\verb'PROCEDURE(statement:PreparedStatement)setTime(parameterIndex:INTEGER; x:Time);'
+
+Set a parameter to a Time value. The driver converts this to a SQL TIME value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setTimestamp}
+
+\verb'PROCEDURE(statement:PreparedStatement)setTimestamp(parameterIndex:INTEGER; x:Timestamp);'
+
+Set a parameter to a Timestamp value. The driver converts this to a SQL TIMESTAMP value when it sends it to the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the parameter value 
+\end{description}
+
+
+\Method{setAsciiStream}
+
+\verb'PROCEDURE(statement:PreparedStatement)setAsciiStream(parameterIndex:INTEGER; x:Stream.Stream; length:INTEGER);'
+
+When a very large ASCII value is input to a LONGVARCHAR parameter it may be more practical to send it via a Stream. XDBC will read the data from the stream as needed, until it reaches end-of-file. The ODBC driver will do any necessary conversion from ASCII to the database char format. 
+
+{\bf Note: } this stream object can either be a standard stream object, or your own subclass that implements the standard interface. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the stream which contains the ASCII parameter value 
+\item[length] the number of bytes in the stream 
+\end{description}
+
+
+\Method{setBinaryStream}
+
+\verb'PROCEDURE(statement:PreparedStatement)setBinaryStream(parameterIndex:INTEGER; x:Stream.Stream; length:INTEGER);'
+
+When a very large binary value is input to a LONGVARBINARY parameter it may be more practical to send it via a Stream. XDBC will read the data from the stream as needed, until it reaches end-of-file. 
+
+{\bf Note: } this stream object can either be a standard stream object, or your own subclass that implements the standard interface. 
+
+{\bf Parameters: }
+\begin{description}
+\item[parameterIndex] the first parameter is 1, the second is 2, ... 
+\item[x] the  stream which contains the binary parameter value 
+\item[length] the number of bytes in the stream 
+\end{description}
+
+
+\Method{clearParameters}
+
+\verb'PROCEDURE(statement:PreparedStatement)clearParameters;'
+
+In general parameter values remain in force for repeated use of a Statement. Setting a parameter value automatically clears its previous value. However In some cases it is useful to immediately release the resources used by the current parameter values; this can be done by calling clearParameters. 
+
+
+\Method{executeStmt}
+
+\verb'PROCEDURE(statement:PreparedStatement)executeStmt():BOOLEAN;'
+
+Some prepared statements return multiple results; the execute method handles these complex statements as well as the simpler form of statements handled by executeQuery and executeUpdate. 
+
+{\bf See Also:} 
+\MyClassRef{execute} 
+
+%-----------------------------------------
+% class DatabaseMetaData
+%-----------------------------------------
+
+\renewcommand{\CurClass}{DatabaseMetaData}
+\Class{}
+
+This class provides information about the database as a whole. 
+Many of the methods here return lists of information in ResultSets. 
+You can use the normal \ClassRef{ResultSet} methods such as getString and getInt 
+to retrieve the data from these ResultSets. If a given form of metadata 
+is not available, these methods show throw a SQLException. 
+Some of these methods take arguments that are String patterns. 
+These arguments all have names such as fooPattern. 
+Within a pattern String "%" means match any substring of 0 or more 
+characters and "_" means match any one character. 
+Only metadata entries matching the search pattern are returned. 
+If a search pattern argument is set to a null ref it means that 
+arguement's criteria should be dropped from the search. 
+A SQLException will be thrown if a driver does not support a meta data method. 
+In the case of methods that returning a ResultSet, either a 
+ResultSet (which may be empty) is returned or a SQLException is throw. 
+
+\subsection{Constant Index}
+
+\begin{description}
+\VIitem{bestRowNotPseudo}
+BEST ROW PSEUDO\_COLUMN - is NOT a pseudo column. 
+
+\VIitem{bestRowPseudo}
+BEST ROW PSEUDO\_COLUMN - is a pseudo column. 
+
+\VIitem{bestRowSession}
+BEST ROW SCOPE - valid for remainder of current session. 
+
+\VIitem{bestRowTemporary}
+BEST ROW SCOPE - very temporary, while using row. 
+
+\VIitem{bestRowTransaction}
+BEST ROW SCOPE - valid for remainder of current transaction. 
+
+\VIitem{bestRowUnknown}
+BEST ROW PSEUDO\_COLUMN - may or may not be pseudo column. 
+
+\VIitem{columnNoNulls}
+COLUMN NULLABLE - might not allow NULL values. 
+
+\VIitem{columnNullable}
+COLUMN NULLABLE - definitely allows NULL values. 
+
+\VIitem{columnNullableUnknown}
+COLUMN NULLABLE - nullability unknown. 
+
+\VIitem{importedKeyCascade}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - for update, change imported key to agree with primary key update; for delete, delete rows that import a deleted key. 
+
+\VIitem{importedKeyRestrict}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - do not allow update or delete of primary key if it has been imported. 
+
+\VIitem{importedKeySetNull}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - change imported key to NULL if its primary key has been updated or deleted. 
+
+\VIitem{procedureColumnIn}
+COLUMN\_TYPE - IN parameter. 
+
+\VIitem{procedureColumnInOut}
+COLUMN\_TYPE - INOUT parameter. 
+
+\VIitem{procedureColumnOut}
+COLUMN\_TYPE - OUT parameter. 
+
+\VIitem{procedureColumnResult}
+COLUMN\_TYPE - result column in ResultSet. 
+
+\VIitem{procedureColumnReturn}
+COLUMN\_TYPE - procedure return value. 
+
+\VIitem{procedureColumnUnknown}
+COLUMN\_TYPE - nobody knows. 
+
+\VIitem{procedureNoNulls}
+TYPE NULLABLE - does not allow NULL values. 
+
+\VIitem{procedureNoResult}
+PROCEDURE\_TYPE - Does not return a result. 
+
+\VIitem{procedureNullable}
+TYPE NULLABLE - allows NULL values. 
+
+\VIitem{procedureNullableUnknown}
+TYPE NULLABLE - nullability unknown. 
+
+\VIitem{procedureResultUnknown}
+PROCEDURE\_TYPE - May return a result. 
+
+\VIitem{procedureReturnsResult}
+PROCEDURE\_TYPE - Returns a result. 
+
+\VIitem{tableIndexClustered}
+INDEX INFO TYPE - this identifies a clustered index 
+
+\VIitem{tableIndexHashed}
+INDEX INFO TYPE - this identifies a hashed index 
+
+\VIitem{tableIndexOther}
+INDEX INFO TYPE - this identifies some other form of index 
+
+\VIitem{tableIndexStatistic}
+INDEX INFO TYPE - this identifies table statistics that are returned in conjuction with a table's index descriptions 
+
+\VIitem{typeNoNulls}
+TYPE NULLABLE - does not allow NULL values. 
+
+\VIitem{typeNullable}
+TYPE NULLABLE - allows NULL values. 
+
+\VIitem{typeNullableUnknown}
+TYPE NULLABLE - nullability unknown. 
+
+\VIitem{typePredBasic}
+TYPE INFO SEARCHABLE - Supported except for WHERE .. 
+
+\VIitem{typePredChar}
+TYPE INFO SEARCHABLE - Only supported with WHERE .. 
+
+\VIitem{typePredNone}
+TYPE INFO SEARCHABLE - No support. 
+
+\VIitem{typeSearchable}
+TYPE INFO SEARCHABLE - Supported for all WHERE ... 
+
+\VIitem{versionColumnNotPseudo}
+VERSION COLUMNS PSEUDO\_COLUMN - is NOT a pseudo column. 
+
+\VIitem{versionColumnPseudo}
+VERSION COLUMNS PSEUDO\_COLUMN - is a pseudo column. 
+
+\VIitem{versionColumnUnknown}
+VERSION COLUMNS PSEUDO\_COLUMN - may or may not be pseudo column. 
+\end{description}
+
+\Variable{procedureResultUnknown}
+PROCEDURE\_TYPE - May return a result. 
+
+\Variable{procedureNoResult}
+PROCEDURE\_TYPE - Does not return a result. 
+
+\Variable{procedureReturnsResult}
+PROCEDURE\_TYPE - Returns a result. 
+
+\Variable{procedureColumnUnknown}
+COLUMN\_TYPE - nobody knows. 
+
+\Variable{procedureColumnIn}
+COLUMN\_TYPE - IN parameter. 
+
+\Variable{procedureColumnInOut}
+COLUMN\_TYPE - INOUT parameter. 
+
+\Variable{procedureColumnOut}
+COLUMN\_TYPE - OUT parameter. 
+
+\Variable{procedureColumnReturn}
+COLUMN\_TYPE - procedure return value. 
+
+\Variable{procedureColumnResult}
+COLUMN\_TYPE - result column in ResultSet. 
+
+\Variable{procedureNoNulls}
+TYPE NULLABLE - does not allow NULL values. 
+
+\Variable{procedureNullable}
+TYPE NULLABLE - allows NULL values. 
+
+\Variable{procedureNullableUnknown}
+TYPE NULLABLE - nullability unknown. 
+
+\Variable{columnNoNulls}
+COLUMN NULLABLE - might not allow NULL values. 
+
+\Variable{columnNullable}
+COLUMN NULLABLE - definitely allows NULL values. 
+
+\Variable{columnNullableUnknown}
+COLUMN NULLABLE - nullability unknown. 
+
+\Variable{bestRowTemporary}
+BEST ROW SCOPE - very temporary, while using row. 
+
+\Variable{bestRowTransaction}
+BEST ROW SCOPE - valid for remainder of current transaction. 
+
+\Variable{bestRowSession}
+BEST ROW SCOPE - valid for remainder of current session. 
+
+\Variable{bestRowUnknown}
+BEST ROW PSEUDO\_COLUMN - may or may not be pseudo column. 
+
+\Variable{bestRowNotPseudo}
+BEST ROW PSEUDO\_COLUMN - is NOT a pseudo column. 
+
+\Variable{bestRowPseudo}
+BEST ROW PSEUDO\_COLUMN - is a pseudo column. 
+
+\Variable{versionColumnUnknown}
+VERSION COLUMNS PSEUDO\_COLUMN - may or may not be pseudo column. 
+
+\Variable{versionColumnNotPseudo}
+VERSION COLUMNS PSEUDO\_COLUMN - is NOT a pseudo column. 
+
+\Variable{versionColumnPseudo}
+VERSION COLUMNS PSEUDO\_COLUMN - is a pseudo column. 
+
+\Variable{importedKeyCascade}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - for update, change imported key to agree with primary key update; for delete, delete rows that import a deleted key. 
+
+\Variable{importedKeyRestrict}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - do not allow update or delete of primary key if it has been imported. 
+
+\Variable{importedKeySetNull}
+IMPORT KEY UPDATE\_RULE and DELETE\_RULE - change imported key to NULL if its primary key has been updated or deleted. 
+
+\Variable{typeNoNulls}
+TYPE NULLABLE - does not allow NULL values. 
+
+\Variable{typeNullable}
+TYPE NULLABLE - allows NULL values. 
+
+\Variable{typeNullableUnknown}
+TYPE NULLABLE - nullability unknown. 
+
+\Variable{typePredNone}
+TYPE INFO SEARCHABLE - No support. 
+
+\Variable{typePredChar}
+TYPE INFO SEARCHABLE - Only supported with WHERE .. LIKE. 
+
+\Variable{typePredBasic}
+TYPE INFO SEARCHABLE - Supported except for WHERE .. LIKE. 
+
+\Variable{typeSearchable}
+TYPE INFO SEARCHABLE - Supported for all WHERE ... 
+
+\Variable{tableIndexStatistic}
+INDEX INFO TYPE - this identifies table statistics that are returned in conjuction with a table's index descriptions 
+
+\Variable{tableIndexClustered}
+INDEX INFO TYPE - this identifies a clustered index 
+
+\Variable{tableIndexHashed}
+INDEX INFO TYPE - this identifies a hashed index 
+
+\Variable{tableIndexOther}
+INDEX INFO TYPE - this identifies some other form of index 
+
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{allProceduresAreCallable}{()}
+Can all the procedures returned by getProcedures be called by the current user? 
+
+\MIitem{allTablesAreSelectable}{()}
+Can all the tables returned by getTable be SELECTed by the current user? 
+
+\MIitem{dataDefinitionCausesTransactionCommit}{()}
+Does a data definition statement within a transaction force the transaction to commit? 
+
+\MIitem{dataDefinitionIgnoredInTransactions}{()}
+Is a data definition statement within a transaction ignored? 
+
+\MIitem{doesMaxRowSizeIncludeBlobs}{()}
+Did getMaxRowSize() include LONGVARCHAR and LONGVARBINARY blobs? 
+
+\MIitem{getBestRowIdentifier}{(String, String, String, int, boolean)}
+Get a description of a table's optimal set of columns that uniquely identifies a row. 
+
+\MIitem{getCatalogs}{()}
+Get the catalog names available in this database. 
+
+\MIitem{getCatalogSeparator}{()}
+What's the separator between catalog and table name? 
+
+\MIitem{getCatalogTerm}{()}
+What's the database vendor's preferred term for "catalog"? 
+
+\MIitem{getColumnPrivileges}{(String, String, String, String)}
+Get a description of the access rights for a table's columns. 
+
+\MIitem{getColumns}{(String, String, String, String)}
+Get a description of table columns available in a catalog. 
+
+\MIitem{getCrossReference}{(String, String, String, String, String, String)}
+Get a description of the foreign key columns in the foreign key table that reference the primary key columns of the primary key table (describe how one table imports another's key.) This should normally return a single foreign key/primary key pair (most tables only import a foreign key from a table once.) They are ordered by FKTABLE\_CAT, FKTABLE\_SCHEM, FKTABLE\_NAME, and KEY\_SEQ. 
+
+\MIitem{getDatabaseProductName}{()}
+What's the name of this database product? 
+
+\MIitem{getDatabaseProductVersion}{()}
+What's the version of this database product? 
+
+\MIitem{getDefaultTransactionIsolation}{()}
+What's the database's default transaction isolation level? The values are defined in \ClassRef{Connection}. 
+
+\MIitem{getDriverMajorVersion}{()}
+What's this ODBC driver's major version number? 
+
+\MIitem{getDriverMinorVersion}{()}
+What's this ODBC driver's minor version number? 
+
+\MIitem{getDriverName}{()}
+What's the name of this ODBC driver? 
+
+\MIitem{getDriverVersion}{()}
+What's the version of this ODBC driver? 
+
+\MIitem{getExportedKeys}{(String, String, String)}
+Get a description of a foreign key columns that reference a table's primary key columns (the foreign keys exported by a table). 
+
+\MIitem{getExtraNameCharacters}{()}
+Get all the "extra" characters that can be used in unquoted identifier names (those beyond a-z, 0-9 and \_). 
+
+\MIitem{getIdentifierQuoteString}{()}
+What's the string used to quote SQL identifiers? This returns a space " " if identifier quoting isn't supported. 
+
+\MIitem{getImportedKeys}{(String, String, String)}
+Get a description of the primary key columns that are referenced by a table's foreign key columns (the primary keys imported by a table). 
+
+\MIitem{getIndexInfo}{(String, String, String, boolean, boolean)}
+Get a description of a table's indices and statistics. 
+
+\MIitem{getMaxBinaryLiteralLength}{()}
+How many hex characters can you have in an inline binary literal? 
+
+\MIitem{getMaxCatalogNameLength}{()}
+What's the maximum length of a catalog name? 
+
+\MIitem{getMaxCharLiteralLength}{()}
+What's the max length for a character literal? 
+
+\MIitem{getMaxColumnNameLength}{()}
+What's the limit on column name length? 
+
+\MIitem{getMaxColumnsInGroupBy}{()}
+What's the maximum number of columns in a "GROUP BY" clause? 
+
+\MIitem{getMaxColumnsInIndex}{()}
+What's the maximum number of columns allowed in an index? 
+
+\MIitem{getMaxColumnsInOrderBy}{()}
+What's the maximum number of columns in an "ORDER BY" clause? 
+
+\MIitem{getMaxColumnsInSelect}{()}
+What's the maximum number of columns in a "SELECT" list? 
+
+\MIitem{getMaxColumnsInTable}{()}
+What's maximum number of columns in a table? 
+
+\MIitem{getMaxConnections}{()}
+How many active connections can we have at a time to this database? 
+
+\MIitem{getMaxCursorNameLength}{()}
+What's the maximum cursor name length? 
+
+\MIitem{getMaxIndexLength}{()}
+What's the maximum length of an index (in bytes)? 
+
+\MIitem{getMaxProcedureNameLength}{()}
+What's the maximum length of a procedure name? 
+
+\MIitem{getMaxRowSize}{()}
+What's the maximum length of a single row? 
+
+\MIitem{getMaxSchemaNameLength}{()}
+What's the maximum length allowed for a schema name? 
+
+\MIitem{getMaxStatementLength}{()}
+What's the maximum length of a SQL statement? 
+
+\MIitem{getMaxStatements}{()}
+How many active statements can we have open at one time to this database? 
+
+\MIitem{getMaxTableNameLength}{()}
+What's the maximum length of a table name? 
+
+\MIitem{getMaxTablesInSelect}{()}
+What's the maximum number of tables in a SELECT? 
+
+\MIitem{getMaxUserNameLength}{()}
+What's the maximum length of a user name? 
+
+\MIitem{getNumericFunctions}{()}
+Get a comma separated list of math functions. 
+
+\MIitem{getPrimaryKeys}{(String, String, String)}
+Get a description of a table's primary key columns. 
+
+\MIitem{getProcedureColumns}{(String, String, String, String)}
+Get a description of a catalog's stored procedure parameters and result columns. 
+
+\MIitem{getProcedures}{(String, String, String)}
+Get a description of stored procedures available in a catalog. 
+
+\MIitem{getProcedureTerm}{()}
+What's the database vendor's preferred term for "procedure"? 
+
+\MIitem{getSchemas}{()}
+Get the schema names available in this database. 
+
+\MIitem{getSchemaTerm}{()}
+What's the database vendor's preferred term for "schema"? 
+
+\MIitem{getSearchStringEscape}{()}
+This is the string that can be used to escape '\_' or '%' in the string pattern style catalog search parameters. 
+
+\MIitem{getSQLKeywords}{()}
+Get a comma separated list of all a database's SQL keywords that are NOT also SQL92 keywords. 
+
+\MIitem{getStringFunctions}{()}
+Get a comma separated list of string functions. 
+
+\MIitem{getSystemFunctions}{()}
+Get a comma separated list of system functions. 
+
+\MIitem{getTablePrivileges}{(String, String, String)}
+Get a description of the access rights for each table available in a catalog. 
+
+\MIitem{getTables}{(String, String, String, String[])}
+Get a description of tables available in a catalog. 
+
+\MIitem{getTableTypes}{()}
+Get the table types available in this database. 
+
+\MIitem{getTimeDateFunctions}{()}
+Get a comma separated list of time and date functions. 
+
+\MIitem{getTypeInfo}{()}
+Get a description of all the standard SQL types supported by this database. 
+
+\MIitem{getURL}{()}
+What's the url for this database? 
+
+\MIitem{getUserName}{()}
+What's our user name as known to the database? 
+
+\MIitem{getVersionColumns}{(String, String, String)}
+Get a description of a table's columns that are automatically updated when any value in a row is updated. 
+
+\MIitem{isCatalogAtStart}{()}
+Does a catalog appear at the start of a qualified table name? (Otherwise it appears at the end) 
+
+\MIitem{isReadOnly}{()}
+Is the database in read-only mode? 
+
+\MIitem{nullPlusNonNullIsNull}{()}
+Are concatenations between NULL and non-NULL values NULL?
+
+\MIitem{nullsAreSortedAtEnd}{()}
+Are NULL values sorted at the end regardless of sort order? 
+
+\MIitem{nullsAreSortedAtStart}{()}
+Are NULL values sorted at the start regardless of sort order? 
+
+\MIitem{nullsAreSortedHigh}{()}
+Are NULL values sorted high? 
+
+\MIitem{nullsAreSortedLow}{()}
+Are NULL values sorted low? 
+
+\MIitem{storesLowerCaseIdentifiers}{()}
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in lower case? 
+
+\MIitem{storesLowerCaseQuotedIdentifiers}{()}
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in lower case? 
+
+\MIitem{storesMixedCaseIdentifiers}{()}
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in mixed case? 
+
+\MIitem{storesMixedCaseQuotedIdentifiers}{()}
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in mixed case? 
+
+\MIitem{storesUpperCaseIdentifiers}{()}
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in upper case? 
+
+\MIitem{storesUpperCaseQuotedIdentifiers}{()}
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in upper case? 
+
+\MIitem{supportsAlterTableWithAddColumn}{()}
+Is "ALTER TABLE" with add column supported? 
+
+\MIitem{supportsAlterTableWithDropColumn}{()}
+Is "ALTER TABLE" with drop column supported? 
+
+\MIitem{supportsANSI92EntryLevelSQL}{()}
+Is the ANSI92 entry level SQL grammar supported?
+
+\MIitem{supportsANSI92FullSQL}{()}
+Is the ANSI92 full SQL grammar supported? 
+
+\MIitem{supportsANSI92IntermediateSQL}{()}
+Is the ANSI92 intermediate SQL grammar supported? 
+
+\MIitem{supportsCatalogsInDataManipulation}{()}
+Can a catalog name be used in a data manipulation statement? 
+
+\MIitem{supportsCatalogsInIndexDefinitions}{()}
+Can a catalog name be used in a index definition statement? 
+
+\MIitem{supportsCatalogsInPrivilegeDefinitions}{()}
+Can a catalog name be used in a privilege definition statement? 
+
+\MIitem{supportsCatalogsInProcedureCalls}{()}
+Can a catalog name be used in a procedure call statement? 
+
+\MIitem{supportsCatalogsInTableDefinitions}{()}
+Can a catalog name be used in a table definition statement? 
+
+\MIitem{supportsColumnAliasing}{()}
+Is column aliasing supported? 
+If so, the SQL AS clause can be used to provide names for computed columns or to provide alias names for columns as required. 
+
+\MIitem{supportsConverts}{()}
+Is the CONVERT function between SQL types supported? 
+
+\MIitem{supportsConvert}{(int, int)}
+Is CONVERT between the given SQL types supported? 
+
+\MIitem{supportsCoreSQLGrammar}{()}
+Is the ODBC Core SQL grammar supported? 
+
+\MIitem{supportsCorrelatedSubqueries}{()}
+Are correlated subqueries supported?
+
+\MIitem{supportsDataDefinitionAndDataManipulationTransactions}{()}
+Are both data definition and data manipulation statements within a transaction supported? 
+
+\MIitem{supportsDataManipulationTransactionsOnly}{()}
+Are only data manipulation statements within a transaction supported? 
+
+\MIitem{supportsDifferentTableCorrelationNames}{()}
+If table correlation names are supported, are they restricted to be different from the names of the tables? 
+
+\MIitem{supportsExpressionsInOrderBy}{()}
+Are expressions in "ORDER BY" lists supported? 
+
+\MIitem{supportsExtendedSQLGrammar}{()}
+Is the ODBC Extended SQL grammar supported? 
+
+\MIitem{supportsFullOuterJoins}{()}
+Are full nested outer joins supported? 
+
+\MIitem{supportsGroupBy}{()}
+Is some form of "GROUP BY" clause supported? 
+
+\MIitem{supportsGroupByBeyondSelect}{()}
+Can a "GROUP BY" clause add columns not in the SELECT provided it specifies all the columns in the SELECT? 
+
+\MIitem{supportsGroupByUnrelated}{()}
+Can a "GROUP BY" clause use columns not in the SELECT? 
+
+\MIitem{supportsIntegrityEnhancementFacility}{()}
+Is the SQL Integrity Enhancement Facility supported? 
+
+\MIitem{supportsLikeEscapeClause}{()}
+Is the escape character in "LIKE" clauses supported?
+
+\MIitem{supportsLimitedOuterJoins}{()}
+Is there limited support for outer joins? (This will be true if supportFullOuterJoins is true.) 
+
+\MIitem{supportsMinimumSQLGrammar}{()}
+Is the ODBC Minimum SQL grammar supported?
+
+\MIitem{supportsMixedCaseIdentifiers}{()}
+Does the database treat mixed case unquoted SQL identifiers as case sensitive and as a result store them in mixed case?
+
+\MIitem{supportsMixedCaseQuotedIdentifiers}{()}
+Does the database treat mixed case quoted SQL identifiers as case sensitive and as a result store them in mixed case?
+
+\MIitem{supportsMultipleResultSets}{()}
+Are multiple ResultSets from a single execute supported? 
+
+\MIitem{supportsMultipleTransactions}{()}
+Can we have multiple transactions open at once (on different connections)? 
+
+\MIitem{supportsNonNullableColumns}{()}
+Can columns be defined as non-nullable?
+
+\MIitem{supportsOpenCursorsAcrossCommit}{()}
+Can cursors remain open across commits? 
+
+\MIitem{supportsOpenCursorsAcrossRollback}{()}
+Can cursors remain open across rollbacks? 
+
+\MIitem{supportsOpenStatementsAcrossCommit}{()}
+Can statements remain open across commits? 
+
+\MIitem{supportsOpenStatementsAcrossRollback}{()}
+Can statements remain open across rollbacks? 
+
+\MIitem{supportsOrderByUnrelated}{()}
+Can an "ORDER BY" clause use columns not in the SELECT? 
+
+\MIitem{supportsOuterJoins}{()}
+Is some form of outer join supported? 
+
+\MIitem{supportsPositionedDelete}{()}
+Is positioned DELETE supported? 
+
+\MIitem{supportsPositionedUpdate}{()}
+Is positioned UPDATE supported? 
+
+\MIitem{supportsSchemasInDataManipulation}{()}
+Can a schema name be used in a data manipulation statement? 
+
+\MIitem{supportsSchemasInIndexDefinitions}{()}
+Can a schema name be used in an index definition statement? 
+
+\MIitem{supportsSchemasInPrivilegeDefinitions}{()}
+Can a schema name be used in a privilege definition statement? 
+
+\MIitem{supportsSchemasInProcedureCalls}{()}
+Can a schema name be used in a procedure call statement? 
+
+\MIitem{supportsSchemasInTableDefinitions}{()}
+Can a schema name be used in a table definition statement? 
+
+\MIitem{supportsSelectForUpdate}{()}
+Is SELECT for UPDATE supported? 
+
+\MIitem{supportsStoredProcedures}{()}
+Are stored procedure calls using the stored procedure escape syntax supported? 
+
+\MIitem{supportsSubqueriesInComparisons}{()}
+Are subqueries in comparison expressions supported? 
+
+\MIitem{supportsSubqueriesInExists}{()}
+Are subqueries in exists expressions supported? 
+
+\MIitem{supportsSubqueriesInIns}{()}
+Are subqueries in "in" statements supported? 
+
+\MIitem{supportsSubqueriesInQuantifieds}{()}
+Are subqueries in quantified expressions supported?
+
+\MIitem{supportsTableCorrelationNames}{()}
+Are table correlation names supported? 
+
+\MIitem{supportsTransactionIsolationLevel}{(int)}
+Does the database support the given transaction isolation level? 
+
+\MIitem{supportsTransactions}{()}
+Are transactions supported? If not, commit is a noop and the isolation level is TRANSACTION\_NONE. 
+
+\MIitem{supportsUnion}{()}
+Is SQL UNION supported? 
+
+\MIitem{supportsUnionAll}{()}
+Is SQL UNION ALL supported? 
+
+\MIitem{usesLocalFilePerTable}{()}
+Does the database use a file for each table? 
+
+\MIitem{usesLocalFiles}{()}
+Does the database store tables in a local file? 
+
+\end{description}
+
+
+
+
+\Method{allProceduresAreCallable}
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)allProceduresAreCallable():BOOLEAN;'
+
+Can all the procedures returned by getProcedures be called by the current user? 
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{allTablesAreSelectable}
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)allTablesAreSelectable():BOOLEAN;'
+
+Can all the tables returned by getTable be SELECTed by the current user? 
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getURL}
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getURL():STRING;'
+
+What's the url for this database? 
+
+{\bf Returns: } 
+the url or null if it can't be generated 
+
+
+\Method{getUserName}
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getUserName():STRING;'
+
+What's our user name as known to the database? 
+
+
+{\bf Returns: } 
+our database user name 
+
+
+\Method{isReadOnly}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)isReadOnly():BOOLEAN;'
+
+
+
+
+
+
+Is the database in read-only mode? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{nullsAreSortedHigh}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)nullsAreSortedHigh():BOOLEAN;'
+
+
+
+
+
+
+Are NULL values sorted high? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{nullsAreSortedLow}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)nullsAreSortedLow():BOOLEAN;'
+
+
+
+
+
+
+Are NULL values sorted low? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{nullsAreSortedAtStart}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)nullsAreSortedAtStart():BOOLEAN;'
+
+
+
+
+
+
+Are NULL values sorted at the start regardless of sort order? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{nullsAreSortedAtEnd}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)nullsAreSortedAtEnd():BOOLEAN;'
+
+
+
+
+
+
+Are NULL values sorted at the end regardless of sort order? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getDatabaseProductName}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDatabaseProductName():STRING;'
+
+
+
+
+
+
+What's the name of this database product? 
+
+
+{\bf Returns: } 
+database product name 
+
+
+\Method{getDatabaseProductVersion}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDatabaseProductVersion():STRING;'
+
+
+
+
+
+
+What's the version of this database product? 
+
+
+{\bf Returns: } 
+database version 
+
+
+\Method{getDriverName}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDriverName():STRING;'
+
+
+
+
+
+
+What's the name of this ODBC driver? 
+
+
+{\bf Returns: } 
+ODBC driver name 
+
+
+\Method{getDriverVersion}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDriverVersion():STRING;'
+
+
+
+
+
+
+What's the version of this ODBC driver? 
+
+
+{\bf Returns: } 
+ODBC driver version 
+
+
+\Method{getDriverMajorVersion}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDriverMajorVersion():STRING;'
+
+
+
+
+
+
+What's this ODBC driver's major version number? 
+
+
+{\bf Returns: } 
+ODBC driver major version 
+
+
+\Method{getDriverMinorVersion}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDriverMinorVersion():STRING;'
+
+
+
+
+
+
+What's this ODBC driver's minor version number? 
+
+
+{\bf Returns: } 
+ODBC driver minor version number 
+
+
+\Method{usesLocalFiles}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)usesLocalFiles():BOOLEAN;'
+
+
+
+
+
+
+Does the database store tables in a local file? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{usesLocalFilePerTable}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)usesLocalFilePerTable():BOOLEAN;'
+
+
+
+
+
+
+Does the database use a file for each table? 
+
+
+{\bf Returns: } 
+true if the database uses a local file for each table 
+
+
+\Method{supportsMixedCaseIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsMixedCaseIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case unquoted SQL identifiers as case sensitive and as a result store them in mixed case?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesUpperCaseIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesUpperCaseIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in upper case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesLowerCaseIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesLowerCaseIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in lower case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesMixedCaseIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesMixedCaseIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case unquoted SQL identifiers as case insensitive and store them in mixed case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsMixedCaseQuotedIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsMixedCaseQuotedIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case quoted SQL identifiers as case sensitive and as a result store them in mixed case?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesUpperCaseQuotedIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesUpperCaseQuotedIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in upper case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesLowerCaseQuotedIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesLowerCaseQuotedIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in lower case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{storesMixedCaseQuotedIdentifiers}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)storesMixedCaseQuotedIdentifiers():BOOLEAN;'
+
+
+
+
+
+
+Does the database treat mixed case quoted SQL identifiers as case insensitive and store them in mixed case? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getIdentifierQuoteString}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getIdentifierQuoteString():STRING;'
+
+
+
+
+
+
+What's the string used to quote SQL identifiers? This returns a space " " if identifier quoting isn't supported.
+
+
+{\bf Returns: } 
+the quoting string 
+
+
+\Method{getSQLKeywords}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getSQLKeywords():STRING;'
+
+
+
+
+
+
+Get a comma separated list of all a database's SQL keywords that are NOT also SQL92 keywords. 
+
+
+{\bf Returns: } 
+the list 
+
+
+\Method{getNumericFunctions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getNumericFunctions():STRING;'
+
+
+
+
+
+
+Get a comma separated list of math functions. 
+
+
+{\bf Returns: } 
+the list 
+
+
+\Method{getStringFunctions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getStringFunctions():STRING;'
+
+
+
+
+
+
+Get a comma separated list of string functions. 
+
+
+{\bf Returns: } 
+the list 
+
+
+\Method{getSystemFunctions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getSystemFunctions():STRING;'
+
+
+
+
+
+
+Get a comma separated list of system functions. 
+
+
+{\bf Returns: } 
+the list 
+
+
+\Method{getTimeDateFunctions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getTimeDateFunctions():STRING;'
+
+
+
+
+
+
+Get a comma separated list of time and date functions. 
+
+
+{\bf Returns: } 
+the list 
+
+
+\Method{getSearchStringEscape}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getSearchStringEscape():STRING;'
+
+
+
+
+
+
+This is the string that can be used to escape '\_' or '%' in the string pattern style catalog search parameters. 
+
+The '\_' character represents any single character. 
+
+The '%' character represents any sequence of zero or more characters. 
+
+
+{\bf Returns: } 
+the string used to escape wildcard characters 
+
+
+\Method{getExtraNameCharacters}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getExtraNameCharacters():STRING;'
+
+
+
+
+
+
+Get all the "extra" characters that can be used in unquoted identifier names (those beyond a-z, 0-9 and \_). 
+
+
+{\bf Returns: } 
+the string containing the extra characters 
+
+
+\Method{supportsAlterTableWithAddColumn}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsAlterTableWithAddColumn():BOOLEAN;'
+
+
+
+
+
+
+Is "ALTER TABLE" with add column supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsAlterTableWithDropColumn}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsAlterTableWithDropColumn():BOOLEAN;'
+
+
+
+
+
+
+Is "ALTER TABLE" with drop column supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsColumnAliasing}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsColumnAliasing():BOOLEAN;'
+
+
+
+
+
+
+Is column aliasing supported? 
+
+If so, the SQL AS clause can be used to provide names for computed columns or to provide alias names for columns as required.
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{nullPlusNonNullIsNull}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)nullPlusNonNullIsNull():BOOLEAN;'
+
+
+
+
+
+
+Are concatenations between NULL and non-NULL values NULL? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsConverts}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsConverts():BOOLEAN;'
+
+
+
+
+
+
+Is the CONVERT function between SQL types supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsConvert}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsConvert(fromType, toType:SqlType):BOOLEAN;'
+
+
+
+
+
+
+Is CONVERT between the given SQL types supported? 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[fromType] - the type to convert from 
+\item[toType] - the type to convert to 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsTableCorrelationNames}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsTableCorrelationNames():BOOLEAN;'
+
+
+
+
+
+
+Are table correlation names supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsDifferentTableCorrelationNames}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsDifferentTableCorrelationNames():BOOLEAN;'
+
+
+
+
+
+
+If table correlation names are supported, are they restricted to be different from the names of the tables? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsExpressionsInOrderBy}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsExpressionsInOrderBy():BOOLEAN;'
+
+
+
+
+
+
+Are expressions in "ORDER BY" lists supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsOrderByUnrelated}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOrderByUnrelated():BOOLEAN;'
+
+
+
+
+
+
+Can an "ORDER BY" clause use columns not in the SELECT? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsGroupBy}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsGroupBy():BOOLEAN;'
+
+
+
+
+
+
+Is some form of "GROUP BY" clause supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsGroupByUnrelated}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsGroupByUnrelated():BOOLEAN;'
+
+
+
+
+
+
+Can a "GROUP BY" clause use columns not in the SELECT? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsGroupByBeyondSelect}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsGroupByBeyondSelect():BOOLEAN;'
+
+
+
+
+
+
+Can a "GROUP BY" clause add columns not in the SELECT provided it specifies all the columns in the SELECT? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsLikeEscapeClause}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsLikeEscapeClause():BOOLEAN;'
+
+
+
+
+
+
+Is the escape character in "LIKE" clauses supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsMultipleResultSets}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsMultipleResultSets():BOOLEAN;'
+
+
+
+
+
+
+Are multiple ResultSets from a single execute supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsMultipleTransactions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsMultipleTransactions():BOOLEAN;'
+
+
+
+
+
+
+Can we have multiple transactions open at once (on different connections)? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsNonNullableColumns}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsNonNullableColumns():BOOLEAN;'
+
+
+
+
+
+
+Can columns be defined as non-nullable?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsMinimumSQLGrammar}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsMinimumSQLGrammar():BOOLEAN;'
+
+
+
+
+
+
+Is the ODBC Minimum SQL grammar supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCoreSQLGrammar}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCoreSQLGrammar():BOOLEAN;'
+
+
+
+
+
+
+Is the ODBC Core SQL grammar supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsExtendedSQLGrammar}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsExtendedSQLGrammar():BOOLEAN;'
+
+
+
+
+
+
+Is the ODBC Extended SQL grammar supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsANSI92EntryLevelSQL}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsANSI92EntryLevel():BOOLEAN;'
+
+
+
+
+
+
+Is the ANSI92 entry level SQL grammar supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsANSI92IntermediateSQL}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsANSI92IntermediateLevel():BOOLEAN;'
+
+
+
+
+
+
+Is the ANSI92 intermediate SQL grammar supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsANSI92FullSQL}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsANSI92FullSQL():BOOLEAN;'
+
+
+
+
+
+
+Is the ANSI92 full SQL grammar supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsIntegrityEnhancementFacility}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsIntegrityEnhancementFacility():BOOLEAN;'
+
+
+
+
+
+
+Is the SQL Integrity Enhancement Facility supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsOuterJoins}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOuterJoins():BOOLEAN;'
+
+
+
+
+
+
+Is some form of outer join supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsFullOuterJoins}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsFullOuterJoins():BOOLEAN;'
+
+
+
+
+
+
+Are full nested outer joins supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsLimitedOuterJoins}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsLimitedOuterJoins():BOOLEAN;'
+
+
+
+
+
+
+Is there limited support for outer joins? (This will be true if supportFullOuterJoins is true.) 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getSchemaTerm}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getSchemaTerm():STRING;'
+
+
+
+
+
+
+What's the database vendor's preferred term for "schema"? 
+
+
+{\bf Returns: } 
+the vendor term 
+
+
+\Method{getProcedureTerm}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getProcedureTerm():STRING;'
+
+
+
+
+
+
+What's the database vendor's preferred term for "procedure"? 
+
+
+{\bf Returns: } 
+the vendor term 
+
+
+\Method{getCatalogTerm}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getCatalogTerm():STRING;'
+
+
+
+
+
+
+What's the database vendor's preferred term for "catalog"? 
+
+
+{\bf Returns: } 
+the vendor term 
+
+
+\Method{isCatalogAtStart}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)isCatalogAtStart():BOOLEAN;'
+
+
+
+
+
+
+Does a catalog appear at the start of a qualified table name? (Otherwise it appears at the end) 
+
+
+{\bf Returns: } 
+true if it appears at the start 
+
+
+\Method{getCatalogSeparator}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getCatalogSeparator():STRING;'
+
+
+
+
+
+
+What's the separator between catalog and table name? 
+
+
+{\bf Returns: } 
+the separator string 
+
+
+\Method{supportsSchemasInDataManipulation}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSchemasInDataManipulation():BOOLEAN;'
+
+
+
+
+
+
+Can a schema name be used in a data manipulation statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSchemasInProcedureCalls}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSchemasInProcedureCalls():BOOLEAN;'
+
+
+
+
+
+
+Can a schema name be used in a procedure call statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSchemasInTableDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSchemasInTableDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a schema name be used in a table definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSchemasInIndexDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSchemasInIndexDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a schema name be used in an index definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSchemasInPrivilegeDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSchemasInPrivilegeDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a schema name be used in a privilege definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCatalogsInDataManipulation}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCatalogsInDataManipulation():BOOLEAN;'
+
+
+
+
+
+
+Can a catalog name be used in a data manipulation statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCatalogsInProcedureCalls}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCatalogsInProcedureCalls():BOOLEAN;'
+
+
+
+
+
+
+Can a catalog name be used in a procedure call statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCatalogsInTableDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCatalogsInTableDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a catalog name be used in a table definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCatalogsInIndexDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCatalogsInIndexDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a catalog name be used in a index definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsCatalogsInPrivilegeDefinitions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCatalogsInPrivilegeDefinitions():BOOLEAN;'
+
+
+
+
+
+
+Can a catalog name be used in a privilege definition statement? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsPositionedDelete}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsPositionedDelete():BOOLEAN;'
+
+
+
+
+
+
+Is positioned DELETE supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsPositionedUpdate}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsPositionedUpdate():BOOLEAN;'
+
+
+
+
+
+
+Is positioned UPDATE supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSelectForUpdate}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSelectForUpdate():BOOLEAN;'
+
+
+
+
+
+
+Is SELECT for UPDATE supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsStoredProcedures}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsStoredProcedures():BOOLEAN;'
+
+
+
+
+
+
+Are stored procedure calls using the stored procedure escape syntax supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSubqueriesInComparisons}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSubqueriesInComparisons():BOOLEAN;'
+
+
+
+
+
+
+Are subqueries in comparison expressions supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSubqueriesInExists}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSubqueriesInExists():BOOLEAN;'
+
+
+
+
+
+
+Are subqueries in exists expressions supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSubqueriesInIns}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSubqueriesInIns():BOOLEAN;'
+
+
+
+
+
+
+Are subqueries in "in" statements supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsSubqueriesInQuantifieds}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsSubqueriesInQuantifields():BOOLEAN;'
+
+
+
+
+
+
+Are subqueries in quantified expressions supported?
+
+
+{\bf Returns: } 
+true if so
+
+\Method{supportsCorrelatedSubqueries}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsCorrelatedSubqueries():BOOLEAN;'
+
+
+
+
+
+
+Are correlated subqueries supported?
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsUnion}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsUnion():BOOLEAN;'
+
+
+
+
+
+
+Is SQL UNION supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsUnionAll}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsUnionAll():BOOLEAN;'
+
+
+
+
+
+
+Is SQL UNION ALL supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsOpenCursorsAcrossCommit}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOpenCursorsAcrossCommit():BOOLEAN;'
+
+
+
+
+
+
+Can cursors remain open across commits? 
+
+
+{\bf Returns: } 
+true if so 
+
+{\bf See Also:} 
+\MyClassRef{disableAutoClose}
+
+
+\Method{supportsOpenCursorsAcrossRollback}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOpenCursorsAcrossRollback():BOOLEAN;'
+
+
+
+
+
+
+Can cursors remain open across rollbacks? 
+
+
+{\bf Returns: } 
+true if so 
+
+{\bf See Also:} 
+\MyClassRef{disableAutoClose} 
+
+
+\Method{supportsOpenStatementsAcrossCommit}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOpenStatementsAcrossCommit():BOOLEAN;'
+
+
+
+
+
+
+Can statements remain open across commits? 
+
+
+{\bf Returns: } 
+true if so 
+
+{\bf See Also:} 
+\MyClassRef{disableAutoClose}
+
+
+\Method{supportsOpenStatementsAcrossRollback}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsOpenStatementsAcrossRollback():BOOLEAN;'
+
+
+
+
+
+
+Can statements remain open across rollbacks? 
+
+
+{\bf Returns: } 
+true if so 
+
+{\bf See Also:} 
+\MyMethodRef{disableAutoClose}
+
+
+\Method{getMaxBinaryLiteralLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxBinaryLiteralLength():LONGINT;'
+
+
+
+
+
+
+How many hex characters can you have in an inline binary literal? 
+
+
+{\bf Returns: } 
+max literal length 
+
+
+\Method{getMaxCharLiteralLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxCharLiteralLegth():LONGINT;'
+
+
+
+
+
+
+What's the max length for a character literal? 
+
+
+{\bf Returns: } 
+max literal length 
+
+
+\Method{getMaxColumnNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnNameLength():LONGINT;'
+
+
+
+
+
+
+What's the limit on column name length? 
+
+
+{\bf Returns: } 
+max literal length 
+
+
+\Method{getMaxColumnsInGroupBy}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnsInGroupBy():LONGINT;'
+
+
+
+
+
+
+What's the maximum number of columns in a "GROUP BY" clause? 
+
+
+{\bf Returns: } 
+max number of columns 
+
+
+\Method{getMaxColumnsInIndex}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnsInIndex():LONGINT;'
+
+
+
+
+
+
+What's the maximum number of columns allowed in an index? 
+
+
+{\bf Returns: } 
+max columns 
+
+
+\Method{getMaxColumnsInOrderBy}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnsInOrderBy():LONGINT;'
+
+
+
+
+
+
+What's the maximum number of columns in an "ORDER BY" clause? 
+
+
+{\bf Returns: } 
+max columns 
+
+
+\Method{getMaxColumnsInSelect}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnsInSelect():LONGINT;'
+
+
+
+
+
+
+What's the maximum number of columns in a "SELECT" list? 
+
+
+{\bf Returns: } 
+max columns 
+
+
+\Method{getMaxColumnsInTable}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxColumnsInTable():LONGINT;'
+
+
+
+
+
+
+What's maximum number of columns in a table? 
+
+
+{\bf Returns: } 
+max columns 
+
+
+\Method{getMaxConnections}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxConnections():LONGINT;'
+
+
+
+
+
+
+How many active connections can we have at a time to this database? 
+
+
+{\bf Returns: } 
+max connections 
+
+
+\Method{getMaxCursorNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxCursorNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum cursor name length? 
+
+
+{\bf Returns: } 
+max cursor name length in bytes 
+
+
+\Method{getMaxIndexLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxIndexLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of an index (in bytes)? 
+
+
+{\bf Returns: } 
+max index length in bytes 
+
+
+\Method{getMaxSchemaNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxSchemaNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length allowed for a schema name? 
+
+
+{\bf Returns: } 
+max name length in bytes 
+
+
+\Method{getMaxProcedureNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxProcedureNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a procedure name? 
+
+
+{\bf Returns: } 
+max name length in bytes 
+
+
+\Method{getMaxCatalogNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxCatalogNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a catalog name? 
+
+
+{\bf Returns: } 
+max name length in bytes 
+
+
+\Method{getMaxRowSize}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxRowSize():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a single row? 
+
+
+{\bf Returns: } 
+max row size in bytes 
+
+
+\Method{doesMaxRowSizeIncludeBlobs}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)doesMasRowSizeIncludeBlobs():BOOLEAN;'
+
+
+
+
+
+
+Did getMaxRowSize() include LONGVARCHAR and LONGVARBINARY blobs? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getMaxStatementLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxStatementLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a SQL statement? 
+
+
+{\bf Returns: } 
+max length in bytes 
+
+
+\Method{getMaxStatements}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxStatements():LONGINT;'
+
+
+
+
+
+
+How many active statements can we have open at one time to this database? 
+
+
+{\bf Returns: } 
+the maximum 
+
+
+\Method{getMaxTableNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxTableNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a table name? 
+
+
+{\bf Returns: } 
+max name length in bytes 
+
+
+\Method{getMaxTablesInSelect}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxTablesInSelect():LONGINT;'
+
+
+
+
+
+
+What's the maximum number of tables in a SELECT? 
+
+
+{\bf Returns: } 
+the maximum 
+
+
+\Method{getMaxUserNameLength}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getMaxUserNameLength():LONGINT;'
+
+
+
+
+
+
+What's the maximum length of a user name? 
+
+
+{\bf Returns: } 
+max name length in bytes 
+
+
+\Method{getDefaultTransactionIsolation}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getDefaultTransactionIsolation():INTEGER;'
+
+
+
+
+
+
+What's the database's default transaction isolation level? The values are defined in \ClassRef{Connection}. 
+
+
+{\bf Returns: } 
+the default isolation level 
+
+{\bf See Also:} 
+\ClassRef{Connection}
+
+
+\Method{supportsTransactions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsTransations():BOOLEAN;'
+
+
+
+
+
+
+Are transactions supported? If not, commit is a noop and the isolation level is TRANSACTION\_NONE. 
+
+
+{\bf Returns: } 
+true if transactions are supported 
+
+
+\Method{supportsTransactionIsolationLevel}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsTransationIsolationLevel(level:INTEGER):BOOLEAN;'
+
+
+
+
+
+
+Does the database support the given transaction isolation level? 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[level] - the values are defined in \ClassRef{Connection} 
+\end{description}
+
+{\bf Returns: } 
+true if so 
+
+{\bf See Also:} 
+\ClassRef{Connection}
+
+
+\Method{supportsDataDefinitionAndDataManipulationTransactions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsDataDefinitionAndDataManipulationTransactions():BOOLEAN;'
+
+
+
+
+
+
+Are both data definition and data manipulation statements within a transaction supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{supportsDataManipulationTransactionsOnly}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)supportsDataManipulationTransactionsOnly():BOOLEAN;'
+
+
+
+
+
+
+Are only data manipulation statements within a transaction supported? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{dataDefinitionCausesTransactionCommit}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)dataDefinitionCausesTransactionCommit():BOOLEAN;'
+
+
+
+
+
+
+Does a data definition statement within a transaction force the transaction to commit? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{dataDefinitionIgnoredInTransactions}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)dataDefinitionIgnoredInTransactions():BOOLEAN;'
+
+
+
+
+
+
+Is a data definition statement within a transaction ignored? 
+
+
+{\bf Returns: } 
+true if so 
+
+
+\Method{getProcedures}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getProcedures(catalog, schemaPattern, procedureNamePattern:STRING):ResultSet;'
+
+
+
+
+Get a description of stored procedures available in a catalog. 
+
+Only procedure descriptions matching the schema and procedure name criteria are returned. They are ordered by PROCEDURE\_SCHEM, and PROCEDURE\_NAME. 
+
+Each procedure description has the the following columns: 
+
+1.PROCEDURE\_CAT String => procedure catalog (may be null) 
+
+2.PROCEDURE\_SCHEM String => procedure schema (may be null) 
+
+3.PROCEDURE\_NAME String => procedure name 
+
+4.reserved for future use 
+
+5.reserved for future use 
+
+6.reserved for future use 
+
+7.REMARKS String => explanatory comment on the procedure 
+
+8.PROCEDURE\_TYPE short => kind of procedure: 
+\begin{description}
+\item[procedureResultUnknown] May return a result 
+\item[procedureNoResult] Does not return a result 
+\item[procedureReturnsResult] Returns a result 
+\end{description}
+
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schemaPattern] a schema name pattern; "" retrieves those without a schema 
+\item[procedureNamePattern] a procedure name pattern 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a procedure description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape} 
+
+
+\Method{getProcedureColumns}
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getProcedureColumns(catalog, schemaPattern, procedureNamePattern, columnNamePattern:STRING):ResultSet;'
+
+
+
+
+
+Get a description of a catalog's stored procedure parameters and result columns. 
+
+Only descriptions matching the schema, procedure and parameter name criteria are returned. They are ordered by PROCEDURE\_SCHEM and PROCEDURE\_NAME. Within this, the return value, if any, is first. Next are the parameter descriptions in call order. The column descriptions follow in column number order. 
+
+Each row in the ResultSet is a parameter desription or column description with the following fields: 
+
+1.PROCEDURE\_CAT String => procedure catalog (may be null)
+
+2.PROCEDURE\_SCHEM String => procedure schema (may be null)
+
+3.PROCEDURE\_NAME String => procedure name
+
+4.COLUMN\_NAME String => column/parameter name
+
+5.COLUMN\_TYPE Short => kind of column/parameter: 
+\begin{description}
+\item[procedureColumnUnknown] nobody knows 
+\item[procedureColumnIn] IN parameter 
+\item[procedureColumnInOut] INOUT parameter 
+\item[procedureColumnOut] OUT parameter 
+\item[procedureColumnReturn] procedure return value 
+\item[procedureColumnResult] result column in ResultSet 
+\end{description}
+
+6.DATA\_TYPE short => SQL type
+
+7.TYPE\_NAME String => SQL type name
+
+8.PRECISION int => precision
+
+9.LENGTH int => length in bytes of data
+
+10.SCALE short => scale
+
+11.RADIX short => radix
+
+12.NULLABLE short => can it contain NULL? 
+\begin{description}
+\item[procedureNoNulls] does not allow NULL values 
+\item[procedureNullable] allows NULL values 
+\item[procedureNullableUnknown] nullability unknown 
+\end{description}
+
+13.REMARKS String => comment describing parameter/column 
+
+
+{\bf Note: } Some databases may not return the column descriptions for a procedure. Additional columns beyond REMARKS can be defined by the database. 
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schemaPattern] a schema name pattern; "" retrieves those without a schema 
+\item[procedureNamePattern] a procedure name pattern 
+\item[columnNamePattern] a column name pattern 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a stored procedure parameter or column description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape}
+
+
+\Method{getTables}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getTables(catalog, schemaPattern, tableNamePattern, types:STRING):ResultSet;'
+
+
+
+
+Get a description of tables available in a catalog. 
+
+Only table descriptions matching the catalog, schema, table name and type criteria are returned. They are ordered by TABLE\_TYPE, TABLE\_SCHEM and TABLE\_NAME. 
+
+Each table description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null)
+
+2.TABLE\_SCHEM String => table schema (may be null)
+
+3.TABLE\_NAME String => table name
+
+4.TABLE\_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM".
+
+5.REMARKS String => explanatory comment on the table 
+
+
+{\bf Note: } Some databases may not return information for all tables. 
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schemaPattern] a schema name pattern; "" retrieves those without a schema 
+\item[tableNamePattern] a table name pattern 
+\item[types] a list of table types to include; null returns all types 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a table description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape} 
+
+\Method{getSchemas}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getSchemas():ResultSet;'
+
+
+
+
+
+
+Get the schema names available in this database. The results are ordered by schema name. 
+
+The schema column is: 
+
+1.TABLE\_SCHEM String => schema name 
+
+
+{\bf Returns: } 
+ResultSet each row has a single String column that is a schema name 
+
+
+\Method{getCatalogs}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getCatalogs():ResultSet;'
+
+
+
+
+
+
+Get the catalog names available in this database. The results are ordered by catalog name. 
+
+The catalog column is: 
+
+1.TABLE\_CAT String => catalog name 
+
+
+{\bf Returns: } 
+ResultSet each row has a single String column that is a catalog name 
+
+
+\Method{getTableTypes}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getTableTypes():ResultSet;'
+
+
+
+
+
+
+Get the table types available in this database. The results are ordered by table type. 
+
+The table type is: 
+
+1.TABLE\_TYPE String => table type. Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM". 
+
+
+{\bf Returns: } 
+ResultSet each row has a single String column that is a table type 
+
+
+\Method{getColumns}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern:STRING):ResultSet;'
+
+
+
+
+
+Get a description of table columns available in a catalog. 
+
+Only column descriptions matching the catalog, schema, table and column name criteria are returned. They are ordered by TABLE\_SCHEM, TABLE\_NAME and ORDINAL\_POSITION. 
+
+Each column description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null)
+
+2.TABLE\_SCHEM String => table schema (may be null)
+
+3.TABLE\_NAME String => table name
+
+4.COLUMN\_NAME String => column name
+
+5.DATA\_TYPE short => SQL type 
+
+6.TYPE\_NAME String => Data source dependent type name
+
+7.COLUMN\_SIZE int => column size. For char or date types this is the maximum number of characters, for numeric or decimal types this is precision. 
+
+8.BUFFER\_LENGTH is not used. 
+
+9.DECIMAL\_DIGITS int => the number of fractional digits 
+
+10.NUM\_PREC\_RADIX int => Radix (typically either 10 or 2) 
+
+11.NULLABLE int => is NULL allowed? 
+\begin{description}
+\item[columnNoNulls] might not allow NULL values 
+\item[columnNullable] definitely allows NULL values 
+\item[columnNullableUnknown] nullability unknown 
+\end{description}
+
+12.REMARKS String => comment describing column (may be null) 
+
+13.COLUMN\_DEF String => default value (may be null) 
+
+14.SQL\_DATA\_TYPE int => unused 
+
+15.SQL\_DATETIME\_SUB int => unused 
+
+16.CHAR\_OCTET\_LENGTH int => for char types the maximum number of bytes in the column 
+
+17.ORDINAL\_POSITION int => index of column in table (starting at 1) 
+
+18.IS\_NULLABLE String => "NO" means column definitely does not allow NULL values; "YES" means the column might allow NULL values. An empty string means nobody knows. 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schemaPattern] a schema name pattern; "" retrieves those without a schema 
+\item[tableNamePattern] a table name pattern 
+\item[columnNamePattern] a column name pattern 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a column description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape} 
+
+
+\Method{getColumnPrivileges}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getColumnPrivileges(catalog, schema, table, columnNamePattern:STRING):ResultSet;'
+
+
+
+
+
+Get a description of the access rights for a table's columns. 
+
+Only privileges matching the column name criteria are returned. They are ordered by COLUMN\_NAME and PRIVILEGE. 
+
+Each privilige description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null) 
+
+2.TABLE\_SCHEM String => table schema (may be null) 
+
+3.TABLE\_NAME String => table name 
+
+4.COLUMN\_NAME String => column name 
+
+5.GRANTOR => grantor of access (may be null) 
+
+6.GRANTEE String => grantee of access 
+
+7.PRIVILEGE String => name of access (SELECT, INSERT, UPDATE, REFRENCES, ...) 
+
+8.IS\_GRANTABLE String => "YES" if grantee is permitted to grant to others; "NO" if not; null if unknown 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name; "" retrieves those without a schema 
+\item[table] a table name 
+\item[columnNamePattern] a column name pattern 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a column privilege description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape} 
+
+
+\Method{getTablePrivileges}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getTablePrivileges(catalog, schemaPattern, tableNamePattern:STRING):ResultSet;'
+
+
+
+
+
+Get a description of the access rights for each table available in a catalog. 
+
+Only privileges matching the schema and table name criteria are returned. They are ordered by TABLE\_SCHEM, TABLE\_NAME, and PRIVILEGE. 
+
+Each privilige description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null) 
+
+2.TABLE\_SCHEM String => table schema (may be null) 
+
+3.TABLE\_NAME String => table name 
+
+4.GRANTOR => grantor of access (may be null) 
+
+5.GRANTEE String => grantee of access 
+
+6.PRIVILEGE String => name of access (SELECT, INSERT, UPDATE, REFRENCES, ...) 
+
+7.IS\_GRANTABLE String => "YES" if grantee is permitted to grant to others; "NO" if not; null if unknown 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schemaPattern] a schema name pattern; "" retrieves those without a schema 
+\item[tableNamePattern] a table name pattern 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a table privilege description 
+
+{\bf See Also:} 
+\MyMethodRef{getSearchStringEscape} 
+
+
+\Method{getBestRowIdentifier}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getBestRowIdentifier(catalog, schema, table:STRING; scope:INTEGER; nullable:BOOLEAN):ResultSet;'
+
+
+
+
+
+Get a description of a table's optimal set of columns that uniquely identifies a row. They are ordered by SCOPE. 
+
+Each column description has the following columns: 
+
+1.SCOPE short => actual scope of result 
+\begin{description}
+\item[bestRowTemporary] very temporary, while using row 
+\item[bestRowTransaction] valid for remainder of current transaction 
+\item[bestRowSession] valid for remainder of current session 
+\end{description}
+
+2.COLUMN\_NAME String => column name 
+
+3.DATA\_TYPE short => SQL data type from java.sql.Types 
+
+4.TYPE\_NAME String => Data source dependent type name 
+
+5.COLUMN\_SIZE int => precision 
+
+6.BUFFER\_LENGTH int => not used 
+
+7.DECIMAL\_DIGITS short => scale 
+
+8.PSEUDO\_COLUMN short => is this a pseudo column like an Oracle ROWID 
+\begin{description}
+\item[bestRowUnknown] may or may not be pseudo column 
+\item[bestRowNotPseudo] is NOT a pseudo column 
+\item[bestRowPseudo] is a pseudo column 
+\end{description}
+
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name; "" retrieves those without a schema 
+\item[table] a table name 
+\item[scope] the scope of interest; use same values as SCOPE 
+\item[nullable] include columns that are nullable? 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a column description 
+
+
+\Method{getVersionColumns}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getVersionColumns(catalog, schema, table:STRING):ResultSet;'
+
+
+
+
+
+Get a description of a table's columns that are automatically updated when any value in a row is updated. They are unordered. 
+
+Each column description has the following columns: 
+
+1.SCOPE short => is not used 
+
+2.COLUMN\_NAME String => column name 
+
+3.DATA\_TYPE short => SQL data type 
+
+4.TYPE\_NAME String => Data source dependent type name 
+
+5.COLUMN\_SIZE int => precision 
+
+6.BUFFER\_LENGTH int => length of column value in bytes 
+
+7.DECIMAL\_DIGITS short => scale 
+
+8.PSEUDO\_COLUMN short => is this a pseudo column like an Oracle ROWID 
+\begin{description}
+\item[versionColumnUnknown] may or may not be pseudo column 
+\item[versionColumnNotPseudo] is NOT a pseudo column 
+\item[versionColumnPseudo] is a pseudo column 
+\end{description}
+
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name; "" retrieves those without a schema 
+\item[table] a table name 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a column description 
+
+
+\Method{getPrimaryKeys}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getPrimaryKeys(catalog, schema, table:STRING):ResultSet;'
+
+
+
+
+Get a description of a table's primary key columns. They are ordered by COLUMN\_NAME. 
+
+Each column description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null) 
+
+2.TABLE\_SCHEM String => table schema (may be null) 
+
+3.TABLE\_NAME String => table name 
+
+4.COLUMN\_NAME String => column name 
+
+5.KEY\_SEQ short => sequence number within primary key 
+
+6.PK\_NAME String => primary key name (may be null) 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name pattern; "" retrieves those without a schema 
+\item[table] a table name 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a primary key column description 
+
+
+\Method{getImportedKeys}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getImportedKeys(catalog, schema, table:STRING):ResultSet;'
+
+
+
+Get a description of the primary key columns that are referenced by a table's foreign key columns (the primary keys imported by a table). They are ordered by PKTABLE\_CAT, PKTABLE\_SCHEM, PKTABLE\_NAME, and KEY\_SEQ. 
+
+Each primary key column description has the following columns: 
+
+1.PKTABLE\_CAT String => primary key table catalog being imported (may be null) 
+
+2.PKTABLE\_SCHEM String => primary key table schema being imported (may be null) 
+
+3.PKTABLE\_NAME String => primary key table name being imported 
+
+4.PKCOLUMN\_NAME String => primary key column name being imported 
+
+5.FKTABLE\_CAT String => foreign key table catalog (may be null) 
+
+6.FKTABLE\_SCHEM String => foreign key table schema (may be null) 
+
+7.FKTABLE\_NAME String => foreign key table name 
+
+8.FKCOLUMN\_NAME String => foreign key column name 
+
+9.KEY\_SEQ short => sequence number within foreign key 
+
+10.UPDATE\_RULE short => What happens to foreign key when primary is updated: 
+\begin{description}
+\item[importedKeyCascade] change imported key to agree with primary key update 
+\item[importedKeyRestrict] do not allow update of primary key if it has been imported 
+\item[importedKeySetNull] change imported key to NULL if its primary key has been updated 
+\end{description}
+
+11.DELETE\_RULE short => What happens to the foreign key when primary is deleted. 
+\begin{description}
+\item[importedKeyCascade] delete rows that import a deleted key 
+\item[importedKeyRestrict] do not allow delete of primary key if it has been imported
+\item[importedKeySetNull] change imported key to NULL if its primary key has been deleted 
+\end{description}
+
+12.FK\_NAME String => foreign key name (may be null) 
+
+13.PK\_NAME String => primary key name (may be null) 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name pattern; "" retrieves those without a schema 
+\item[table] a table name 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a primary key column description 
+
+{\bf See Also:} 
+\MyMethodRef{getExportedKeys} 
+
+
+\Method{getExportedKeys}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getExportedKeys(catalog, schema, table:STRING):ResultSet;'
+
+
+
+
+Get a description of a foreign key columns that reference a table's primary key columns (the foreign keys exported by a table). They are ordered by FKTABLE\_CAT, FKTABLE\_SCHEM, FKTABLE\_NAME, and KEY\_SEQ. 
+
+Each foreign key column description has the following columns: 
+
+1.PKTABLE\_CAT String => primary key table catalog (may be null) 
+
+2.PKTABLE\_SCHEM String => primary key table schema (may be null) 
+
+3.PKTABLE\_NAME String => primary key table name 
+
+4.PKCOLUMN\_NAME String => primary key column name 
+
+5.FKTABLE\_CAT String => foreign key table catalog (may be null) being exported (may be null) 
+
+6.FKTABLE\_SCHEM String => foreign key table schema (may be null) being exported (may be null) 
+
+7.FKTABLE\_NAME String => foreign key table name being exported 
+
+8.FKCOLUMN\_NAME String => foreign key column name being exported 
+
+9.KEY\_SEQ short => sequence number within foreign key 
+
+10.UPDATE\_RULE short => What happens to foreign key when primary is updated: 
+\begin{description}
+\item[importedKeyCascade] change imported key to agree with primary key update 
+\item[importedKeyRestrict] do not allow update of primary key if it has been imported 
+\item[importedKeySetNull] change imported key to NULL if its primary key has been updated 
+\end{description}
+
+11.DELETE\_RULE short => What happens to the foreign key when primary is deleted. 
+\begin{description}
+\item[importedKeyCascade] delete rows that import a deleted key 
+\item[importedKeyRestrict] do not allow delete of primary key if it has been imported 
+\item[importedKeySetNull] change imported key to NULL if its primary key has been deleted 
+\end{description}
+
+12.FK\_NAME String => foreign key identifier (may be null) 
+
+13.PK\_NAME String => primary key identifier (may be null) 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name pattern; "" retrieves those without a schema 
+\item[table] a table name 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a foreign key column description 
+
+{\bf See Also:} 
+\MyMethodRef{getImportedKeys} 
+
+
+\Method{getCrossReference}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getCrossReference(primaryCatalog, primarySchema, primaryTable, foreignCatalog, foreignSchema, foreignTable:STRING):ResultSet;'
+
+
+
+Get a description of the foreign key columns in the foreign key table that reference the primary key columns of the primary key table (describe how one table imports another's key.) This should normally return a single foreign key/primary key pair (most tables only import a foreign key from a table once.) They are ordered by FKTABLE\_CAT, FKTABLE\_SCHEM, FKTABLE\_NAME, and KEY\_SEQ. 
+
+Each foreign key column description has the following columns: 
+
+1.PKTABLE\_CAT String => primary key table catalog (may be null) 
+
+2.PKTABLE\_SCHEM String => primary key table schema (may be null) 
+
+3.PKTABLE\_NAME String => primary key table name 
+
+4.PKCOLUMN\_NAME String => primary key column name 
+
+5.FKTABLE\_CAT String => foreign key table catalog (may be null) being exported (may be null) 
+
+6.FKTABLE\_SCHEM String => foreign key table schema (may be null) being exported (may be null) 
+
+7.FKTABLE\_NAME String => foreign key table name being exported 
+
+8.FKCOLUMN\_NAME String => foreign key column name being exported 
+
+9.KEY\_SEQ short => sequence number within foreign key 
+
+10.UPDATE\_RULE short => What happens to foreign key when primary is updated: 
+\begin{description}
+\item[importedKeyCascade] change imported key to agree with primary key update 
+\item[importedKeyRestrict] do not allow update of primary key if it has been imported 
+\item[importedKeySetNull] change imported key to NULL if its primary key has been updated 
+\end{description}
+
+11.DELETE\_RULE short => What happens to the foreign key when primary is deleted. 
+\begin{description}
+\item[importedKeyCascade] delete rows that import a deleted key 
+\item[importedKeyRestrict] do not allow delete of primary key if it has been imported 
+\item[importedKeySetNull] change imported key to NULL if its primary key has been deleted 
+\end{description}
+
+12.FK\_NAME String => foreign key identifier (may be null) 
+
+13.PK\_NAME String => primary key identifier (may be null) 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[primaryCatalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[primarySchema] a schema name pattern; "" retrieves those without a schema 
+\item[primaryTable] the table name that exports the key 
+\item[foreignCatalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[foreignSchema] a schema name pattern; "" retrieves those without a schema 
+\item[foreignTable] the table name that imports the key 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is a foreign key column description 
+
+{\bf See Also:} 
+\MyMethodRef{getImportedKeys} 
+
+
+\Method{getTypeInfo}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getTypeInfo():ResultSet;'
+
+
+
+
+
+
+Get a description of all the standard SQL types supported by this database. They are ordered by DATA\_TYPE and then by how closely the data type maps to the corresponding ODBC SQL type. 
+
+Each type description has the following columns: 
+
+1.TYPE\_NAME String => Type name 
+
+2.DATA\_TYPE short => SQL data type 
+
+3.PRECISION int => maximum precision 
+
+4.LITERAL\_PREFIX String => prefix used to quote a literal (may be null) 
+
+5.LITERAL\_SUFFIX String => suffix used to quote a literal (may be null) 
+
+6.CREATE\_PARAMS String => parameters used in creating the type (may be null) 
+
+7.NULLABLE short => can you use NULL for this type? 
+\begin{description}
+\item[typeNoNulls] does not allow NULL values 
+\item[typeNullable] allows NULL values 
+\item[typeNullableUnknown] nullability unknown 
+\end{description}
+
+8.CASE\_SENSITIVE boolean=> is it case sensitive? 
+
+9.SEARCHABLE short => can you use "WHERE" based on this type: 
+\begin{description}
+\item[typePredNone] No support 
+\item[typePredChar] Only supported with WHERE .. LIKE 
+\item[typePredBasic] Supported except for WHERE .. LIKE 
+\item[typeSearchable] Supported for all WHERE .. 
+\end{description}
+
+10.UNSIGNED\_ATTRIBUTE boolean => is it unsigned? 
+
+11.FIXED\_PREC\_SCALE boolean => can it be a money value? 
+
+12.AUTO\_INCREMENT boolean => can it be used for an auto-increment value? 
+
+13.LOCAL\_TYPE\_NAME String => localized version of type name (may be null) 
+
+14.MINIMUM\_SCALE short => minimum scale supported 
+
+15.MAXIMUM\_SCALE short => maximum scale supported 
+
+16.SQL\_DATA\_TYPE int => unused 
+
+17.SQL\_DATETIME\_SUB int => unused 
+
+18.NUM\_PREC\_RADIX int => usually 2 or 10 
+
+
+{\bf Returns: } 
+ResultSet each row is a SQL type description 
+
+
+\Method{getIndexInfo}
+
+
+\verb'PROCEDURE(databaseMetaData:DatabaseMetaData)getIndexInfo(catalog, schema, table:STRING; unique, approximate:BOOLEAN):ResultSet;'
+
+
+
+Get a description of a table's indices and statistics. They are ordered by NON\_UNIQUE, TYPE, INDEX\_NAME, and ORDINAL\_POSITION. 
+
+Each index column description has the following columns: 
+
+1.TABLE\_CAT String => table catalog (may be null) 
+
+2.TABLE\_SCHEM String => table schema (may be null) 
+
+3.TABLE\_NAME String => table name 
+
+4.NON\_UNIQUE boolean => Can index values be non-unique? false when TYPE is tableIndexStatistic 
+
+5.INDEX\_QUALIFIER String => index catalog (may be null); null when TYPE is tableIndexStatistic 
+
+6.INDEX\_NAME String => index name; null when TYPE is tableIndexStatistic 
+
+7.TYPE short => index type: 
+\begin{description}
+\item[tableIndexStatistic] this identifies table statistics that are returned in conjuction with a table's index descriptions 
+\item[tableIndexClustered] this is a clustered index 
+\item[tableIndexHashed] this is a hashed index 
+\item[tableIndexOther] this is some other style of index 
+\end{description}
+
+8.ORDINAL\_POSITION short => column sequence number within index; zero when TYPE is tableIndexStatistic 
+
+9.COLUMN\_NAME String => column name; null when TYPE is tableIndexStatistic 
+
+10.ASC\_OR\_DESC String => column sort sequence, "A" => ascending, "D" => descending, may be null if sort sequence is not supported; null when TYPE is tableIndexStatistic 
+
+11.CARDINALITY int => When TYPE is tableIndexStatisic then this is the number of rows in the table; otherwise it is the number of unique values in the index. 
+
+12.PAGES int => When TYPE is tableIndexStatisic then this is the number of pages used for the table, otherwise it is the number of pages used for the current index. 
+
+13.FILTER\_CONDITION String => Filter condition, if any. (may be null) 
+
+
+{\bf Parameters: }
+\begin{description}
+\item[catalog] a catalog name; "" retrieves those without a catalog; null means drop catalog name from the selection criteria 
+\item[schema] a schema name pattern; "" retrieves those without a schema 
+\item[table] a table name 
+\item[unique] when true, return only indices for unique values; when false, return indices regardless of whether unique or not 
+\item[approximate] when true, result is allowed to reflect approximate or out of data values; when false, results are requested to be accurate 
+\end{description}
+
+{\bf Returns: } 
+ResultSet each row is an index column description 
+
+%-----------------------------------------
+% class Date
+%-----------------------------------------
+
+\renewcommand{\CurClass}{Date}
+\Class{}
+
+This class represents SQL DATE information. 
+We only deal with days and ignore hours,
+minutes, and seconds. 
+
+
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{createDate}{(int, int, int)}
+     Construct a Date 
+
+\MIitem{toString}{()}
+     Format a date as yyyy-mm-dd 
+\end{description}
+                              
+
+\Method{createDate}
+
+\verb'PROCEDURE createDate(year,month,day:INTEGER):Date;'
+
+     Construct a Date 
+
+     {\bf Parameters: }
+\begin{description}
+\item[year] year-1900 
+\item[month] 0 to 11 
+\item[day] 1 to 31 
+\end{description}
+
+                    
+\Method{toString} 
+
+\verb'PROCEDURE(date:Date)toString():DStrings.String;'
+
+     Format a date as yyyy-mm-dd 
+
+     {\bf Returns: } 
+          a formatted date String 
+
+
+%-----------------------------------------
+% class Time
+%-----------------------------------------
+
+\renewcommand{\CurClass}{Time}
+\Class{}
+
+This class represents SQL DATE information. 
+We only deal with hours,
+minutes, and seconds. 
+
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{createTime}{(int, int, int)}
+     Construct a Time 
+
+\MIitem{toString}{()}
+     Format a time as hh:mm:ss 
+\end{description}
+
+
+\Method{createTime} 
+
+\verb'PROCEDURE createTime(hour,minute,second:INTEGER):Time;'
+
+     Construct a Time 
+
+     {\bf Parameters: }
+\begin{description}
+\item[hour] 0 to 23 
+\item[minute] 0 to 59 
+\item[second] 0 to 59 
+\end{description}
+
+                    
+
+
+\Method{toString} 
+
+\verb'PROCEDURE(time:Time)toString():DStrings.String;'
+
+     Format a time as hh:mm:ss 
+
+     {\bf Returns: } 
+          a formatted time String 
+
+%-----------------------------------------
+% class Timestamp
+%-----------------------------------------
+
+\renewcommand{\CurClass}{Timestamp}
+\Class{}
+
+This class represents SQL timestamps.
+
+{\bf Note: }
+The granularity of sub-second timestamp precision may vary between database fields, and stored values will get rounded to
+the field's internal precision. 
+
+\subsection{Method index}
+
+\begin{description}
+\MIitem{createTimestamp}{(int, int, int, int, int, int, int)}
+     Construct a Timestamp 
+
+\MIitem{toString}{()}
+     Format a Timestamp as yyyy-mm-dd hh:mm:ss.f... 
+\end{description}
+
+
+\Method{createTimestamp} 
+
+\verb'PROCEDURE createTimestamp(year,month,day,hour,minute,second:INTEGER;nano:LONGINT):Timestamp;'
+
+     Construct a Timestamp 
+
+     {\bf Parameters: }
+\begin{description}
+\item[year] year-1900 
+\item[month] 0 to 11 
+\item[day] 1 to 31 
+\item[hour] 0 to 23 
+\item[minute] 0 to 59 
+\item[second] 0 to 59 
+\item[nano] 0 to 999,999,999 
+\end{description}
+
+
+\Method{toString}
+
+\verb'PROCEDURE(timestamp:Timestamp)toString():DStrings.String;'
+
+     Format a Timestamp as yyyy-mm-dd hh:mm:ss.f... 
+
+     {\bf Returns: } 
+          a formatted timestamp String 
+
+

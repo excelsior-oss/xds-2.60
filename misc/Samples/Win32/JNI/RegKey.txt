@@ -1,0 +1,37 @@
+REGKEY.TXT                      Copyright (c) 1999-2000 XDS Ltd.
+----------------------------------------------------------------
+
+                   RegKey - Win32 JNI Sample 
+
+
+This sample demonstrates usage of XDS Modula-2 for the creation
+of Java native methods. It consists of a Java class that 
+provides interface to the Windows registry through native
+methods, a Modula-2 DLL that implements these methods, and
+a simple key editor.
+
+To build the sample, run the BUILD.BAT script.
+
+To run the sample, run the RUN.BAT script.
+
+The sample compiles ok with Native XDS-x86 2.45 and Sun JDK 1.2.2 
+javac. It has been tested on Windows NT 4 with Sun JRE 1.2.2.
+
+List of files:
+
+build.bat         - build script
+RegistryKey.java  - interface to the Windows registry using JNI
+RegKey.java       - sample regisry key editor
+RegKey.txt        - this file
+
+M2\init.mod       - DLL initialization module
+M2\jni.def        - JNI definition module
+M2\RegEdt.def     - native methods definition module
+M2\RegEdt.mod     - native methods implementation module
+M2\RegEdt.prj     - project file to build native method DLL
+M2\RegistryKey.h  - C header with native method definitions
+
+----------------------------------------------------------------
+Java (tm) and all Java-based trademarks and logos are
+trademarks or registered trademarks of Sun Microsystems, Inc.
+in the United States and other countries. 

@@ -1,0 +1,31 @@
+-lookup = *.mod = $!
+-lookup = *.res = $!
+
++pm
++m2extensions
+
+!if __gen_x86__ then
+  +doreorder
+  -cpu=pentium
+!end
+
+-compilerheap=8000000
+
+-gendebug
+-lineno
+
+-IOVERFLOW
+-COVERFLOW
+-CHECKINDEX
+-CHECKRANGE
+-CHECKNIL
+
+:INCL_WIN+
+:INCL_DOS+
+:INCL_GPI+
+:INCL_DOSERRORS+
+
++makefile
+
+!module Mand.mod
+!module mand.res

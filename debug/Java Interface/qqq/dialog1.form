@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<Form version="1.0" type="com.netbeans.developer.modules.loaders.form.forminfo.JDialogFormInfo">
+  <Properties>
+    <Property name="modal" type="boolean" editor="sun.beans.editors.BoolEditor" value="true"/>
+    <Property name="foreground" type="java.awt.Color" editor="com.netbeans.developer.editors.ColorEditor">
+      <Color blue="0" green="c8" id="orange" palette="1" red="ff" type="palette"/>
+    </Property>
+    <Property name="background" type="java.awt.Color" editor="com.netbeans.developer.editors.ColorEditor">
+      <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
+    </Property>
+    <Property name="defaultCloseOperation" type="int" editor="org.openide.util.SwingEditors$DefaultCloseOperationPropertyEditor" value="0"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="(No Menu)"/>
+    <SyntheticProperty name="formSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,0,-56,0,0,1,44"/>
+    <SyntheticProperty name="formPosition" type="java.awt.Point" value="-84,-19,0,5,115,114,0,14,106,97,118,97,46,97,119,116,46,80,111,105,110,116,-74,-60,-118,114,52,126,-56,38,2,0,2,73,0,1,120,73,0,1,121,120,112,0,0,0,0,0,0,0,0"/>
+    <SyntheticProperty name="formSizePolicy" type="int" value="2"/>
+    <SyntheticProperty name="generatePosition" type="boolean" value="true"/>
+    <SyntheticProperty name="generateSize" type="boolean" value="true"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
+    <SyntheticProperty name="encoding" type="java.lang.String" value="ISO-8859-1"/>
+  </SyntheticProperties>
+
+  <Events>
+    <EventHandler event="windowClosing" handler="switch_to_optionPane"/>
+  </Events>
+
+  <AuxValues>
+  </AuxValues>
+
+  <Layout class="com.netbeans.developerx.loaders.form.formeditor.layouts.DesignBorderLayout"/>
+  <SubComponents>
+    <Container class="javax.swing.JOptionPane" name="jOptionPane1">
+      <Properties>
+        <Property name="optionType" type="int" editor="org.openide.util.SwingEditors$OptionTypePropertyEditor" value="0"/>
+        <Property name="message" type="java.lang.Object" editor="com.netbeans.developer.modules.loaders.form.RADConnectionPropertyEditor" postCode="  textField.addActionListener(new ActionListener() {&#xa;      public void actionPerformed(ActionEvent e) {&#xa;          jOptionPane1.setValue(btnString1);&#xa;      }&#xa;  });&#xa;&#xa;">
+          <Connection code="array" type="code"/>
+        </Property>
+        <Property name="options" type="[Ljava.lang.Object;" editor="com.netbeans.developer.modules.loaders.form.RADConnectionPropertyEditor">
+          <Connection code="options" type="code"/>
+        </Property>
+        <Property name="initialValue" type="java.lang.Object" editor="com.netbeans.developer.modules.loaders.form.RADConnectionPropertyEditor">
+          <Connection code="options[0]" type="code"/>
+        </Property>
+      </Properties>
+
+      <Events>
+        <EventHandler event="propertyChange" handler="checkTheAnswer"/>
+      </Events>
+
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value=""/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="com.netbeans.developerx.loaders.form.formeditor.layouts.DesignBorderLayout" value="com.netbeans.developerx.loaders.form.formeditor.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="Center"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="com.netbeans.developerx.loaders.form.formeditor.layouts.DesignFlowLayout"/>
+    </Container>
+  </SubComponents>
+</Form>

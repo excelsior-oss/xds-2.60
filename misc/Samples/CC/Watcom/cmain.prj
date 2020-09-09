@@ -1,0 +1,18 @@
+-lookup = *.mod = $!
+-lookup = *.def = $!
+-lookup = *.c   = $!
+-lookup = *.sym = .;c:\xds\sym
+-lookup = *.tem = $!
+
+-gendebug-
+-lineno-
+
++m2extensions
+-makefile+
+-mkfname=cdemo
+-mkfext=mkf
+-template=watcom.tem
+
+-link="wmake /f %s",mkfname#mkfext;
+
+!module xds.mod m2test.mod cmain.c

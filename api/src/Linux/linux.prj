@@ -1,0 +1,21 @@
+% Copyright (c) Excelsior 2004. All rights reserved.
+
+-makefile
+-link=
++changesym
+-lookup = *.def=$!
+
+!if defined sym_place then
+-lookup = *.sym=$(sym_place)
+!else
+-lookup = *.sym=$!/../../sym
+!end
+
+!module ctype.def    dirent.def     errno.def    fcntl.def
+!module float.def    glob.def       grp.def      limits.def
+!module locale.def   math.def       pthread.def  pwd.def
+!module select.def   semaphore.def  setjmp.def   signal.def
+!module spawn.def    stat.def       stddef.def   stdio.def
+!module stdlib.def   string.def     termios.def  time.def
+!module times.def    types.def      unistd.def   utime.def
+!module utsname.def  wait.def       statvfs.def

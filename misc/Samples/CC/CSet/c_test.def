@@ -1,0 +1,6 @@
+<*+M2EXTENSIONS*>
+DEFINITION MODULE ["C"] c_test; 
+
+PROCEDURE c_func (a, b: INTEGER): INTEGER;
+
+END c_test.

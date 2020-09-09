@@ -1,0 +1,19 @@
+Mandelbrot set - a sample for XDS native code compiler for Win95/WinNT.
+
+To zoom view:
+	1) select a rectangle using left button
+	2) press right button to start drawing.
+
+Some options have been added to System menu:
+
+* Refresh - recalculate and redraw current picture after window
+            has been resized
+* expand  - make new window with the selected part of image zoomed
+            (same as right button click)
+* copy    - copy entire bitmap from current window into the Clipboard
+* exit    - close all windows and exit from the program
+
+
+[end]
+
+

@@ -1,0 +1,15 @@
+\FrameIsDeeptrue
+
+\makeindex
+
+\newcommand{\VersionNumber}{2.6}
+\newcommand{\BookName}{User's Guide}
+
+\ifonline % Set title 
+  \ifgencode
+  \title{Native XDS-x86 User's Guide}
+  \else\ifgenc
+  \title{XDS-C User's Guide}
+  \else\JNO
+  \fi\fi
+\fi

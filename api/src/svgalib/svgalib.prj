@@ -1,0 +1,7 @@
+% XDS project file
+
+!module vga.def
+!module vgagl.def
+!module vgakeyboard.def
+!module vgamouse.def
+!module vgajoystick.def

@@ -1,0 +1,241 @@
+(* Copyright (c) Excelsior 2003. All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] pthread;
+
+IMPORT SYSTEM;
+
+FROM types IMPORT size_t;            
+FROM time IMPORT timespec;
+FROM signal IMPORT sigset_t; 
+
+TYPE
+  PTHREAD_PROC = PROCEDURE ["C"] (SYSTEM.ADDRESS);
+  PTHREAD_VOID_PROC = PROCEDURE ["C"] ();
+
+<* IF (env_target="x86linux") OR (env_target = "linux") THEN *>
+
+  -- All types are Linux-specific.
+
+  sched_param = RECORD
+    sched_priority : SYSTEM.INT32;
+  END;
+
+  pthread_t;
+  pthread_key_t; -- = SYSTEM.CARD32;
+
+  _pthread_fastlock = RECORD
+    status   : SYSTEM.INT32;  -- "Free" or "taken" or head of waiting list
+    spinlock : SYSTEM.INT32;  -- Used by compare_and_swap emulation. Also,
+                              -- adaptive SMP lock stores spin count here.
+  END;
+  
+  _pthread_descr = SYSTEM.ADDRESS;
+
+  pthread_attr_t = RECORD
+    detachstate   : SYSTEM.INT32;
+    schedpolicy   : SYSTEM.INT32;
+    schedparam    : sched_param;
+    inheritsched  : SYSTEM.INT32;
+    scope         : SYSTEM.INT32;
+    guardsize     : size_t;
+    stackaddr_set : SYSTEM.INT32;
+    stackaddr     : SYSTEM.ADDRESS;
+    stacksize     : size_t;
+  END;
+
+  pthread_attr_ptr = POINTER TO pthread_attr_t;
+
+  pthread_cond_t = RECORD
+    c_lock    : _pthread_fastlock;  -- Protect against concurrent access
+    c_waiting : _pthread_descr;     -- Threads waiting on this condition
+    __padding : ARRAY[1..48-SIZE(_pthread_fastlock)-SIZE(_pthread_descr)] OF CHAR;
+  END;
+
+  pthread_cond_ptr = POINTER TO pthread_cond_t;
+
+  pthread_condattr_t = RECORD
+    dummy: SYSTEM.INT32;
+  END;
+
+  pthread_condattr_ptr = POINTER TO pthread_condattr_t;
+
+  pthread_mutex_t = RECORD
+    m_reserved : SYSTEM.INT32;       -- Reserved for future use
+    m_count    : SYSTEM.INT32;       -- Depth of recursive locking
+    m_owner    : _pthread_descr;     -- Owner thread (if recursive or errcheck)
+    m_kind     : SYSTEM.INT32;       -- Mutex kind: fast, recursive or errcheck
+    m_lock     : _pthread_fastlock;  -- Underlying fast lock
+  END;
+
+  pthread_mutex_ptr = POINTER TO pthread_mutex_t;
+
+  pthread_mutexattr_t = RECORD
+    mutexkind : SYSTEM.INT32;
+  END;
+
+  pthread_mutexattr_ptr = POINTER TO pthread_mutexattr_t;
+
+  pthread_once_t = SYSTEM.INT32;
+
+  pthread_rwlock_t = RECORD
+    rw_lock          : _pthread_fastlock;  -- Lock to guarantee mutual exclusion
+    rw_readers       : SYSTEM.INT32;       -- Number of readers
+    rw_writer        : _pthread_descr;     -- Identity of writer, or NULL if none
+    rw_read_waiting  : _pthread_descr;     -- Threads waiting for reading
+    rw_write_waiting : _pthread_descr;     -- Threads waiting for writing
+    rw_kind          : SYSTEM.INT32;       -- Reader/Writer preference selection
+    rw_pshared       : SYSTEM.INT32;       -- Shared between processes or not
+  END;
+
+  pthread_rwlock_ptr = POINTER TO pthread_rwlock_t;
+
+  pthread_rwlockattr_t = RECORD
+    lockkind : SYSTEM.INT32;
+    pshared  : SYSTEM.INT32;
+  END;
+
+  pthread_rwlockattr_ptr = POINTER TO pthread_rwlockattr_t;
+
+<* ELSE *>
+
+<* END *>
+
+
+CONST
+<* IF (env_target="x86linux") OR (env_target = "linux") THEN *>
+  _SC_THREADS     = 67; -- Linux specific
+<* ELSE *>
+
+<* END *>
+
+  SCHED_OTHER     = 0;
+  SCHED_FIFO      = 1;
+  SCHED_RR        = 2;
+
+  PTHREAD_CREATE_JOINABLE = 0;
+  PTHREAD_CREATE_DETACHED = 1;
+
+  PTHREAD_INHERIT_SCHED = 0;
+  PTHREAD_EXPLICIT_SCHED = 1;
+
+  PTHREAD_SCOPE_SYSTEM = 0;
+  PTHREAD_SCOPE_PROCESS = 1;
+
+  PTHREAD_MUTEX_TIMED_NP = 0;
+  PTHREAD_MUTEX_RECURSIVE_NP = 1;
+  PTHREAD_MUTEX_ERRORCHECK_NP = 2;
+  PTHREAD_MUTEX_ADAPTIVE_NP = 3;
+  PTHREAD_MUTEX_NORMAL = PTHREAD_MUTEX_TIMED_NP;
+  PTHREAD_MUTEX_RECURSIVE = PTHREAD_MUTEX_RECURSIVE_NP;
+  PTHREAD_MUTEX_ERRORCHECK = PTHREAD_MUTEX_ERRORCHECK_NP;
+  PTHREAD_MUTEX_DEFAULT = PTHREAD_MUTEX_NORMAL;
+
+  PTHREAD_PROCESS_PRIVATE = 0;
+  PTHREAD_PROCESS_SHARED = 1;
+
+  PTHREAD_RWLOCK_PREFER_READER_NP = 0;
+  PTHREAD_RWLOCK_PREFER_WRITER_NP = 1;
+  PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP = 2;
+  PTHREAD_RWLOCK_DEFAULT_NP = PTHREAD_RWLOCK_PREFER_WRITER_NP;
+
+  PTHREAD_ONCE_INIT = 0;
+
+  PTHREAD_CANCEL_ENABLE = 0;
+  PTHREAD_CANCEL_DISABLE = 1;
+
+  PTHREAD_CANCEL_DEFERRED = 0;
+  PTHREAD_CANCEL_ASYNCHRONOUS = 1;
+
+  PTHREAD_THREADS_MAX = 8192; --Linux specific
+
+  PTHREAD_STACK_MIN = 16384;
+
+
+PROCEDURE pthread_create (VAR threadp : pthread_t; attr : pthread_attr_ptr; proc: PTHREAD_PROC; arg : SYSTEM.ADDRESS): SYSTEM.INT32;
+PROCEDURE pthread_self (): pthread_t;
+PROCEDURE pthread_equal (thread1, thread2: pthread_t): SYSTEM.INT32;
+PROCEDURE pthread_exit (retval : SYSTEM.ADDRESS);
+PROCEDURE pthread_join (th: pthread_t; VAR thread_return: SYSTEM.ADDRESS): SYSTEM.INT32;
+PROCEDURE pthread_detach (th: pthread_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_init (VAR attr: pthread_attr_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_destroy (VAR attr: pthread_attr_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_setdetachstate (VAR attr: pthread_attr_t; detachstate: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_getdetachstate (VAR attr: pthread_attr_t; VAR detachstate: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_setschedparam (VAR attr: pthread_attr_t; VAR param: sched_param): SYSTEM.INT32;
+PROCEDURE pthread_attr_getschedparam (VAR attr: pthread_attr_t; VAR param: sched_param): SYSTEM.INT32;
+PROCEDURE pthread_attr_setschedpolicy (VAR attr: pthread_attr_t; policy: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_getschedpolicy (VAR attr: pthread_attr_t; VAR policy: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_setinheritsched (VAR attr: pthread_attr_t; inherit: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_getinheritsched (VAR attr: pthread_attr_t; VAR inherit: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_setscope (VAR attr: pthread_attr_t; scope: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_getscope (VAR attr: pthread_attr_t; VAR scope: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_attr_setguardsize (VAR attr: pthread_attr_t; guardsize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_getguardsize (VAR attr: pthread_attr_t; VAR guardsize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_setstackaddr (VAR attr: pthread_attr_t; stackadr: SYSTEM.ADDRESS): SYSTEM.INT32;
+PROCEDURE pthread_attr_getstackaddr (VAR attr: pthread_attr_t; VAR stackadr: SYSTEM.ADDRESS): SYSTEM.INT32;
+PROCEDURE pthread_attr_setstack (VAR attr: pthread_attr_t; stackadr: SYSTEM.ADDRESS; stacksize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_getstack (VAR attr: pthread_attr_t; VAR stackadr: SYSTEM.ADDRESS; VAR stacksize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_setstacksize (VAR attr: pthread_attr_t; stacksize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_attr_getstacksize (VAR attr: pthread_attr_t; VAR stacksize: size_t): SYSTEM.INT32;
+PROCEDURE pthread_setschedparam (target_thread: pthread_t; policy: SYSTEM.INT32; VAR param: sched_param): SYSTEM.INT32;
+PROCEDURE pthread_getschedparam (target_thread: pthread_t; VAR policy: SYSTEM.INT32; VAR param: sched_param): SYSTEM.INT32;
+PROCEDURE pthread_getconcurrency (): SYSTEM.INT32;
+PROCEDURE pthread_setconcurrency (level: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_mutex_init (VAR mutex: pthread_mutex_t; mutex_attr: pthread_mutexattr_ptr): SYSTEM.INT32;
+PROCEDURE pthread_mutex_destroy (VAR mutex: pthread_mutex_t): SYSTEM.INT32;
+PROCEDURE pthread_mutex_trylock (VAR mutex: pthread_mutex_t): SYSTEM.INT32;
+PROCEDURE pthread_mutex_lock (VAR mutex: pthread_mutex_t): SYSTEM.INT32;
+PROCEDURE pthread_mutex_timedlock (VAR mutex: pthread_mutex_t; VAR abstime: timespec): SYSTEM.INT32;
+PROCEDURE pthread_mutex_unlock (VAR mutex: pthread_mutex_t): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_init (VAR attr: pthread_mutexattr_t): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_destroy (VAR attr: pthread_mutexattr_t): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_getpshared (VAR attr: pthread_mutexattr_t; VAR pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_setpshared (VAR attr: pthread_mutexattr_t; pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_settype (VAR attr: pthread_mutexattr_t; kind: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_mutexattr_gettype (VAR attr: pthread_mutexattr_t; VAR kind: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_cond_init (VAR cond: pthread_cond_t; cond_attr: pthread_condattr_ptr): SYSTEM.INT32;
+PROCEDURE pthread_cond_destroy (VAR cond: pthread_cond_t): SYSTEM.INT32;
+PROCEDURE pthread_cond_signal (VAR cond: pthread_cond_t): SYSTEM.INT32;
+PROCEDURE pthread_cond_broadcast (VAR cond: pthread_cond_t): SYSTEM.INT32;
+PROCEDURE pthread_cond_wait (VAR cond: pthread_cond_t; VAR mutex: pthread_mutex_t): SYSTEM.INT32;
+PROCEDURE pthread_cond_timedwait (VAR cond: pthread_cond_t; VAR mutex: pthread_mutex_t; VAR abstime: timespec): SYSTEM.INT32;
+PROCEDURE pthread_condattr_init (VAR attr: pthread_condattr_t): SYSTEM.INT32;
+PROCEDURE pthread_condattr_destroy (VAR attr: pthread_condattr_t): SYSTEM.INT32;
+PROCEDURE pthread_condattr_getpshared (VAR attr: pthread_condattr_t; VAR pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_condattr_setpshared (VAR attr: pthread_condattr_t; pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_init (VAR rwlock: pthread_rwlock_t; attr: pthread_rwlockattr_ptr): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_destroy (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_rdlock (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_tryrdlock (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_timedrdlock (VAR rwlock: pthread_rwlock_t; VAR abstime: timespec): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_wrlock (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_trywrlock (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_timedwrlock (VAR rwlock: pthread_rwlock_t; VAR abstime: timespec): SYSTEM.INT32;
+PROCEDURE pthread_rwlock_unlock (VAR rwlock: pthread_rwlock_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_init (VAR attr: pthread_rwlockattr_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_destroy (VAR attr: pthread_rwlockattr_t): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_getpshared (VAR attr: pthread_rwlockattr_t; VAR pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_setpshared (VAR attr: pthread_rwlockattr_t; pshared: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_getkind_np ( VAR attr: pthread_rwlockattr_t; VAR pref: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_rwlockattr_setkind_np (VAR attr: pthread_rwlockattr_t; pref: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_key_create (VAR key: pthread_key_t; proc: PTHREAD_PROC): SYSTEM.INT32;
+PROCEDURE pthread_key_delete (key : pthread_key_t): SYSTEM.INT32;
+PROCEDURE pthread_setspecific (key : pthread_key_t; ptr: SYSTEM.ADDRESS): SYSTEM.INT32;
+PROCEDURE pthread_getspecific (key : pthread_key_t): SYSTEM.ADDRESS;
+PROCEDURE pthread_once (VAR once_control: pthread_once_t; proc: PTHREAD_VOID_PROC): SYSTEM.INT32;
+PROCEDURE pthread_setcancelstate (state: SYSTEM.INT32; VAR oldstate: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_setcanceltype (type: SYSTEM.INT32; VAR oldtype: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_cancel (cancelthread: pthread_t): SYSTEM.INT32;
+PROCEDURE pthread_testcancel ();
+PROCEDURE pthread_atfork (prepare, parent, child: PTHREAD_VOID_PROC): SYSTEM.INT32;
+PROCEDURE pthread_kill_other_threads_np ();
+PROCEDURE pthread_sigmask (how: SYSTEM.INT32; VAR newmask, oldmask: sigset_t): SYSTEM.INT32;
+PROCEDURE pthread_kill (th: pthread_t; signo: SYSTEM.INT32): SYSTEM.INT32;
+PROCEDURE pthread_yield () : SYSTEM.INT32;
+
+
+END pthread.

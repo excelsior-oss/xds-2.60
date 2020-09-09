@@ -1,0 +1,33 @@
+-lookup = *.def = $!
+
+!if backend="X86" then
+  -lookup = *.def = $!/../xds
+  -lookup = *.sym = $!/../../sym/x86
+!elsif backend="C" then
+  -noheader+
+  -woff354+
+  -lookup = *.sym = $!/../../sym/C
+!end
+
+-gendll-
+-compilerheap=20000000
+-link=
+
+!if defined genremovescript and genremovescript then
+  -makefile+
+  -mkfname  = rmsym
+  -mkfext   = bat
+  -lookup = *.bat = .
+  -template = $!/rmsym.tem
+  -link=
+!else
+  -makefile-
+!end
+
+!module CDErr CommDlg DDE DDEML Dlgs IMM LZexpand mcx MMSystem NB30 OLE
+!module ShellAPI WinBase WinCon WinDef Windows WinError WinGDI WinNetwk
+!module WinNLS WinNT WinPerf WinReg WinSock WinSpool WinSvc WinUser WinVer
+!module CommCtrl
+!if backend="X86" then
+  !module Win32IOChan Win32Processes
+!end

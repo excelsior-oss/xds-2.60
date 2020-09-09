@@ -1,0 +1,259 @@
+\section{Configure Menu}
+\public{M\_CONFIGURE}
+\index{Configure Menu}
+\nominitoc
+
+\ifenglish
+The {\bf Configure} menu contains commands that you use to
+configure the IDE.
+The following commands appear in the {\bf Configure} menu:
+\else
+Меню {\bf Configure} содержит команды, используемые для настройки IDE.
+В меню {\bf Configure} появляются следующие команды: 
+\fi
+\begin{description}
+\item \ref[General]{IDM\_CONFIGUREGENERAL}
+\ifenglish
+  - Configure options that fit in neither of below
+  \else
+  - Настроечные опции, которые не входят ни в один из нижеперечисленных разделов
+  \fi
+\item \ref[Tools]{IDM\_CONFIGUREWINDOWS}
+\ifenglish
+  - Configures windows appearance and behavior
+  \else
+  - Настраивает внешний вид и поведение окон
+  \fi
+\item \ref[Windows]{IDM\_CONFIGURETOOLS}
+\ifenglish
+  - Lets you set up external tools
+  \else
+  - Позволяет устанавливать внешние утилиты
+  \fi
+\item \ref[Project Creation]{IDM\_CONFIGUREPROJECT}
+\ifenglish
+  - Tunes new project creation
+  \else
+  - Настройка создания нового проекта
+  \fi
+\item \ref[Editor]{IDM\_CONFIGUREEDITOR}
+\ifenglish
+  - Configures various editor options
+  \else
+  - Настройка различных опций редактора
+  \fi
+\item \ref[Colors and Fonts]{IDM\_COLOR}
+\ifenglish
+  - Sets colors and fonts used in IDE windows
+  \else
+  - Устанавливает цвета и шрифты, используемые в окнах IDE
+  \fi
+\item \ref[Printing]{IDM\_CONFIGUREPRINT}
+\ifenglish
+  - Sets up printing parameters
+  \else
+  - Устанавливает параметры печати
+  \fi
+\item \ref[Message Filters]{IDM\_CONFIGUREFILTERS}
+\ifenglish
+  - Add, remove and edit \ref[message filters]{MessageFilters}
+  \else
+  - Добавляет, удаляет и редактирует \ref[фильтры сообщений]{MessageFilters}
+  \fi
+\item \ref[Languages]{IDM\_CONFIGURE\_LANGUAGES}
+\ifenglish
+  - Configure support for \ref[programming languages]{Languages}
+  \else
+  - Настраиваает поддержку \ref[языков программирования]{Languages}
+  \fi
+\end{description}
+
+\subsection{Configure: General}
+\public{IDM\_CONFIGUREGENERAL}
+\ifenglish
+{\bf General command} invokes the \ref[dialog]{CFGGENERAL\_DIALOG} in which you
+can modify general system options.
+\else
+Пункт меню {\bf General command} вызывает 
+\ref[диалог]{CFGGENERAL\_DIALOG}, в котором вы можете изменять общие 
+опции системы.
+\fi
+
+\ifenglish
+Three options are currently available:
+\else
+В настоящий момент доступны три опции: 
+\fi
+\begin{description}
+\item \ifenglish
+      - whether the IDE must show logo picture at startup
+      \else
+      - показывать ли IDE при запуске логотип
+      \fi
+\item \ifenglish
+      - whether the IDE must remember and load last loaded project
+      \else
+      - должна ли IDE запоминать и загружать последний загруженный проект
+      \fi
+\item \ifenglish
+      - whether the toolbar is old style (3D) or new fashion (flat)
+      \else
+      - стиль панели инструментов, трехмерный или плоский
+      \fi
+\end{description}
+
+\subsection{Configure: Windows}
+\public{IDM\_CONFIGUREWINDOWS}
+\ifenglish
+XDS IDE uses its own version of {\bf MDI} (Multiple Document Interface).
+This version provides {\bf docked} windows (windows that are never overlapped by others)
+and {\bf free} windows (windows that appear on the desktop rather than inside
+IDE frame). It also allows window numbering that is more convenient than
+in classic MDI and provides {\bf winbar} to make navigation among your windows
+easier.
+
+The {\bf Windows} displays the \ref[dialog]{CFGWIN\_DIALOG} that
+lets you choose placing and appearance of winbar,
+window numbering schema, Window menu style and some other options.
+\else
+XDS IDE использует свою собственную версию {\bf MDI} (Multiple Document Interface). 
+Эта версия дает возможность использования неперекрывающихся окон 
+(которые никогда не закрываются другими) и свободных окон 
+(которые появляются скорее на рабочем столе чем внутри IDE оболочки).
+Она также предоставляет более удобный, чем в классическом MDI способ 
+нумерации окон, и позволяет легче управляться с окнами.
+
+Пункт меню {\bf Windows} отображает диалог \ref[dialog]{CFGWIN\_DIALOG}, который
+позволяет вам выбирать местоположение и внешний вид WinBar,
+схему нумерации окон, стиль оконного меню и некоторые другие опции. 
+\fi
+
+\subsection{Configure: Tools}
+\public{IDM\_CONFIGURETOOLS}
+
+\ifenglish
+Use the {\bf Tools} command to configure external tools
+which appear in the {\bf Tools} menu. Each tool has menu string, command line
+and (optionally) keyboard shortcut.
+
+The command displays \ref[Configure Tools]{CFGTOOLS\_DIALOG} dialog.
+\else
+Используйте команду {\bf Tools}, чтобы настраивать внешние утилиты,
+которые появляются в меню {\bf Tools}. Для каждой утилиты имеется строка меню,
+командная строка и (необязательно) комбинация клавиш клавиатуры. 
+
+Команда выводит диалог \ref[Configure Tools]{CFGTOOLS\_DIALOG}.
+\fi
+\subsection{Configure: Project creation}
+\public{IDM\_CONFIGUREPROJECT}
+
+\ifenglish
+Use the {\bf Project creation} command to fine tune new
+project creation process: specify directories to create,
+project template, redirection file template, etc.
+
+The command displays \ref[New Project Creation Options]{CFGPROJ\_DIALOG} dialog.
+\else
+Используйте команду меню {\bf Project creation} для тонкой
+настройки процесса создания проекта определите директории, которые надлежит
+создать, файл шаблонов проекта, файл шаблонов путей поиска и т. д.
+
+Команда выводит диалог \ref[New Project Creation Options]{CFGPROJ\_DIALOG}.
+\fi
+\subsection{Configure: Editor}
+\public{IDM\_CONFIGUREEDITOR}
+
+\ifenglish
+It is well known that initially convenient system is better than the system
+that allows to tune everything and that may become convenient after hours of tuning.
+Nevertheless, the editor used in the IDE (called {\bf PoorEdit}) provides lots
+of tunable parameters. You can specify tabulation size and method, fine tune
+subtle properties of {\bf BS}, {\bf Delete} and {\bf Enter} keys, set file encoding
+and and-of-line handling, cursor position after {\bf Paste} operation and many other
+things.
+
+All those settings are available via {\bf Editor} command that displays
+\ref[Editor Configuration dialog]{CFGEDIT\_DIALOG}.
+\else
+Общеизвестно, что изначально удобная система лучше системы, которая позволяет все
+настраивать и которая может стать удобной лишь после долгих часов, 
+потраченных на настройку. Тем не менее, используемый в IDE редактор (называемый 
+{\bf PoorEdit}) предоставляет множество настраиваемых параметров.
+Вы можете определить ширину и способ табуляции, плавно настроить хитроумные
+свойства клавиш {\bf BS}, {\bf Delete} и {\bf Enter}, установить кодировку файла
+и способ обработки конца строки, положение курсора после операции {\bf Paste} 
+и многое другое.
+
+Все эти опции доступны посредством команды {\bf Editor}, которая отображает диалог
+\ref[Editor Configuration dialog]{CFGEDIT\_DIALOG}.
+\fi
+\subsection{Configure: Colors and fonts}
+\public{IDM\_COLOR}
+
+\ifenglish
+Use the {\bf Colors and fonts} command to specify colors
+and fonts used in IDE windows.
+
+You can specify foreground and background colors and fonts for editor windows,
+file lists and message windows. For editor windows you can also specify color
+of selection and color of highlighted text. If you have set of
+\ref[programming languages]{Languages} configured you can also configure colors
+for all syntax elements recognized in the languages. Each language is configured
+separately.
+
+You can also set the background color
+of the IDE. 
+\else
+Используйте команду {\bf Colors and fonts}, чтобы определить цвета и шрифты,
+задействованные в окнах IDE.
+
+Вы можете определять цвет фона и рисующий цвет, шрифты для окон редактора
+списков файлов и окон сообщений. Для окон редактора вы можете также определить 
+цвета отмеченного и выделенного текста. Если у вас настроен набор  
+\ref[языков программирования]{Languages}, то вы также можете настроить цвета 
+для всех элементов синтаксиса, распознаваемых в языке. Каждый язык настраивается 
+отдельно.
+
+Вы также можете установить цвет фона IDE.
+\fi
+\subsection{Configure: Printing}
+\public{IDM\_CONFIGUREPRINT}
+
+\ifenglish
+Use the {\bf Printing} command to specify how you want your files printed.
+You can specify how you wish to handle long lines, what information to put
+in the page header and whether to print line numbers. You can also choose
+printer font and page margins.
+\else
+Используйте команду {\bf Printing}, чтобы определить, как вы хотите 
+распечатывать ваши файлы. Вы также можете указать, как обрабатывать длинные 
+строки, какие сведения помещать в заголовок страницы, и нужно ли печатать 
+номера страниц. Вы также можете выбрать шрифт принтера и размеры полей.
+\fi
+\subsection{Configure: Message Filters}
+\public{IDM\_CONFIGUREFILTERS}
+
+\ifenglish
+Use the {\bf Message Filters} command to display a dialog box where you can
+work with \ref[Message Filters]{MessageFilters}. You can create new filters,
+edit or remove existing filters. You can assign created message filters to tools
+using \ref[Configure]{M\_CONFIGURE}:\ref[Tools]{IDM\_CONFIGURETOOLS} menu.
+\else
+Используйте команду {\bf Message Filters}, чтобы отбразить диалоговое окно,
+где вы можете работать с \ref[фильтрами сообщений]{MessageFilters}. Вы также 
+можете создавать новые фильтры, редактировать или удалять существующие.
+Вы можете привязать созданные фильтры сообщений к утилитам, используя меню
+\ref[Configure]{M\_CONFIGURE}:\ref[Tools]{IDM\_CONFIGURETOOLS}. 
+\fi
+\subsection{Configure: Languages}
+\public{IDM\_CONFIGURE\_LANGUAGES}
+
+\ifenglish
+Use the {\bf Languages} command to display a dialog box where you can define
+set of \ref[programming languages]{Languages} the IDE recognizes. You can
+add, remove languages and configure \ref[language drivers]{LangDriver}.
+\else
+Используйте команду {\bf Languages}, чтобы отобразить диалог, где вы можете 
+определить набор распознаваемых IDE \ref[языков программирования]{Languages}.
+Вы можете добавлять, удалять языки и настраивать \ref[драйверы языков]{LangDriver}.
+\fi

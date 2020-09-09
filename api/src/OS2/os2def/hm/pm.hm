@@ -1,0 +1,86 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PM.H
+*
+* OS/2 Presentation Manager top level include file.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_PM                  ALL of OS/2 Presentation Manager
+*   INCL_AVIO                OS/2 Advanced VIO (16-Bit only)
+*   INCL_BITMAPFILEFORMAT    OS/2 Bitmap File Format
+*   INCL_DEV                 OS/2 Device Support
+*   INCL_ERRORS              OS/2 Errors
+*   INCL_FONTFILEFORMAT      OS/2 Font File Format
+*   INCL_GPI                 OS/2 GPI
+*   INCL_ORDERS              OS/2 Graphical Order Formats
+*   INCL_PIC                 OS/2 Picture utilities
+*   INCL_SPL                 OS/2 Spooler
+*   INCL_WINSTDDLGS          CUA controls and dialogs
+*   INCL_WIN                 OS/2 Window Manager
+*   INCL_WINWORKPLACE        OS/2 Workplace Shell
+*
+* ===========================================================================
+*
+* Comments at the end of each typedef line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+#define PM_INCLUDED
+
+
+(*** if INCL_PM defined then define all the symbols ************************)
+#if defined(INCL_PM)
+   #define INCL_AVIO
+   #define INCL_BITMAPFILEFORMAT
+   #define INCL_DEV
+   #define INCL_ERRORS
+   #define INCL_FONTFILEFORMAT
+   #define INCL_GPI
+   #define INCL_ORDERS
+   #define INCL_PIC
+   #define INCL_SPL
+   #define INCL_WIN
+   #define INCL_WINSTDDLGS
+   #define INCL_WINWORKPLACE
+#endif (* INCL_PM *)
+
+#include <pmwin.hm>        (* OS/2 Window Manager definitions    *)
+#include <pmgpi.hm>        (* OS/2 GPI definitions               *)
+#include <pmdev.hm>        (* OS/2 Device Context definitions    *)
+#include <pmwp.hm>         (* OS/2 Workplace Shell               *)
+
+#if defined(INCL_AVIO)
+   #include <pmavio.hm>    (* OS/2 AVIO definitions              *)
+#endif
+
+#if defined(INCL_SPL)
+   #include <pmspl.hm>     (* OS/2 Spooler definitions           *)
+#endif
+
+#if defined(INCL_PIC)
+   #include <pmpic.hm>     (* OS/2 Picture Utilities definitions *)
+#endif
+
+#if defined(INCL_ORDERS)
+   #include <pmord.hm>     (* OS/2 Graphical Order Formats       *)
+#endif
+
+#if defined(INCL_FONTFILEFORMAT)
+   #include <pmfont.hm>    (* OS/2 Font File Format definition   *)
+#endif
+
+#include <pmstddlg.hm>     (* CUA controls and dialogs           *)
+
+
+(**************************** end of file **********************************)

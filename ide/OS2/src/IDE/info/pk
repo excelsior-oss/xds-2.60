@@ -1,0 +1,88 @@
+    *** Знания об оболочке ***
+
+Для установки оболочки:
+=======================
+
+- Прописать в оs2.ini/XDS/XDS_WPT_DEFAULTS полное имя файла предефолтных 
+темплитов вокплэйсов (WPTPLDEF.INI сейчас).
+- Положить раскрашивающие текст dll-ки и их *.wrd файлы относительно 
+директории самого исполняемого файла оболочки в ..\DLL\, или же прописать 
+имя директории их содержащей в оs2.ini\XDS\HLT_DLL_PATH.
+- Запустить оболочку с ключем -I <path>, где <path> - полное имя директории куда 
+ей следует писать свои конфигурационные файлы. При этом она создаст свой XD$.INI
+файл и запустит над ним скрипт MkXdsIni.cmd (должен лежать в той же директории
+что и исполняемый файл оболочки) - он пропишет заданные по умолчанию 
+клавиатурные макросы. Имя директории пропишется в оs2.ini/XDS/XD$_INI_PATH.
+
+Для запуска оболочки:
+---------------------
+- Вызвать ее без параметров - будет искать ini-файлы в директории прописанной 
+в оs2.ini/XDS/XD$_INI_PATH
+- Вызвать с ключем -P <path> - будет искать ini-файлы в указанной директории
+
+   В принципе, над файлом XD$.INI всегда можно запустить вручную скрипт 
+MkXdsIni.cmd, что приведет к прописыванию значений макросов по умолчанию (при
+их несознательной порче например), однако работать он в этом случае будет 
+весьма долго.
+
+
+Где что лежит:
+==============
+
+Working directory:
+------------------
+Переменная szIniPath - директория, куда оболочка пишет свои ini-файлы.
+По умолчанию - та что прописана в оs2.ini/XDS/XD$_INI_PATH,
+можно задать в командной строке как -P e:\zzz.
+
+Templites:
+----------
+В szIniPath файл WpTpl.INI содержит пользовательские темплиты (slots 1..)
+В os2.ini/XDS ключи XDS_WPT_* - пути к *.ini файлам с системными 
+темплитами (slots 1..). В листе темплитов они будут неудалаемыми.
+Таким образом, при установке оболочки нам следует иметь файл системных
+темплитов и прописать его полное имя например в оs2.ini/XDS/XDS_WPT_DEFAULTS.
+
+Hiliting:
+---------
+Прицепляем все dll-ки вида <szHomePath>\..\DLL\hlt*.dll
+или, если есть ключ HINI_USERPROFILE\XDS\HLT_DLL_PATH, то <ключ>\hlt*.dll
+В ихней же директории должны лежать их *.wrd файлы.
+
+Содержимое профайла (XD$.INI):
+------------------------------
+
+HINI_USERPROFILE\XDS\XD$_INI_PATH  contains default profile name
+
+<profile>\XDS\szWPDefault - default workplace name 
+
+0 slot:
+
+  WPHist        - hstWPlaces class data
+  GMacro        - Macros class data (glabal macros)
+  RexxMon       - REXX monitor window data
+
+other slots:
+
+szWPMirror      - mirror file name
+fUseMirror      - BOOL use mirror file
+szCurPath       - full path (w/o last '\')
+szCurIOPath     - file dialog default path (w/o last '\')
+WPTplAdvScript  - REXX script to run when WP is created
+szPrjFile       - project file name (or "")
+alFramePos      - XDS frame: LONG al[5]; //x, y, cx, cy, fMaximize
+LMacro          - Macros class data (local macro)
+...             - some grOffice class data
+SrcList         - srcList class data
+HelpMenuInfs    - help module data
+FileHist        - hstFiles class data
+ProjHist        - hstProjects class data
+UserVarTable    - pUserVarTable class data
+Tools           - pToolbox class data
+ClrSet          - fontclr module data
+PPFontMsg       - pres. param font
+nWPComment      - WP comment length
+szWPComment     - WP comment
+...             - ptOffice class data
+
+

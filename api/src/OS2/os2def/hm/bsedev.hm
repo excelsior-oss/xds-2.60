@@ -1,0 +1,521 @@
+(*static char *SCCSID = "@(#)bsedev.h   6.10 92/03/15";*)
+(**************************************************************************\
+*                                                                         *
+* Module Name: BSEDEV.H                                                   *
+*                                                                         *
+* OS/2 Structures and constants for use with DosDevIOCtl                  *
+*                                                                         *
+* Copyright (c) 1987-1992, IBM Corporation                                *
+*                                                                         *
+\**************************************************************************)
+
+#define BSEDEV_INCLUDED
+
+(* Input and Output Control Categories *)
+
+CONST  IOCTL_ASYNC                        = 00001H;
+CONST  IOCTL_SCR_AND_PTRDRAW              = 00003H;
+CONST  IOCTL_KEYBOARD                     = 00004H;
+CONST  IOCTL_PRINTER                      = 00005H;
+CONST  IOCTL_LIGHTPEN                     = 00006H;
+CONST  IOCTL_POINTINGDEVICE               = 00007H;
+CONST  IOCTL_DISK                         = 00008H;
+CONST  IOCTL_PHYSICALDISK                 = 00009H;
+CONST  IOCTL_MONITOR                      = 0000AH;
+CONST  IOCTL_GENERAL                      = 0000BH;
+
+(* Serial-Device Control *)
+
+CONST  ASYNC_SETBAUDRATE                  = 00041H;
+CONST  ASYNC_SETLINECTRL                  = 00042H;
+CONST  ASYNC_TRANSMITIMM                  = 00044H;
+CONST  ASYNC_SETBREAKOFF                  = 00045H;
+CONST  ASYNC_SETMODEMCTRL                 = 00046H;
+CONST  ASYNC_SETBREAKON                   = 0004BH;
+CONST  ASYNC_STOPTRANSMIT                 = 00047H;
+CONST  ASYNC_STARTTRANSMIT                = 00048H;
+CONST  ASYNC_SETDCBINFO                   = 00053H;
+CONST  ASYNC_GETBAUDRATE                  = 00061H;
+CONST  ASYNC_GETLINECTRL                  = 00062H;
+CONST  ASYNC_GETCOMMSTATUS                = 00064H;
+CONST  ASYNC_GETLINESTATUS                = 00065H;
+CONST  ASYNC_GETMODEMOUTPUT               = 00066H;
+CONST  ASYNC_GETMODEMINPUT                = 00067H;
+CONST  ASYNC_GETINQUECOUNT                = 00068H;
+CONST  ASYNC_GETOUTQUECOUNT               = 00069H;
+CONST  ASYNC_GETCOMMERROR                 = 0006DH;
+CONST  ASYNC_GETCOMMEVENT                 = 00072H;
+CONST  ASYNC_GETDCBINFO                   = 00073H;
+
+(* Screen/Pointer-Draw Control *)
+
+CONST  SCR_ALLOCLDT                       = 00070H;
+CONST  SCR_DEALLOCLDT                     = 00071H;
+CONST  PTR_GETPTRDRAWADDRESS              = 00072H;
+CONST  SCR_ALLOCLDTOFF                    = 00075H;
+
+(* Keyboard Control *)
+
+CONST  KBD_SETTRANSTABLE                  = 00050H;
+CONST  KBD_SETINPUTMODE                   = 00051H;
+CONST  KBD_SETINTERIMFLAG                 = 00052H;
+CONST  KBD_SETSHIFTSTATE                  = 00053H;
+CONST  KBD_SETTYPAMATICRATE               = 00054H;
+CONST  KBD_SETFGNDSCREENGRP               = 00055H;
+CONST  KBD_SETSESMGRHOTKEY                = 00056H;
+CONST  KBD_SETFOCUS                       = 00057H;
+CONST  KBD_SETKCB                         = 00058H;
+CONST  KBD_SETNLS                         = 0005CH;
+CONST  KBD_CREATE                         = 0005DH;
+CONST  KBD_DESTROY                        = 0005EH;
+CONST  KBD_GETINPUTMODE                   = 00071H;
+CONST  KBD_GETINTERIMFLAG                 = 00072H;
+CONST  KBD_GETSHIFTSTATE                  = 00073H;
+CONST  KBD_READCHAR                       = 00074H;
+CONST  KBD_PEEKCHAR                       = 00075H;
+CONST  KBD_GETSESMGRHOTKEY                = 00076H;
+CONST  KBD_GETKEYBDTYPE                   = 00077H;
+CONST  KBD_GETCODEPAGEID                  = 00078H;
+CONST  KBD_XLATESCAN                      = 00079H;
+
+(* Printer Control *)
+
+CONST  PRT_QUERYJOBHANDLE                 = 00021H;
+CONST  PRT_SETFRAMECTL                    = 00042H;
+CONST  PRT_SETINFINITERETRY               = 00044H;
+CONST  PRT_INITPRINTER                    = 00046H;
+CONST  PRT_ACTIVATEFONT                   = 00048H;
+CONST  PRT_GETFRAMECTL                    = 00062H;
+CONST  PRT_GETINFINITERETRY               = 00064H;
+CONST  PRT_GETPRINTERSTATUS               = 00066H;
+CONST  PRT_QUERYACTIVEFONT                = 00069H;
+CONST  PRT_VERIFYFONT                     = 0006AH;
+
+(* Pointing-Device (Mouse) Control *)
+
+CONST  MOU_ALLOWPTRDRAW                   = 00050H;
+CONST  MOU_UPDATEDISPLAYMODE              = 00051H;
+CONST  MOU_SCREENSWITCH                   = 00052H;
+CONST  MOU_SETSCALEFACTORS                = 00053H;
+CONST  MOU_SETEVENTMASK                   = 00054H;
+CONST  MOU_SETHOTKEYBUTTON                = 00055H;
+CONST  MOU_SETPTRSHAPE                    = 00056H;
+CONST  MOU_DRAWPTR                        = 00057H;
+CONST  MOU_REMOVEPTR                      = 00058H;
+CONST  MOU_SETPTRPOS                      = 00059H;
+CONST  MOU_SETPROTDRAWADDRESS             = 0005AH;
+CONST  MOU_SETREALDRAWADDRESS             = 0005BH;
+CONST  MOU_SETMOUSTATUS                   = 0005CH;
+CONST  MOU_DISPLAYMODECHANGE              = 0005DH;
+CONST  MOU_GETBUTTONCOUNT                 = 00060H;
+CONST  MOU_GETMICKEYCOUNT                 = 00061H;
+CONST  MOU_GETMOUSTATUS                   = 00062H;
+CONST  MOU_READEVENTQUE                   = 00063H;
+CONST  MOU_GETQUESTATUS                   = 00064H;
+CONST  MOU_GETEVENTMASK                   = 00065H;
+CONST  MOU_GETSCALEFACTORS                = 00066H;
+CONST  MOU_GETPTRPOS                      = 00067H;
+CONST  MOU_GETPTRSHAPE                    = 00068H;
+CONST  MOU_GETHOTKEYBUTTON                = 00069H;
+CONST  MOU_VER                            = 0006AH;
+
+(* Disk/Diskette Control *)
+
+CONST  DSK_LOCKDRIVE                      = 00000H;
+CONST  DSK_UNLOCKDRIVE                    = 00001H;
+CONST  DSK_REDETERMINEMEDIA               = 00002H;
+CONST  DSK_SETLOGICALMAP                  = 00003H;
+CONST  DSK_BLOCKREMOVABLE                 = 00020H;
+CONST  DSK_GETLOGICALMAP                  = 00021H;
+CONST  DSK_SETDEVICEPARAMS                = 00043H;
+CONST  DSK_WRITETRACK                     = 00044H;
+CONST  DSK_FORMATVERIFY                   = 00045H;
+CONST  DSK_GETDEVICEPARAMS                = 00063H;
+CONST  DSK_READTRACK                      = 00064H;
+CONST  DSK_VERIFYTRACK                    = 00065H;
+
+(* Physical-Disk Control *)
+
+CONST  PDSK_LOCKPHYSDRIVE                 = 00000H;
+CONST  PDSK_UNLOCKPHYSDRIVE               = 00001H;
+CONST  PDSK_WRITEPHYSTRACK                = 00044H;
+CONST  PDSK_GETPHYSDEVICEPARAMS           = 00063H;
+CONST  PDSK_READPHYSTRACK                 = 00064H;
+CONST  PDSK_VERIFYPHYSTRACK               = 00065H;
+
+(* Character-Monitor Control *)
+CONST  MON_REGISTERMONITOR                = 00040H;
+
+(* General Device Control *)
+CONST  DEV_FLUSHINPUT                     = 00001H;
+CONST  DEV_FLUSHOUTPUT                    = 00002H;
+CONST  DEV_QUERYMONSUPPORT                = 00060H;
+
+
+(* ASYNC_GETCOMMERROR, ASYNC_SETBREAKOFF, ASYNC_SETBREAKON,
+ * ASYNC_SETMODEMCTRL
+ *)
+
+CONST  RX_QUE_OVERRUN                     = 00001H;
+CONST  RX_HARDWARE_OVERRUN                = 00002H;
+CONST  PARITY_ERROR                       = 00004H;
+CONST  FRAMING_ERROR                      = 00008H;
+
+(* ASYNC_GETCOMMEVENT *)
+CONST  CHAR_RECEIVED                      = 00001H;
+CONST  LAST_CHAR_SENT                     = 00004H;
+CONST  CTS_CHANGED                        = 00008H;
+CONST  DSR_CHANGED                        = 00010H;
+CONST  DCD_CHANGED                        = 00020H;
+CONST  BREAK_DETECTED                     = 00040H;
+CONST  ERROR_OCCURRED                     = 00080H;
+CONST  RI_DETECTED                        = 00100H;
+
+(* ASYNC_GETCOMMSTATUS *)
+CONST  TX_WAITING_FOR_CTS                 = 00001H;
+CONST  TX_WAITING_FOR_DSR                 = 00002H;
+CONST  TX_WAITING_FOR_DCD                 = 00004H;
+CONST  TX_WAITING_FOR_XON                 = 00008H;
+CONST  TX_WAITING_TO_SEND_XON             = 00010H;
+CONST  TX_WAITING_WHILE_BREAK_ON          = 00020H;
+CONST  TX_WAITING_TO_SEND_IMM             = 00040H;
+CONST  RX_WAITING_FOR_DSR                 = 00080H;
+
+(* ASYNC_GETLINESTATUS *)
+CONST  WRITE_REQUEST_QUEUED               = 00001H;
+CONST  DATA_IN_TX_QUE                     = 00002H;
+CONST  HARDWARE_TRANSMITTING              = 00004H;
+CONST  CHAR_READY_TO_SEND_IMM             = 00008H;
+CONST  WAITING_TO_SEND_XON                = 00010H;
+CONST  WAITING_TO_SEND_XOFF               = 00020H;
+
+(* ASYNC_GETMODEMINPUT *)
+CONST  CTS_ON                             = 010H;
+CONST  DSR_ON                             = 020H;
+CONST  RI_ON                              = 040H;
+CONST  DCD_ON                             = 080H;
+
+(* DSK_SETDEVICEPARAMS *)
+CONST  BUILD_BPB_FROM_MEDIUM              = 000H;
+CONST  REPLACE_BPB_FOR_DEVICE             = 001H;
+CONST  REPLACE_BPB_FOR_MEDIUM             = 002H;
+
+(* KBD_GETINPUTMODE, KBD_PEEKCHAR, KBD_SETINPUTMODE*)
+CONST  ASCII_MODE                         = 000H;
+CONST  BINARY_MODE                        = 080H;
+
+(* KBD_GETINTERIMFLAG *)
+CONST  CONVERSION_REQUEST                 = 020H;
+CONST  INTERIM_CHAR                       = 080H;
+
+(* KBD_GETSESMGRHOTKEY *)
+CONST  HOTKEY_MAX_COUNT                   = 00000H;
+CONST  HOTKEY_CURRENT_COUNT               = 00001H;
+
+(* KBD_PEEKCHAR *)
+CONST  KBD_DATA_RECEIVED                  = 00001H;
+CONST  KBD_DATA_BINARY                    = 08000H;
+
+(* KBD_READCHAR *)
+CONST  KBD_READ_WAIT                      = 00000H;
+CONST  KBD_READ_NOWAIT                    = 08000H;
+
+(* KBD_SETINPUTMODE *)
+CONST  SHIFT_REPORT_MODE                  = 001H;
+
+#if ! (defined(INCL_MOU) || defined(INCL_SUB))
+
+   CONST  MOUSE_MOTION                    = 00001H;
+   CONST  MOUSE_MOTION_WITH_BN1_DOWN      = 00002H;
+   CONST  MOUSE_BN1_DOWN                  = 00004H;
+   CONST  MOUSE_MOTION_WITH_BN2_DOWN      = 00008H;
+   CONST  MOUSE_BN2_DOWN                  = 00010H;
+   CONST  MOUSE_MOTION_WITH_BN3_DOWN      = 00020H;
+   CONST  MOUSE_BN3_DOWN                  = 00040H;
+
+   CONST  MHK_BUTTON1                     = 00001H;
+   CONST  MHK_BUTTON2                     = 00002H;
+   CONST  MHK_BUTTON3                     = 00004H;
+
+   CONST  MOU_NOWAIT                      = 00000H;
+   CONST  MOU_WAIT                        = 00001H;
+
+#endif (* #ifndef INCL_MOU *)
+
+(* MOU_GETHOTKEYBUTTON, MOU_SETHOTKEYBUTTON *)
+CONST  MHK_NO_HOTKEY                      = 00000H;
+
+(* MOU_GETMOUSTATUS *)
+CONST  MOUSE_QUEUEBUSY                    = 00001H;
+CONST  MOUSE_BLOCKREAD                    = 00002H;
+CONST  MOUSE_FLUSH                        = 00004H;
+CONST  MOUSE_UNSUPPORTED_MODE             = 00008H;
+CONST  MOUSE_DISABLED                     = 00100H;
+CONST  MOUSE_MICKEYS                      = 00200H;
+
+(* PRT_GETPRINTERSTATUS *)
+CONST  PRINTER_TIMEOUT                    = 00001H;
+CONST  PRINTER_IO_ERROR                   = 00008H;
+CONST  PRINTER_SELECTED                   = 00010H;
+CONST  PRINTER_OUT_OF_PAPER               = 00020H;
+CONST  PRINTER_ACKNOWLEDGED               = 00040H;
+CONST  PRINTER_NOT_BUSY                   = 00080H;
+
+(* fbCtlHndShake *)
+CONST  MODE_DTR_CONTROL                   = 001H;
+CONST  MODE_DTR_HANDSHAKE                 = 002H;
+CONST  MODE_CTS_HANDSHAKE                 = 008H;
+CONST  MODE_DSR_HANDSHAKE                 = 010H;
+CONST  MODE_DCD_HANDSHAKE                 = 020H;
+CONST  MODE_DSR_SENSITIVITY               = 040H;
+
+(* fbFlowReplace *)
+CONST  MODE_AUTO_TRANSMIT                 = 001H;
+CONST  MODE_AUTO_RECEIVE                  = 002H;
+CONST  MODE_ERROR_CHAR                    = 004H;
+CONST  MODE_NULL_STRIPPING                = 008H;
+CONST  MODE_BREAK_CHAR                    = 010H;
+CONST  MODE_RTS_CONTROL                   = 040H;
+CONST  MODE_RTS_HANDSHAKE                 = 080H;
+CONST  MODE_TRANSMIT_TOGGLE               = 0C0H;
+
+(* fbTimeout *)
+CONST  MODE_NO_WRITE_TIMEOUT              = 001H;
+CONST  MODE_READ_TIMEOUT                  = 002H;
+CONST  MODE_WAIT_READ_TIMEOUT             = 004H;
+CONST  MODE_NOWAIT_READ_TIMEOUT           = 006H;
+
+TYPE DCBINFO = RECORD        (* dcbinf *)
+        usWriteTimeout:           USHORT;
+        usReadTimeout:            USHORT;
+        fbCtlHndShake:            BYTE;
+        fbFlowReplace:            BYTE;
+        fbTimeout:                BYTE;
+        bErrorReplacementChar:    BYTE;
+        bBreakReplacementChar:    BYTE;
+        bXONChar:                 BYTE;
+        bXOFFChar:                BYTE;
+END;
+TYPE PDCBINFO = POINTER TO DCBINFO;
+
+<* ALIGNMENT = "1" *>
+
+TYPE TRACKLAYOUT = RECORD     (* trckl *)
+        bCommand:       BYTE;
+        usHead:         USHORT;
+        usCylinder:     USHORT;
+        usFirstSector:  USHORT;
+        cSectors:       USHORT;
+        TrackTable:     POINTER TO ARRAY[0..0] OF
+                                  RECORD
+                                    usSectorNumber:  USHORT;
+                                    usSectorSize:    USHORT;
+                                  END;
+END;
+TYPE PTRACKLAYOUT = POINTER TO TRACKLAYOUT;
+
+
+CONST  DEVTYPE_48TPI                      = 00000H;
+CONST  DEVTYPE_96TPI                      = 00001H;
+CONST  DEVTYPE_35                         = 00002H;
+CONST  DEVTYPE_8SD                        = 00003H;
+CONST  DEVTYPE_8DD                        = 00004H;
+CONST  DEVTYPE_FIXED                      = 00005H;
+CONST  DEVTYPE_TAPE                       = 00006H;
+CONST  DEVTYPE_UNKNOWN                    = 00007H;
+
+<* ALIGNMENT = "1" *>
+
+TYPE BIOSPARAMETERBLOCK = RECORD     (* bspblk *)
+        usBytesPerSector:     USHORT ;
+        bSectorsPerCluster:   BYTE   ;
+        usReservedSectors:    USHORT ;
+        cFATs:                BYTE   ;
+        cRootEntries:         USHORT ;
+        cSectors:             USHORT ;
+        bMedia:               BYTE   ;
+        usSectorsPerFAT:      USHORT ;
+        usSectorsPerTrack:    USHORT ;
+        cHeads:               USHORT ;
+        cHiddenSectors:       ULONG  ;
+        cLargeSectors:        ULONG  ;
+        abReserved:           ARRAY [0..5] OF BYTE;
+        cCylinders:           USHORT ;
+        bDeviceType:          BYTE   ;
+        fsDeviceAttr:         USHORT ;
+END;
+TYPE PBIOSPARAMETERBLOCK = POINTER TO BIOSPARAMETERBLOCK;
+
+TYPE SCREENGROUP = RECORD    (* scrgrp *)
+        idScreenGrp:  USHORT ;
+        fTerminate:   USHORT ;
+END;
+TYPE PSCREENGROUP = POINTER TO SCREENGROUP;
+
+TYPE FRAME = RECORD          (* frm *)
+        bCharsPerLine: BYTE ;
+        bLinesPerInch: BYTE ;
+END;
+TYPE PFRAME = POINTER TO FRAME;
+
+TYPE KBDTYPE = RECORD        (* kbdtyp *)
+        usType:          USHORT ;
+        reserved1:       USHORT ;
+        reserved2:       USHORT ;
+END;
+TYPE PKBDTYPE = POINTER TO KBDTYPE;
+
+TYPE LINECONTROL = RECORD    (* lnctl *)
+        bDataBits:      BYTE ;
+        bParity:        BYTE ;
+        bStopBits:      BYTE ;
+        fTransBreak:    BYTE ;
+END;
+TYPE PLINECONTROL = POINTER TO LINECONTROL;
+
+(* MODEMSTATUS.fbModemOn, ASYNC_GETMODEMOUTPUT *)
+CONST  DTR_ON                             = 001H;
+CONST  RTS_ON                             = 002H;
+
+(* MODEMSTATUS.fbModemOff *)
+CONST  DTR_OFF                            = 0FEH;
+CONST  RTS_OFF                            = 0FDH;
+
+TYPE MODEMSTATUS = RECORD    (* mdmst *)
+        fbModemOn:  BYTE ;
+        fbModemOff: BYTE ;
+END;
+TYPE PMODEMSTATUS = POINTER TO MODEMSTATUS;
+
+<* ALIGNMENT = "1" *>
+
+TYPE TRACKFORMAT = RECORD    (* trckfmt *)
+        bCommand:        BYTE ;
+        usHead:          USHORT ;
+        usCylinder:      USHORT ;
+        usReserved:      USHORT ;
+        cSectors:        USHORT ;
+        FormatTable:     ARRAY [0..0] OF
+                                         RECORD
+                                           bCylinder:    BYTE ;
+                                           bHead:        BYTE ;
+                                           idSector:     BYTE ;
+                                           bBytesSector: BYTE ;
+                                         END;
+END;
+
+TYPE PTRACKFORMAT = POINTER TO TRACKFORMAT;
+
+TYPE RXQUEUE = RECORD        (* rxq *)
+        cch:  USHORT ;
+        cb:   USHORT ;
+END;
+TYPE PRXQUEUE = POINTER TO RXQUEUE;
+
+TYPE DEVICEPARAMETERBLOCK = RECORD   (* dvpblck *)
+        reserved1:        USHORT ;
+        cCylinders:       USHORT ;
+        cHeads:           USHORT ;
+        cSectorsPerTrack: USHORT ;
+        reserved2:        USHORT ;
+        reserved3:        USHORT ;
+        reserved4:        USHORT ;
+        reserved5:        USHORT ;
+END;
+TYPE PDEVICEPARAMETERBLOCK = POINTER TO DEVICEPARAMETERBLOCK;
+
+(* The following must be packed on 2 bytes boundary *)
+
+<* ALIGNMENT = "2" *>
+
+TYPE PTRDRAWFUNCTION = RECORD        (* ptrdfnc *)
+        usReturnCode: USHORT ;
+        pfnDraw:      SYSTEM.ADDRESS ;
+        pchDataSeg:   PCH ;
+END;
+TYPE PPTRDRAWFUNCTION = POINTER TO PTRDRAWFUNCTION;
+
+TYPE PTRDRAWADDRESS = RECORD         (* ptrdaddr *)
+        reserved:    USHORT ;
+        ptrdfnc:     PTRDRAWFUNCTION ;
+END;
+TYPE PPTRDRAWADDRESS  = POINTER TO PTRDRAWADDRESS;
+
+TYPE SHIFTSTATE = RECORD     (* shftst *)
+        fsState: USHORT ;
+        fNLS:    BYTE   ;
+END;
+TYPE PSHIFTSTATE = POINTER TO SHIFTSTATE;
+
+
+
+(* HOTKEY.fsHotKey/SHIFTSTATE.fsState *)
+CONST  RIGHTSHIFT                         = 00001H;
+CONST  LEFTSHIFT                          = 00002H;
+CONST  CONTROL                            = 00004H;
+CONST  ALT                                = 00008H;
+CONST  SCROLLLOCK_ON                      = 00010H;
+CONST  NUMLOCK_ON                         = 00020H;
+CONST  CAPSLOCK_ON                        = 00040H;
+CONST  INSERT_ON                          = 00080H;
+CONST  LEFTCONTROL                        = 00100H;
+CONST  LEFTALT                            = 00200H;
+CONST  RIGHTCONTROL                       = 00400H;
+CONST  RIGHTALT                           = 00800H;
+CONST  SCROLLLOCK                         = 01000H;
+CONST  NUMLOCK                            = 02000H;
+CONST  CAPSLOCK                           = 04000H;
+CONST  SYSREQ                             = 08000H;
+
+TYPE HOTKEY = RECORD         (* htky *)
+        fsHotKey:            USHORT ;
+        uchScancodeMake:     UCHAR  ;
+        uchScancodeBreak:    UCHAR  ;
+        idHotKey:            USHORT ;
+END;
+TYPE PHOTKEY = POINTER TO HOTKEY;
+
+TYPE MONITORPOSITION = RECORD        (* mnpos *)
+        fPosition:       USHORT ;
+        index:           USHORT ;
+        pbInBuf:         ULONG  ;
+        offOutBuf:       USHORT ;
+END;
+TYPE PMONITORPOSITION = POINTER TO MONITORPOSITION;
+
+TYPE RATEDELAY = RECORD      (* rtdly *)
+        usDelay:      USHORT ;
+        usRate:       USHORT ;
+END;
+TYPE PRATEDELAY = POINTER TO RATEDELAY;
+
+TYPE CODEPAGEINFO = RECORD   (* cpi *)
+        pbTransTable:  PVOID ;
+        idCodePage:    USHORT ;
+        idTable:       USHORT ;
+END;
+TYPE PCODEPAGEINFO = POINTER TO CODEPAGEINFO;
+
+TYPE CPID = RECORD   (* cpid *)
+        idCodePage:   USHORT ;
+        Reserved:     USHORT ;
+END;
+TYPE PCPID = POINTER TO CPID;
+
+TYPE LDTADDRINFO = RECORD     (* ldtaddr *)
+        pulPhysAddr:   PULONG ;
+        cb:            USHORT ;
+END;
+TYPE PLDTADDRINFO = POINTER TO LDTADDRINFO;
+
+TYPE PTRDRAWDATA = RECORD    (* ptrdd *)
+        cb:         USHORT ;
+        usConfig:   USHORT ;
+        usFlag:     USHORT ;
+END;
+
+<* ALIGNMENT = "4" *>
+
+TYPE PPTRDRAWDATA = POINTER TO PTRDRAWDATA;
+
+(************************** End of file ***************************************)

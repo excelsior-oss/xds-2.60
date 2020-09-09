@@ -1,0 +1,241 @@
+\newif\ifonline
+
+\begin{document}
+\title{XDS Family of Products}
+\begin{center}
+{\LARGE \bf eXtensible Development System\\}
+
+{\Huge \bf XDS Family of Products\\}
+
+\ref[Key features]{features}
+
+\ref[Development activities]{development}
+
+\ref[Credits]{credits}
+
+\ref[Contact information]{contact} 
+
+\\\\Copyright \copyright 1999-2011 Excelsior, LLC.
+\end{center}
+
+\chapter{Key features}
+\label{features}
+
+\begin{itemize}
+\item \ref{feat:sources}
+\item \ref{feat:targets}
+\item \ref{feat:platforms}
+\item \ref{feat:portability}
+\item \ref{feat:standard}
+\item \ref{feat:optimization}
+\item \ref{feat:speed}
+\item \ref{feat:reliability}
+\item \ref{feat:OOP}
+\item \ref{feat:C}
+\item \ref{feat:API}
+\item \ref{feat:IDE}
+\item \ref{feat:debug}
+\end{itemize}
+
+\section{Two source languages}
+\label{feat:sources}
+
+   XDS contains two well intergrated compilers - {\bf Modula-2} and 
+   {\bf Oberon-2}. It is possible to mix these two languages in a 
+   single project. The library set may be shared as well.
+
+\section{Multiple targets}
+\label{feat:targets}
+\index{Native XDS}
+\index{XDS-C}
+
+   XDS compilers generate either {\bf ANSI C text} ({\em XDS-C}) or 
+   {\bf native code} for the target platform ({\em Native XDS}).
+   XDS-C is a "via C" cross-compiler, the output of which is
+   supposed to be supplied uindchnged to the respective C compiler.
+   Although it produces readable text, it does {\bf not}
+   completely preserve the source program's
+   structure, identifiers and comments, and therefore may {\bf not}
+   be used as a Modula-2/Oberon-2 to C converter.
+
+   A true Modula-2 to C++ converter is avaliable from Excelsior
+   on a semi-custom basis. Contact the Sales Dept. at
+   {\bf sales@excelsior-usa.com} for details.
+
+\section{Multiple platforms}
+\label{feat:platforms}
+
+   {\em Native XDS} is currently available for the Intel x86 platform
+   (Windows and Linux). Support for other
+   platforms may be implemented on a custom basis.
+   
+   {\em XDS-C} is also available for Windows and Linux, but
+   allows you to target virtually any platform for 
+   which an ANSI C compiler is available.
+
+\section{Portability}
+\label{feat:portability}
+
+   All XDS implementations share the same front-end and library
+   set. Thus, for programs which do not use a specific operating system API
+   and do not rely on a hardware, {\bf only recompilation} is necessary 
+   to port to another platform,
+
+\section{Standard compliance}
+\label{feat:standard}
+
+   XDS implementation of Modula-2 is {\bf 100\% ISO-compliant};
+   full set of ISO Modula-2 standard libraries is provided.
+
+   XDS Oberon-2 conforms to the Niklaus Wirth's {\em Oberon-2 Report}.
+
+   On the other hand, a number of language extensions is
+   provided for conveninice. These extensions, however, have to be
+   explicitly enabled using a compiler option.
+
+\section{Highly optimized code}
+\label{feat:optimization}
+
+   Native XDS-x86 compilers produce {\bf highly optimized}, {\bf 32-bit},
+   professional quality code. The resulting program perfomance competes
+   with results shown by industry standard C compilers. The 
+   {\em instruction scheduling} mechanism for Pentium processors
+   results in a further 5-15\% perfomance gain.
+
+\section{Good compilation speed}
+\label{feat:speed}
+
+   XDS possess a quite reasonable code quality/compilation speed ratio.
+   The origin of this fact is that XDS compilers are used to build themselves.
+
+\section{Reliability}
+\label{feat:reliability}
+
+   A set of options which affect the code generation (optimizations etc)
+   was intentionally made very small in XDS. Therefore, the set of their
+   combinations is apparently not large and it does not take too much
+   time to {\bf test the compiler in all modes}. With many C/C++ compilers, 
+   this is almost impossible.
+
+\section{Object-oriented programming}
+\label{feat:OOP}
+
+   Oberon-2 is an {\bf object-oriented programming language} which is much easier
+   to teach, learn, and use than C++. With Oberon-2, it is possible to
+   concentrate on the principles of OOP, not on the way it is done using a
+   particular language.
+
+   Since Oberon-2 is a descendant of Modula-2, these languages are very similar,
+   so moving from one to another can be done smoothly. And with XDS, it is
+   {\bf extremely smooth}:
+
+   \begin{itemize}
+   \item There is no need to learn a new programming environment, what means no
+         time loss.
+   \item Programs already developed in Modula-2 may be completely {\bf re-used}
+         without any modifications, just as in the case of moving from C to C++.
+   \end{itemize}
+
+\section{Interface to C}
+\label{feat:C}
+
+   Some of the most annoying things about Modula-2 are absence,
+   imcompleteness, unportability and low quality of libraries.
+   XDS, with its {\bf foreign languages support}, gives an opportunity
+   to use the whole set of free, public domain, shareware, and
+   commercial libraries from the C world and access the 
+   \ref[Host OS API]{feat:API}.
+
+   C header files can be translated into Modula-2 definition 
+   modules by means of the supplied H2D utility.
+
+\section{Host OS API support}
+\label{feat:API}
+
+   XDS packages contain {\bf definition modules for the host operating
+   system base API (Win32, or POSIX and X Window/Motif},
+   and therefore may be used to implement large 
+   projects which use GUI, multi-threading, inter-process communication,
+   and other features provided in these APIs.
+
+\section{Integrated Development Environment}
+\label{feat:IDE}
+
+   XDS for Windows comes with an {\bf IDE},
+   which greatly simplifies its usage. Although XDS is a professional 
+   system with a wide set of configuration files and options, 
+   the IDE hides all these details from a novice.
+
+   The IDE may also be adopted for a third-party compiler or used as a
+   plain text editor.
+
+\section{Debug and analysis tools}
+\label{feat:debug}
+
+Native code XDS compiler for Windows comes with the
+following additional tools:
+
+\begin{itemize}
+\item A full source level symbolic debugger that may be used in two modes,
+      dialog and batch. The dialog mode is interactive, whereas in the 
+      batch mode the debugger may automatically execute a debugging scenario 
+      (or a number of scenarios) described in special control files, 
+      and log the scenario execuion results. 
+      This allows the debugger to be used to automate testing. 
+\item A set of utilities that may help you to better understand and 
+      improve the run-time performance of your program. It emphasises 
+      the pieces of code which consume most of the CPU time, and, 
+      hence, are the first candidates for redesign. 
+\end{itemize}
+
+\section{TopSpeed Compatibility Pak}
+
+TopSpeed Compatiblity Pak is an add-on that may be purchased
+separately. It contains a compiler with TopSpeed-like extensions and
+a set of TopSpeed-like library modules.
+
+\chapter{Development}
+\label{development}
+
+XDS development is frozen due to low demand for commercial Modula-2/Oberon-2
+compilers. Technical support and maintenance releases shall continue.
+
+\chapter{Credits}
+\label{credits}
+
+The following people helped us a lot by sending their comments, bug reports
+and suggestions while beta testing, evaluating the pre-release versions or
+working with our previous products:
+
+\begin{center}
+\\
+Marius Ackerman \\
+Alexander Antonenko \\
+Werner Fouche   \\
+Stefan Gruendel \\
+Jim Hawkins     \\
+Rob Limburg     \\
+John McMonagle  \\
+Stefan Metzeler \\
+Peter Moylan    \\
+Mike Nice       \\
+Graham Stark    \\
+Bernhard Treutwein 
+\end{center}
+
+Special thanks to Guenter Dotzel of Modulaware.
+
+\chapter{How to contact us}
+\label{contact}
+
+   Send your questions and comments to:
+
+   {\bf support@excelsior-usa.com}
+
+   For latest information about new products, releases, updates,
+   and fixes, please visit our Web page at:
+
+   {\bf http://www.excelsior-usa.com}
+  
+\end{document}
+

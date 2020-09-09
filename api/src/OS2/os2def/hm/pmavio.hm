@@ -1,0 +1,107 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMAVIO.H
+*
+* OS/2 Presentation Manager AVIO constants; types and function declarations
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+#define AVIO_INCLUDED
+
+
+TYPE HVPS  = USHORT;             (* hpvs *)
+TYPE PHVPS = POINTER TO HVPS;    (* phpvs *)
+
+PROCEDURE VioAssociate(hdc  : HDC
+                      ;hvps : HVPS
+                      ): USHORT;
+
+PROCEDURE VioCreateLogFont(pfatattrs : PFATTRS
+                          ;llcid     : LONG
+                          ;pName     : PSTR8
+                          ;hvps      : HVPS
+                          ): USHORT;
+
+PROCEDURE VioCreatePS(phvps        : PHVPS
+                     ;sdepth       : SHORT
+                     ;swidth       : SHORT
+                     ;sFormat      : SHORT
+                     ;sAttrs       : SHORT
+                     ;hvpsReserved : HVPS
+                     ): USHORT;
+
+PROCEDURE VioDeleteSetId(llcid : LONG
+                        ;hvps  : HVPS
+                        ): USHORT;
+
+PROCEDURE VioDestroyPS(hvps : HVPS): USHORT;
+
+PROCEDURE VioGetDeviceCellSize(psHeight : PSHORT
+                              ;psWidth  : PSHORT
+                              ;hvps     : HVPS
+                              ): USHORT;
+
+PROCEDURE VioGetOrg(psRow    : PSHORT
+                   ;psColumn : PSHORT
+                   ;hvps     : HVPS
+                   ): USHORT;
+
+PROCEDURE VioQueryFonts(plRemfonts     : PLONG
+                       ;afmMetrics     : PFONTMETRICS
+                       ;lMetricsLength : LONG
+                       ;plFonts        : PLONG
+                       ;pszFacename    : PSZ
+                       ;flOptions      : ULONG
+                       ;hvps           : HVPS
+                       ): USHORT;
+
+PROCEDURE VioQuerySetIds(allcids : PLONG
+                        ;pNames  : PSTR8
+                        ;alTypes : PLONG
+                        ;lcount  : LONG
+                        ;hvps    : HVPS
+                        ): USHORT;
+
+PROCEDURE VioSetDeviceCellSize(sHeight : SHORT
+                              ;sWidth  : SHORT
+                              ;hvps    : HVPS
+                              ): USHORT;
+
+PROCEDURE VioSetOrg(sRow    : SHORT
+                   ;sColumn : SHORT
+                   ;hvps    : HVPS
+                   ): USHORT;
+
+PROCEDURE VioShowPS(sDepth   : SHORT
+                   ;sWidth   : SHORT
+                   ;soffCell : SHORT
+                   ;hvps     : HVPS
+                   ): USHORT;
+
+(************************ Public Function *******************************
+* WinDefAVioWindowProc -- Default message processing for AVio PS's
+************************************************************************)
+(* mp1 and mp2 are defined as ULONG because MPARAM is a pointer type and *)
+(* 32-bit compilers will thunk pointer types passed to 16-bit routines.  *)
+(* This is not what is desired for WM_SIZE processing so we will declare *)
+(* the function with ULONGs; non-pointer types.                          *)
+
+PROCEDURE WinDefAVioWindowProc(hwnd : HWND
+                              ;msg  : USHORT
+                              ;mp1  : ULONG
+                              ;mp2  : ULONG
+                              ): MRESULT;
+
+
+(**************************** end of file **********************************)
+

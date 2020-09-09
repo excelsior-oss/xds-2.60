@@ -1,0 +1,6 @@
+% XDS project file
+-GUI+
++MULTITHREAD
+
+!module VTerm.lib
+!module GraphDemo2.mod

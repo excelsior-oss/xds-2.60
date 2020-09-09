@@ -1,0 +1,320 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: OS2NLS.H
+*
+* OS/2 Presentation Manager DBCS include file
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* The definitions in this file are for use on Double Byte Character Set
+* (DBCS) versions of OS/2 only. They may not be used on SBCS versions.
+*
+* This is included from PMWIN.H when INCL_NLS symbol is defined
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+   (* resource ID offset for bi-lingual system resources (menu & string) *)
+
+   CONST RID_DBE_OFFSET         = 01000H;
+   CONST STR_DBE_OFFSET         = 01000H;
+
+
+   (* definition of Virtual key values for DBCS *)
+
+   CONST VK_DBE_FIRST           = 080H; (* VK_DBCSFIRST *)
+   CONST VK_DBE_LAST            = 0ffH; (* VK_DBCSLAST  *)
+
+   CONST VK_DBE_IMEFIRST        = 0A0H; (* VK_DBE_FIRST + 020 *)
+   CONST VK_DBE_IMELAST         = 0FFH; (* VK_DBE_LAST *)
+
+   (* OEM keyboard support including PS/2 keyboard *)
+
+   CONST VK_DBE_OEMFIRST        = 0C0H;
+   CONST VK_DBE_OEMLAST         = 0CFH;
+
+   (* for codepage 932 *)
+
+   CONST VK_DBE_ALPHANUMERIC    = 080H; (* VK_DBE_FIRST + 000 *)
+   CONST VK_DBE_KATAKANA        = 081H; (* VK_DBE_FIRST + 001 *)
+   CONST VK_DBE_HIRAGANA        = 082H; (* VK_DBE_FIRST + 002 *)
+   CONST VK_DBE_SBCSCHAR        = 083H; (* VK_DBE_FIRST + 003 *)
+   CONST VK_DBE_DBCSCHAR        = 084H; (* VK_DBE_FIRST + 004 *)
+   CONST VK_DBE_SBCSDBCSCHAR    = 085H; (* VK_DBE_FIRST + 005 *)
+   CONST VK_DBE_ROMAN           = 086H; (* VK_DBE_FIRST + 006 *)
+
+   (* for codepage 934 *)
+
+   CONST VK_DBE_HANJA           = 087H; (* VK_DBE_FIRST + 007 *)
+   CONST VK_DBE_HANGEUL         = 088H; (* VK_DBE_FIRST + 008 *)
+   CONST VK_DBE_JAMO            = 089H; (* VK_DBE_FIRST + 009 *)
+
+   (* for codepage 936 *)
+
+   CONST VK_DBE_HANZI           = 08AH; (* VK_DBE_FIRST + 00A *)
+
+   (* for codepage 938 *)
+
+   CONST VK_DBE_TSANGJYE        = 08CH; (* VK_DBE_FIRST + 00C *)
+   CONST VK_DBE_PHONETIC        = 08DH; (* VK_DBE_FIRST + 00D *)
+
+   CONST VK_DBE_KANJI           = 0a0H; (* VK_DBE_IMEFIRST + 000 *)
+   CONST VK_DBE_IMEACTIVATE     = 0a0H; (* VK_DBE_IMEFIRST + 000 *)
+   CONST VK_DBE_CONV            = 0a1H; (* VK_DBE_IMEFIRST + 001 *)
+   CONST VK_DBE_NOCONV          = 0a2H; (* VK_DBE_IMEFIRST + 002 *)
+   CONST VK_DBE_TANGO           = 0a3H; (* VK_DBE_IMEFIRST + 003 *)
+   CONST VK_DBE_WORDREGISTER    = 0a3H; (* VK_DBE_IMEFIRST + 003 *)
+   CONST VK_DBE_IMEDIALOG       = 0a4H; (* VK_DBE_IMEFIRST + 004 *)
+   CONST VK_DBE_IME_MBSELECTED  = 0a5H; (* VK_DBE_IMEFIRST + 005 *)
+   CONST VK_DBE_IME_LBSELECTED  = 0a6H; (* VK_DBE_IMEFIRST + 006 *)
+   CONST VK_DBE_CODEINPUT       = 0a7H; (* VK_DBE_IMEFIRST + 007 *)
+   CONST VK_DBE_ALLCANDIDATE    = 0a8H; (* VK_DBE_IMEFIRST + 008 *)
+   CONST VK_DBE_PREVCANDIDATE   = 0a9H; (* VK_DBE_IMEFIRST + 009 *)
+   CONST VK_DBE_IMEDEACTIVATE   = 0aaH; (* VK_DBE_IMEFIRST + 00a *)
+   CONST VK_DBE_IME_WORDREGISTED= 0abH; (* VK_DBE_IMEFIRST + 00b *)
+   CONST VK_DBE_IMECONTROL      = 0acH; (* VK_DBE_IMEFIRST + 00c *)
+   CONST VK_DBE_IME_FREEPS      = 0adH; (* VK_DBE_IMEFIRST + 00d *)
+   CONST VK_DBE_IMEMODEEXIT     = 0aeH; (* VK_DBE_IMEFIRST + 00e *)
+
+   (* Window Class definitoin for DBCS (migration) *)
+
+   CONST WC_DBE_APPSTAT          = PSZ(0ffff0010H); (* WC_APPSTAT *)
+   CONST WC_DBE_KBDSTAT          = PSZ(0ffff0011H); (* WC_KBDSTAT *)
+   CONST WC_DBE_PECIC            = PSZ(0ffff0012H); (* WC_PECIC   *)
+
+   (* Double byte character set messages *)
+
+   CONST WM_DBE_SETAPPLSTAT     = 000b6H;
+   CONST WM_DBE_KKCPARAMS       = 000bcH;
+
+   (* DBCS unique statndsrd Frame Create Flag (migration) *)
+
+   CONST FCF_DBE_STATAREA       = 080000000H; (* FCF_DBE_APPSTAT *)
+
+   (* WM_SETWINDOWPARAM ctldata of DBCS status area *)
+
+   TYPE KEYSTSDATA = RECORD          (* keysts *)
+      wpmctlflag:        ULONG       ;
+      textlength:        ULONG       ;
+      pTextString:       PSZ         ;
+      pAttrString:       PSZ         ;
+      pRomanString:      PSZ         ;
+   END;
+   TYPE PKEYSTSDATA = POINTER TO KEYSTSDATA;
+
+   TYPE WPMCTLPARAMS = RECORD       (* wpmctlprm - old definition *)
+      wpmctlflag:       ULONG       ;
+      textlength:       ULONG       ;
+      pTextString:      PSZ         ;
+      pAttrString:      PSZ         ;
+   END;
+   TYPE PWPMCTLPARAMS = POINTER TO WPMCTLPARAMS;
+
+   (* wpmctlflag value definition *)
+
+   CONST DBE_KSF_ALPHANUMERIC      = 00001H;
+   CONST DBE_KSF_KATAKANA          = 00002H;
+   CONST DBE_KSF_HIRAGANA          = 00004H;
+   CONST DBE_KSF_CAPS              = 00008H;
+   CONST DBE_KSF_ROMAN             = 00010H;
+   CONST DBE_KSF_HANKAKU           = 00020H;
+   CONST DBE_KSF_ZENKAKU           = 00040H;
+   CONST DBE_KSF_SBCS              = DBE_KSF_HANKAKU;
+   CONST DBE_KSF_DBCS              = DBE_KSF_ZENKAKU;
+   CONST DBE_KSF_UPPER             = 00080H;
+   CONST DBE_KSF_LOWER             = 00100H;
+   CONST DBE_KSF_TEXT              = 00200H;
+   CONST DBE_KSF_NOROMAN           = 00400H;
+   CONST DBE_KSF_DISABLEONTHESPOT  = 00800H;
+   CONST DBE_KSF_ROMANTEXT         = 01000H;
+
+   (* For Code Page 934(Korea) wpmctlflag value definition  *)
+
+   CONST DBE_KSF_JAMO              = 00002H;
+   CONST DBE_KSF_HANGEUL           = 00004H;
+
+   (* For Code Page 938(Taiwan) wpmctlflag value definition  *)
+
+   CONST DBE_KSF_PHONETIC          = 00002H;
+   CONST DBE_KSF_TSANGJYE          = 00004H;
+
+   (* WM_SETWINDOWPARAM ctldata of Pecic control *)
+
+   TYPE PECICDATA = RECORD       (* pecicdata *)
+      wpmctlflag:    ULONG       ;
+      textlength:    ULONG       ;
+      pTextString:   PSZ         ;
+      pAttrString:   PSZ         ;
+      CursorPos:     ULONG       ;
+      CursorAttr:    ULONG       ;
+   END;
+   TYPE PPECICDATA = POINTER TO PECICDATA;
+
+   (* wndparams definition of WM_DBE_APPLSTAT *)
+
+   CONST DBE_WPM_APPLSTAT_VISIBILITY  = 00004H;
+
+   (* ctldata of DBE_WPM_APPLSTAT_VISIBLITY *)
+
+   CONST DBE_AS_APPLTOP         = 00001H;
+   CONST DBE_AS_KBDTOP          = 00002H;
+   CONST DBE_AS_PECICTOP        = 00004H;
+   CONST DBE_AS_APPLBOTTOM      = 00008H;
+
+   (** WM_DBE_KKCPARAMS definition **)
+   (* mp1(lpkkcparams) *)
+
+   TYPE KKCPARAMS = RECORD       (* kkcparams *)
+      lenKKCParams:  ULONG       ;
+      fRequest:      ULONG       ;
+      fKKCParams:    ULONG       ;
+      pKKCData:      PVOID       ;
+      Reserved:      ULONG       ;
+   END;
+   TYPE PKKCPARAMS = POINTER TO KKCPARAMS;
+
+   (* fRequest *)
+   CONST DBE_KKCPARAMS_SET          = 00001H;
+   CONST DBE_KKCPARAMS_QUERY        = 00002H;
+
+   (* fKKCParams *)
+   CONST DBE_KKCPARAMS_PHYSICALATTRIBUTE = 00001H;
+   CONST DBE_KKCPARAMS_PECICCURSORPOS    = 00002H;
+
+   <* ALIGNMENT = "1" *> (* force structure alignment packing *)
+
+   (* Level format for ColorLookUpTable *)
+   TYPE LEVEL = RECORD  (* Level *)
+      attri1: UCHAR;                         (** 1st Attribute         **)
+      attri2: UCHAR;                         (** 2nd Attribute         **)
+   END;
+   TYPE PLEVEL = POINTER TO LEVEL;
+
+   <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   (* Color Look Up Table format *)
+   TYPE COLORLOOKUPTBL = RECORD  (* ColorLookUpTable *)
+      nAttr:         ULONG;                          (** number of Attribute   **)
+      PhysicalLevel: ARRAY [0..31] OF LEVEL;         (** struct of Levels      **)
+   END;
+   TYPE PCOLORLOOKUPTBL = POINTER TO COLORLOOKUPTBL;
+
+   (** WinDBCSIMEControl() Definition & Prototype **)
+
+   (* type *)
+   CONST DBE_IMCTL_QUERY        = 00001H;
+   CONST DBE_IMCTL_SET          = 00002H;
+
+   TYPE IMEMODE = RECORD        (* imemode *)
+      lenIMEMODE: ULONG  ;
+      fIMEMode:   ULONG  ;
+      hIME:       ULONG  ; (* query mode only valid *)
+      hModIME:    ULONG  ; (* query mode only valid *)
+   END;
+   TYPE PIMEMODE = POINTER TO IMEMODE;
+
+   (* definition of fIMEMode *)
+   CONST DBE_IMCTL_IMEENABLE     = 00001H;
+   CONST DBE_IMCTL_IMEDISABLE    = 00002H;
+   CONST DBE_IMCTL_IMEMODE       = 00004H;
+   CONST DBE_IMCTL_NOTIMEMODE    = 00008H;
+   CONST DBE_IMCTL_INHERIT_PFRAME= 00100H;
+   CONST DBE_IMCTL_INTERIMREQUEST= 08000H;
+
+   PROCEDURE WinDBCSIMEControl(hab       : HAB
+                              ;hwndFrame : HWND
+                              ;ulType    : ULONG
+                              ;pIMEMode  : PIMEMODE
+                              ): ULONG;
+
+
+   (** WinDBCSModeControl() Definition & Prototype **)
+
+   (* WinDBCSModeControl parameters definitions *)
+   (* type *)
+   CONST DBE_MCTL_QUERY         = 00001H;
+   CONST DBE_MCTL_SET           = 00002H;
+
+   (* arg *)
+   CONST DBE_MCTL_INPUTMODEREQUEST= 00001H;
+   CONST DBE_MCTL_JAPANREQ      = 00001H;   (* migration *)
+
+   (* parm - MCTL_JAPAN *)
+   CONST DBE_MCTL_ALPHANUMERIC  = 00001H;
+   CONST DBE_MCTL_KATAKANA      = 00002H;
+   CONST DBE_MCTL_HIRAGANA      = 00004H;
+   CONST DBE_MCTL_SBCSCHAR      = 00008H;
+   CONST DBE_MCTL_DBCSCHAR      = 00010H;
+   CONST DBE_MCTL_ROMAN         = 00020H;
+   CONST DBE_MCTL_NOROMAN       = 00040H;
+
+   CONST DBE_MCTL_KKCREQ        = 01000H;
+   CONST DBE_MCTL_CP932REQ      = 00001H;
+   CONST DBE_MCTL_KKCENABLE     = 01000H;
+   CONST DBE_MCTL_KKCDISABLE    = 02000H;
+   CONST DBE_MCTL_HANKAKU       = 00008H;
+   CONST DBE_MCTL_ZENKAKU       = 00010H;
+
+   (* parm - MCTL_KOREA *)
+   CONST DBE_MCTL_JAMO          = 00002H;
+   CONST DBE_MCTL_HANGEUL       = 00004H;
+   CONST DBE_MCTL_INTERIMREQUEST= 00080H;
+
+   (* parm - MCTL_TCHINESE *)
+   CONST DBE_MCTL_PHONETIC      = 00002H;
+   CONST DBE_MCTL_TSANGJYE      = 00004H;
+
+   (* for MDI support *)
+   CONST DBE_MCTL_INHERIT_PFRAME= 00100H;
+
+   PROCEDURE WinDBCSModeControl(hab       : HAB
+                               ;hwndFrame : HWND
+                               ;ulType    : ULONG
+                               ;ulArg     : ULONG
+                               ;pparm     : PULONG
+                               ): ULONG;
+
+   (* Font Driver Description structure  *)
+
+   TYPE FD_DESC = RECORD   (* fd_desc *)
+      flType:       ULONG  ;
+      str64Desc:    ARRAY [0..63] OF CHAR;
+   END;
+   TYPE PFD_DESC = POINTER TO FD_DESC;
+
+   (* Font Driver functions *)
+
+   PROCEDURE WinDBCSLoadFontDriver(hab : HAB
+                                  ;psz : PCSZ
+                                  ): BOOL;
+
+   PROCEDURE WinDBCSUnloadFontDriver(hab : HAB
+                                    ;psz : PCSZ
+                                    ): BOOL;
+
+   PROCEDURE WinDBCSQueryFDDescription(hab      : HAB
+                                      ;psz      : PCSZ
+                                      ;pfd_desc : PFD_DESC
+                                      ): BOOL;
+
+   (* fd_type definition *)
+
+   CONST DBE_FD_DESC_SYSTEM     = 00001H;
+   CONST DBE_FD_DESC_PUBLIC     = 00002H;
+   CONST DBE_FD_DESC_PRIVATE    = 00004H;
+
+   (* System menu item number ID in MENUITEM for DBCS unique function *)
+   CONST SC_DBE_IME                = 08018H;
+   CONST SC_DBE_IMESEPARATOR       = 08019H;
+
+(**************************** end of file **********************************)

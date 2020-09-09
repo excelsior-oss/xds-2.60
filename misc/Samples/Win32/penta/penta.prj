@@ -1,0 +1,5 @@
+-compilerheap=16000000
+-gui+
+
+!module penta.mod
+!module penta.res

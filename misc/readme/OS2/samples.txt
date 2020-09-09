@@ -1,0 +1,321 @@
+SAMPLES.TXT                   Copyright (c) 1999-2001 Excelsior.
+----------------------------------------------------------------
+
+                     XDS-C OS/2 Edition
+                 Native XDS-x86 OS/2 Edition
+                 ---------------------------
+                            v2.50
+
+                       Sample Programs
+
+
+There is a number of sample programs in the SAMPLES subdirectory
+of your XDS installation. However, it is recommended to play with
+them in a separate working directory. Use the XDSSAMP script to
+copy a sample to such a directory. If invoked without parameters,
+this script copies all subdirectories containing samples to the
+current directory. To copy a single subdirectory, pass its name to
+XDSSAMP as a parameter:
+
+    c:
+    mkdir \MYPMAPP
+    cd \MYPMAPP
+    xdssamp template
+
+You will be asked to confirm the copying operation.
+
+The XDSSAMP script also creates a file BUILDC.CMD and/or a
+file BUILDX86.CMD in each copied directory. These files
+contain commands required to build the sample or samples
+residing in that directory using XDS-C or Native XDS-x86,
+respectively. If you copy all samples at once, such script(s),
+are also created in the current directory to let you build
+all the sample programs.
+
+The SAMPLES directory contains the following subdirectories:
+
+    MODULA   - programs illustrating basic Modula-2 features.
+
+    OBERON   - programs illustrating basic Oberon-2 features.
+
+    HUFFCHAN - ISO Modula-2 device modules and low-level data
+               manipulations sample.
+
+    NODES    - example of Oberon-2 run-time support usage.
+
+    FINDPROC - sample tool which uses XDS Environment API.
+
+    MAND     - Mandelbrodt Set explorer for Presentation Manager.
+               Written in Modula-2.
+
+    TEMPLATE - Presentation Manager application template from
+               IBM Developer's Toolkit for OS/2, translated
+               to Modula-2. Use as a starting point for your
+               PM programs.
+
+The following sample is available in Native XDS-x86 only:
+
+    BENCH    - benchmark programs in Modula-2 and C, which
+               may be used to compare XDS compiler with others.
+
+The following samples are available in TopSpeed Compatibility Pak
+only:
+
+    MGDEMO   - ported TopSpeed Graph module usage sample.
+
+    WINDEMOM - ported TopSpeed Window module usage sample.
+
+
+SAMPLES\MODULA
+--------------
+
+Each sample in this directory consists of a single Modula-2 module.
+
+    except.mod      Exceptions
+    exp.mod         Calculate exponent
+    fact.mod        Factorial
+    halt.mod        Termination
+    hello.mod       Hello, World
+    hisdemo.mod     History demo (See hisdemo.prj)
+    sieve.mod       Prime numbers
+    term.mod        Termination
+
+To build an executable program for a sample, invoke the compiler
+in the make mode, passing the name of the sample module as a
+parameter:
+
+    xc =m hello.mod       or
+    xm =m hello.mod
+
+For "hisdemo" sample, use:
+
+    xc =m hisdemo.mod +genhistory +map    or
+    xm =m hisdemo.mod +gendebug
+
+If you are using Native XDS-x86 (xc), invoke the HIS utility
+(BIN\HIS.EXE) after running HISDEMO.EXE, to look at the stack of
+procedure calls ("execution history"):
+
+    his
+
+The HIS utility searches for a file called "errinfo.$$$" to
+produce the list of procedure calls. Every item of the list consists
+of a source file name, a line number and optionaly a procedure name.
+
+
+SAMPLES\OBERON
+--------------
+
+Each sample in this directory consists of a single Oberon-2 module.
+In these samples the specific features of Oberon-2 are not used.
+
+    ackerman.ob2    Ackermann function
+    exp.ob2         Calculate exponent
+    hello.ob2       Hello, World
+    self.ob2        Print self text
+    sieve.ob2       Prime numbers
+
+To build an executable program for a sample, invoke the compiler in
+the make mode, passing the name of the sample module as an argument:
+
+    xc =m hello.ob2    or
+    xm =m hello.ob2
+
+
+samples\huffchan
+----------------
+
+This sample illustrates the concept of device modules introduced
+in the ISO Modula-2 input/output library, and low-level data
+manipulation techniques.
+
+        HuffChan.txt   - sample description
+        HuffChan.def   - HuffChan device module
+        HuffChan.mod
+        huf.mod        - file packing utility
+        unhuf.mod      - file unpacking utility
+
+To build this sample, type:
+
+    xc =m huf.mod
+    xc =m unhuf.mod
+
+The sample contains the HuffChan device module, which may be
+used to perfrom Huffman encoding and decoding on channels opened
+by other device modules, The two programs, "huf" and "unhuf",
+utilize the HuffChan module facilities. The first program
+encodes a given file and writes it to another file; the
+second one reverses that operation.
+
+
+SAMPLES\NODES
+-------------
+
+The "nodes" subdirectory contains the following files, constituting
+a single Oberon-2 program:
+
+    Nodes.ob2       - definition of abstract Node class
+    Echo.ob2        - concrete Node extension
+    GenEcho.ob2     - concrete Node extension
+    Commands.ob2    - concrete Node extension
+    Types.ob2       - concrete Node extension
+    runme.ob2       - the main module
+    nodes.prj       - project file
+
+To build the program, type:
+
+    xc =p nodes         or
+    xm =p nodes
+
+The  "Nodes" module defines an abstract object (Node). Objects of
+this  type  are  linked  in  the  list.  The  module "Nodes" also
+implement  the  command  monitor  ("Loop"  procedure). The "Loop"
+procedure  reads an input from keyboard and then passes the input
+to  the  current  node,  or  if  the  input  line starts from "."
+executes some standard action.
+
+The  module  "runme"  imports  modules defining the extensions of
+type  Node  (concrete  classes),  inserts it in the list and then
+call "Nodes.Loop".
+
+Nodes.Node extensions:
+----------------------
+
+"Echo"     - implements a node which prints its input to terminal.
+
+"GenEcho"  - if the number N is specified in the input line
+             creates "N" examples of the "Echo" Node.
+
+"Commands" - provides facilities to call commands (exported
+             parameterless procedures) in the form:
+                ModuleName.ProcedureName
+             Also implements operations to enumerate all modules
+             in the program and all commands in the given module.
+
+"Types"    - provides facilities to allocate an object by the
+             given name in the form:
+                ModuleName.RecordTypeName
+
+Modules "Types" and "Commands" illustrate usage of meta-language
+facilities,  including command calls and creation of an object of
+a type with a given name.
+
+It is important to note, that XDS does not yet support dynamic
+module loading. You can use commands and types from the modules
+which are already linked in the program.
+
+
+SAMPLES\FINDPROC
+----------------
+
+This directory contains sources of a sample XDS IDE tool.
+
+    findproc.mod   - Modula-2 source
+    findproc.txt   - tool setup instructions
+
+Use the following command to build the executable:
+
+    xc =m findproc.mod         or
+    xm =m findproc.mod
+
+
+SAMPLES\MAND
+------------
+
+Mandelbrodt Set Explorer for Presentation Manager. The
+directory contains:
+
+    mand.mod - Modula-2 source text
+    mand.prj - project file
+    mand.rc  - resource script file
+    mand.h   - definitions for mand.rc
+    magn.ptr - mouse pointer (magnifying glass)
+    mand.ico - icon 
+    mand.txt - short description
+
+To build the executable file. issue the following commands
+at the OS/2 command prompt:
+
+    rc -r mand.rc mand.res
+
+    xc =p mand        or
+    xm =p mand
+
+Controls:
+
+  - press left mouse button to magnify image two times
+    (right button - four times) with current cursor
+    position in the center
+  - after the window size is changed, use the Refresh
+    command to update it
+  - use the Copy command to copy the current image
+    to the Clipboard
+  - use Back and Forward commands to review already
+    built images
+
+
+SAMPLES\TEMPLATE
+----------------
+
+This is the PM application template from IBM Developer's Toolkit,
+translated to Modula-2 and slightly changed. You can use it as
+a base for your own PM applications. The sample program uses the
+standard menus and dialogs that most applications would use.
+The source is designed to serve as a base for any Presentation
+Manager application and was written in such a way that it can be
+easily modified to handle any application specific commands.
+Refer to the SAMPLES\TEMPLATE\TEMPLATE.TXT file for details.
+
+
+SAMPLES\BENCH (Native XDS-x86 only)
+-----------------------------------
+
+    dry.mod         Drystone benchmark (Modula-2)
+                    (single module)
+    dry.c           Drystone benchmark (C)
+
+    whet.mod        Whetstone          (Modula-2)
+
+    linnew.mod      LinPack benchmark  (Modula-2)
+    linnew.c        LinPack benchmark  (C)
+
+dry.c/dry.mod and linnew.c/linnew.mod are C and Modula-2 sources
+of the same programs. Use them to compare the output code quality
+of XDS and your C compiler(s).
+
+To build an executable program for a sample, invoke "xc" in the make
+mode, passing a name of a sample module:
+
+    xc =m dry.mod
+
+
+SAMPLES\MGDEMO (Native XDS-x86 only)
+------------------------------------
+
+This directory contains a Graph module usage sample, ported from
+TopSpeed Modula-2.
+
+    mgdemo.mod   - source code
+    mgdemo.prj   - project file
+    mgdemo.txt   - description
+
+Use the following command to build the executable:
+
+    xc =p mgdemo.prj
+
+
+SAMPLES\WINDEMOM (Native XDS-x86 only)
+--------------------------------------
+
+This directory contains a Window module usage sample, ported from
+TopSpeed Modula-2.
+
+    windemom.mod   - source code
+    windemom.prj   - project file
+    windemom.txt   - description
+
+Use the following command to build the executable:
+
+    xc =p windemom.prj
+
+                        [end of document]

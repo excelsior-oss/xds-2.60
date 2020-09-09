@@ -1,0 +1,15 @@
+LIBRARY MSG
+EXPORTS
+  DOSTRUEGETMESSAGE          @2
+  DosInsertMessage           @4
+  DosPutMessage              @5
+  DOS32TRUEGETMESSAGE        @6
+  DOSIQUERYMESSAGECP         @7
+  DOS32IQUERYMESSAGECP       @8
+  DOSCLOSEMESSAGEFILE        @9
+  DOS16PUTMESSAGE            @1
+  DOS16INSMESSAGE            @3
+  DOSINSERTMESSAGE           @4
+  DOS32INSERTMESSAGE         @4
+  DOSPUTMESSAGE              @5
+  DOS32PUTMESSAGE            @5

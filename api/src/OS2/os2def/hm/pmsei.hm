@@ -1,0 +1,55 @@
+(****************************** Module Header *******************************\
+*
+* Module Name: PMSEI.H
+*
+* OS/2 Presentation Manager SetErrorInfo constants and function declaration
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* This is included from PMWIN.H when appropriate INCL symbols are defined
+*
+* ===========================================================================
+*
+* Comments at the end of each typedef line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+
+#define SEI_INCLUDED
+
+PROCEDURE WinSetErrorInfo(ei    : ERRORID
+                         ;ul    : ULONG
+                         ;SEQ X : SYSTEM.BYTE
+                         ): ERRORID;
+
+CONST SEI_BREAKPOINT  = 8000H;  (* Always enter an INT 3 breakpt       *)
+CONST SEI_NOBEEP      = 4000H;  (* Do not call DosBeep                 *)
+CONST SEI_NOPROMPT    = 2000H;  (* Do not prompt the user              *)
+CONST SEI_DBGRSRVD    = 1000H;  (* Reserved for debug use              *)
+CONST SEI_DEBUGONLY   = (SEI_BREAKPOINT + SEI_NOBEEP + SEI_NOPROMPT + SEI_DBGRSRVD);
+
+CONST SEI_STACKTRACE  = 0001H;  (* save the stack trace                *)
+CONST SEI_REGISTERS   = 0002H;  (* save the registers                  *)
+CONST SEI_ARGCOUNT    = 0004H;  (* first USHORT in args is arg count   *)
+CONST SEI_DOSERROR    = 0008H;  (* first USHORT in args is OS2 error code *)
+CONST SEI_RESERVED    = 0FE0H;  (* Reserved for future use             *)
+
+(****************************************************************************
+* Note that when SEI_ARGCOUNT; SEI_DOSERROR are specified
+* together; then the implied order of the parameters is:
+*
+*
+*  WinSetErrorInfo( MAKEERRORID( .... );
+*                   SEI_ARGCOUNT | SEI_DOSERROR;
+*                   argCount;
+*                   dosErrorCode);
+*
+****************************************************************************)
+
+(**************************** end of file **********************************)

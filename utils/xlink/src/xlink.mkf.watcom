@@ -1,0 +1,226 @@
+OBJDIR  = ..\..\enduser\tmp
+NAME    = ..\..\enduser\xds\bin\xlink.exe
+!ifneq MODE INTERNAL
+!ifneq MODE ENDUSER
+!ifneq MODE TRIAL
+!ifneq MODE EDU
+OBJDIR  = .
+NAME    = xlink.exe
+!endif
+!endif
+!endif
+!endif
+
+OBJ     = $(OBJDIR)\link.obj     &
+          $(OBJDIR)\struct.obj   &
+          $(OBJDIR)\idents.obj   &
+          $(OBJDIR)\writepe.obj  &
+          $(OBJDIR)\writelx.obj  &
+          $(OBJDIR)\writeelf.obj &
+          $(OBJDIR)\debug.obj    &
+          $(OBJDIR)\dbgcv.obj    &
+          $(OBJDIR)\dbghll.obj   &
+          $(OBJDIR)\rdos2res.obj &
+          $(OBJDIR)\rdntres.obj  &
+          $(OBJDIR)\readdll.obj  &
+          $(OBJDIR)\readelf.obj  &
+          $(OBJDIR)\xshell.obj   &
+          $(OBJDIR)\readcoff.obj &
+          $(OBJDIR)\readedf.obj  &
+          $(OBJDIR)\implib.obj   &
+          $(OBJDIR)\messages.obj &
+          $(OBJDIR)\xmem.obj     &
+          $(OBJDIR)\xdebug.obj   &
+          $(OBJDIR)\readomf0.obj &
+          $(OBJDIR)\readomf.obj  &
+          $(OBJDIR)\readxomf.obj &
+          $(OBJDIR)\args.obj     &
+          $(OBJDIR)\reader.obj   &
+          $(OBJDIR)\writer.obj   &
+          $(OBJDIR)\writeeil.obj &
+          $(OBJDIR)\readeil.obj  &
+          $(OBJDIR)\dbgedif.obj  &
+          $(OBJDIR)\xos.obj      &
+          $(OBJDIR)\parser.obj   &
+          $(OBJDIR)\dbg99.obj    &
+          $(OBJDIR)\unzip.obj    &
+          $(OBJDIR)\ioapi.obj    &
+          $(OBJDIR)\adler32.obj  &
+          $(OBJDIR)\compress.obj &
+          $(OBJDIR)\crc32.obj    &
+          $(OBJDIR)\deflate.obj  &
+          $(OBJDIR)\gzio.obj     &
+          $(OBJDIR)\infback.obj  &
+          $(OBJDIR)\inffast.obj  &
+          $(OBJDIR)\inflate.obj  &
+          $(OBJDIR)\inftrees.obj &
+          $(OBJDIR)\trees.obj    &
+          $(OBJDIR)\uncompr.obj  &
+          $(OBJDIR)\zutil.obj
+
+CC      = wpp386
+LD      = wlink
+CCOMP   = wcc386
+
+!ifdef __OS2__
+!  define xOS     xos_OS2
+!  define sysFlag os
+!else ifdef __NT__
+!  define xOS     xos_WINNT
+!  define sysFlag nt
+!endif
+
+
+#CFLAGS  = -4r -d2 -mf -ei -zp1 -zm -wx -d$(xOS)
+#LFLAGS  = SYS $(sysFlag) op c op el deb al
+
+
+CFLAGS  = -4r -oxate -mf -ei -oe=75 -zp1 -zm -zc -wx -d$(xOS) -wx -i=.\zlib -i=.\minizip
+CCOMPFLAGS = -4r -oxate -mf -ei -oe=75 -zp1 -zm -zc -d$(xOS) -dNO_vsnprintf -wx -i=.\zlib -i=.\minizip
+# -d2 -hw
+LFLAGS  = SYS $(sysFlag) op c op el op st=10485760
+# debug all
+
+$(NAME) : $(OBJ)
+        @%write $(OBJDIR)\lnk.lnk NAME $@
+        @for %i in ($(OBJ)) do &
+            @%append $(OBJDIR)\lnk.lnk FILE %i
+        @$(LD) $(LFLAGS) @$(OBJDIR)\lnk.lnk
+
+$(OBJDIR)\idents.obj : idents.cpp xdefs.h idents.h xmem.h xdebug.h
+        $(CC) $(CFLAGS) -fo=$@ idents.cpp
+
+$(OBJDIR)\readcoff.obj : readcoff.cpp struct.h idents.h messages.h debug.h xmem.h readcoff.h
+        $(CC) $(CFLAGS) -fo=$@ readcoff.cpp
+
+$(OBJDIR)\link.obj : link.cpp idents.h xshell.h messages.h xdefs.h xos.h
+        $(CC) $(CFLAGS) -fo=$@ link.cpp
+
+$(OBJDIR)\struct.obj : struct.cpp struct.h xshell.h idents.h messages.h xdebug.h xmem.h reader.h writer.h cpb.h
+        $(CC) $(CFLAGS) -fo=$@ struct.cpp
+
+$(OBJDIR)\xshell.obj : xshell.cpp winmake.cpp winmake.h xshell.h xdefs.h
+        $(CC) $(CFLAGS) -fo=$@ xshell.cpp
+
+$(OBJDIR)\writepe.obj : writepe.cpp struct.h idents.h messages.h xdebug.h debug.h implib.h xmem.h writepe.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ writepe.cpp
+
+$(OBJDIR)\writelx.obj : writelx.cpp struct.h idents.h messages.h xdebug.h debug.h implib.h xmem.h writelx.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ writelx.cpp
+
+$(OBJDIR)\writeelf.obj : writeelf.cpp struct.h idents.h messages.h xdebug.h xmem.h writeelf.h writer.h xelf.h debug.h xos.h
+        $(CC) $(CFLAGS) -fo=$@ writeelf.cpp
+
+$(OBJDIR)\debug.obj : debug.cpp struct.h debug.h dbghll.h dbg99.h dbgcv.h dbgedif.h xmem.h xdebug.h messages.h xos.h
+        $(CC) $(CFLAGS) -fo=$@ debug.cpp
+
+$(OBJDIR)\dbgcv.obj : dbgcv.cpp struct.h idents.h messages.h debug.h xmem.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ dbgcv.cpp
+
+$(OBJDIR)\dbghll.obj : dbghll.cpp struct.h xdebug.h idents.h messages.h dbghll.h xmem.h debug.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ dbghll.cpp
+
+$(OBJDIR)\rdntres.obj : rdntres.cpp struct.h messages.h xmem.h rdntres.h
+        $(CC) $(CFLAGS) -fo=$@ rdntres.cpp
+
+$(OBJDIR)\rdos2res.obj : rdos2res.cpp struct.h messages.h xdebug.h xmem.h rdos2res.h
+        $(CC) $(CFLAGS) -fo=$@ rdos2res.cpp
+
+$(OBJDIR)\readdll.obj : readdll.cpp struct.h idents.h messages.h xmem.h readdll.h
+        $(CC) $(CFLAGS) -fo=$@ readdll.cpp
+
+$(OBJDIR)\readelf.obj : readelf.cpp struct.h idents.h messages.h xmem.h readelf.h
+        $(CC) $(CFLAGS) -fo=$@ readelf.cpp
+
+$(OBJDIR)\readedf.obj : readedf.cpp struct.h idents.h messages.h xmem.h readedf.h reader.h
+        $(CC) $(CFLAGS) -fo=$@ readedf.cpp
+
+$(OBJDIR)\messages.obj : messages.cpp xdefs.h args.h xdebug.h messages.h xshell.h
+        $(CC) $(CFLAGS) -fo=$@ messages.cpp
+
+$(OBJDIR)\implib.obj   : implib.cpp struct.h idents.h messages.h xdebug.h omf.h implib.h xmem.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ implib.cpp
+
+$(OBJDIR)\xmem.obj     : xmem.cpp xmem.h messages.h
+        $(CC) $(CFLAGS) -fo=$@ xmem.cpp
+
+$(OBJDIR)\xdebug.obj   : xdebug.cpp struct.h xdebug.h idents.h
+        $(CC) $(CFLAGS) -fo=$@ xdebug.cpp
+
+$(OBJDIR)\readomf0.obj : readomf0.cpp struct.h debug.h omf.h idents.h messages.h xdebug.h xmem.h readomf0.h
+        $(CC) $(CFLAGS) -fo=$@ readomf0.cpp
+
+$(OBJDIR)\readomf.obj : readomf.cpp struct.h debug.h omf.h idents.h messages.h xdebug.h xmem.h readomf.h readomf0.h
+        $(CC) $(CFLAGS) -fo=$@ readomf.cpp
+
+$(OBJDIR)\readxomf.obj : readxomf.cpp readomf.cpp struct.h debug.h omf.h xomf.h idents.h messages.h xdebug.h xmem.h readxomf.h readomf0.h
+        $(CC) $(CFLAGS) -fo=$@ readxomf.cpp
+
+$(OBJDIR)\args.obj     : args.cpp struct.h idents.h xmem.h messages.h readedf.h reader.h xshell.h args.h cpb.h
+        $(CC) $(CFLAGS) -fo=$@ args.cpp
+
+$(OBJDIR)\reader.obj   : reader.cpp xos.h xdefs.h messages.h xmem.h args.h idents.h reader.h omf.h readomf.h readxomf.h readeil.h readcoff.h readdll.h rdntres.h rdos2res.h
+        $(CC) $(CFLAGS) -fo=$@ reader.cpp
+
+$(OBJDIR)\writer.obj   : writer.cpp xdefs.h xos.h xmem.h idents.h messages.h args.h writepe.h writelx.h writeelf.h implib.h writeeil.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ writer.cpp
+
+$(OBJDIR)\writeeil.obj : writeeil.cpp struct.h idents.h messages.h xdebug.h xmem.h writer.h writeeil.h eil.h
+        $(CC) $(CFLAGS) -fo=$@ writeeil.cpp
+
+$(OBJDIR)\readeil.obj  : readeil.cpp struct.h idents.h messages.h xdebug.h readeil.h
+        $(CC) $(CFLAGS) -fo=$@ readeil.cpp
+
+$(OBJDIR)\dbg99.obj    : dbg99.cpp dbghll.cpp struct.h xdebug.h idents.h messages.h dbg99.h xmem.h debug.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ dbg99.cpp
+
+$(OBJDIR)\xos.obj      : xos.cpp xos.h messages.h
+        $(CC) $(CFLAGS) -fo=$@ xos.cpp
+
+$(OBJDIR)\parser.obj   : parser.cpp parser.h xdefs.h xmem.h xos.h messages.h
+        $(CC) $(CFLAGS) -fo=$@ parser.cpp
+
+$(OBJDIR)\dbgedif.obj    : dbgedif.cpp dbgedif.h debug.h struct.h xdebug.h idents.h messages.h xmem.h writer.h
+        $(CC) $(CFLAGS) -fo=$@ dbgedif.cpp
+
+$(OBJDIR)\unzip.obj    : minizip\unzip.c minizip\ioapi.c minizip\unzip.h minizip\ioapi.h minizip\crypt.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ minizip\unzip.c
+
+$(OBJDIR)\ioapi.obj: minizip\ioapi.c minizip\ioapi.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ minizip\ioapi.c
+
+$(OBJDIR)\adler32.obj: zlib\adler32.c zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\adler32.c
+
+$(OBJDIR)\compress.obj: zlib\compress.c zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\compress.c
+
+$(OBJDIR)\crc32.obj: zlib\crc32.c zlib\zlib.h zlib\zconf.h zlib\crc32.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\crc32.c
+
+$(OBJDIR)\deflate.obj: zlib\deflate.c zlib\deflate.h zlib\zutil.h zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\deflate.c         
+
+$(OBJDIR)\gzio.obj: zlib\gzio.c zlib\zutil.h zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) zlib\gzio.c
+
+$(OBJDIR)\infback.obj: zlib\infback.c zlib\zutil.h zlib\zlib.h zlib\zconf.h zlib\inftrees.h zlib\inflate.h zlib\inffast.h zlib\inffixed.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\infback.c
+
+$(OBJDIR)\inffast.obj: zlib\inffast.c zlib\zutil.h zlib\zlib.h zlib\zconf.h zlib\inftrees.h zlib\inflate.h zlib\inffast.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\inffast.c
+
+$(OBJDIR)\inflate.obj: zlib\inflate.c zlib\zutil.h zlib\zlib.h zlib\zconf.h zlib\inftrees.h zlib\inflate.h zlib\inffast.h zlib\inffixed.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\inflate.c
+
+$(OBJDIR)\inftrees.obj: zlib\inftrees.c zlib\zutil.h zlib\zlib.h zlib\zconf.h zlib\inftrees.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\inftrees.c
+
+$(OBJDIR)\trees.obj: zlib\trees.c zlib\zutil.h zlib\zlib.h zlib\zconf.h zlib\deflate.h zlib\trees.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\trees.c
+
+$(OBJDIR)\uncompr.obj: zlib\uncompr.c zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\uncompr.c
+
+$(OBJDIR)\zutil.obj: zlib\zutil.c zlib\zutil.h zlib\zlib.h zlib\zconf.h
+        $(CCOMP) $(CCOMPFLAGS) -fo=$@ zlib\zutil.c

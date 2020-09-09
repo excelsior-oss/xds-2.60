@@ -1,0 +1,15 @@
++m2extensions
+
++M2ADDTYPES
+-IOVERFLOW
+-COVERFLOW
+-CHECKINDEX
+-CHECKRANGE
+-CHECKNIL
+-GENDEBUG
+-LINENO
+
+%-link = "link386 @%s",mkfname#mkfext
+
+%+makefile
+!module mgdemo

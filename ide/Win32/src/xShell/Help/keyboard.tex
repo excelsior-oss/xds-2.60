@@ -1,0 +1,1003 @@
+\public{HELP\_KEYBOARD}
+\index{Keyboard}
+\nominitoc
+
+\ifenglish
+The editor keyboard commands can be split into following groups:
+\else
+Команды редактора, воспринимаемые с клавиатуры, можно разбить на следующие группы:
+\fi
+\begin{description}
+\item \ifenglish
+      \ref[Cursor movement]{CursorMovement}
+      \else
+      \ref[Передвижение курсора]{CursorMovement}
+      \fi
+\item \ifenglish
+      \ref[Block selection]{BlockSelection}
+      \else
+      \ref[Отметка блока]{BlockSelection}
+      \fi
+\item \ifenglish
+      \ref[Typing, editing and deleting text]{Typing}
+      \else
+      \ref[Ввод, редактрирование и удаление текста]{Typing}
+      \fi
+\item \ifenglish
+      \ref[Clipboard operations]{ClipboardOperations}
+      \else
+      \ref[Операции с буфером обмена]{ClipboardOperations}
+      \fi
+\item \ifenglish
+      \ref[Search and replace]{SearchReplace}
+      \else
+      \ref[Поиск и замена]{SearchReplace}
+      \fi
+\item \ifenglish
+      \ref[Miscellaneous]{Miscellaneous}
+      \else
+      \ref[Разное]{Miscellaneous}
+      \fi
+\item \ifenglish
+      \ref[Macros]{Macros} (new in 2.6)
+      \else
+      \ref[Макрокоманды]{Macros} (новое в версии 2.6)
+      \fi
+\end{description}
+
+\ifenglish
+\section{Cursor movement}
+\else
+\section{Передвижение курсора}
+\fi
+\public{CursorMovement}
+
+\ifenglish
+Following commands move cursor:
+\else
+Курсор передвигается с помощью следующих команд:
+\fi
+
+{\bf Left} 
+\ifenglish 
+- one character left
+\else
+- на символ влево
+\fi
+
+{\bf Right} 
+\ifenglish
+- one character right
+\else
+- на символ вправо
+\fi
+
+{\bf Up} 
+\ifenglish
+- one line up
+\else
+- на строку вверх
+\fi
+
+{\bf Down} 
+\ifenglish
+- one line down
+\else
+- на строку вниз
+\fi
+
+{\bf Page Up} 
+\ifenglish
+- one page up
+\else
+- на страницу вверх
+\fi
+
+{\bf Page Down} 
+\ifenglish
+- one page down
+\else
+- на страницу вниз
+\fi
+
+{\bf Ctrl+Right} 
+\ifenglish
+- to the beginning of the next word
+\else
+- к началу следующего слова
+\fi
+
+{\bf Ctrl+Left} 
+\ifenglish
+- to the beginning of the previous word
+\else
+- к началу предыдущего слова
+\fi
+
+{\bf Home} 
+\ifenglish
+- to the beginning of current line
+\else
+- к началу текущей строки
+\fi
+
+{\bf End} 
+\ifenglish
+- to the end of current line
+\else
+- к концу текущей строки
+\fi
+
+{\bf Ctrl+N}, {\bf Shift+Enter} 
+\ifenglish
+- to the beginning of the next line
+\else
+- к началу следующей строки
+\fi
+
+{\bf Shift+Tab} 
+\ifenglish
+- to previous tab stop
+\else
+- к предыдущей позиции табуляции
+\fi
+
+{\bf Ctrl+Page Up} 
+\ifenglish
+- to the beginning of current page
+\else
+- к началу текущей страницы
+\fi
+
+{\bf Ctrl+Page Down} 
+\ifenglish
+- to the end of current page
+\else
+- к концу текущей страницы
+\fi
+
+{\bf Ctrl+Home} 
+\ifenglish
+- to the beginning of file
+\else
+- к началу файла
+\fi
+
+{\bf Ctrl+End} 
+\ifenglish
+- to the end of file
+\else
+- к концу файла
+\fi
+
+\ifenglish
+\section{Block selection}
+\else
+\section{Отметка блока}
+\fi
+\public{BlockSelection}
+
+\ifenglish
+A block is determined by two points. All listed commands move one of the points
+to new position, thus expanding or shrinking the block depending on movement
+direction and on the choice of point.
+
+Following commands move block margin:
+\else
+Блок определяется двумя точками. Все перечисленные команды передвигают одну из
+точек к новому положению, тем самым расширяя или сужая блок, в зависимости от
+направления передвижения и выбора точки.
+
+Следующие команды управляют передвижением ограничителя блока:
+\fi
+
+{\bf Shift+Left} 
+\ifenglish
+- one character left
+\else
+- на символ влево
+\fi
+
+{\bf Shift+Right} 
+\ifenglish
+- one character right
+\else
+- на символ вправо
+\fi
+
+{\bf Shift+Up} 
+\ifenglish
+- one line up
+\else
+- на строку вверх
+\fi
+
+{\bf Shift+Down} 
+\ifenglish
+- one line down
+\else
+- на строку вниз
+\fi
+
+{\bf Shift+Page Up} 
+\ifenglish
+- one page up
+\else
+- на страницу вверх
+\fi
+
+{\bf Shift+Page Down} 
+\ifenglish
+- one page down
+\else
+- на страницу вниз
+\fi
+
+{\bf Ctrl+Shift+Right} 
+\ifenglish
+- to the beginning of the next word
+\else
+- к началу следующего слова
+\fi
+
+{\bf Ctrl+Shift+Left} 
+\ifenglish
+- to the beginning of the previous word
+\else
+- к началу предыдущего слова
+\fi
+
+{\bf Shift+Home} 
+\ifenglish
+- to the beginning of current line
+\else
+- к началу текущей строки
+\fi
+
+{\bf Shift+End} 
+\ifenglish
+- to the end of current line
+\else
+- к концу текущей строки
+\fi
+
+{\bf Ctrl+Shift+Page Up} 
+\ifenglish
+- to the beginning of current page
+\else
+- к началу текущей страницы
+\fi
+
+{\bf Ctrl+Shift+Page Down} 
+\ifenglish
+- to the end of current page
+\else
+- к концу текущей страницы
+\fi
+
+{\bf Ctrl+Shift+Home} 
+\ifenglish
+- to the beginning of file
+\else
+- к началу файла
+\fi
+
+{\bf Ctrl+Shift+End} 
+\ifenglish
+- to the end of file
+\else
+- к концу файла
+\fi
+
+\ifenglish
+\section{Typing, editing and deleting text}
+\else
+\section{Набор, редактирование и удаление текста}
+\fi
+\public{Typing}
+\nominitoc
+
+{\bf Insert} 
+\ifenglish
+- toggle insert and overwrite mode
+\else
+- переключить режимы вставки и наложения
+\fi
+
+{\bf Delete} 
+\ifenglish
+- delete character to the right from cursor; see \ref[Note]{DeleteNote}
+\else
+- удалить символ справа от курсора; смотрите также \ref[замечание]{DeleteNote}
+\fi
+
+{\bf BackSpace} 
+\ifenglish
+- delete character to the left from cursor; see \ref[Note]{BSNote}
+\else
+- удалить символ слева от курсора; смотрите также \ref[замечание]{BSNote}
+\fi
+
+{\bf Tab} 
+\ifenglish
+- insert Tab character or expand tab with spaces; see \ref[Note]{Tabulation}
+\else
+- вставить символ табуляции или расширить табуляцию пробелами; смотрите также \ref[замечание]{Tabulation}
+\fi
+
+{\bf Ctrl+Delete} 
+\ifenglish
+- \ref[delete end of current word]{CtrlDelNote}
+\else
+- \ref[удалить конец текущего слова]{CtrlDelNote}
+\fi
+
+{\bf Ctrl+BackSpace} 
+\ifenglish
+- \ref[delete beginning of current word]{CtrlBSNote}
+\else
+- \ref[удалить начало текущего слова]{CtrlBSNote}
+\fi
+
+{\bf Ctrl+I} 
+\ifenglish
+- insert a line before the current line
+\else
+- вставить строку перед текущей строкой
+\fi
+
+{\bf Ctrl+S} 
+\ifenglish
+- split a line in two at the cursor position
+\else
+- в месте, где расположен курсор, разбить строку на две  
+\fi
+
+{\bf Ctrl+J} 
+\ifenglish
+- join current line with the next line
+\else
+- соединить текущую строку со следующей
+\fi
+
+{\bf Enter} 
+\ifenglish
+- split a line or go to the next line; see \ref[Note]{CRNote}
+\else
+- разбить строку или перейти к следующей; смотрите также \ref[замечание]{CRNote}
+\fi
+
+{\bf Ctrl+Y} 
+\ifenglish
+- delete current line
+\else
+- удалить текущую строку 
+\fi
+
+\ifenglish
+\subsection{{\bf Delete} key}
+\else
+\subsection{клавиша {\bf Delete}}
+\fi
+\public{DeleteNote}
+
+\ifenglish
+If the {\bf Delete} key is pressed when the cursor is at the end of line,
+the editor usually joins the line with the next one, unless the cursor is at the last line.
+If the cursor is to the right from the end of line, the next line is appended
+at cursor position retaining all the spaces.
+
+This behavior can be disabled using \ref[Configure: Editor]{IDM\_CONFIGUREEDITOR}
+menu. In this case the editor would ignore {\bf Delete} command when cursor is
+at the end of line or to the right of it.
+\else
+Если клавиша {\bf Delete} нажата, когда курсор находится на конце строки,
+редактор обычно присоединяет к текущей строке следующую, за исключением случая 
+когда текущая строка - последняя. Если курсор расположен справа от конца строки,
+следующая строка добавляется к текущей с сохранением всех пробелов.
+
+Это может быть исправлено с помощью меню \ref[Configure: Editor]{IDM\_CONFIGUREEDITOR}.
+В этом случае редактор проигнорирует команду {\bf Delete}, когда курсор 
+находится в конце строки или справа от него.
+\fi
+
+\ifenglish
+\subsection{{\bf BackSpace} key}
+\else
+\subsection{клавиша {\bf BackSpace}}
+\fi
+\public{BSNote}
+
+\ifenglish
+If the {\bf BackSpace} key is pressed when the cursor is at the beginning of line,
+the editor usually joins the line with the previous one, unless the cursor is at
+the first line.
+
+This behavior can be disabled using \ref[Configure: Editor]{IDM\_CONFIGUREEDITOR}
+menu. In this case the editor would ignore {\bf BackSpace} command when cursor is
+at the beginning of line.
+\else
+Если клавиша {\bf BackSpace} нажата, когда курсор находится в начале строки,
+редактор обычно присоединяет текущую строку к предыдущей, за исключением случая,
+когда текущая строка - первая.
+\fi
+
+\ifenglish
+\subsection{Delete end of current word}
+\else
+\subsection{Удалить конец текущего слова}
+\fi
+\public{CtrlDelNote}
+
+\ifenglish
+If the cursor is not in a white space, the {\bf Ctrl+Delete} commands
+deletes everything from the cursor position
+to the end of current word. Otherwise, it deletes everything
+from the cursor position to the beginning of next word.
+\else
+Если курсор находится не на пробеле, команда {\bf Ctrl+Delete}
+удаляет все, начиная от текущего положения курсора и кончая концом 
+текущего слова. Иначе команда удаляет все, начиная от текущего положения курсора
+и кончая началом следующего слова.
+\fi
+
+\ifenglish
+\subsection{Delete beginning of current word}
+\else
+\subsection{Удалить начало текущего слова}
+\fi
+\public{CtrlBSNote}
+
+\ifenglish
+If the character to the left from the cursor is not in a white space,
+the {\bf Ctrl+BackSpace} command
+deletes everything from the beginning of the current word to that character.
+Otherwise, it deletes everything from the end of previous word to mentioned
+character.
+\else
+Если символ справа от курсора -- не пробел, команда {\bf Ctrl+BackSpace} 
+удаляет все от начала текущего слова до этого символа.
+Иначе она удаляет все от конца предыдущего слова до упомянутого символа.
+\fi
+
+\ifenglish
+\subsection{{\bf Enter} key}
+\else
+\subsection{клавиша {\bf Enter}}
+\fi
+\public{CRNote}
+
+\ifenglish
+In overwrite mode the {\bf Enter} key works exactly like {\bf Ctrl+N} key.
+The cursor moves to the beginning of the next line. A blank line is appended
+if the cursor was at the last line.
+ 
+In insert mode the {\bf Enter} key works like {\bf Ctrl+S} key, that is, it
+splits a line in two at cursor position. It can be disabled in 
+\ref[Configure: Editor]{IDM\_CONFIGUREEDITOR} menu, after which this key
+works like in overwrite mode.
+\else
+В режиме наложения клавиша {\bf Enter} действует так же, как и {\bf Ctrl+N}.
+Курсор передвигается к началу следующей строки, а если курсор находился на
+последней строке, то добавляется пустая.
+
+В режиме вставки клавиша {\bf Enter} действует так же, как и  {\bf Ctrl+S},
+то есть разбивает строку на две в месте, где находился курсор. Это может быть
+отключено в меню \ref[Configure: Editor]{IDM\_CONFIGUREEDITOR}, после чего
+эта клавиша действует так же, как и в режиме наложения.
+\fi
+
+\ifenglish
+\section{Clipboard operations}
+\else
+\section{Операции с буфером обмена}
+\fi
+\public{ClipboardOperations}
+
+{\bf Ctrl+Insert}, {\bf Ctrl+C} 
+\ifenglish
+- \ref[Copy]{IDM\_COPY}
+\else
+- \ref[Копировать]{IDM\_COPY}
+\fi
+
+{\bf Shift+Delete}, {\bf Ctrl+X} 
+\ifenglish
+- \ref[Cut]{IDM\_CUT}
+\else
+- \ref[Вырезать]{IDM\_CUT}
+\fi
+
+{\bf Ctrl+Insert},  {\bf Ctrl+V} 
+ \ifenglish
+- \ref[Paste]{IDM\_PASTE}
+\else
+- \ref[Вклеить]{IDM\_PASTE}
+\fi
+
+{\bf Ctrl+Shift+Delete}, {\bf Ctrl+E} 
+\ifenglish
+- \ref[Exchange]{IDM\_EXCHANGE}
+\else
+- \ref[Обменять]{IDM\_EXCHANGE}
+\fi
+
+{\bf Ctrl+Shift+Insert}, {\bf Ctrl+A} 
+\ifenglish
+- \ref[Add]{IDM\_ADD}
+\else
+- \ref[Добавить]{IDM\_ADD}
+\fi
+
+\ifenglish
+\section{Search and Replace}
+\else
+\section{Поиск и замена}
+\fi
+\public{SearchReplace}
+
+{\bf Ctrl+F} 
+\ifenglish
+	     - \ref[Find]{IDM\_FIND} text
+             \else
+             - \ref[Найти]{IDM\_FIND} текст
+             \fi
+
+{\bf Ctrl+H} \ifenglish
+             - Find text and \ref[Replace]{IDM\_REPLACE} it with another text
+             \else
+             - Найти текст и \ref[Заменить]{IDM\_REPLACE} его другим текстом
+\fi
+
+{\bf Ctrl+L} \ifenglish
+             - \ref[Find next]{IDM\_FINDNEXT}
+             \else
+             - \ref[Найти следующее]{IDM\_FINDNEXT}
+ \fi
+
+{\bf Ctrl+Shift+L} \ifenglish
+                   - \ref[Find previous]{IDM\_FINDPREV}
+                   \else 
+                   - \ref[Найти предыдущее]{IDM\_FINDPREV}
+\fi
+
+{\bf Ctrl+R} \ifenglish
+             - \ref[Replace next]{IDM\_REPLACENEXT}
+             \else
+             - \ref[Заменить следущее]{IDM\_REPLACENEXT}
+\fi
+
+{\bf Ctrl+Shift+F} \ifenglish
+                  - \ref[Find in files]{IDM\_FINDFILES}
+                  \else
+                  - \ref[Найти в файлах]{IDM\_FINDFILES}
+\fi
+\ifenglish
+\section{Miscellaneous Editing Commands}
+\else
+\section{Разные команды редактирования}
+ \fi
+\public{Miscellaneous}
+
+{\bf Alt+BackSpace}, {\bf Ctrl+Z} \ifenglish
+     				  - \ref[Undo]{IDM\_UNDO} last action
+     				  \else
+                                  - \ref[Отменить]{IDM\_UNDO} последнее изменение 
+\fi
+
+{\bf Ctrl+Shift+1}...{\bf Ctrl+Shift+9} 
+\ifenglish
+- set a bookmark with given number at the current cursor position
+\else
+- установить закладку с заданным номером в месте, где находится курсор
+\fi
+
+{\bf Ctrl+1}...{\bf Ctrl+9} 
+\ifenglish
+- move cursor to the bookmark with given number
+\else
+- переместить курсор к закладке с заданным номером
+\fi
+
+{\bf Alt+Right} 
+\ifenglish
+- Indent current line or block right by one character
+\else
+- сделать отступ в текущей строке или блоке на один символ вправо
+\fi
+
+{\bf Alt+Left}  
+\ifenglish
+- Indent current line or block left by one character
+\else
+- сделать отступ в текущей строке или блоке на один символ влево
+\fi
+
+{\bf Alt+Shift+Right} 
+\ifenglish
+- Indent current line or block right by tab size
+\else
+- сделать отступ в текущей строке или блоке вправо на расстояние 
+ табуляции
+\fi
+
+{\bf Alt+Shift+Left} 
+\ifenglish
+- Indent current line or block left by tab size
+\else
+- сделать отступ в текущей строке или блоке влево на расстояние 
+ табуляции       
+\fi
+
+{\bf Ctrl+U} 
+\ifenglish
+- Turn current word or block to uppercase
+\else
+- Повысить регистр текущего слова или блока
+\fi
+
+{\bf Ctrl+Shift+U} 
+\ifenglish
+- Change case of the current word or block to opposite
+\else
+- Изменить регистр текущего слова или блока на противоположный
+\fi
+
+{\bf F1} 
+\ifenglish
+- Display \ref[help]{IDM\_HELPKEYWORD} on current word
+\else
+- Отобразить \ref[подсказку]{IDM\_HELPKEYWORD} по текущему слову
+\fi
+
+{\bf Ctrl+G} 
+\ifenglish
+- \ref[Go to line]{IDM\_GOTOLINE} with given number
+\else
+- \ref[Перейти на строку]{IDM\_GOTOLINE} с заданным номером
+\fi
+
+\ifenglish
+\section{Macros}
+\else
+\section{Макрокоманды}
+ \fi
+\public{Macros}
+
+\ifenglish
+{\bf New in 2.6:}
+\else
+{\bf Новое в версии 2.6:}
+\fi
+
+\ifenglish
+You may define your own macro commands and assign them to keyboard events.
+To do that, you need to create a {\it macro defiition file} in the \verb'BIN\'
+subdirectory of your XDS installation. 
+You may also create language-specific sets of macros.
+\else
+Вы можете определить свои собственные макрокоманды и назначить им клавиатурные события.
+Для этого нужно создать {\it файл с определениями макрокоманд} в папке \verb'XDS\BIN'.
+Вы также можете создать наборы макрокоманд, специфичные для данного языка 
+программирования.
+\fi
+
+\ifenglish
+\subsection{Macro definitions}
+\else
+\subsection{Определения макрокоманд}
+\fi
+
+\ifenglish
+A macro is defined as
+
+\verb'    '{\it Event}\verb'='{\it Actions}
+
+{\it Event} is a keyboard event that shall invoke the macro.
+It consists of a {\it key code} and optional \verb'ALT', \verb'CONTROL', and \verb'SHIFT' 
+modifiers, listed in any order and separated by commas.
+A key code may be a literal printable character in quotes (single or double),
+or one of the Win32 API virtual key constant names without the \verb'VK_' prefix,
+such as \verb'F1', \verb'LEFT', etc.
+(You may look those constants up in files 
+\verb'Windows.def' or \verb'WinUser.def' located in the \verb'DEF\Win32\' 
+subdirectory of your XDS installation.)
+
+Examples:
+\else
+Каждый макрос описывается как 
+
+\verb'    '{\it Событие}\verb'='{\it Действия}
+
+{\it Событие} --- описание клавиатурного события, по которому запускается 
+данная макрокоманда. Оно состоит из кода клавиши и необязательных модификаторов
+\verb'ALT', \verb'CONTROL', и \verb'SHIFT', перечисленных в произвольном порядке 
+через запятую. 
+В качестве кода клавиши можно указать печатный символ в кавычках, или 
+константу Win32 API, обозначающую виртуальную клавишу,
+без префикса ``\verb'VK_''': \verb'F1', \verb'LEFT' и т.д. 
+Полный набор этих констант можно найти в файле \verb'Windows.def' или
+\verb'WinUser.def' в подпапке \verb'DEF\Win32\'.
+
+Примеры:
+\fi
+
+\begin{verbatim}
+  CONTROL,"[",SHIFT= ...
+  CONTROL,PRIOR= ...
+  CONTROL,HOME= ...
+\end{verbatim}
+
+\ifenglish
+{\it Actions} is a comma-separated list of actions triggered by {\it Event},
+Each action is either a literal string of characters that must be "typed"
+into the current source file, or a \ref[editor command]{EditorCommands}.
+Long lines may be split using backslash ``\verb'\'''.
+\else
+{\it Действия} --- последовательность действий, которые оболочка должна выполнить
+при получении {\it События}, перечисленная через запятую. 
+Каждое действие --- это или строчка в кавычках, 
+которая просто ``впечатывается'' в текущий файл, 
+или \ref[команда редактора]{EditorCommands}. 
+При необходимости можно разбить {\it Действия} на несколько строк, 
+при этом все строки, кроме последней, должны заканчиваться символом ``\verb'\'''.
+
+Примечание: кавычки везде имеются в виду Модуловские, то есть открывающая 
+или одинарная или двойная, закрывающая --- такая же, 
+а то, что между ними --- содержимое.
+
+Примеры:
+\fi
+
+\verb|CONTROL,'W'="WHILE  DO",CR,"END;",UP,LINEEND,LEFTWORD,LEFT| \\
+{\small
+\ifenglish
+  creates an empty WHILE-loop and moves the cursor to the condition placeholder
+\else
+  делает болванку while-цикла и ставит каретку в позицию его условия
+\fi
+} % \small
+
+\verb|CONTROL,'1'=BLKLEFTWORD,COPY,LEFT,"DEFINITION MODULE ",\|\\
+\verb|LINEEND,CR,"END ",PASTE,".",UP,LINEEND,\|\\
+\verb|"; (* COPYRIGHT (c) Excelsior LLC *)",CR,CR,CR,UP|\\
+{\small
+\ifenglish
+  creates a definition module template with copyright notice 
+  (usage: create a new file, type the desired module name, and press {\bf Ctrl-1}.)
+\else
+  делает болванку DEFINITION-модуля c уведомлением об авторском праве.
+\fi
+} % \small
+
+\ifenglish
+\subsection{Editor commands}
+\else
+\subsection{Команды редактора}
+\fi
+\public{EditorCommands}
+
+\ifenglish
+Cursor movement
+\else
+Перемещения каретки:
+\fi
+
+RIGHT, LEFT, UP, DOWN, PGUP, PGDOWN, LINESTART, LINEEND, PAGESTART, PAGEEND, RIGHTWORD, LEFTWORD
+
+\ifenglish
+Cursor movement with selection (same commands with \verb'BLK' prefix)
+\else
+Перемещения каретки с выделением текста (те же слова, что и предыдущий раздел, но с префиксом BLK):
+\fi
+
+BLKRIGHT, BLKLEFT, BLKUP, BLKDOWN, BLKPGUP, BLKPGDOWN, BLKLINESTART, BLKLINEEND, BLKPAGESTART, BLKPAGEEND, BLKRIGHTWORD, BLKLEFTWORD
+
+\ifenglish
+Miscellaneous:
+\else
+Разнообразные действия:
+\fi
+
+DEL, BS, TAB, BACKTAB, DELWORD, DELWORDLEFT, FLIPINSERT, NEXTLINE, INSERTLINE, CR, DELLINE, SPLITLINE, JOINLINES, UNDO, UPPERCASE, FLIPCASE
+
+\ifenglish
+Block indenting:
+\else
+Сдвижка блоков:
+\fi
+
+INDENTLEFT, INDENTLEFT1, INDENTRIGHT, INDENTRIGHT1
+
+\ifenglish
+Private clipboard operations (each editor window has a private clipboard, only accessible from macros)
+\else
+Взаимодействие с приватным буфером обмена, имеющимся у каждого окна редактирования специально для работы с макросами
+\fi
+
+COPY, PASTE, CUT, EXCHANGE, ADD
+
+\ifenglish
+System clipboard operations
+\else
+Взаимодействие с системным буфером обмена
+\fi
+
+SYSCOPY, SYSPASTE, SYSCUT, SYSEXCHANGE, SYSADD
+
+\ifenglish
+Bookmarks
+\else
+Закладки
+\fi
+
+SETBOOKMARK1, SETBOOKMARK2..SETBOOKMARK9 \\
+GOTOBOOKMARK1, GOTOBOOKMARK2..GOTOBOOKMARK9
+
+\ifenglish
+\subsubsection{Example macro definition file for Modula-2}
+\else
+\subsubsection{Пример файла описаний макросов для Модулы-2}
+\fi
+
+\begin{verbatim}
+    CONTROL,'I'="INTEGER"
+    CONTROL,'I',SHIFT="IF  THEN",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+    CONTROL,'C'="CHAR"
+    CONTROL,'C',SHIFT="CARDINAL"
+    CONTROL,'W'="WHILE  DO",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+    CONTROL,'R'="REPEAT",CR,"UNTIL ;",LEFT
+    CONTROL,'P',SHIFT=BLKLEFTWORD,COPY,LEFT,"PROCEDURE ",LINEEND,CR,"BEGIN",CR,"END ",PASTE,";",UP,UP,LINEEND,"();",LEFT,LEFT
+    CONTROL,'['="ARRAY ["
+    CONTROL,']'="] OF "
+    CONTROL,'V'="VAR"
+    CONTROL,'S'="ARRAY OF CHAR"
+    CONTROL,'X'="ARRAY OF"
+    CONTROL,'1'=BLKLEFTWORD,COPY,LEFT,"DEFINITION MODULE "    ,LINEEND,CR,\
+      "END ",PASTE,".",UP,   LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+    CONTROL,'2'=BLKLEFTWORD,COPY,LEFT,"IMPLEMENTATION MODULE ",LINEEND,CR,\
+      "BEGIN",CR,"END ",PASTE,".",UP,UP,LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+    CONTROL,'3'=BLKLEFTWORD,COPY,LEFT,"MODULE "               ,LINEEND,CR,\
+      "BEGIN",CR,"END ",PASTE,".",UP,UP,LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+\end{verbatim}
+
+
+\ifenglish
+\subsection{Prefix mode}
+\else
+\subsection{Префиксный режим}
+\fi
+
+\ifenglish
+In this mode, macros are invoked by a combination of two keyboard events:
+the macro toggle key ({\bf F1}) and {\it Event}. 
+To enable this mode, insert the following line at the top of your 
+macro definition file:
+\else
+Режим cделан по воспомнинаниям о Кроносе. 
+Макрокоманды в этом режиме запускается не одним событием клавиатуры, 
+а последовательностью из двух --- нажатие {\bf F1} и собственно {\it Cобытие}. 
+
+Чтобы его этот режим, в соответствующий файл с описаниями макросов 
+надо вставить строчку
+\fi
+
+\verb'    toggleon'
+
+\ifenglish
+Then a macro defined as
+\else
+После чего макрос, описанный как
+\fi
+
+\verb'    CONTROL,"C"="CHAR"'
+
+\ifenglish
+will not fire each time you press {\bf Ctrl-C}, but only if you press
+{\bf F1} first.
+\else
+будет запускаться не по нажатию {\bf Ctrl-C}, а по последовательности нажатий
+({\bf F1}, {\bf Ctrl-C}).
+\fi
+
+\ifenglish
+{\bf Note:} As you might have guessed, in this mode you need to press 
+{\bf F1} twice to display online help.
+\else
+{\bf Примечание:} В префиксном режиме подсказка вызывается 
+двойным нажатием {\bf F1}.
+\fi
+
+\ifenglish
+\subsubsection{Example macro definition file for Modula-2 (prefix mode)}
+\else
+\subsubsection{Пример файла описаний макросов для Модулы-2 (префиксный режим)}
+\fi
+\begin{verbatim}
+    toggleon
+    'I'="INTEGER"
+    'I',SHIFT="IF  THEN",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+    'C'="CHAR"
+    'C',SHIFT="CARDINAL"
+    'W'="WHILE  DO",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+    'R'="REPEAT",CR,"UNTIL ;",LEFT
+    'P',SHIFT=BLKLEFTWORD,COPY,LEFT,"PROCEDURE ",LINEEND,CR,"BEGIN",CR,"END ",PASTE,";",UP,UP,LINEEND,"();",LEFT,LEFT
+    '['="ARRAY ["
+    ']'="] OF "
+    'V'="VAR"
+    'S'="ARRAY OF CHAR"
+    'X'="ARRAY OF"
+    '1'=BLKLEFTWORD,COPY,LEFT,"DEFINITION MODULE "    ,LINEEND,CR,\
+      "END ",PASTE,".",UP,   LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+    '2'=BLKLEFTWORD,COPY,LEFT,"IMPLEMENTATION MODULE ",LINEEND,CR,\
+      "BEGIN",CR,"END ",PASTE,".",UP,UP,LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+    '3'=BLKLEFTWORD,COPY,LEFT,"MODULE "               ,LINEEND,CR,\
+      "BEGIN",CR,"END ",PASTE,".",UP,UP,LINEEND,"; (* COPYRIGHT (c) Excelsior *)",CR,CR,CR,UP
+\end{verbatim}
+
+
+\ifenglish
+\subsection{Registering macro definition files}
+\else
+\subsection{Регистрация наборов макрокоманд}
+\fi
+\public{MacroSets}
+
+\ifenglish
+You may define macro sets specific to programming languages
+and the IDE will select one for each editor window, provided it
+will have recognized the language. Otherwise, it will use the default set,
+which is, in turn, loaded from the file \verb'BIN\xds.mdf'
+by default. To change the name of the default macro definition file,
+add the following line to the \verb'[macro]' section in \verb'BIN\XDS.ini':
+\else
+Оболочка выбирает набор макросов для каждого окна редактора 
+в соответствии с \ref[языком программирования]{Languages}, 
+который в нем используется. Если язык определить не удалось или
+для него не задан отдельный набор макросов, то для этого окна 
+используется умолчательный. Опять же по умолчанию этот набор 
+берется из файла \verb'BIN\xds.mdf' в папке, куда установлена система XDS.
+Чтобы заменить это имя на, скажем, ``\verb'mymacro.file''', нужно в 
+файле \verb'BIN\XDS.ini' завести секцию \verb'[macro]' и в ней написать:
+\fi
+
+\verb'    default=mymacro.file'
+
+\ifenglish
+For the IDE to load a different macro set for Modula-2 source files
+from file \verb'BIN\m2o2.mdf', add the following line to the same section:
+\else  
+А чтобы для файлов с исходными текстами на Модуле-2 использовался 
+набор макрокоманд из файла "m2o2.mdf", в той же секции ini-файла нужно написать:
+\fi
+
+\verb'    Modula-2=m2o2.mdf'
+
+\ifenglish
+You may add a macro set for any of the languages listed in 
+the \verb'[languages]' section of the same ini-file.
+\else  
+Для других известных оболочке языков все делается аналогично.
+(имена этих языков перечислены в секции \verb'[languages]' того же ini-файла).
+\fi
+
+\ifenglish
+Example:
+\else  
+Пример:
+\fi
+
+\begin{verbatim}
+       .  .  .
+    [languages]
+    lang1=Modula-2
+    lang2=Oberon-2
+    lang3=Java
+       .  .  .
+    [macro]
+    default=m2o2.mdf
+    Java=java.xdsmacro
+       .  .  .
+\end{verbatim}
+
+

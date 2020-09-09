@@ -1,0 +1,177 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMWP.H
+*
+* OS/2 Presentation Manager Workplace include file.
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_WINWORKPLACE       All of Workplace Shell
+*   INCL_WPCLASS            Workplace object class API's
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+(* NOINC *)
+#if !defined(PMWP_INCLUDED)  (* multiple include protection *)
+   (* INC *)
+   #define PMWP_INCLUDED
+
+   #if defined(INCL_WINWORKPLACE)
+      #define INCL_WPCLASS
+   #endif
+
+   (*** Common types *******************************************************)
+
+   TYPE HOBJECT = LHANDLE ;
+
+   (*** Object management calls ********************************************)
+   #if defined(INCL_WPCLASS) || ! defined(INCL_NOCOMMON)
+      (*** Standard object classes *****************************************)
+
+
+      CONST CCHMAXCLASS       =       3;     (* Length of a classname     *)
+
+      CONST QC_First          =       0;     (* Codes for OA_QueryContent *)
+      CONST QC_Next           =       1;
+      CONST QC_Last           =       2;
+      CONST QC_FIRST          =    QC_First;
+      CONST QC_NEXT           =    QC_Next;
+      CONST QC_LAST           =    QC_Last;
+
+      (*** An object's appearance (icon or bitmap or outline) **************)
+
+      TYPE OBJECTIMAGE = RECORD    (* oimg *)
+         hptrObject: HPOINTER ;
+      END;
+      TYPE POBJECTIMAGE = POINTER TO OBJECTIMAGE;
+
+      (*** Class info structure returned by WinEnumObjectClasses ***********)
+      TYPE POBJCLASS = POINTER TO OBJCLASS;
+      TYPE OBJCLASS = RECORD        (* ocls *)
+         pNext:        POBJCLASS;           (* Null for the last structure.. *)
+         pszClassName: PSZ;                 (* Class name                    *)
+         pszModName:   PSZ;                 (* Module name                   *)
+      END;
+
+
+      (*** Workplace object management functions ***************************)
+
+      PROCEDURE WinRegisterObjectClass(szClassName : ARRAY OF CHAR
+                                      ;szModName   : ARRAY OF CHAR
+                                      ): BOOL;
+
+      PROCEDURE WinDeregisterObjectClass(szClassName : ARRAY OF CHAR): BOOL;
+
+      PROCEDURE WinReplaceObjectClass(szOldClassName : ARRAY OF CHAR
+                                     ;szNewClassName : ARRAY OF CHAR
+                                     ;fReplace       : BOOL
+                                     ): BOOL;
+
+      PROCEDURE WinEnumObjectClasses(VAR ObjClass : ARRAY OF OBJCLASS
+                                    ;VAR ulSize   : ULONG
+                                    ): BOOL;
+
+      PROCEDURE WinCreateObject(szClassName   : ARRAY OF CHAR
+                               ;szTitle       : ARRAY OF CHAR
+                               ;szSetupString : ARRAY OF CHAR
+                               ;szLocation    : ARRAY OF CHAR
+                               ;ulFlags        : ULONG
+                               ): HOBJECT;
+
+      CONST CO_FAILIFEXISTS    = 0;
+      CONST CO_REPLACEIFEXISTS = 1;
+      CONST CO_UPDATEIFEXISTS  = 2;
+
+      PROCEDURE WinSetObjectData(hObject       : HOBJECT
+                                ;szSetupString : ARRAY OF CHAR
+                                ): BOOL;
+
+      PROCEDURE WinDestroyObject(hObject : HOBJECT): BOOL;
+
+      PROCEDURE WinQueryObject(szObjectID : ARRAY OF CHAR): HOBJECT;
+
+   #endif  (*WPCLASS*)
+
+   (*** Error codes ********************************************************)
+   #define INCL_WPERRORS
+   --#include <pmerr.h>
+
+   (*** Object settings notebook page insertion structure ******************)
+
+   TYPE PAGEINFO = RECORD    (* pginf *)
+      cb:                 ULONG   ;
+      hwndPage:           HWND    ;
+      pfnwp:              PFNWP   ;
+      resid:              ULONG   ;
+      pCreateParams:      PVOID   ;
+      dlgid:              USHORT  ;
+      usPageStyleFlags:   USHORT  ;
+      usPageInsertFlags:  USHORT  ;
+      usSettingsFlags:    USHORT  ;
+      pszName:            PSZ     ;
+      idDefaultHelpPanel: USHORT  ;
+      usReserved2:        USHORT  ;
+      pszHelpLibraryName: PSZ     ;
+      pHelpSubtable:      PUSHORT ; (* PHELPSUBTABLE when PMHELP.H is included*)
+      hmodHelpSubtable:   HMODULE ;
+      ulPageInsertId:     ULONG   ;
+   END;
+   TYPE PPAGEINFO = POINTER TO PAGEINFO;
+
+   CONST  SETTINGS_PAGE_NUMBERS   =  001H;
+
+   (*** Utility apis +******************************************************)
+
+   #if ! defined(INCL_NOCOMMON)
+      TYPE ICONPOS = RECORD    (* icp *)
+         ptlIcon:    POINTL;                                (*  Location *)
+         szIdentity: ARRAY [0..0] OF CHAR;       (* Object identity string *)
+      END;
+      TYPE PICONPOS = POINTER TO ICONPOS;
+
+      (*********************************************************************)
+      #if defined(INCL_WINPOINTERS)
+         PROCEDURE WinSetFileIcon(szFileName  : ARRAY OF CHAR
+                                 ;VAR IcnInfo : ICONINFO
+                                 ): BOOL;
+      #endif
+      PROCEDURE WinFreeFileIcon(hptr : HPOINTER): BOOL;
+
+      PROCEDURE WinLoadFileIcon(szFileName : ARRAY OF CHAR
+                               ;fPrivate   : BOOL
+                               ): HPOINTER;
+
+      PROCEDURE WinStoreWindowPos(szAppName : ARRAY OF CHAR
+                                 ;szKeyName : ARRAY OF CHAR
+                                 ;hwnd      : HWND
+                                 ): BOOL;
+
+      PROCEDURE WinRestoreWindowPos(pszAppName : ARRAY OF CHAR
+                                   ;pszKeyName : ARRAY OF CHAR
+                                   ;hwnd       : HWND
+                                   ): BOOL;
+
+      PROCEDURE WinShutdownSystem(hab : HAB
+                                 ;hmq : HMQ
+                                 ): BOOL;
+   #endif
+
+   (* NOINC *)
+#endif (* PMWP_INCLUDED *)
+(* INC *)
+
+(**************************** end of file **********************************)

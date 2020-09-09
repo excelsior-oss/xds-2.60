@@ -1,0 +1,8 @@
+SOURCE = xdbc.tex classref.tex
+
+TARGET = xdbc
+
+!include ..\$(FORMAT).inc
+
+
+

@@ -1,0 +1,5 @@
+SOURCE = tsco.tex preamble.tex body.tex
+
+TARGET = tsco
+
+!include ..\$(FORMAT).inc

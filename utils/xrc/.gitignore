@@ -1,0 +1,6 @@
+/src/Debug/*
+/src/Release/*
+
+/src/MSG00001.bin
+/src/XRCMSG.h
+/src/XRCMSG.rc

@@ -1,0 +1,12 @@
+******************************************************************************
+*                                                                            *
+*           WinDemoM.mod - XDS version of TS Window management               *
+*           -------------------------------------------------                *
+*                                                                            *
+******************************************************************************
+
+  This program illustrates XDS TopSpeed-like module Window usage in
+multithread mode through the ISO Processes module. 
+
+
+

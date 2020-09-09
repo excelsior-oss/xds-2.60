@@ -1,0 +1,259 @@
+Project options
+ [+
+ !B2 ;Project options
+ !   ;Compiler and maker have lots of
+ !   ;predefined variables (options and equations)
+ !   ;that control source language, code generation,
+ !   ;optimization, etc. You can set them here.
+
+>Compiler options
+ [+
+ !B2 ;Compiler options
+ !   ;This section describes basic compiler options.
+ [+
+ (CC:!"None","Borland","MSVC","Symantec","Watcom") ; Used C compiler
+ []+
+ %ERRLIM="16"                           ; Errors limit
+ -VERSIONKEY                            ; Check versions consistency
+ -CHANGESYM                             ; Allow generation of new SYM files
+ -OVERWRITE                             ; Overwrite files if found via redirection
+
+>>Memory usage
+ [+
+ !   ; This section describes memory usage by
+ !   ; compiler itself.
+ !
+ !B  ; Please tune the following equations
+ !B  ; according to the amount of the real
+ !B  ; (not virtual) memory in your computer.
+ !
+ [+
+ %COMPILERHEAP="4000000"                          ; Compiler heap limit
+ !   ; If your computer have less than 12Mb of
+ !   ; RAM, set to 4000000; if 16Mb or more, set
+ !   ; to 12000000; otherwise, set to 8000000.
+ [+
+ %COMPILERTHRES="2000000"                         ; Compiler threshold
+
+>>Source
+ !2 ; Modula-2
+ [+
+ -M2EXTENSIONS                          ; Enable language extensions
+ -M2ADDTYPES                            ; Add short and long whole types
+ -STORAGE                               ; Default memory management
+ ]+
+ !2 ; Oberon-2
+ [+
+ -O2EXTENSIONS                          ; Enable language extensions
+ -O2NUMEXT                              ; Enable scientific extensions
+ -O2ADDKWD                              ; Enable M2 exceptions and finalization
+ +O2ISOPRAGMA                           ; ISO Modula-2 pragmae
+
+>>Runtime checks
+ !2B ; Run-time checks
+ !2
+ !   ; Both Modula and Oberon provide set of exceptions
+ !   ; which are generated in all abnormal situations, such
+ !   ; as violation of bounds by array index and numeric
+ !   ; overflow.
+ !
+ !   ; To implement this, compiler inserts special instructions,
+ !   ; called run-time checks, in generated code. These
+ !   ; checks sometimes significantly affect performance,
+ !   ; so developer might wish to eliminate them in program
+ !   ; that he or she considers free of errors.
+ !
+ !   ; Compiler has a lot of options that control presence
+ !   ; of run-time checks in generated code.
+ !
+ !B  ; It is strongly recommended to turn off run-time
+ !B  ; checks only in final release of well-tested code,
+ !B  ; and, if possible, only in speed-sensitive parts.
+
+>>>Overflow and ranges
+ !2 ; Overflow checks
+ [+
+ +IOVERFLOW                             ; Check integer overflow
+ +COVERFLOW                             ; Check cardinal overflow
+ +FOVERFLOW                             ; Check real overflow
+ ]+
+ !2 ; Range checks
+ [+
+ +CHECKINDEX                            ; Static array bounds checks
+ +CHECKDINDEX                           ; Dynamic array bounds checks
+ +CHECKRANGE                            ; Range checks for ranges and enums
+ +CHECKSET                              ; Range check in set operations
+>>>Others
+ !2 ; Other checks
+ [+
+ +CHECKNIL                              ; NIL pointer dereference check
+ +CHECKPROC                             ; Formal procedure call check
+ +CHECKDIV                              ; Check for negative divisor (DIV and MOD)
+ +CHECKTYPE                             ; Dynamic type guards check (Oberon-2 only)
+ +ASSERT                                ; Enable ASSERT generation
+
+>>Runtime options
+[+
+ %STACKLIMIT="64000"                    ; Stack size
+[+
+ %HEAPLIMIT="4000000"                   ; Heap size
+ [+
+ %GCTHRESHOLD="2000000"                 ; Garbage collector threshold
+ ]+
++GCAUTO                                 ; Enable implicit garbage collector calls
+-GENHISTORY                             ; Print call chain when exception occurs
+-:GUI                                   ; Create GUI application
+
+>>Code generation
+ [+
+ (MINCPU:!"386","486","Pentium","PentiumPro") ; Required CPU
+ ]+
+ [+
+ (ALIGNMENT:!"1","2","4","8","16")      ; Align RECORD fields on a boundary
+ (ENUMSIZE:!"1","2","4")                ; Minimum size of enumeration types
+ (SETSIZE:!"1","2","4")                 ; Minimum size of sets
+ ]+
+ +GENPTRINIT                            ; Initialize Oberon-2 pointers to NIL
+ -GENFRAME				; Always generate procedure frame
+ -GENDEBUG                              ; Generate full debug info
+ -LINENO                                ; Include line numbers in OBJ files
+
+>>Optimizations
+ [+
+ (CPU:!"Generic","386","486","Pentium","PentiumPro") ; Optimize code for CPU
+ ]+
+ -SPACE                                 ; Favor code size over execution time
+ -DOREORDER                             ; Perform instructions scheduling
+ -PROCINLINE                            ; Allow procedure inlining
+ -NOPTRALIAS                            ; Assume no pointers aliasing
+ -NOOPTIMIZE                            ; Disable optimizations
+
+>>ODF generation
+ [+
+ -MAKEDEF                               ; Generate pseudo-definition modules
+ ]+
+ [+
+ (BSTYLE:!"DEF","DOC","MOD")            ; Pseudo-definition style
+ ]+
+ [+
+ -BSREDEFINE				; Include overridden type-bound procedures
+ -BSCLOSURE				; Include inherited type-bound procedures
+ -XCOMMENTS				; Preserve exported comments
+ ]+
+
+>Dynamic linking
+ [+
+ -GENDLL                                ; Produce a DLL instead of EXE
+ -USEDLL                                ; Use the dynamically linked run-time library
+ +IMPLIB                                ; Use import libraries
+ -DLLEXPORT                             ; Show all exported objects to DLL clients
+ #DLLNAME=""                            ; DLL name (if does not match project name)
+ ]+
+
+
+>Warnings
+[+
+!B2  ; Warnings
+!    ; During optimizations, compiler can find an
+!    ; inefficient or strange pieces of code in a
+!    ; syntactically correct program; sometimes such
+!    ; a thing indicates that there is an error in a program,
+!    ; so compiler warns you about it.
+!
+!    ; It is a good programming practice to have as little
+!    ; warnings in your program as possible.
+!2
+]+
+[+
+-~WOFF300 ; Variable declared but never used
+-~WOFF301 ; Parameter is never used
+-~WOFF303 ; Procedure declared but never used
+-~WOFF305 ; Constant declared but never used
+]+
+
+>>Optimizer
+[+
+-~WOFF304 ; Possible use before definition
+-~WOFF302 ; Value was assigned but never used
+-~WOFF313 ; Redundand code eliminated
+-~WOFF901 ; Redundand code not eliminated
+-~WOFF902 ; Constant condition eliminated
+-~WOFF903 ; Function result not used
+-~WOFF314 ; Compile time defined value
+]+
+
+>>Program structure
+[+
+-~WOFF310 ; Infinite loop
+-~WOFF311 ; Unreachable code
+-~WOFF312 ; Loop is executed exactly once
+-~WOFF316 ; Non-standard SYSTEM procedure used
+-~WOFF317 ; VAR parameter possibly treatened in WITH
+-~WOFF318 ; Redundant FOR statement
+-~WOFF319 ; CASE without ELSE
+]+
+
+>>Project system
+[+
+-~WOFF320 ; Undeclared option
+-~WOFF321 ; Option was already defined
+-~WOFF322 ; Undeclared equation
+-~WOFF323 ; Equation was already defined
+-~WOFF390 ; Obsolete pragma setting
+]+
+
+>>Exceptions
+!   ; Sometimes, compiler finds that an exception will be
+!   ; raised in a particular program point.
+!
+!B  ; Almost always that means that there is an error
+!B  ; in a program, so it is strongly recommended
+!B  ; not to turn this warnings off.
+!2
+[+
+-~WOFF910 ; RealValueException
+-~WOFF911 ; WholeValueException
+-~WOFF912 ; WholeDivException
+-~WOFF915 ; InvalidLocation (uninitialized variable)
+-~WOFF914 ; RangeException
+-~WOFF913 ; IndexException
+-~WOFF315 ; NIL dereference
+]+
+
+User variables
+[+
+!B2 ; User Variables
+!   ; You can define your own variables
+!   ; for use in project file and in
+!   ; your source code.
+!   ;
+!   ; There're two classes of variables:
+!   ; options (boolean variables) and equations
+!   ; (string variables). Due to different nature
+!   ; of values we had to make two pages for
+!   ; editing them.
+]
+
+>User options
+[+
+!B2  ; User Options
+!   ; Here you can add and edit your own
+!   ; boolean options.
+]
+@user-options
+
+>User equations
+[+
+!B2 ; User Equations
+!   ; Here you can add and edit your own
+!   ; equations.
+]
+@user-equations
+
+Module list
+[+
+!B2 ; Module list
+!   ; Here you can add external modules, libraries
+!   ; and resource files to your project
+]
+@modules

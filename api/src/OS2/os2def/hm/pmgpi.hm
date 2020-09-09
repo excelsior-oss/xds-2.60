@@ -1,0 +1,2426 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMGPI.H
+*
+* OS/2 Presentation Manager GPI constants; types and function declarations
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_GPI                Include all of the GPI
+*   INCL_GPIBITMAPS         Bitmaps and Pel Operations
+*   INCL_GPICONTROL         Basic PS control
+*   INCL_GPICORRELATION     Picking; Boundary and Correlation
+*   INCL_GPIDEFAULTS        Default Primitive Attributes
+*   INCL_GPIERRORS          defined if INCL_ERRORS defined
+*   INCL_GPILCIDS           Phyical and Logical Fonts with Lcids
+*   INCL_GPILOGCOLORTABLE   Logical Color Tables
+*   INCL_GPIMETAFILES       MetaFiles
+*   INCL_GPIPATHS           Paths and Clipping with Paths
+*   INCL_GPIPOLYGON         Polygons
+*   INCL_GPIPRIMITIVES      Drawing Primitives and Primitive Attributes
+*   INCL_GPIREGIONS         Regions and Clipping with Regions
+*   INCL_GPISEGEDITING      Segment Editing via Elements
+*   INCL_GPISEGMENTS        Segment Control and Drawing
+*   INCL_GPITRANSFORMS      Transform and Transform Conversion
+*
+* There is a symbol used in this file called INCL_DDIDEFS. This is used to
+* include only the definitions for the DDI. The programmer using the GPI
+* can ignore this symbol
+*
+* There is a symbol used in this file called INCL_SAADEFS. This is used to
+* include only the definitions for the SAA. The programmer using the GPI
+* can ignore this symbol
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+#define GPI_INCLUDED
+
+
+#if defined(INCL_GPI) (* ;whole of the GPI *)
+   #define INCL_GPIBITMAPS
+   #define INCL_GPICONTROL
+   #define INCL_GPICORRELATION
+   #define INCL_GPIDEFAULTS
+   #define INCL_GPILCIDS
+   #define INCL_GPILOGCOLORTABLE
+   #define INCL_GPIMETAFILES
+   #define INCL_GPIPATHS
+   #define INCL_GPIPOLYGON
+   #define INCL_GPIPRIMITIVES
+   #define INCL_GPIREGIONS
+   #define INCL_GPISEGEDITING
+   #define INCL_GPISEGMENTS
+   #define INCL_GPITRANSFORMS
+#endif (* INCL_GPI *)
+
+
+#if defined(INCL_ERRORS)  (* if errors are required then allow GPI errors *)
+   #define INCL_GPIERRORS
+#endif (* INCL_ERRORS *)
+
+
+#if defined(INCL_DDIDEFS)  (* if only DDI required then enable DDI part of GPI *)
+   #define INCL_GPIBITMAPS
+   #define INCL_GPIERRORS
+   #define INCL_GPILCIDS
+   #define INCL_GPILOGCOLORTABLE
+   #define INCL_GPIPATHS
+   #define INCL_GPIPOLYGON
+   #define INCL_GPIPRIMITIVES
+   #define INCL_GPIREGIONS
+   #define INCL_GPITRANSFORMS
+#endif (* INCL_DDIDEFS *)
+
+
+#if defined(INCL_SAADEFS)  (* if only SAA required then enable SAA part of GPI *)
+   #define INCL_GPIBITMAPS
+   #define INCL_GPICONTROL
+   #define INCL_GPICORRELATION
+   #define INCL_GPIERRORS
+   #define INCL_GPILCIDS
+   #define INCL_GPILOGCOLORTABLE
+   #define INCL_GPIMETAFILES
+   #define INCL_GPIPATHS
+   #define INCL_GPIPOLYGON
+   #define INCL_GPIPRIMITIVES
+   #define INCL_GPIREGIONS
+   #define INCL_GPISEGEDITING
+   #define INCL_GPISEGMENTS
+   #define INCL_GPITRANSFORMS
+#endif (* INCL_SAADEFS *)
+
+(* General GPI return values *)
+CONST GPI_ERROR                   =    0;
+CONST GPI_OK                      =    1;
+CONST GPI_ALTERROR                =   -1;
+
+(* fixed point number - implicit binary point between 2 and 3 hex digits *)
+TYPE  FIXED  = LONG;    (* fx *)
+TYPE  PFIXED = POINTER TO FIXED;
+
+(* fixed point number - implicit binary point between 1st and 2nd hex digits *)
+TYPE  FIXED88 = USHORT;  (* fx88 *)
+
+(* fixed point signed number - implicit binary point between bits 14 and 13. *)
+(*                             Bit 15 is the sign bit.                       *)
+(*                             Thus 1.0 is represented by 16384 (= 04000)     *)
+(*                             and -1.0 is represented by -16384 (= 0c000)    *)
+TYPE  FIXED114 = USHORT; (* fx114 *)
+
+(* make FIXED number from SHORT integer part and USHORT fractional part *)
+--CONST MAKEFIXED(intpart;fractpart) MAKELONG(fractpart;intpart)
+(* extract fractional part from a fixed quantity *)
+--CONST FIXEDFRAC(fx)                (LOUSHORT(fx))
+(* extract integer part from a fixed quantity *)
+--CONST FIXEDINT(fx)                 ((SHORT)HIUSHORT(fx))
+
+(* structure for size parameters e.g. for GpiCreatePS *)
+TYPE SIZEL = RECORD           (* sizl *)
+   cx:  LONG;
+   cy:  LONG;
+END;
+TYPE PSIZEL = POINTER TO SIZEL;
+
+(* return code on GpiQueryLogColorTable;GpiQueryRealColors and GpiQueryPel *)
+CONST CLR_NOINDEX                =  -254;
+
+#if defined(INCL_GPICONTROL) || ! defined(INCL_NOCOMMON)
+
+   (* units for GpiCreatePS and others *)
+   CONST PU_ARBITRARY               = 00004H;
+   CONST PU_PELS                    = 00008H;
+   CONST PU_LOMETRIC                = 0000CH;
+   CONST PU_HIMETRIC                = 00010H;
+   CONST PU_LOENGLISH               = 00014H;
+   CONST PU_HIENGLISH               = 00018H;
+   CONST PU_TWIPS                   = 0001CH;
+
+   (* format for GpiCreatePS *)
+   CONST GPIF_DEFAULT               =   0H;
+   CONST GPIF_SHORT                 = 00100H;
+   CONST GPIF_LONG                  = 00200H;
+
+
+   (* PS type for GpiCreatePS *)
+   CONST GPIT_NORMAL                  = 0;
+   CONST GPIT_MICRO                 = 01000H;
+
+
+   (* implicit associate flag for GpiCreatePS *)
+   CONST GPIA_NOASSOC                 = 0;
+   CONST GPIA_ASSOC                 = 04000H;
+
+   (* PS Fill type for GpiCreatePS defect: 61035 RickT Add exclusive fill *)
+   CONST GPIM_AREAEXCL              = 08000H;
+
+
+   #if ! defined(INCL_SAADEFS)
+      (* return error for GpiQueryDevice *)
+      CONST HDC_ERROR               = HDC(0FFFFFFFFH);
+   #endif (* no INCL_SAADEFS *)
+
+   (* common GPICONTROL functions *)
+
+   PROCEDURE GpiCreatePS(hab          : HAB
+                        ;hdc          : HDC
+                        ;VAR sizlSize : SIZEL
+                        ;flOptions    : ULONG
+                        ): HPS;
+
+   PROCEDURE GpiDestroyPS(hps : HPS): BOOL;
+
+   PROCEDURE GpiAssociate(hps : HPS
+                         ;hdc : HDC
+                         ): BOOL;
+
+   PROCEDURE GpiRestorePS(hps   : HPS
+                         ;lPSid : LONG
+                         ): BOOL;
+
+   PROCEDURE GpiSavePS(hps : HPS): LONG;
+
+   PROCEDURE GpiErase(hps : HPS): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+      PROCEDURE GpiQueryDevice(hps : HPS): HDC;
+   #endif (* no INCL_SAADEFS *)
+
+#endif (* common GPICONTROL *)
+#if defined(INCL_GPICONTROL)
+
+   (* options for GpiResetPS *)
+   CONST GRES_ATTRS                 = 00001H;
+   CONST GRES_SEGMENTS              = 00002H;
+   CONST GRES_ALL                   = 00004H;
+
+   (* option masks for PS options used by GpiQueryPs *)
+   CONST PS_UNITS                   = 000FCH;
+   CONST PS_FORMAT                  = 00F00H;
+   CONST PS_TYPE                    = 01000H;
+   CONST PS_MODE                    = 02000H;
+   CONST PS_ASSOCIATE               = 04000H;
+   CONST PS_NORESET                 = 08000H;
+
+
+   (* error context returned by GpiErrorSegmentData *)
+   CONST GPIE_SEGMENT                 = 0;
+   CONST GPIE_ELEMENT                 = 1;
+   CONST GPIE_DATA                    = 2;
+
+   #if ! defined(INCL_SAADEFS)
+
+      (* control parameter for GpiSetDrawControl *)
+      CONST DCTL_ERASE                    =  1;
+      CONST DCTL_DISPLAY                  =  2;
+      CONST DCTL_BOUNDARY                 =  3;
+      CONST DCTL_DYNAMIC                  =  4;
+      CONST DCTL_CORRELATE                =  5;
+
+      (* constants for GpiSet/QueryDrawControl *)
+      CONST DCTL_ERROR                    = -1;
+      CONST DCTL_OFF                      =  0;
+      CONST DCTL_ON                       =  1;
+
+      (* constants for GpiSet/QueryStopDraw *)
+      CONST SDW_ERROR                    = -1;
+      CONST SDW_OFF                      =  0;
+      CONST SDW_ON                       =  1;
+
+   #endif (* no INCL_SAADEFS *)
+
+   (* drawing for GpiSet/QueryDrawingMode *)
+   CONST DM_ERROR                       = 0;
+   CONST DM_DRAW                        = 1;
+   CONST DM_RETAIN                      = 2;
+   CONST DM_DRAWANDRETAIN               = 3;
+
+   (*** other GPICONTROL functions *)
+
+   PROCEDURE GpiResetPS(hps       : HPS
+                       ;flOptions : ULONG
+                       ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+
+      PROCEDURE GpiSetPS(hps          : HPS
+                        ;VAR sizlsize : SIZEL
+                        ;flOptions    : ULONG
+                        ): BOOL;
+
+   #endif (* no INCL_SAADEFS *)
+
+
+   PROCEDURE GpiQueryPS(hps          : HPS
+                       ;VAR sizlSize : SIZEL
+                       ): ULONG;
+
+   PROCEDURE GpiErrorSegmentData(hps          : HPS
+                                ;VAR lSegment : LONG
+                                ;VAR lContext : LONG
+                                ): LONG;
+
+   #if ! defined(INCL_SAADEFS)
+
+
+      PROCEDURE GpiQueryDrawControl(hps      : HPS
+                                   ;lControl : LONG
+                                   ): LONG;
+
+      PROCEDURE GpiSetDrawControl(hps      : HPS
+                                 ;lControl : LONG
+                                 ;lValue   : LONG
+                                 ): BOOL;
+
+   #endif (* no INCL_SAADEFS *)
+
+
+   PROCEDURE GpiQueryDrawingMode(hps : HPS): LONG;
+
+   PROCEDURE GpiSetDrawingMode(hps   : HPS
+                              ;lMode : LONG
+                              ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+
+      PROCEDURE GpiQueryStopDraw(hps : HPS): LONG;
+
+      PROCEDURE GpiSetStopDraw(hps    : HPS
+                              ;lValue : LONG
+                              ): BOOL;
+
+   #endif (* no INCL_SAADEFS *)
+
+#endif (* non-common GPICONTROL *)
+#if defined(INCL_GPICORRELATION)
+
+   (* options for GpiSetPickApertureSize *)
+   CONST PICKAP_DEFAULT               = 0;
+   CONST PICKAP_REC                   = 2;
+
+   (* type of correlation for GpiCorrelateChain *)
+   CONST PICKSEL_VISIBLE              = 0;
+   CONST PICKSEL_ALL                  = 1;
+
+   (* return code to indicate correlate hit(s) *)
+   CONST GPI_HITS                     =  2;
+
+   (*** picking;  correlation and boundary functions *)
+
+   PROCEDURE GpiCorrelateChain(hps          : HPS
+                              ;lType        : LONG
+                              ;VAR ptlPick  : POINTL
+                              ;lMaxHits     : LONG
+                              ;lMaxDepth    : LONG
+                              ;VAR l2       : ARRAY OF LONG
+                              ): LONG;
+
+   PROCEDURE GpiQueryTag(hps      : HPS
+                        ;VAR lTag : LONG
+                        ): BOOL;
+
+   PROCEDURE GpiSetTag(hps  : HPS
+                      ;lTag : LONG
+                      ): BOOL;
+
+   PROCEDURE GpiQueryPickApertureSize(hps          : HPS
+                                     ;VAR sizlSize : SIZEL
+                                     ): BOOL;
+
+   PROCEDURE GpiSetPickApertureSize(hps          : HPS
+                                   ;lOptions     : LONG
+                                   ;VAR sizlSize : SIZEL
+                                   ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+      PROCEDURE GpiQueryPickAperturePosition(hps          : HPS
+                                            ;VAR ptlPoint : POINTL
+                                            ): BOOL;
+
+      PROCEDURE GpiSetPickAperturePosition(hps         : HPS
+                                          ;VAR ptlPick : POINTL
+                                          ): BOOL;
+
+      PROCEDURE GpiQueryBoundaryData(hps             : HPS
+                                    ;VAR rclBoundary : RECTL
+                                    ): BOOL;
+
+      PROCEDURE GpiResetBoundaryData(hps : HPS): BOOL;
+
+   #endif (* no INCL_SAADEFS *)
+
+
+   PROCEDURE GpiCorrelateFrom(hps           : HPS
+                             ;lFirstSegment : LONG
+                             ;lLastSegment  : LONG
+                             ;lType         : LONG
+                             ;VAR ptlPick   : POINTL
+                             ;lMaxHits      : LONG
+                             ;lMaxDepth     : LONG
+                             ;VAR lSegTag   : ARRAY OF LONG
+                             ): LONG;
+
+   PROCEDURE GpiCorrelateSegment(hps         : HPS
+                                ;lSegment    : LONG
+                                ;lType       : LONG
+                                ;VAR ptlPick : POINTL
+                                ;lMaxHits    : LONG
+                                ;lMaxDepth   : LONG
+                                ;VAR lSegTag : ARRAY OF LONG
+                                ): LONG;
+
+#endif (* non-common_GPICORRELATION *)
+#if defined(INCL_GPISEGMENTS)
+
+   (* data formats for GpiPutData and GpiGetData *)
+   CONST DFORM_NOCONV                 = 0;
+
+   #if ! defined(INCL_SAADEFS)
+
+      CONST DFORM_S370SHORT              =  1;
+      CONST DFORM_PCSHORT                =  2;
+      CONST DFORM_PCLONG                 =  4;
+
+   #endif (* no INCL_SAADEFS *)
+
+   (* segment attributes used by GpiSet/QuerySegmentAttrs and others *)
+   CONST ATTR_ERROR                  =  -1;
+   CONST ATTR_DETECTABLE             =   1;
+   CONST ATTR_VISIBLE                =   2;
+   CONST ATTR_CHAINED                =   6;
+
+   #if ! defined(INCL_SAADEFS)
+
+      CONST ATTR_DYNAMIC                  = 8;
+
+   #endif (* no INCL_SAADEFS *)
+
+   CONST ATTR_FASTCHAIN               =  9;
+   CONST ATTR_PROP_DETECTABLE         = 10;
+   CONST ATTR_PROP_VISIBLE            = 11;
+
+   (* attribute on/off values *)
+   CONST ATTR_OFF                     = 0;
+   CONST ATTR_ON                      = 1;
+
+   (* segment priority used by GpiSetSegmentPriority and others *)
+   CONST LOWER_PRI                   =  -1;
+   CONST HIGHER_PRI                  =   1;
+
+   (*** segment control functions *)
+
+   PROCEDURE GpiOpenSegment(hps      : HPS
+                           ;lSegment : LONG
+                           ): BOOL;
+
+   PROCEDURE GpiCloseSegment(hps : HPS): BOOL;
+
+   PROCEDURE GpiDeleteSegment(hps    : HPS
+                             ;lSegid : LONG
+                             ): BOOL;
+
+   PROCEDURE GpiQueryInitialSegmentAttrs(hps        : HPS
+                                        ;lAttribute : LONG
+                                        ): LONG;
+
+   PROCEDURE GpiSetInitialSegmentAttrs(hps        : HPS
+                                      ;lAttribute : LONG
+                                      ;lValue     : LONG
+                                      ): BOOL;
+
+   PROCEDURE GpiQuerySegmentAttrs(hps        : HPS
+                                 ;lSegid     : LONG
+                                 ;lAttribute : LONG
+                                 ): LONG;
+
+   PROCEDURE GpiSetSegmentAttrs(hps        : HPS
+                               ;lSegid     : LONG
+                               ;lAttribute : LONG
+                               ;lValue     : LONG
+                               ): BOOL;
+
+   PROCEDURE GpiQuerySegmentPriority(hps       : HPS
+                                    ;lRefSegid : LONG
+                                    ;lOrder    : LONG
+                                    ): LONG;
+
+   PROCEDURE GpiSetSegmentPriority(hps       : HPS
+                                  ;lSegid    : LONG
+                                  ;lRefSegid : LONG
+                                  ;lOrder    : LONG
+                                  ): BOOL;
+
+   PROCEDURE GpiDeleteSegments(hps           : HPS
+                              ;lFirstSegment : LONG
+                              ;lLastSegment  : LONG
+                              ): BOOL;
+
+   PROCEDURE GpiQuerySegmentNames(hps         : HPS
+                                 ;lFirstSegid : LONG
+                                 ;lLastSegid  : LONG
+                                 ;lMax        : LONG
+                                 ;VAR lSegids : ARRAY OF LONG
+                                 ): LONG;
+
+   (*** draw functions for segments *)
+   PROCEDURE GpiGetData(hps         : HPS
+                       ;lSegid      : LONG
+                       ;VAR lOffset : LONG
+                       ;lFormat     : LONG
+                       ;lLength     : LONG
+                       ;VAR bData   : ARRAY OF SYSTEM.BYTE
+                       ): LONG;
+
+   PROCEDURE GpiPutData(hps        : HPS
+                       ;lFormat    : LONG
+                       ;VAR lCount : LONG
+                       ;bData      : ARRAY OF SYSTEM.BYTE
+                       ): LONG;
+
+   PROCEDURE GpiDrawChain(hps : HPS): BOOL;
+
+   PROCEDURE GpiDrawFrom(hps           : HPS
+                        ;lFirstSegment : LONG
+                        ;lLastSegment  : LONG
+                        ): BOOL;
+
+   PROCEDURE GpiDrawSegment(hps      : HPS
+                           ;lSegment : LONG
+                           ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+
+      PROCEDURE GpiDrawDynamics(hps : HPS): BOOL;
+
+      PROCEDURE GpiRemoveDynamics(hps         : HPS
+                                 ;lFirstSegid : LONG
+                                 ;lLastSegid  : LONG
+                                 ): BOOL;
+
+   #endif (* no INCL_SAADEFS *)
+
+#endif (* non-common GPISEGMENTS *)
+#if defined(INCL_GPISEGEDITING)
+
+   (* edit modes used by GpiSet/QueryEditMode *)
+   CONST SEGEM_ERROR                      = 0;
+   CONST SEGEM_INSERT                     = 1;
+   CONST SEGEM_REPLACE                    = 2;
+
+   (*** segment editing by element functions *)
+
+   PROCEDURE GpiBeginElement(hps    : HPS
+                            ;lType  : LONG
+                            ;szDesc : ARRAY OF CHAR
+                            ): BOOL;
+
+   PROCEDURE GpiEndElement(hps : HPS): BOOL;
+
+   PROCEDURE GpiLabel(hps    : HPS
+                     ;lLabel : LONG
+                     ): BOOL;
+
+   PROCEDURE GpiElement(hps     : HPS
+                       ;lType   : LONG
+                       ;szDesc  : ARRAY OF CHAR
+                       ;lLength : LONG
+                       ;bData   : ARRAY OF SYSTEM.BYTE
+                       ): LONG;
+
+   PROCEDURE GpiQueryElement(hps        : HPS
+                            ;lOff       : LONG
+                            ;lMaxLength : LONG
+                            ;VAR bData  : ARRAY OF SYSTEM.BYTE
+                            ): LONG;
+
+   PROCEDURE GpiDeleteElement(hps : HPS): BOOL;
+
+   PROCEDURE GpiDeleteElementRange(hps           : HPS
+                                  ;lFirstElement : LONG
+                                  ;lLastElement  : LONG
+                                  ): BOOL;
+
+   PROCEDURE GpiDeleteElementsBetweenLabels(hps         : HPS
+                                           ;lFirstLabel : LONG
+                                           ;lLastLabel  : LONG
+                                           ): BOOL;
+
+   PROCEDURE GpiQueryEditMode(hps : HPS): LONG;
+
+   PROCEDURE GpiSetEditMode(hps   : HPS
+                           ;lMode : LONG
+                           ): BOOL;
+
+   PROCEDURE GpiQueryElementPointer(hps : HPS): LONG;
+
+   PROCEDURE GpiSetElementPointer(hps      : HPS
+                                 ;lElement : LONG
+                                 ): BOOL;
+
+   PROCEDURE GpiOffsetElementPointer(hps     : HPS
+                                    ;loffset : LONG
+                                    ): BOOL;
+
+   PROCEDURE GpiQueryElementType(hps        : HPS
+                                ;VAR lType  : LONG
+                                ;lLength    : LONG
+                                ;VAR szData : ARRAY OF CHAR
+                                ): LONG;
+
+   PROCEDURE GpiSetElementPointerAtLabel(hps    : HPS
+                                        ;lLabel : LONG
+                                        ): BOOL;
+
+#endif (* non-common GPISEGEDITING *)
+#if defined(INCL_GPITRANSFORMS)
+
+   (* co-ordinates space for GpiConvert *)
+   CONST CVTC_WORLD                    = 1;
+   CONST CVTC_MODEL                    = 2;
+   CONST CVTC_DEFAULTPAGE              = 3;
+   CONST CVTC_PAGE                     = 4;
+   CONST CVTC_DEVICE                   = 5;
+
+   (* type of transformation for GpiSetSegmentTransformMatrix *)
+   CONST TRANSFORM_REPLACE            = 0;
+   CONST TRANSFORM_ADD                = 1;
+   CONST TRANSFORM_PREEMPT            = 2;
+
+   (* transform matrix *)
+   TYPE MATRIXLF = RECORD       (* matlf *)
+      fxM11: FIXED;
+      fxM12: FIXED;
+      lM13:  LONG;
+      fxM21: FIXED;
+      fxM22: FIXED;
+      lM23:  LONG;
+      lM31:  LONG;
+      lM32:  LONG;
+      lM33:  LONG;
+   END;
+   TYPE PMATRIXLF = POINTER TO MATRIXLF;
+
+   #if ! defined(INCL_DDIDEFS)
+
+
+      (*** transform and transform conversion functions *)
+      PROCEDURE GpiQuerySegmentTransformMatrix(hps            : HPS
+                                              ;lSegid         : LONG
+                                              ;lCount         : LONG
+                                              ;VAR matlfArray : MATRIXLF
+                                              ): BOOL;
+
+      PROCEDURE GpiSetSegmentTransformMatrix(hps            : HPS
+                                            ;lSegid         : LONG
+                                            ;lCount         : LONG
+                                            ;VAR matlfarray : MATRIXLF
+                                            ;lOptions       : LONG
+                                            ): BOOL;
+
+      PROCEDURE GpiConvert(hps           : HPS
+                          ;lSrc          : LONG
+                          ;lTarg         : LONG
+                          ;lCount        : LONG
+                          ;VAR ptlPoints : ARRAY OF POINTL
+                          ): BOOL;
+
+      PROCEDURE GpiConvertWithMatrix(hps            : HPS
+                                    ;lCountp        : LONG
+                                    ;VAR ptlPoints  : ARRAY OF POINTL
+                                    ;lCount         : LONG
+                                    ;VAR matlfArray : MATRIXLF
+                                    ): BOOL;
+
+      PROCEDURE GpiQueryModelTransformMatrix(hps            : HPS
+                                            ;lCount         : LONG
+                                            ;VAR matlfArray : MATRIXLF
+                                            ): BOOL;
+
+      PROCEDURE GpiSetModelTransformMatrix(hps            : HPS
+                                          ;lCount         : LONG
+                                          ;VAR matlfArray : MATRIXLF
+                                          ;lOptions       : LONG
+                                          ): BOOL;
+
+      PROCEDURE GpiCallSegmentMatrix(hps            : HPS
+                                    ;lSegment       : LONG
+                                    ;lCount         : LONG
+                                    ;VAR matlfArray : MATRIXLF
+                                    ;lOptions       : LONG
+                                    ): LONG;
+
+      PROCEDURE GpiQueryDefaultViewMatrix(hps            : HPS
+                                         ;lCount         : LONG
+                                         ;VAR matlfArray : MATRIXLF
+                                         ): BOOL;
+
+      PROCEDURE GpiSetDefaultViewMatrix(hps            : HPS
+                                       ;lCount         : LONG
+                                       ;VAR matlfarray : MATRIXLF
+                                       ;lOptions       : LONG
+                                       ): BOOL;
+
+      PROCEDURE GpiQueryPageViewport(hps             : HPS
+                                    ;VAR rclViewport : RECTL
+                                    ): BOOL;
+
+      PROCEDURE GpiSetPageViewport(hps             : HPS
+                                  ;VAR rclViewport : RECTL
+                                  ): BOOL;
+
+      PROCEDURE GpiQueryViewingTransformMatrix(hps            : HPS
+                                              ;lCount         : LONG
+                                              ;VAR matlfArray : MATRIXLF
+                                              ): BOOL;
+
+      PROCEDURE GpiSetViewingTransformMatrix(hps            : HPS
+                                            ;lCount         : LONG
+                                            ;VAR matlfArray : MATRIXLF
+                                            ;lOptions       : LONG
+                                            ): BOOL;
+
+      (*** transform helper routines *)
+      PROCEDURE GpiTranslate(hps       : HPS
+                            ;VAR matlf : MATRIXLF
+                            ;l         : LONG
+                            ;VAR pl    : POINTL
+                            ): BOOL;
+
+      PROCEDURE GpiScale(hps       : HPS
+                        ;VAR matlf : MATRIXLF
+                        ;l         : LONG
+                        ;fix       : ARRAY OF FIXED          (* !!! Actually this should be ARRAY [0..1] *)
+                        ;VAR pl    : POINTL
+                        ): BOOL;
+
+      PROCEDURE GpiRotate(hps       : HPS
+                         ;VAR matlf : MATRIXLF
+                         ;l         : LONG
+                         ;fix       : FIXED
+                         ;VAR pl    : POINTL
+                         ): BOOL;
+
+      (*** general clipping functions *)
+      PROCEDURE GpiSetGraphicsField(hps          : HPS
+                                   ;VAR rclField : RECTL
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryGraphicsField(hps          : HPS
+                                     ;VAR rclField : RECTL
+                                     ): BOOL;
+
+      PROCEDURE GpiSetViewingLimits(hps           : HPS
+                                   ;VAR rclLimits : RECTL
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryViewingLimits(hps           : HPS
+                                     ;VAR rclLimits : RECTL
+                                     ): BOOL;
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPITRANSFORMS *)
+#if defined(INCL_GPIPATHS)
+
+   (* modes for GpiModifyPath *)
+   CONST MPATH_STROKE                 =  6;
+
+   (* modes for GpiFillPath *)
+   CONST FPATH_ALTERNATE              = 0;
+   CONST FPATH_WINDING                = 2;
+   CONST FPATH_INCL                   = 0;
+   CONST FPATH_EXCL                   = 8;
+
+   (* modes for GpiSetClipPath *)
+   CONST SCP_ALTERNATE                 = 0;
+   CONST SCP_WINDING                   = 2;
+   CONST SCP_AND                       = 4;
+   CONST SCP_RESET                     = 0;
+   CONST SCP_INCL                      = 0;
+   CONST SCP_EXCL                      = 8;
+
+   #if ! defined(INCL_DDIDEFS)
+
+      (*** Path and Clip Path functions *)
+
+      PROCEDURE GpiBeginPath(hps   : HPS
+                            ;lPath : LONG
+                            ): BOOL;
+
+      PROCEDURE GpiEndPath(hps : HPS): BOOL;
+
+      PROCEDURE GpiCloseFigure(hps : HPS): BOOL;
+
+      PROCEDURE GpiModifyPath(hps   : HPS
+                             ;lPath : LONG
+                             ;lMode : LONG
+                             ): BOOL;
+
+      PROCEDURE GpiFillPath(hps      : HPS
+                           ;lPath    : LONG
+                           ;lOptions : LONG
+                           ): LONG;
+
+      PROCEDURE GpiSetClipPath(hps      : HPS
+                              ;lPath    : LONG
+                              ;lOptions : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiOutlinePath(hps      : HPS
+                              ;lPath    : LONG
+                              ;lOptions : LONG
+                              ): LONG;
+
+      PROCEDURE GpiPathToRegion(GpiH     : HPS
+                               ;lPath    : LONG
+                               ;lOptions : LONG
+                               ): HRGN;
+
+      #if ! defined(INCL_SAADEFS)
+
+
+         PROCEDURE GpiStrokePath(hps       : HPS
+                                ;lPath     : LONG
+                                ;flOptions : ULONG
+                                ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPIPATHS *)
+#if defined(INCL_GPILOGCOLORTABLE)
+
+   #if ! defined(INCL_GPIBITMAPS)
+      #define INCL_GPIBITMAPS
+   #endif (* INCL_GPIBITMAPS *)
+
+   (* options for GpiCreateLogColorTable and others *)
+   CONST LCOL_RESET                   = 00001H;
+   CONST LCOL_REALIZABLE              = 00002H;
+   CONST LCOL_PURECOLOR               = 00004H;
+   CONST LCOL_OVERRIDE_DEFAULT_COLORS = 00008H;
+   CONST LCOL_REALIZED                = 00010H;
+
+   (* format of logical lColor table for GpiCreateLogColorTable and others *)
+   CONST LCOLF_DEFAULT                = 0;
+   CONST LCOLF_INDRGB                 = 1;
+   CONST LCOLF_CONSECRGB              = 2;
+   CONST LCOLF_RGB                    = 3;
+   CONST LCOLF_PALETTE                = 4;
+
+   (* options for GpiQueryRealColors and others *)
+   CONST LCOLOPT_REALIZED           = 00001H;
+   CONST LCOLOPT_INDEX              = 00002H;
+
+   #if ! defined(INCL_SAADEFS)
+
+      (* return codes from GpiQueryLogColorTable to indicate it is in RGB mode *)
+      CONST QLCT_ERROR                  = -1;
+      CONST QLCT_RGB                    = -2;
+
+      (* GpiQueryLogColorTable index returned for colors not explicitly loaded *)
+      CONST QLCT_NOTLOADED              = -1;
+
+   #endif (* no INCL_SAADEFS *)
+
+   (* return codes for GpiQueryColorData *)
+   CONST QCD_LCT_FORMAT               = 0;
+   CONST QCD_LCT_LOINDEX              = 1;
+   CONST QCD_LCT_HIINDEX              = 2;
+   CONST QCD_LCT_OPTIONS              = 3;
+
+   (* Palette manager return values *)
+   CONST PAL_ERROR                    = 0FFFFFFFFH;
+
+   (* color flags for GpiCreatePalette and others *)
+   CONST PC_RESERVED                   = 001H;
+   CONST PC_EXPLICIT                   = 002H;
+   CONST PC_NOCOLLAPSE                 = 004H;
+
+   #if ! defined(INCL_DDIDEFS)
+
+      (*** logical lColor table functions *)
+
+      PROCEDURE GpiCreateLogColorTable(hps       : HPS
+                                      ;flOptions : ULONG
+                                      ;lFormat   : LONG
+                                      ;lStart    : LONG
+                                      ;lCount    : LONG
+                                      ;lTable    : ARRAY OF LONG
+                                      ): BOOL;
+
+      PROCEDURE GpiQueryColorData(hps        : HPS
+                                 ;lCount     : LONG
+                                 ;VAR lArray : ARRAY OF LONG
+                                 ): BOOL;
+
+      #if ! defined(INCL_SAADEFS)
+
+
+         PROCEDURE GpiQueryLogColorTable(hps        : HPS
+                                        ;flOptions  : ULONG
+                                        ;lStart     : LONG
+                                        ;lCount     : LONG
+                                        ;VAR lArray : ARRAY OF LONG
+                                        ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+
+      PROCEDURE GpiQueryRealColors(hps         : HPS
+                                  ;flOptions   : ULONG
+                                  ;lStart      : LONG
+                                  ;lCount      : LONG
+                                  ;VAR lColors : ARRAY OF LONG
+                                  ): LONG;
+
+      PROCEDURE GpiQueryNearestColor(hps       : HPS
+                                    ;flOptions : ULONG
+                                    ;lRgbIn    : LONG
+                                    ): LONG;
+
+      PROCEDURE GpiQueryColorIndex(hps       : HPS
+                                  ;flOptions : ULONG
+                                  ;lRgbColor : LONG
+                                  ): LONG;
+
+      PROCEDURE GpiQueryRGBColor(hps         : HPS
+                                ;flOptions   : ULONG
+                                ;lColorIndex : LONG
+                                ): LONG;
+
+      #if ! defined(INCL_SAADEFS)
+
+         (*Palette manager functions *)
+
+         PROCEDURE GpiCreatePalette(hab       : HAB
+                                   ;flOptions : ULONG
+                                   ;ulFormat  : ULONG
+                                   ;ulCount   : ULONG
+                                   ;aulTable  : ARRAY OF ULONG
+                                   ): HPAL;
+
+         PROCEDURE GpiDeletePalette(hpal : HPAL): BOOL;
+
+         PROCEDURE GpiSelectPalette(hps  : HPS
+                                   ;hpal : HPAL
+                                   ): HPAL;
+
+         PROCEDURE GpiAnimatePalette(hpal     : HPAL
+                                    ;ulFormat : ULONG
+                                    ;ulStart  : ULONG
+                                    ;ulCount  : ULONG
+                                    ;ulTable  : ARRAY OF ULONG
+                                    ): LONG;
+
+         PROCEDURE GpiSetPaletteEntries(hpal     : HPAL
+                                       ;ulFormat : ULONG
+                                       ;ulStart  : ULONG
+                                       ;ulCount  : ULONG
+                                       ;ulTable  : ARRAY OF ULONG
+                                       ): BOOL;
+
+         PROCEDURE GpiQueryPalette(hps : HPS): HPAL;
+
+         PROCEDURE GpiQueryPaletteInfo(hpal        : HPAL
+                                      ;hps         : HPS
+                                      ;flOptions   : ULONG
+                                      ;ulStart     : ULONG
+                                      ;ulCount     : ULONG
+                                      ;VAR ulArray :  ARRAY OF ULONG
+                                      ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPILOGCOLORTABLE *)
+#if (defined(INCL_GPIPRIMITIVES) || ! defined(INCL_NOCOMMON))
+
+   (* default color table indices *)
+
+   CONST CLR_FALSE                =     -5;
+   CONST CLR_TRUE                 =     -4;
+
+   CONST CLR_ERROR                =   -255;
+   CONST CLR_DEFAULT              =     -3;
+   CONST CLR_WHITE                =     -2;
+   CONST CLR_BLACK                =     -1;
+   CONST CLR_BACKGROUND           =      0;
+   CONST CLR_BLUE                 =      1;
+   CONST CLR_RED                  =      2;
+   CONST CLR_PINK                 =      3;
+   CONST CLR_GREEN                =      4;
+   CONST CLR_CYAN                 =      5;
+   CONST CLR_YELLOW               =      6;
+   CONST CLR_NEUTRAL              =      7;
+
+   CONST CLR_DARKGRAY             =      8;
+   CONST CLR_DARKBLUE             =      9;
+   CONST CLR_DARKRED              =     10;
+   CONST CLR_DARKPINK             =     11;
+   CONST CLR_DARKGREEN            =     12;
+   CONST CLR_DARKCYAN             =     13;
+   CONST CLR_BROWN                =     14;
+   CONST CLR_PALEGRAY             =     15;
+
+   (* rgb colors *)
+   CONST RGB_ERROR              =       -255;
+   CONST RGB_BLACK              = 000000000H;
+   CONST RGB_BLUE               = 0000000FFH;
+   CONST RGB_GREEN              = 00000FF00H;
+   CONST RGB_CYAN               = 00000FFFFH;
+   CONST RGB_RED                = 000FF0000H;
+   CONST RGB_PINK               = 000FF00FFH;
+   CONST RGB_YELLOW             = 000FFFF00H;
+   CONST RGB_WHITE              = 000FFFFFFH;
+
+   (* control flags used by GpiBeginArea *)
+   CONST BA_NOBOUNDARY                =      0;
+   CONST BA_BOUNDARY                  = 00001H;
+
+   CONST BA_ALTERNATE                 =      0;
+   CONST BA_WINDING                   = 00002H;
+
+   CONST BA_INCL                      = 0;
+   CONST BA_EXCL                      = 8;
+
+
+   (* fill options for GpiBox/GpiFullArc *)
+   CONST DRO_FILL                      = 1;
+   CONST DRO_OUTLINE                   = 2;
+   CONST DRO_OUTLINEFILL               = 3;
+
+   (* basic pattern symbols *)
+   CONST PATSYM_ERROR                 = -1;
+   CONST PATSYM_DEFAULT               =  0;
+   CONST PATSYM_DENSE1                =  1;
+   CONST PATSYM_DENSE2                =  2;
+   CONST PATSYM_DENSE3                =  3;
+   CONST PATSYM_DENSE4                =  4;
+   CONST PATSYM_DENSE5                =  5;
+   CONST PATSYM_DENSE6                =  6;
+   CONST PATSYM_DENSE7                =  7;
+   CONST PATSYM_DENSE8                =  8;
+   CONST PATSYM_VERT                  =  9;
+   CONST PATSYM_HORIZ                 = 10;
+   CONST PATSYM_DIAG1                 = 11;
+   CONST PATSYM_DIAG2                 = 12;
+   CONST PATSYM_DIAG3                 = 13;
+   CONST PATSYM_DIAG4                 = 14;
+   CONST PATSYM_NOSHADE               = 15;
+   CONST PATSYM_SOLID                 = 16;
+   #if ! defined(INCL_SAADEFS)
+      CONST PATSYM_HALFTONE            =   17;
+   #endif (* no INCL_SAADEFS *)
+   CONST PATSYM_HATCH                 = 18;
+   CONST PATSYM_DIAGHATCH             = 19;
+   CONST PATSYM_BLANK                 = 64;
+
+   (* lcid values for GpiSet/QueryPattern and others *)
+   CONST LCID_ERROR                   = -1;
+   CONST LCID_DEFAULT                 =  0;
+
+   #if ! defined(INCL_DDIDEFS)
+
+
+      (*** global primitive functions *)
+      PROCEDURE GpiSetColor(hps    : HPS
+                           ;lColor : LONG
+                           ): BOOL;
+
+      PROCEDURE GpiQueryColor(hps : HPS): LONG;
+
+      (*** line primitive functions *)
+
+      PROCEDURE GpiBox(hps          : HPS
+                      ;lControl     : LONG
+                      ;VAR ptlPoint : POINTL
+                      ;lHRound      : LONG
+                      ;lVRound      : LONG
+                      ): LONG;
+
+      PROCEDURE GpiMove(hps          : HPS
+                       ;VAR ptlPoint : POINTL
+                       ): BOOL;
+
+      PROCEDURE GpiLine(hps             : HPS
+                       ;VAR ptlEndPoint : POINTL
+                       ): LONG;
+
+      PROCEDURE GpiPolyLine(hps       : HPS
+                           ;lCount    : LONG
+                           ;ptlPoints : ARRAY OF POINTL
+                           ): LONG;
+
+      PROCEDURE GpiPolyLineDisjoint(hps       : HPS
+                                   ;lCount    : LONG
+                                   ;ptlPoints : ARRAY OF POINTL
+                                   ): LONG;
+
+      (*** area primitive functions *)
+      PROCEDURE GpiSetPattern(hps            : HPS
+                             ;lPatternSymbol : LONG
+                             ): BOOL;
+
+      PROCEDURE GpiQueryPattern(hps : HPS): LONG;
+
+      PROCEDURE GpiBeginArea(hps       : HPS
+                            ;flOptions : ULONG
+                            ): BOOL;
+
+      PROCEDURE GpiEndArea(hps : HPS): LONG;
+
+      (*** character primitive functions *)
+      PROCEDURE GpiCharString(hps      : HPS
+                             ;lCount   : LONG
+                             ;chString : ARRAY OF CHAR
+                             ): LONG;
+
+      PROCEDURE GpiCharStringAt(hps          : HPS
+                               ;VAR ptlPoint : POINTL
+                               ;lCount       : LONG
+                               ;chString     : ARRAY OF CHAR
+                               ): LONG;
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* common GPIPRIMTIVES *)
+#if defined(INCL_GPIPRIMITIVES)
+
+   (* mode for GpiSetAttrMode *)
+   CONST AM_ERROR                     = -1;
+   CONST AM_PRESERVE                  =  0;
+   CONST AM_NOPRESERVE                =  1;
+
+   (* foreground mixes *)
+   CONST FM_ERROR                     = -1;
+   CONST FM_DEFAULT                   =  0;
+   CONST FM_OR                        =  1;
+   CONST FM_OVERPAINT                 =  2;
+   CONST FM_LEAVEALONE                =  5;
+
+   CONST FM_XOR                       =  4;
+   CONST FM_AND                       =  6;
+   CONST FM_SUBTRACT                  =  7;
+   CONST FM_MASKSRCNOT                =  8;
+   CONST FM_ZERO                      =  9;
+   CONST FM_NOTMERGESRC               = 10;
+   CONST FM_NOTXORSRC                 = 11;
+   CONST FM_INVERT                    = 12;
+   CONST FM_MERGESRCNOT               = 13;
+   CONST FM_NOTCOPYSRC                = 14;
+   CONST FM_MERGENOTSRC               = 15;
+   CONST FM_NOTMASKSRC                = 16;
+   CONST FM_ONE                       = 17;
+
+
+   (* background mixes *)
+   CONST BM_ERROR                     = -1;
+   CONST BM_DEFAULT                   =  0;
+   CONST BM_OR                        =  1;
+   CONST BM_OVERPAINT                 =  2;
+   CONST BM_LEAVEALONE                =  5;
+
+   CONST BM_XOR                       =  4;
+   CONST BM_AND                       =  6;
+   CONST BM_SUBTRACT                  =  7;
+   CONST BM_MASKSRCNOT                =  8;
+   CONST BM_ZERO                      =  9;
+   CONST BM_NOTMERGESRC               = 10;
+   CONST BM_NOTXORSRC                 = 11;
+   CONST BM_INVERT                    = 12;
+   CONST BM_MERGESRCNOT               = 13;
+   CONST BM_NOTCOPYSRC                = 14;
+   CONST BM_MERGENOTSRC               = 15;
+   CONST BM_NOTMASKSRC                = 16;
+   CONST BM_ONE                       = 17;
+   CONST BM_SRCTRANSPARENT            = 18;
+   CONST BM_DESTTRANSPARENT           = 19;
+
+
+
+   (* basic line type styles *)
+   CONST LINETYPE_ERROR               = -1;
+   CONST LINETYPE_DEFAULT             =  0;
+   CONST LINETYPE_DOT                 =  1;
+   CONST LINETYPE_SHORTDASH           =  2;
+   CONST LINETYPE_DASHDOT             =  3;
+   CONST LINETYPE_DOUBLEDOT           =  4;
+   CONST LINETYPE_LONGDASH            =  5;
+   CONST LINETYPE_DASHDOUBLEDOT       =  6;
+   CONST LINETYPE_SOLID               =  7;
+   CONST LINETYPE_INVISIBLE           =  8;
+   #if ! defined(INCL_SAADEFS)
+      CONST LINETYPE_ALTERNATE        =     9;
+   #endif (* no INCL_SAADEFS *)
+
+   (* cosmetic line widths *)
+   CONST LINEWIDTH_ERROR        = -1;
+   CONST LINEWIDTH_DEFAULT      =  0;
+   CONST LINEWIDTH_NORMAL       = 000010000H;  (* MAKEFIXED(1;0) *)
+   CONST LINEWIDTH_THICK        = 000020000H;  (* MAKEFIXED(2;0) *)
+
+   (* actual line widths *)
+   CONST LINEWIDTHGEOM_ERROR    = -1;
+
+   (* line end styles *)
+   CONST LINEEND_ERROR                = -1;
+   CONST LINEEND_DEFAULT              =  0;
+   CONST LINEEND_FLAT                 =  1;
+   CONST LINEEND_SQUARE               =  2;
+   CONST LINEEND_ROUND                =  3;
+
+   (* line join styles *)
+   CONST LINEJOIN_ERROR               = -1;
+   CONST LINEJOIN_DEFAULT             =  0;
+   CONST LINEJOIN_BEVEL               =  1;
+   CONST LINEJOIN_ROUND               =  2;
+   CONST LINEJOIN_MITRE               =  3;
+
+   (* character directions *)
+   CONST CHDIRN_ERROR                 = -1;
+   CONST CHDIRN_DEFAULT               =  0;
+   CONST CHDIRN_LEFTRIGHT             =  1;
+   CONST CHDIRN_TOPBOTTOM             =  2;
+   CONST CHDIRN_RIGHTLEFT             =  3;
+   CONST CHDIRN_BOTTOMTOP             =  4;
+
+   (* character text alignments *)
+   CONST TA_NORMAL_HORIZ     = 00001H;
+   CONST TA_LEFT             = 00002H;
+   CONST TA_CENTER           = 00003H;
+   CONST TA_RIGHT            = 00004H;
+   CONST TA_STANDARD_HORIZ   = 00005H;
+   CONST TA_NORMAL_VERT      = 00100H;
+   CONST TA_TOP              = 00200H;
+   CONST TA_HALF             = 00300H;
+   CONST TA_BASE             = 00400H;
+   CONST TA_BOTTOM           = 00500H;
+   CONST TA_STANDARD_VERT    = 00600H;
+
+   (* character modes *)
+   CONST CM_ERROR                     = -1;
+   CONST CM_DEFAULT                   =  0;
+   CONST CM_MODE1                     =  1;
+   CONST CM_MODE2                     =  2;
+   CONST CM_MODE3                     =  3;
+
+   (* basic marker symbols *)
+   CONST MARKSYM_ERROR                = -1;
+   CONST MARKSYM_DEFAULT              =  0;
+   CONST MARKSYM_CROSS                =  1;
+   CONST MARKSYM_PLUS                 =  2;
+   CONST MARKSYM_DIAMOND              =  3;
+   CONST MARKSYM_SQUARE               =  4;
+   CONST MARKSYM_SIXPOINTSTAR         =  5;
+   CONST MARKSYM_EIGHTPOINTSTAR       =  6;
+   CONST MARKSYM_SOLIDDIAMOND         =  7;
+   CONST MARKSYM_SOLIDSQUARE          =  8;
+   CONST MARKSYM_DOT                  =  9;
+   CONST MARKSYM_SMALLCIRCLE          = 10;
+   CONST MARKSYM_BLANK                = 64;
+
+   (* formatting options for GpiCharStringPosAt *)
+   CONST CHS_OPAQUE                 = 00001H;
+   CONST CHS_VECTOR                 = 00002H;
+   CONST CHS_LEAVEPOS               = 00008H;
+   CONST CHS_CLIP                   = 00010H;
+   CONST CHS_UNDERSCORE             = 00200H;
+   CONST CHS_STRIKEOUT              = 00400H;
+
+   (* bundle codes for GpiSetAttributes and GpiQueryAttributes *)
+   CONST PRIM_LINE                     = 1;
+   CONST PRIM_CHAR                     = 2;
+   CONST PRIM_MARKER                   = 3;
+   CONST PRIM_AREA                     = 4;
+   CONST PRIM_IMAGE                    = 5;
+
+   (* line bundle mask bits *)
+   CONST LBB_COLOR                  = 00001H;
+   CONST LBB_BACK_COLOR             = 00002H;
+   CONST LBB_MIX_MODE               = 00004H;
+   CONST LBB_BACK_MIX_MODE          = 00008H;
+   CONST LBB_WIDTH                  = 00010H;
+   CONST LBB_GEOM_WIDTH             = 00020H;
+   CONST LBB_TYPE                   = 00040H;
+   CONST LBB_END                    = 00080H;
+   CONST LBB_JOIN                   = 00100H;
+
+   (* character bundle mask bits *)
+   CONST CBB_COLOR                  = 00001H;
+   CONST CBB_BACK_COLOR             = 00002H;
+   CONST CBB_MIX_MODE               = 00004H;
+   CONST CBB_BACK_MIX_MODE          = 00008H;
+   CONST CBB_SET                    = 00010H;
+   CONST CBB_MODE                   = 00020H;
+   CONST CBB_BOX                    = 00040H;
+   CONST CBB_ANGLE                  = 00080H;
+   CONST CBB_SHEAR                  = 00100H;
+   CONST CBB_DIRECTION              = 00200H;
+   CONST CBB_TEXT_ALIGN             = 00400H;
+   CONST CBB_EXTRA                  = 00800H;
+   CONST CBB_BREAK_EXTRA            = 01000H;
+
+   (* marker bundle mask bits *)
+   CONST MBB_COLOR                  = 00001H;
+   CONST MBB_BACK_COLOR             = 00002H;
+   CONST MBB_MIX_MODE               = 00004H;
+   CONST MBB_BACK_MIX_MODE          = 00008H;
+   CONST MBB_SET                    = 00010H;
+   CONST MBB_SYMBOL                 = 00020H;
+   CONST MBB_BOX                    = 00040H;
+
+   (* pattern bundle mask bits *)
+   CONST ABB_COLOR                  = 00001H;
+   CONST ABB_BACK_COLOR             = 00002H;
+   CONST ABB_MIX_MODE               = 00004H;
+   CONST ABB_BACK_MIX_MODE          = 00008H;
+   CONST ABB_SET                    = 00010H;
+   CONST ABB_SYMBOL                 = 00020H;
+   CONST ABB_REF_POINT              = 00040H;
+
+   (* image bundle mask bits *)
+   CONST IBB_COLOR                  = 00001H;
+   CONST IBB_BACK_COLOR             = 00002H;
+   CONST IBB_MIX_MODE               = 00004H;
+   CONST IBB_BACK_MIX_MODE          = 00008H;
+
+   (* structure for GpiSetArcParams and GpiQueryArcParams *)
+   TYPE ARCPARAMS = RECORD      (* arcp *)
+      lP:    LONG;
+      lQ:    LONG;
+      lR:    LONG;
+      lS:    LONG;
+   END;
+   TYPE PARCPARAMS = POINTER TO ARCPARAMS;
+
+   (* variation of SIZE used for FIXEDs *)
+   TYPE SIZEF = RECORD         (* sizfx *)
+      cx: FIXED;
+      cy: FIXED;
+   END;
+   TYPE PSIZEF = POINTER TO SIZEF;
+
+   (* structure for gradient parameters e.g. for GpiSetCharAngle *)
+   TYPE GRADIENTL = RECORD       (* gradl *)
+      x:     LONG;
+      y:     LONG;
+   END;
+   TYPE PGRADIENTL = POINTER TO GRADIENTL;
+
+   (* line bundle for GpiSetAttributes and GpiQueryAttributes *)
+   TYPE LINEBUNDLE = RECORD      (* lbnd *)
+      lColor:            LONG;
+      lBackColor:        LONG;
+      usMixMode:         USHORT;
+      usBackMixMode:     USHORT;
+      fxWidth:           FIXED;
+      lGeomWidth:        LONG;
+      usType:            USHORT;
+      usEnd:             USHORT;
+      usJoin:            USHORT;
+      usReserved:        USHORT;
+   END;
+   TYPE PLINEBUNDLE = POINTER TO LINEBUNDLE;
+
+   (* character bundle for GpiSetAttributes and GpiQueryAttributes *)
+   TYPE CHARBUNDLE = RECORD      (* cbnd *)
+      lColor:         LONG;
+      lBackColor:     LONG;
+      usMixMode:      USHORT;
+      usBackMixMode:  USHORT;
+      usSet:          USHORT;
+      usPrecision:    USHORT;
+      sizfxCell:      SIZEF;
+      ptlAngle:       POINTL;
+      ptlShear:       POINTL;
+      usDirection:    USHORT;
+      usTextAlign:    USHORT;
+      fxExtra:        FIXED;
+      fxBreakExtra:   FIXED;
+   END;
+   TYPE PCHARBUNDLE = POINTER TO CHARBUNDLE;
+
+   (* marker bundle for GpiSetAttributes and GpiQueryAttributes *)
+   TYPE MARKERBUNDLE = RECORD
+      lColor:        LONG;
+      lBackColor:    LONG;
+      usMixMode:     USHORT;
+      usBackMixMode: USHORT;
+      usSet:         USHORT;
+      usSymbol:      USHORT;
+      sizfxCell:     SIZEF;
+   END;
+   TYPE PMARKERBUNDLE = POINTER TO MARKERBUNDLE;
+
+   (* pattern bundle for GpiSetAttributes and GpiQueryAttributes *)
+   TYPE AREABUNDLE = RECORD   (* pbnd *)
+      lColor:         LONG;
+      lBackColor:     LONG;
+      usMixMode:      USHORT;
+      usBackMixMode:  USHORT;
+      usSet:          USHORT;
+      usSymbol:       USHORT;
+      ptlRefPoint :   POINTL;
+   END;
+   TYPE PAREABUNDLE = POINTER TO AREABUNDLE;
+
+   (* image bundle for GpiSetAttributes and GpiQueryAttributes *)
+   TYPE IMAGEBUNDLE = RECORD     (* ibmd *)
+      lColor:        LONG;
+      lBackColor:    LONG;
+      usMixMode:     USHORT;
+      usBackMixMode: USHORT;
+   END;
+   TYPE PIMAGEBUNDLE = POINTER TO IMAGEBUNDLE;
+
+   (* pointer to any bundle used by GpiSet/QueryAttrs *)
+   TYPE PBUNDLE = PVOID;
+
+   (* array indices for GpiQueryTextBox *)
+   CONST TXTBOX_TOPLEFT               =  0;
+   CONST TXTBOX_BOTTOMLEFT            =  1;
+   CONST TXTBOX_TOPRIGHT              =  2;
+   CONST TXTBOX_BOTTOMRIGHT           =  3;
+   CONST TXTBOX_CONCAT                =  4;
+   (* array count for GpiQueryTextBox *)
+   CONST TXTBOX_COUNT                 =  5;
+
+   (* return codes for GpiPtVisible *)
+   CONST PVIS_ERROR                   =  0;
+   CONST PVIS_INVISIBLE               =  1;
+   CONST PVIS_VISIBLE                 =  2;
+
+   (* return codes for GpiRectVisible *)
+   CONST RVIS_ERROR                   =  0;
+   CONST RVIS_INVISIBLE               =  1;
+   CONST RVIS_PARTIAL                 =  2;
+   CONST RVIS_VISIBLE                 =  3;
+
+   #if ! defined(INCL_DDIDEFS)
+
+
+      (*** attribute mode functions *)
+      PROCEDURE GpiSetAttrMode(hps   : HPS
+                              ;lMode : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryAttrMode(hps : HPS): LONG;
+      (*** bundle primitive functions *)
+      PROCEDURE GpiSetAttrs(hps        : HPS
+                           ;lPrimType  : LONG
+                           ;flAttrMask : ULONG
+                           ;flDefMask  : ULONG
+                           ;ppbunAttrs : PBUNDLE
+                           ): BOOL;
+      #if ! defined(INCL_SAADEFS)
+
+
+         PROCEDURE GpiQueryAttrs(hps        : HPS
+                                ;lPrimType  : LONG
+                                ;flAttrMask : ULONG
+                                ;ppbunAttrs : PBUNDLE
+                                ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+
+      (*** global primitive functions *)
+      PROCEDURE GpiSetBackColor(hps    : HPS
+                               ;lColor : LONG
+                               ): BOOL;
+
+      PROCEDURE GpiQueryBackColor(hps : HPS): LONG;
+
+      PROCEDURE GpiSetMix(hps      : HPS
+                         ;lMixMode : LONG
+                         ): BOOL;
+
+      PROCEDURE GpiQueryMix(hps : HPS): LONG;
+
+      PROCEDURE GpiSetBackMix(hps      : HPS
+                             ;lMixMode : LONG
+                             ): BOOL;
+
+      PROCEDURE GpiQueryBackMix(hps : HPS): LONG;
+
+      (*** line primitive functions *)
+      PROCEDURE GpiSetLineType(hps       : HPS
+                              ;lLineType : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryLineType(hps : HPS): LONG;
+
+      PROCEDURE GpiSetLineWidth(hps         : HPS
+                               ;fxLineWidth : FIXED
+                               ): BOOL;
+
+      PROCEDURE GpiQueryLineWidth(hps : HPS): FIXED;
+
+      PROCEDURE GpiSetLineWidthGeom(hps        : HPS
+                                   ;lLineWidth : LONG
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryLineWidthGeom(hps : HPS): LONG;
+
+      PROCEDURE GpiSetLineEnd(hps      : HPS
+                             ;lLineEnd : LONG
+                             ): BOOL;
+
+      PROCEDURE GpiQueryLineEnd(hps : HPS): LONG;
+
+      PROCEDURE GpiSetLineJoin(hps       : HPS
+                              ;lLineJoin : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryLineJoin(hps : HPS): LONG;
+
+      PROCEDURE GpiSetCurrentPosition(hps          : HPS
+                                     ;VAR ptlPoint : POINTL
+                                     ): BOOL;
+
+      PROCEDURE GpiQueryCurrentPosition(hps          : HPS
+                                       ;VAR ptlPoint : POINTL
+                                       ): BOOL;
+
+      (*** arc primitive functions *)
+      PROCEDURE GpiSetArcParams(hps               : HPS
+                               ;VAR arcpArcParams : ARCPARAMS
+                               ): BOOL;
+
+      PROCEDURE GpiQueryArcParams(hps               : HPS
+                                 ;VAR arcpArcParams : ARCPARAMS
+                                 ): BOOL;
+
+      PROCEDURE GpiPointArc(hps   : HPS
+                           ;ptl2  : ARRAY OF POINTL
+                           ): LONG;
+
+      PROCEDURE GpiFullArc(hps          : HPS
+                          ;lControl     : LONG
+                          ;fxMultiplier : FIXED
+                          ): LONG;
+
+      PROCEDURE GpiPartialArc(hps           : HPS
+                             ;VAR ptlCenter : POINTL
+                             ;fxMultiplier  : FIXED
+                             ;fxStartAngle  : FIXED
+                             ;fxSweepAngle  : FIXED
+                             ): LONG;
+
+      PROCEDURE GpiPolyFillet(hps       : HPS
+                             ;lCount    : LONG
+                             ;ptlPoints : ARRAY OF POINTL
+                             ): LONG;
+
+      PROCEDURE GpiPolySpline(hps       : HPS
+                             ;lCount    : LONG
+                             ;ptlPoints : ARRAY OF POINTL
+                             ): LONG;
+
+      PROCEDURE GpiPolyFilletSharp(hps       : HPS
+                                  ;lCount    : LONG
+                                  ;ptlPoints : ARRAY OF POINTL
+                                  ;fxPoints  : ARRAY OF FIXED
+                                  ): LONG;
+
+      (*** area primitive functions *)
+      PROCEDURE GpiSetPatternSet(hps  : HPS
+                                ;lSet : LONG
+                                ): BOOL;
+
+      PROCEDURE GpiQueryPatternSet(hps : HPS): LONG;
+
+      PROCEDURE GpiSetPatternRefPoint(hps             : HPS
+                                     ;VAR ptlRefPoint : POINTL
+                                     ): BOOL;
+
+      PROCEDURE GpiQueryPatternRefPoint(hps             : HPS
+                                       ;VAR ptlRefPoint : POINTL
+                                       ): BOOL;
+
+      (*** character primitive functions *)
+      PROCEDURE GpiQueryCharStringPos(hps                    : HPS
+                                     ;flOptions              : ULONG
+                                     ;lCount                 : LONG
+                                     ;chString               : ARRAY OF CHAR
+                                     ;VAR [NIL] lXincrements : ARRAY OF LONG
+                                     ;VAR ptlPositions       : ARRAY OF POINTL
+                                     ): BOOL;
+
+      PROCEDURE GpiQueryCharStringPosAt(hps                    : HPS
+                                       ;VAR ptlStart           : POINTL
+                                       ;flOptions              : ULONG
+                                       ;lCount                 : LONG
+                                       ;chString               : ARRAY OF CHAR
+                                       ;VAR [NIL] lXincrements : ARRAY OF LONG
+                                       ;VAR ptlPositions       : ARRAY OF POINTL
+                                       ): BOOL;
+
+      PROCEDURE GpiQueryTextBox(hps           : HPS
+                               ;lCount1       : LONG
+                               ;chString      : ARRAY OF CHAR
+                               ;lCount2       : LONG
+                               ;VAR ptlPoints : ARRAY OF POINTL
+                               ): BOOL;
+
+      PROCEDURE GpiQueryDefCharBox(hps          : HPS
+                                  ;VAR sizlSize : SIZEL
+                                  ): BOOL;
+
+      PROCEDURE GpiSetCharSet(hps   : HPS
+                             ;llcid : LONG
+                             ): BOOL;
+
+      PROCEDURE GpiQueryCharSet(hps : HPS): LONG;
+
+      PROCEDURE GpiSetCharBox(hps          : HPS
+                             ;VAR sizfxBox : SIZEF
+                             ): BOOL;
+
+      PROCEDURE GpiQueryCharBox(hps           : HPS
+                               ;VAR sizfxSize : SIZEF
+                               ): BOOL;
+
+      PROCEDURE GpiSetCharAngle(hps            : HPS
+                               ;VAR gradlAngle : GRADIENTL
+                               ): BOOL;
+
+      PROCEDURE GpiQueryCharAngle(hps            : HPS
+                                 ;VAR gradlAngle : GRADIENTL
+                                 ): BOOL;
+
+      PROCEDURE GpiSetCharShear(hps       : HPS
+                               ;VAR ptlAngle : POINTL
+                               ): BOOL;
+
+      PROCEDURE GpiQueryCharShear(hps          : HPS
+                                 ;VAR ptlShear : POINTL
+                                 ): BOOL;
+
+      PROCEDURE GpiSetCharDirection(hps        : HPS
+                                   ;lDirection : LONG
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryCharDirection(hps : HPS): LONG;
+
+      PROCEDURE GpiSetCharMode(hps   : HPS
+                              ;lMode : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryCharMode(hps : HPS): LONG;
+
+      PROCEDURE GpiSetTextAlignment(hps    : HPS
+                                   ;lHoriz : LONG
+                                   ;lVert  : LONG
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryTextAlignment(hps        : HPS
+                                     ;VAR lHoriz : LONG
+                                     ;VAR lVert  : LONG
+                                     ): BOOL;
+
+      PROCEDURE GpiCharStringPos(hps            : HPS
+                                ;VAR rclRect    : RECTL
+                                ;flOptions      : ULONG
+                                ;lCount         : LONG
+                                ;chString       : ARRAY OF CHAR
+                                ;VAR [NIL] lAdx : ARRAY OF LONG
+                                ): LONG;
+
+      PROCEDURE GpiCharStringPosAt(hps            : HPS
+                                  ;VAR ptlStart   : POINTL
+                                  ;VAR rclRect    : RECTL
+                                  ;flOptions      : ULONG
+                                  ;lCount         : LONG
+                                  ;chString       : ARRAY OF CHAR
+                                  ;VAR [NIL] lAdx : ARRAY OF LONG
+                                  ): LONG;
+
+      PROCEDURE GpiSetCharExtra(hps   : HPS
+                               ;Extra : FIXED
+                               ): BOOL;
+
+      PROCEDURE GpiSetCharBreakExtra(hps        : HPS
+                                    ;BreakExtra : FIXED
+                                    ): BOOL;
+
+      PROCEDURE GpiQueryCharExtra(hps       : HPS
+                                 ;VAR Extra : FIXED
+                                 ): BOOL;
+
+      PROCEDURE GpiQueryCharBreakExtra(hps            : HPS
+                                      ;VAR BreakExtra : FIXED
+                                      ): BOOL;
+
+      (*** marker primitive functions  *)
+      PROCEDURE GpiMarker(hps          : HPS
+                         ;VAR ptlPoint : POINTL
+                         ): LONG;
+
+      PROCEDURE GpiPolyMarker(hps       : HPS
+                             ;lCount    : LONG
+                             ;ptlPoints : ARRAY OF POINTL
+                             ): LONG;
+
+      PROCEDURE GpiSetMarker(hps     : HPS
+                            ;lSymbol : LONG
+                            ): BOOL;
+
+      PROCEDURE GpiSetMarkerBox(hps           : HPS
+                               ;VAR sizfxSize : SIZEF
+                               ): BOOL;
+
+      PROCEDURE GpiSetMarkerSet(hps  : HPS
+                               ;lSet : LONG
+                               ): BOOL;
+
+      PROCEDURE GpiQueryMarker(hps : HPS): LONG;
+
+      PROCEDURE GpiQueryMarkerBox(hps           : HPS
+                                 ;VAR sizfxSize : SIZEF
+                                 ): BOOL;
+
+      PROCEDURE GpiQueryMarkerSet(hps : HPS): LONG;
+
+      (*** image primitive functions *)
+      PROCEDURE GpiImage(hps               : HPS
+                        ;lFormat           : LONG
+                        ;VAR sizlImageSize : SIZEL
+                        ;lLength           : LONG
+                        ;pbData            : ARRAY OF SYSTEM.BYTE
+                        ): LONG;
+
+      (*** miscellaneous primitive functions *)
+      PROCEDURE GpiPop(hps    : HPS
+                      ;lCount : LONG
+                      ): BOOL;
+
+      PROCEDURE GpiPtVisible(hps          : HPS
+                            ;VAR ptlPoint : POINTL
+                            ): LONG;
+
+      PROCEDURE GpiRectVisible(hps              : HPS
+                              ;VAR rclRectangle : RECTL
+                              ): LONG;
+
+      PROCEDURE GpiComment(hps     : HPS
+                          ;lLength : LONG
+                          ;bData   : ARRAY OF SYSTEM.BYTE
+                          ): BOOL;
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPIPRIMITIVES *)
+#if defined(INCL_GPILCIDS)
+
+   (* return codes from GpiCreateLogFont *)
+   CONST FONT_DEFAULT                  = 1;
+   CONST FONT_MATCH                    = 2;
+
+   (* lcid type for GpiQuerySetIds *)
+   CONST LCIDT_FONT                    = 6;
+
+   CONST LCIDT_BITMAP                  = 7;
+
+   (* constant used to delete all lcids by GpiDeleteSetId *)
+   CONST LCID_ALL                      = -1;
+
+   (* kerning data returned by GpiQueryKerningPairs *)
+   TYPE KERNINGPAIRS = RECORD    (* krnpr *)
+      sFirstChar:     SHORT;
+      sSecondChar:    SHORT;
+      lKerningAmount: LONG;
+   END;
+   TYPE PKERNINGPAIRS = POINTER TO KERNINGPAIRS;
+
+   (* data required by GpiQueryFaceString *)
+   TYPE FACENAMEDESC = RECORD    (* fnd *)
+      usSize:        USHORT;
+      usWeightClass: USHORT;
+      usWidthClass:  USHORT;
+      usReserved:    USHORT;
+      flOptions:     ULONG;
+   END;
+   TYPE PFACENAMEDESC = POINTER TO FACENAMEDESC;
+
+   (* FACENAMEDESC 'WeightClass' options for GpiQueryFaceString *)
+   CONST FWEIGHT_DONT_CARE   =  0;
+   CONST FWEIGHT_ULTRA_LIGHT =  1;
+   CONST FWEIGHT_EXTRA_LIGHT =  2;
+   CONST FWEIGHT_LIGHT       =  3;
+   CONST FWEIGHT_SEMI_LIGHT  =  4;
+   CONST FWEIGHT_NORMAL      =  5;
+   CONST FWEIGHT_SEMI_BOLD   =  6;
+   CONST FWEIGHT_BOLD        =  7;
+   CONST FWEIGHT_EXTRA_BOLD  =  8;
+   CONST FWEIGHT_ULTRA_BOLD  =  9;
+
+   (* FACENAMEDESC 'WidthClass' options for GpiQueryFaceString *)
+   CONST FWIDTH_DONT_CARE       =0;
+   CONST FWIDTH_ULTRA_CONDENSED =1;
+   CONST FWIDTH_EXTRA_CONDENSED =2;
+   CONST FWIDTH_CONDENSED       =3;
+   CONST FWIDTH_SEMI_CONDENSED  =4;
+   CONST FWIDTH_NORMAL          =5;
+   CONST FWIDTH_SEMI_EXPANDED   =6;
+   CONST FWIDTH_EXPANDED        =7;
+   CONST FWIDTH_EXTRA_EXPANDED  =8;
+   CONST FWIDTH_ULTRA_EXPANDED  =9;
+
+   (* FACENAMEDESC 'options' for GpiQueryFaceString *)
+   CONST FTYPE_ITALIC            = 00001H;
+   CONST FTYPE_ITALIC_DONT_CARE  = 00002H;
+   CONST FTYPE_OBLIQUE           = 00004H;
+   CONST FTYPE_OBLIQUE_DONT_CARE = 00008H;
+   CONST FTYPE_ROUNDED           = 00010H;
+   CONST FTYPE_ROUNDED_DONT_CARE = 00020H;
+
+   (* actions for GpiQueryFontAction *)
+   CONST QFA_PUBLIC    =  1;
+   CONST QFA_PRIVATE   =  2;
+   CONST QFA_ERROR     =  GPI_ALTERROR;
+
+   (* options for GpiQueryFonts *)
+   CONST QF_PUBLIC                  = 00001H;
+   CONST QF_PRIVATE                 = 00002H;
+   CONST QF_NO_GENERIC              = 00004H;
+   CONST QF_NO_DEVICE               = 00008H;
+
+   #if ! defined(INCL_SAADEFS)
+
+      (* font file descriptions for GpiQueryFontFileDescriptions *)
+      TYPE FFDESCS  = ARRAY [0..1],[0..FACESIZE-1] OF CHAR; (* ffdescs *)
+      TYPE PFFDESCS = POINTER TO FFDESCS;
+      TYPE FFDESCS2 = RECORD   (* ffdescs2 *)
+         cbLength:         ULONG;
+         cbFacenameOffset: ULONG;
+         abFamilyName:     ARRAY [0..0] OF CHAR;
+      END;
+      TYPE PFFDESCS2 = POINTER TO FFDESCS2;
+
+   #endif (* no INCL_SAADEFS *)
+
+   #if ! defined(INCL_DDIDEFS)
+
+      (*** physical and logical font functions *)
+
+      PROCEDURE GpiCreateLogFont(hps            : HPS
+                                ;VAR [NIL] Name : STR8       (* !!! Is it defined? *)
+                                ;lLcid          : LONG
+                                ;VAR fatAttrs   : FATTRS
+                                ): LONG;
+
+      PROCEDURE GpiDeleteSetId(hps   : HPS
+                              ;lLcid : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiLoadFonts(hab        : HAB
+                            ;szFilename : ARRAY OF CHAR
+                            ): BOOL;
+
+      PROCEDURE GpiUnloadFonts(hab        : HAB
+                              ;szFilename : ARRAY OF CHAR
+                              ): BOOL;
+
+      PROCEDURE GpiQueryFonts(hps                   : HPS
+                             ;flOptions             : ULONG
+                             ;pszFacename           : PCSZ       (* !!! NIL *)
+                             ;VAR lReqFonts         : LONG
+                             ;lMetricsLength        : LONG
+                             ;VAR [NIL] fmMetrics   : ARRAY OF FONTMETRICS
+                             ): LONG;
+
+      PROCEDURE GpiQueryFontMetrics(hps            : HPS
+                                   ;lMetricsLength : LONG
+                                   ;VAR fmMetrics  : FONTMETRICS
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryKerningPairs(hps           : HPS
+                                    ;lCount        : LONG
+                                    ;VAR krnprData : ARRAY OF KERNINGPAIRS
+                                    ): LONG;
+
+      PROCEDURE GpiQueryWidthTable(hps        : HPS
+                                  ;lFirstChar : LONG
+                                  ;lCount     : LONG
+                                  ;VAR lData  : ARRAY OF LONG
+                                  ): BOOL;
+
+      PROCEDURE GpiQueryNumberSetIds(hps : HPS): LONG;
+
+      PROCEDURE GpiQuerySetIds(hps        : HPS
+                              ;lCount     : LONG
+                              ;VAR lTypes : ARRAY OF LONG
+                              ;VAR Names  : ARRAY OF STR8
+                              ;VAR llcids : ARRAY OF LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryFaceString(PS                   : HPS
+                                  ;FamilyName           : ARRAY OF CHAR
+                                  ;VAR attrs            : FACENAMEDESC
+                                  ;length               : LONG
+                                  ;VAR CompoundFaceName : ARRAY OF CHAR
+                                  ): ULONG;
+
+      PROCEDURE GpiQueryLogicalFont(PS        : HPS
+                                   ;lcid      : LONG
+                                   ;VAR name  : STR8
+                                   ;VAR attrs : FATTRS
+                                   ;length    : LONG
+                                   ): BOOL;
+
+      PROCEDURE GpiQueryFontAction(anchor  : HAB
+                                  ;options : ULONG
+                                  ): ULONG;
+
+      PROCEDURE GpiLoadPublicFonts(hab : HAB
+                                  ;csz : ARRAY OF CHAR
+                                  ): BOOL;
+
+      PROCEDURE GpiUnloadPublicFonts(hab : HAB
+                                    ;csz : ARRAY OF CHAR
+                                    ): BOOL;
+
+      #if ! defined(INCL_SAADEFS)
+
+         PROCEDURE GpiSetCp(hps        : HPS
+                           ;ulCodePage : ULONG
+                           ): BOOL;
+
+         PROCEDURE GpiQueryCp(hps : HPS): ULONG;
+
+         PROCEDURE GpiQueryFullFontFileDescs(hab                  : HAB
+                                            ;szFilename           : ARRAY OF CHAR
+                                            ;VAR lCount           : LONG
+                                            ;pNames               : PVOID
+                                            ;VAR lNamesBuffLength : LONG
+                                            ): LONG;
+
+         PROCEDURE GpiQueryFontFileDescriptions(hab                    : HAB
+                                               ;szFilename             : ARRAY OF CHAR
+                                               ;VAR lCount             : LONG
+                                               ;VAR [NIL] ffdescsNames : ARRAY OF FFDESCS
+                                               ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPILCIDS *)
+
+#if (defined(INCL_GPIBITMAPS) || ! defined(INCL_NOCOMMON))
+   (* raster operations defined for GpiBitBlt *)
+   CONST ROP_SRCCOPY                = 000CCH;
+   CONST ROP_SRCPAINT               = 000EEH;
+   CONST ROP_SRCAND                 = 00088H;
+   CONST ROP_SRCINVERT              = 00066H;
+   CONST ROP_SRCERASE               = 00044H;
+   CONST ROP_NOTSRCCOPY             = 00033H;
+   CONST ROP_NOTSRCERASE            = 00011H;
+   CONST ROP_MERGECOPY              = 000C0H;
+   CONST ROP_MERGEPAINT             = 000BBH;
+   CONST ROP_PATCOPY                = 000F0H;
+   CONST ROP_PATPAINT               = 000FBH;
+   CONST ROP_PATINVERT              = 0005AH;
+   CONST ROP_DSTINVERT              = 00055H;
+   CONST ROP_ZERO                   = 00000H;
+   CONST ROP_ONE                    = 000FFH;
+
+   (* Blt options for GpiBitBlt *)
+   CONST BBO_OR                       =  0;
+   CONST BBO_AND                      =  1;
+   CONST BBO_IGNORE                   =  2;
+   CONST BBO_PAL_COLORS               =  4;
+   CONST BBO_NO_COLOR_INFO            =  8;
+
+   (* Fill options for GpiFloodFill *)
+   CONST FF_BOUNDARY                  =  0;
+   CONST FF_SURFACE                   =  1;
+
+   (* error return for GpiSetBitmap *)
+   CONST HBM_ERROR           = HBITMAP(0FFFFFFFFH);
+
+   #if ! defined(INCL_DDIDEFS)
+      (*** bitmap and pel functions *)
+
+      PROCEDURE GpiBitBlt(hpsTarget  : HPS
+                         ;hpsSource  : HPS
+                         ;lCount     : LONG
+                         ;ptlPoints  : ARRAY OF POINTL
+                         ;lRop       : LONG
+                         ;flOptions  : ULONG
+                         ): LONG;
+
+      PROCEDURE GpiDeleteBitmap(hbm : HBITMAP): BOOL;
+
+      PROCEDURE GpiLoadBitmap(hps      : HPS
+                             ;Resource : HMODULE
+                             ;idBitmap : ULONG
+                             ;lWidth   : LONG
+                             ;lHeight  : LONG
+                             ): HBITMAP;
+
+      PROCEDURE GpiSetBitmap(hps : HPS
+                            ;hbm : HBITMAP
+                            ): HBITMAP;
+
+      PROCEDURE GpiWCBitBlt(hpsTarget  : HPS
+                           ;hbmSource  : HBITMAP
+                           ;lCount     : LONG
+                           ;ptlPoints  : ARRAY OF POINTL
+                           ;lRop       : LONG
+                           ;flOptions  : ULONG
+                           ): LONG;
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* common GPIBITMAPS *)
+
+#if defined(INCL_GPIBITMAPS)
+
+   (*** include bitmap structures and file formats *************************)
+   #include <pmbitmap.hm>
+
+   (* usage flags for GpiCreateBitmap *)
+   CONST CBM_INIT        = 00004H;
+
+   (* error return code for GpiSet/QueryBitmapBits *)
+   CONST BMB_ERROR                  =  -1;
+
+   #if ! defined(INCL_DDIDEFS)
+
+      (*** bitmap and pel functions *)
+
+      PROCEDURE GpiCreateBitmap(hps                    : HPS
+                               ;VAR bmpNew             : BITMAPINFOHEADER2
+                               ;flOptions              : ULONG
+                               ;pbInitData             : SYSTEM.ADDRESS (* !!! ARRAY OF SYSTEM.BYTE *)
+                               ;VAR [NIL] bmiInfoTable : BITMAPINFO2
+                               ): HBITMAP;
+
+      PROCEDURE GpiSetBitmapBits(hps              : HPS
+                                ;lScanStart       : LONG
+                                ;lScans           : LONG
+                                ;bBuffer          : ARRAY OF SYSTEM.BYTE
+                                ;VAR bmiInfoTable : BITMAPINFO2
+                                ): LONG;
+
+      PROCEDURE GpiSetBitmapDimension(hbm                     : HBITMAP
+                                     ;VAR sizlBitmapDimension : SIZEL
+                                     ): BOOL;
+
+      PROCEDURE GpiSetBitmapId(hps   : HPS
+                              ;hbm   : HBITMAP
+                              ;lLcid : LONG
+                              ): BOOL;
+
+      PROCEDURE GpiQueryBitmapBits(hps              : HPS
+                                  ;lScanStart       : LONG
+                                  ;lScans           : LONG
+                                  ;VAR bBuffer      : ARRAY OF SYSTEM.BYTE
+                                  ;VAR bmiInfoTable : BITMAPINFO2
+                                  ): LONG;
+
+      PROCEDURE GpiQueryBitmapDimension(hbm                     : HBITMAP
+                                       ;VAR sizlBitmapDimension : SIZEL
+                                       ): BOOL;
+
+      PROCEDURE GpiQueryBitmapHandle(hps   : HPS
+                                    ;lLcid : LONG
+                                    ): HBITMAP;
+
+      PROCEDURE GpiQueryBitmapParameters(hbm         : HBITMAP
+                                        ;VAR bmpData : BITMAPINFOHEADER
+                                        ): BOOL;
+
+      PROCEDURE GpiQueryBitmapInfoHeader(hbm         : HBITMAP
+                                        ;VAR bmpData : BITMAPINFOHEADER2
+                                        ): BOOL;
+
+      PROCEDURE GpiQueryDeviceBitmapFormats(hps        : HPS
+                                           ;lCount     : LONG
+                                           ;VAR lArray : ARRAY OF LONG
+                                           ): BOOL;
+
+      PROCEDURE GpiSetPel(hps          : HPS
+                         ;VAR ptlPoint : POINTL
+                         ): LONG;
+
+      PROCEDURE GpiQueryPel(hps          : HPS
+                           ;VAR ptlPoint : POINTL
+                           ): LONG;
+
+      PROCEDURE GpiFloodFill(hps      : HPS
+                            ;lOptions : LONG
+                            ;lColor   : LONG
+                            ): LONG;
+
+      PROCEDURE GpiDrawBits(hps              : HPS
+                           ;pBits            : PVOID
+                           ;VAR bmiInfoTable : BITMAPINFO2
+                           ;lCount           : LONG
+                           ;ptlPoints        : ARRAY OF POINTL
+                           ;lRop             : LONG
+                           ;flOptions        : ULONG
+                           ): LONG;
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* INCL_GPIBITMAPS *)
+
+#if defined(INCL_GPIREGIONS)
+
+   (* options for GpiCombineRegion *)
+   CONST CRGN_OR                      =  1;
+   CONST CRGN_COPY                    =  2;
+   CONST CRGN_XOR                     =  4;
+   CONST CRGN_AND                     =  6;
+   CONST CRGN_DIFF                    =  7;
+
+   (* usDirection of returned region data for GpiQueryRegionRects *)
+   CONST RECTDIR_LFRT_TOPBOT          =  1;
+   CONST RECTDIR_RTLF_TOPBOT          =  2;
+   CONST RECTDIR_LFRT_BOTTOP          =  3;
+   CONST RECTDIR_RTLF_BOTTOP          =  4;
+
+   (* control data for GpiQueryRegionRects *)
+   TYPE RGNRECT = RECORD         (* rgnrc *)
+      ircStart:    ULONG;
+      crc:         ULONG;
+      crcReturned: ULONG;
+      ulDirection: ULONG;
+   END;
+   TYPE PRGNRECT = POINTER TO RGNRECT;
+
+   (* return code to indicate type of region for GpiCombineRegion and others *)
+   CONST RGN_ERROR                    =  0;
+   CONST RGN_NULL                     =  1;
+   CONST RGN_RECT                     =  2;
+   CONST RGN_COMPLEX                  =  3;
+
+   (* return codes for GpiPtInRegion *)
+   CONST PRGN_ERROR                   =  0;
+   CONST PRGN_OUTSIDE                 =  1;
+   CONST PRGN_INSIDE                  =  2;
+
+   (* return codes for GpiRectInRegion *)
+   CONST RRGN_ERROR                   =  0;
+   CONST RRGN_OUTSIDE                 =  1;
+   CONST RRGN_PARTIAL                 =  2;
+   CONST RRGN_INSIDE                  =  3;
+
+   (* return codes for GpiEqualRegion *)
+   CONST EQRGN_ERROR                  =  0;
+   CONST EQRGN_NOTEQUAL               =  1;
+   CONST EQRGN_EQUAL                  =  2;
+
+   (* error return code for GpiSetRegion *)
+   CONST HRGN_ERROR             =  HRGN(0FFFFFFFFH);
+
+   #if ! defined(INCL_DDIDEFS)
+
+
+      (*** main region functions *)
+      PROCEDURE GpiCombineRegion(hps      : HPS
+                                ;hrgnDest : HRGN
+                                ;hrgnSrc1 : HRGN
+                                ;hrgnSrc2 : HRGN
+                                ;lMode    : LONG
+                                ): LONG;
+
+      PROCEDURE GpiCreateRegion(hps           : HPS
+                               ;lCount        : LONG
+                               ;rclRectangles : ARRAY OF RECTL
+                               ): HRGN;
+
+      PROCEDURE GpiDestroyRegion(hps  : HPS
+                                ;hrgn : HRGN
+                                ): BOOL;
+
+      PROCEDURE GpiEqualRegion(hps      : HPS
+                              ;hrgnSrc1 : HRGN
+                              ;hrgnSrc2 : HRGN
+                              ): LONG;
+
+      PROCEDURE GpiOffsetRegion(hps           : HPS
+                               ;Hrgn          : HRGN
+                               ;VAR ptlOffset : POINTL
+                               ): BOOL;
+
+      PROCEDURE GpiPaintRegion(hps  : HPS
+                              ;hrgn : HRGN
+                              ): LONG;
+
+      PROCEDURE GpiFrameRegion(hps           : HPS
+                              ;hrgn          : HRGN
+                              ;VAR thickness : SIZEL
+                              ): LONG;
+
+      PROCEDURE GpiPtInRegion(hps          : HPS
+                             ;hrgn         : HRGN
+                             ;VAR ptlPoint : POINTL
+                             ): LONG;
+
+      PROCEDURE GpiQueryRegionBox(hps          : HPS
+                                 ;hrgn         : HRGN
+                                 ;VAR rclBound : RECTL
+                                 ): LONG;
+
+      PROCEDURE GpiQueryRegionRects(hps                : HPS
+                                   ;hrgn               : HRGN
+                                   ;VAR [NIL] rclBound : RECTL
+                                   ;VAR rgnrcControl   : RGNRECT
+                                   ;VAR rclRect        : ARRAY OF RECTL
+                                   ): BOOL;
+
+      PROCEDURE GpiRectInRegion(hps         : HPS
+                               ;hrgn        : HRGN
+                               ;VAR rclRect : RECTL
+                               ): LONG;
+
+      PROCEDURE GpiSetRegion(hps           : HPS
+                            ;hrgn          : HRGN
+                            ;lcount        : LONG
+                            ;rclRectangles : ARRAY OF RECTL
+                            ): BOOL;
+
+      (*** clip region functions *)
+      PROCEDURE GpiSetClipRegion(hps               : HPS
+                                ;hrgn              : HRGN
+                                ;VAR [NIL] hrgnOld : HRGN
+                                ): LONG;
+
+      #if ! defined(INCL_SAADEFS)
+
+         PROCEDURE GpiQueryClipRegion(hps : HPS): HRGN;
+
+         PROCEDURE GpiQueryClipBox(hps          : HPS
+                                  ;VAR rclBound : RECTL
+                                  ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+
+      PROCEDURE GpiExcludeClipRectangle(hps              : HPS
+                                       ;VAR rclRectangle : RECTL
+                                       ): LONG;
+
+      PROCEDURE GpiIntersectClipRectangle(hps              : HPS
+                                         ;VAR rclRectangle : PRECTL
+                                         ): LONG;
+
+      #if ! defined(INCL_SAADEFS)
+
+
+         PROCEDURE GpiOffsetClipRegion(hps          : HPS
+                                      ;VAR ptlPoint : POINTL
+                                      ): LONG;
+
+      #endif (* no INCL_SAADEFS *)
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPIREGIONS *)
+#if defined(INCL_GPIMETAFILES)
+
+   #if ! defined(INCL_DDIDEFS)
+
+      (* constants for index values of options array for GpiPlayMetaFile *)
+      CONST PMF_SEGBASE                  =  0;
+      CONST PMF_LOADTYPE                 =  1;
+      CONST PMF_RESOLVE                  =  2;
+      CONST PMF_LCIDS                    =  3;
+      CONST PMF_RESET                    =  4;
+      CONST PMF_SUPPRESS                 =  5;
+      CONST PMF_COLORTABLES              =  6;
+      CONST PMF_COLORREALIZABLE          =  7;
+      CONST PMF_DEFAULTS                 =  8;
+      CONST PMF_DELETEOBJECTS            =  9;
+
+      (* options for GpiPlayMetaFile *)
+      CONST RS_DEFAULT                   =  0;
+      CONST RS_NODISCARD                 =  1;
+      CONST LC_DEFAULT                   =  0;
+      CONST LC_NOLOAD                    =  1;
+      CONST LC_LOADDISC                  =  3;
+      CONST LT_DEFAULT                   =  0;
+      CONST LT_NOMODIFY                  =  1;
+      CONST LT_ORIGINALVIEW              =  4;
+      CONST RES_DEFAULT                  =  0;
+      CONST RES_NORESET                  =  1;
+      CONST RES_RESET                    =  2;
+      CONST SUP_DEFAULT                  =  0;
+      CONST SUP_NOSUPPRESS               =  1;
+      CONST SUP_SUPPRESS                 =  2;
+      CONST CTAB_DEFAULT                 =  0;
+      CONST CTAB_NOMODIFY                =  1;
+      CONST CTAB_REPLACE                 =  3;
+      CONST CTAB_REPLACEPALETTE          =  4;
+      CONST CREA_DEFAULT                 =  0;
+      CONST CREA_REALIZE                 =  1;
+      CONST CREA_NOREALIZE               =  2;
+      CONST CREA_DOREALIZE               =  3;
+
+      #if ! defined(INCL_SAADEFS)
+
+         CONST DDEF_DEFAULT                 =  0;
+         CONST DDEF_IGNORE                  =  1;
+         CONST DDEF_LOADDISC                =  3;
+         CONST DOBJ_DEFAULT                 =  0;
+         CONST DOBJ_NODELETE                =  1;
+         CONST DOBJ_DELETE                  =  2;
+         CONST RSP_DEFAULT                  =  0;
+         CONST RSP_NODISCARD                =  1;
+
+      #endif (* no INCL_SAADEFS *)
+
+      (*** MetaFile functions *)
+
+      PROCEDURE GpiCopyMetaFile(hmf : HMF): HMF;
+
+      PROCEDURE GpiDeleteMetaFile(hmf : HMF): BOOL;
+
+      PROCEDURE GpiLoadMetaFile(hab        : HAB
+                               ;szFilename : ARRAY OF CHAR
+                               ): HMF;
+
+      PROCEDURE GpiPlayMetaFile(hps        : HPS
+                               ;hmf        : HMF
+                               ;lCount1    : LONG
+                               ;lOptarray  : ARRAY OF LONG
+                               ;plSegCount : PLONG
+                               ;lCount2    : LONG
+                               ;VAR szDesc : ARRAY OF CHAR
+                               ): LONG;
+
+      PROCEDURE GpiQueryMetaFileBits(hmf       : HMF
+                                    ;lOffset   : LONG
+                                    ;lLength   : LONG
+                                    ;VAR bData : ARRAY OF SYSTEM.BYTE
+                                    ): BOOL;
+
+      PROCEDURE GpiQueryMetaFileLength(hmf : HMF): LONG;
+
+      PROCEDURE GpiSaveMetaFile(hmf        : HMF
+                               ;szFilename : ARRAY OF CHAR
+                               ): BOOL;
+
+      #if ! defined(INCL_SAADEFS)
+
+         PROCEDURE GpiSetMetaFileBits(hmf     : HMF
+                                     ;lOffset : LONG
+                                     ;lLength : LONG
+                                     ;bBuffer : ARRAY OF SYSTEM.BYTE
+                                     ): BOOL;
+      #endif (* no INCL_SAADEFS *)
+
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* non-common GPIMETAFILES *)
+
+#if defined(INCL_GPIDEFAULTS)
+
+   (*** default functions *)
+
+   PROCEDURE GpiQueryDefArcParams(hps               : HPS
+                                 ;VAR arcpArcParams : ARCPARAMS
+                                 ): BOOL;
+
+   PROCEDURE GpiQueryDefAttrs(hps        : HPS
+                             ;lPrimType  : LONG
+                             ;flAttrMask : ULONG
+                             ;ppbunAttrs : PBUNDLE
+                             ): BOOL;
+
+   PROCEDURE GpiQueryDefTag(hps       : HPS
+                           ;VAR plTag : LONG
+                           ): BOOL;
+
+   PROCEDURE GpiQueryDefViewingLimits(hps           : HPS
+                                     ;VAR rclLimits : RECTL
+                                     ): BOOL;
+
+   PROCEDURE GpiSetDefArcParams(hps               : HPS
+                               ;VAR arcpArcParams : ARCPARAMS
+                               ): BOOL;
+
+   PROCEDURE GpiSetDefAttrs(hps        : HPS
+                           ;lPrimType  : LONG
+                           ;flAttrMask : ULONG
+                           ;ppbunAttrs : PBUNDLE
+                           ): BOOL;
+
+   PROCEDURE GpiSetDefTag(hps  : HPS
+                         ;lTag : LONG
+                         ): BOOL;
+
+   PROCEDURE GpiSetDefViewingLimits(hps           : HPS
+                                   ;VAR rclLimits : RECTL
+                                   ): BOOL;
+
+
+#endif (* GPIDEFAULTS *)
+
+#if defined(INCL_GPIPOLYGON)
+   TYPE POLYGON = RECORD  (* plygn *)
+      ulPoints: ULONG;
+      aPointl:  PPOINTL;
+   END;
+   TYPE PPOLYGON = POINTER TO POLYGON;
+
+   TYPE POLYSET = RECORD  (* plyst *)
+      ulPolys:    ULONG;
+      aPolygon:   ARRAY [0..0] OF POLYGON;
+   END;
+   TYPE PPOLYSET = POINTER TO POLYSET;
+
+   (* control flags used by GpiPolygons *)
+   CONST POLYGON_NOBOUNDARY                =  0;
+   CONST POLYGON_BOUNDARY                = 00001H;
+
+   CONST POLYGON_ALTERNATE                 =  0;
+   CONST POLYGON_WINDING                 = 00002H;
+
+   CONST POLYGON_INCL                      =  0;
+   CONST POLYGON_EXCL                    = 00008H;
+
+   #if ! defined(INCL_DDIDEFS)
+
+      PROCEDURE GpiPolygons(hps       : HPS
+                           ;ulCount   : ULONG
+                           ;aplgn     : ARRAY OF POLYGON
+                           ;flOptions : ULONG
+                           ;flModel   : ULONG
+                           ): LONG;
+
+   #endif (* no INCL_DDIDEFS *)
+#endif (* non-common GPIPOLYGON *)
+
+#if defined(INCL_GPIERRORS)
+   #include <pmerr.hm>
+#endif (* GPIERRORS *)
+
+
+(**************************** end of file **********************************)

@@ -1,0 +1,16 @@
+toggleon
+'i',SHIFT   ="INTEGER"
+'c'         ="CHAR"
+'c',SHIFT   ="CARDINAL"
+'v'         ="VAR"
+'s'         ="ARRAY OF CHAR"
+'[',CONTROL = "ARRAY OF "
+'['         = "ARRAY [..] OF ",LEFTWORD,LEFT,LEFT,LEFT,LEFT
+'i',CONTROL = "IF  THEN",CR,"ELSE",CR,"END;",UP,UP,LINEEND,LEFTWORD,LEFT
+'i'         = "IF  THEN",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+'p'         = BLKLEFTWORD,COPY,LEFT,"PROCEDURE ",LINEEND,CR,"BEGIN",CR,"END ",PASTE,";",UP,UP,LINEEND,"();",LEFT,LEFT
+'p',CONTROL = BLKLEFTWORD,CUT,LEFT,"(* (cистемна€) функци€, с указанием соответствующего сокращенного названи€ *)",CR,"(* перечень выполн€емых действий в декларативной форме                     *)",CR,"(* параметры процедуры об€зательно комментируютс€ при ее объ€влении!       *)",CR,"PROCEDURE ",PASTE,CR,"BEGIN",CR,"END ",PASTE,";",UP,UP,LINEEND,"();",LEFT,LEFT
+'r'         = "REPEAT",CR,"UNTIL ;",LEFT
+'t',CONTROL = TRUE
+'w'         = "WHILE  DO",CR,"END;",UP,LINEEND,LEFTWORD,LEFT
+'-'         =LINESTART,"--------------------------------------------------------------------------------",CR

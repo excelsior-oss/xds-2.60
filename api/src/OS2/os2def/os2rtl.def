@@ -1,0 +1,124 @@
+<* CSTDLIB + *>
+<* NOHEADER + *>
+<* M2EXTENSIONS + *>
+DEFINITION MODULE ["SysCall"] OS2RTL;
+
+IMPORT OS2;
+
+--os2def.hm:
+   --CONST MAKEP( sel,off ) (( void * )( void * _Seg16 )( (sel) << 16 | (off) ))
+   --CONST MAKE16P( sel,off ) (( void * _Seg16 )( (sel) << 16 | (off) ))
+   --CONST SELECTOROF(ptr)     ((((ULONG)(ptr))>>13)|7)
+   --CONST OFFSETOF(p)         (((PUSHORT)&(p))[0])
+--CONST MAKETYPE(v, type)   (*((type *)&v))
+--CONST FIELDOFFSET(type, field)    ((SHORT)&(((type *)0)->field))
+--CONST MAKEULONG(l, h)  ((ULONG)(((USHORT)(l)) | ((ULONG)((USHORT)(h))) << 16))
+--CONST MAKELONG(l, h)   ((LONG)MAKEULONG(l, h))
+--CONST MAKEUSHORT(l, h) (((USHORT)(l)) | ((USHORT)(h)) << 8)
+--CONST MAKESHORT(l, h)  ((SHORT)MAKEUSHORT(l, h))
+--CONST LOBYTE(w)       LOUCHAR(w)
+--CONST HIBYTE(w)       HIUCHAR(w)
+--CONST LOUCHAR(w)      ((UCHAR)(w))
+--CONST HIUCHAR(w)      ((UCHAR)(((USHORT)(w) >> 8) & 0xff))
+--CONST LOUSHORT(l)     ((USHORT)((ULONG)l))
+--CONST HIUSHORT(l)     ((USHORT)(((ULONG)(l) >> 16) & 0xffff))
+--CONST MAKEERRORID(sev, error) (ERRORID)(MAKEULONG((error), (sev)))
+--CONST ERRORIDERROR(errid)            (LOUSHORT(errid))
+--CONST ERRORIDSEV(errid)              (HIUSHORT(errid))
+
+(* PMGPI.H *)
+   -------
+<* IF __GEN_X86__ THEN *>
+
+PROCEDURE MAKEFIXED(intpart : OS2.SHORT; fractpart: OS2.USHORT) : OS2.FIXED;
+PROCEDURE FIXEDFRAC(fx : OS2.FIXED) : OS2.USHORT;
+PROCEDURE FIXEDINT (fx : OS2.FIXED) : OS2.SHORT;
+
+<* END *> (* __GEN_X86__ *)
+
+
+--pmord.hm:
+--CONST BYTE_ORDER(oc)   ((oc)==OCODE_GNOP1 || (oc)==OCODE_GESD)
+--CONST SHORT_ORDER(oc)  ((((oc)^OCODE2_1)&OCODE2_2)==OCODE2_2)
+--CONST LONG_ORDER(oc) (!((oc)==OCODE_VLONG||BYTE_ORDER(oc)||SHORT_ORDER(oc)))
+--CONST VLONG_ORDER(oc)  ((oc)==OCODE_VLONG)
+
+(* PMWIN.H *)
+   -------
+
+--CONST MPFROMP(p)                 = MPARAM(((ULONG)(p)))
+
+<* IF __GEN_X86__ THEN *>
+
+PROCEDURE MPFROMHWND   (hwnd : OS2.HWND)                 : OS2.MPARAM;
+PROCEDURE MPFROMCHAR   (ch : CHAR)                       : OS2.MPARAM;
+PROCEDURE MPFROMSHORT  (s : OS2.SHORT)                   : OS2.MPARAM;
+PROCEDURE MPFROM2SHORT (s1, s2 : OS2.SHORT)              : OS2.MPARAM;
+PROCEDURE MPFROMSH2CH  (s: OS2.SHORT; uch1, uch2 : CHAR) : OS2.MPARAM;
+PROCEDURE MPFROMLONG   (l : OS2.LONG)                    : OS2.MPARAM;
+
+--PROCEDURE PVOIDFROMMP(mp)            ((VOID *)(mp))
+PROCEDURE HWNDFROMMP   (mp : OS2.MPARAM) : OS2.HWND;
+PROCEDURE CHAR1FROMMP  (mp : OS2.MPARAM) : CHAR;
+PROCEDURE CHAR2FROMMP  (mp : OS2.MPARAM) : CHAR;
+PROCEDURE CHAR3FROMMP  (mp : OS2.MPARAM) : CHAR;
+PROCEDURE CHAR4FROMMP  (mp : OS2.MPARAM) : CHAR;
+PROCEDURE SHORT1FROMMP (mp : OS2.MPARAM) : OS2.SHORT;
+PROCEDURE SHORT2FROMMP (mp : OS2.MPARAM) : OS2.SHORT;
+PROCEDURE LONGFROMMP   (mp : OS2.MPARAM) : OS2.LONG;
+
+--PROCEDURE MRFROMP(p)                 ((MRESULT)(VOID *)(p))
+PROCEDURE MRFROMSHORT  (s : OS2.SHORT)         : OS2.MRESULT;
+PROCEDURE MRFROM2SHORT (s1, s2 : OS2.SHORT)    : OS2.MRESULT;
+PROCEDURE MRFROMLONG   (l : OS2.LONG)          : OS2.MRESULT;
+
+--PROCEDURE PVOIDFROMMR  (mr)            ((VOID *)(mr))
+PROCEDURE SHORT1FROMMR (mr : OS2.MRESULT) : OS2.SHORT;
+PROCEDURE SHORT2FROMMR (mr : OS2.MRESULT) : OS2.SHORT;
+PROCEDURE LONGFROMMR   (mr : OS2.MRESULT) : OS2.LONG;
+
+<* END *> (* __GEN_X86__ *)
+
+(***** Extra "macros" *************************************************)
+
+PROCEDURE MPFROMUSHORT (us : OS2.USHORT)                 : OS2.MPARAM;
+PROCEDURE MPFROM2USHORT(us1, us2 : OS2.USHORT)           : OS2.MPARAM;
+PROCEDURE MPFROMULONG  (ul : OS2.ULONG)                  : OS2.MPARAM;
+
+PROCEDURE USHORT1FROMMP(mp : OS2.MPARAM) : OS2.USHORT;
+PROCEDURE USHORT2FROMMP(mp : OS2.MPARAM) : OS2.USHORT;
+PROCEDURE ULONGFROMMP  (mp : OS2.MPARAM) : OS2.ULONG;
+
+PROCEDURE MRFROMUSHORT (us : OS2.USHORT)       : OS2.MRESULT;
+PROCEDURE MRFROM2USHORT(us1, us2 : OS2.USHORT) : OS2.MRESULT;
+PROCEDURE MRFROMULONG  (ul : OS2.ULONG)        : OS2.MRESULT;
+
+PROCEDURE USHORT1FROMMR(mr : OS2.MRESULT) : OS2.USHORT;
+PROCEDURE USHORT2FROMMR(mr : OS2.MRESULT) : OS2.USHORT;
+PROCEDURE ULONGFROMMR  (mr : OS2.MRESULT) : OS2.ULONG;
+
+   --CONST COMMANDMSG(pmsg) \
+   --CONST MOUSEMSG(pmsg) \
+   --CONST CHARMSG(pmsg) \
+   --CONST WinCheckButton(hwndDlg; id; usCheckState) \
+   --CONST WinQueryButtonCheckstate(hwndDlg; id) \
+   --CONST WinEnableControl(hwndDlg; id; fEnable) \
+   --CONST WinIsControlEnabled(hwndDlg; id) \
+   --CONST WinDeleteLboxItem(hwndLbox; index) \
+   --CONST WinInsertLboxItem(hwndLbox; index; psz) \
+   --CONST WinQueryLboxCount(hwndLbox) \
+   --CONST WinQueryLboxItemText(hwndLbox; index; psz; cchMax) \
+   --CONST WinQueryLboxItemTextLength(hwndLbox; index)         \
+   --CONST WinSetLboxItemText(hwndLbox; index; psz) \
+   --CONST WinQueryLboxSelectedItem(hwndLbox) \
+   --CONST WinCheckMenuItem(hwndMenu; id; fcheck) \
+   --CONST WinIsMenuItemChecked(hwndMenu; id) \
+   --CONST WinEnableMenuItem(hwndMenu; id; fEnable) \
+   --CONST WinIsMenuItemEnabled(hwndMenu; id)  \
+   --CONST WinSetMenuItemText(hwndMenu; id; psz) \
+   --CONST WinIsMenuItemValid(hwndMenu; id) \
+      --CONST MAKEINTATOM(a)  ((PCH)MAKEULONG(a; = 0ffff))
+      --CONST DDES_PSZITEMNAME(pddes) \
+      --CONST DDES_PABDATA(pddes)       \
+      --CONST DDEI_PCONVCONTEXT(pddei)        \
+END OS2RTL.

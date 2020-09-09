@@ -1,0 +1,16 @@
+LIBRARY PMPIC
+EXPORTS
+  PicPrint                   @11
+  Pic32Print                 @11
+  PicIchg                    @12
+  Pic32Ichg                  @12
+  PrfPif2Met                 @13
+  Prf32Pif2Met               @13
+  PIC16PRINT                 @1
+  PIC16ICHG                  @2
+  PICPRINT                   @11
+  PIC32PRINT                 @11
+  PICICHG                    @12
+  PIC32ICHG                  @12
+  PRFPIF2MET                 @13
+  PRF32PIF2MET               @13

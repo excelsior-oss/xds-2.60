@@ -1,0 +1,26 @@
+(* mac_vgajoystick.def  Feb 18  12:3:31  1999 *)
+(* Copyright (c) 1999, JSC XDS *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+(* Prototypes for macro implementation *)
+
+DEFINITION MODULE mac_vgajoystick;
+
+PROCEDURE ["C"] joystick_button1 ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_button2 ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_button3 ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_button4 ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_getb1 (): CHAR;
+PROCEDURE ["C"] joystick_getb2 (): CHAR;
+PROCEDURE ["C"] joystick_getb3 (): CHAR;
+PROCEDURE ["C"] joystick_getb4 (): CHAR;
+PROCEDURE ["C"] joystick_x ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_y ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_z ( i: INTEGER ): CHAR;
+PROCEDURE ["C"] joystick_getx (): CHAR;
+PROCEDURE ["C"] joystick_gety (): CHAR;
+PROCEDURE ["C"] joystick_getz (): CHAR;
+
+END mac_vgajoystick.

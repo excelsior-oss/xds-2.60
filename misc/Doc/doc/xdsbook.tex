@@ -1,0 +1,64 @@
+% Generic manual
+% Copyright (c) Excelsior 1999,2000. All Rights Reserved.
+%
+% To create a new book:
+%   - create a subdirectory for a book
+%   - in this subdirectory, create a main file for the book, containing
+%     exactly the following string:
+%     \input{../xdsbook}
+%   - create the file called 'preamble.tex', which will be included in the
+%     preamble
+%   - create the file 'body.tex', which will be included in the body of the
+%     document
+
+\documentclass[12pt,a4paper]{book}
+\usepackage[T1]{fontenc}
+\usepackage{latexsym}
+\usepackage{makeidx}
+
+\newif\ifonline\onlinefalse   % set to true automatically by LaTeX OnLine
+\ifonline
+  \newif\ifpdf\pdffalse
+\else
+  \input{../pdfquery.tex}
+\fi
+
+\ifpdf
+\usepackage[pdftex,pdfstartview=FitH,colorlinks,plainpages=false,linkcolor=blue]{hyperref}
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage[colorlinks,plainpages=false,linkcolor=blue]{hyperref}
+\usepackage{graphicx}
+\fi
+
+% Uncomment one of the following lines to use Adobe Postscript fonts:
+%\usepackage{avant}    % AvantGarde Fonts (sf only)
+%\usepackage{bookman}  % Bookman Fonts
+%\usepackage{chancery} % ZapfChancery (rm only)
+%\usepackage{helvet}   % Helvetica (sf only)
+%\usepackage{newcent}  % NewCenturySchoolbook
+%\usepackage{palatino} % Palatino 
+\usepackage{times}    % Times Roman
+
+%\usepackage[scaled]{luximono}
+
+\newif\ifenglish\englishtrue
+
+\input{../def.tex}
+
+\input{preamble.tex}
+
+\begin{document}
+
+\input{../title.tex}
+
+\setlength{\parskip}{0 pt}
+\tableofcontents
+% \listoftables !!!
+\setlength{\parskip}{6 pt}
+
+\input{body.tex}
+
+\input{../back.tex}
+
+\end{document}

@@ -1,0 +1,30 @@
+(* 
+------------------------------------------------------------------
+   This file is provided on AS IS basis. No warranties applied.
+   Interface to XDS run-rime system can be changed at any moment.
+------------------------------------------------------------------
+  This module defines an interface to XDS run-time initialization.
+
+  XDS_Init must be called from main() before you'll call any
+           Modula/Oberon code,
+  XDS_Exit will terminate an application,
+  Call XDS_Init_History just after XDS_Init if you'll need a
+           "execution history" feature of XDS
+*)
+
+<*+M2EXTENSIONS*>
+
+DEFINITION MODULE ["C"] XDS;
+
+TYPE PINT   = POINTER TO INTEGER;
+     PPCHAR = POINTER TO POINTER TO CHAR;
+
+PROCEDURE ["C"] XDS_Init (argc:        PINT;
+                          argv:        PPCHAR;
+                          gcauto:      INTEGER;
+                          gcthreshold: INTEGER;
+                          heap_limit:  INTEGER);
+PROCEDURE ["C"] XDS_Init_History;
+PROCEDURE ["C"] XDS_Exit;
+
+END XDS.

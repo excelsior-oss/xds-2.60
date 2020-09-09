@@ -1,0 +1,441 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMSHL.H
+*
+* OS/2 Presentation Manager Shell constants; types; messages and
+* function declarations include file.
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   INCL_SHLERRORS       defined if INCL_ERRORS is defined
+*   INCL_WINPROGRAMLIST  Include Program List Calls
+*   INCL_WINSHELLDATA    Include Presentation Manager profile calls
+*   INCL_WINSWITCHLIST   Include Switch List Calls
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+#define SHL_INCLUDED
+
+
+(*** if error definitions are required then allow Shell errors *************)
+#if defined(INCL_ERRORS)
+   #define INCL_SHLERRORS
+#endif (* INCL_ERRORS *)
+
+
+#if ! defined(SESMGR)
+   (*** common types; constants and function declarations ******************)
+
+
+   (*** maximum title length ***********************************************)
+   CONST MAXNAMEL = 60;
+
+
+   (*** program handle *****************************************************)
+   TYPE HPROGRAM  = LHANDLE;       (* hprog *)
+   TYPE PHPROGRAM = POINTER TO HPROGRAM;
+   TYPE HAPP = LHANDLE;
+
+
+   (*** ini file handle ****************************************************)
+   TYPE HINI  = LHANDLE;           (* hini *)
+   TYPE PHINI = POINTER TO HINI;
+
+
+   CONST HINI_PROFILE        = HINI(0);
+   CONST HINI_USERPROFILE    = HINI(0FFFFFFFFH);
+   CONST HINI_SYSTEMPROFILE  = HINI(0FFFFFFFEH);
+   CONST HINI_USER           = HINI(0FFFFFFFFH);
+   CONST HINI_SYSTEM         = HINI(0FFFFFFFEH);
+
+
+   TYPE PRFPROFILE = RECORD   (* prfpro *)
+      cchUserName:     ULONG  ;
+      pszUserName:     PSZ    ;
+      cchSysName:      ULONG  ;
+      pszSysName:      PSZ    ;
+   END;
+   TYPE PPRFPROFILE = POINTER TO PRFPROFILE;
+
+#endif  (* end #ifndef SESMGR *)
+
+#if defined(INCL_WINPROGRAMLIST)
+   (*** program list section ***********************************************)
+   #if ! defined(SESMGR)
+
+      (*** maximum path length *********************************************)
+      CONST  MAXPATHL = 128;
+
+      (*** root group handle ***********************************************)
+      CONST  SGH_ROOT =  HPROGRAM(0FFFFFFFFH);
+
+      TYPE HPROGARRAY = RECORD      (* hpga *)
+         ahprog:  ARRAY [0..0] OF HPROGRAM;
+      END;
+      TYPE PHPROGARRAY = POINTER TO HPROGARRAY;
+
+   #endif  (* end of #ifndef SESMGR *)
+
+   TYPE PROGCATEGORY  = ULONG;       (* progc *)
+
+   TYPE PPROGCATEGORY = POINTER TO PROGCATEGORY;
+
+   (*** values acceptable for PROGCATEGORY for PM groups *******************)
+   CONST  PROG_DEFAULT             = PROGCATEGORY(0);
+   CONST  PROG_FULLSCREEN          = PROGCATEGORY(1);
+   CONST  PROG_WINDOWABLEVIO       = PROGCATEGORY(2);
+   CONST  PROG_PM                  = PROGCATEGORY(3);
+   CONST  PROG_GROUP               = PROGCATEGORY(5);
+   CONST  PROG_REAL                = PROGCATEGORY(4);
+   CONST  PROG_VDM                 = PROGCATEGORY(4);
+   CONST  PROG_WINDOWEDVDM         = PROGCATEGORY(7);
+   CONST  PROG_DLL                 = PROGCATEGORY(6);
+   CONST  PROG_PDD                 = PROGCATEGORY(8);
+   CONST  PROG_VDD                 = PROGCATEGORY(9);
+   CONST  PROG_WINDOW_REAL         = PROGCATEGORY(10);
+   CONST  PROG_WINDOW_PROT         = PROGCATEGORY(11);
+   CONST  PROG_30_STD              = PROGCATEGORY(11);
+   CONST  PROG_WINDOW_AUTO         = PROGCATEGORY(12);
+   CONST  PROG_SEAMLESSVDM         = PROGCATEGORY(13);
+   CONST  PROG_30_STDSEAMLESSVDM   = PROGCATEGORY(13);
+   CONST  PROG_SEAMLESSCOMMON      = PROGCATEGORY(14);
+   CONST  PROG_30_STDSEAMLESSCOMMON = PROGCATEGORY(14);
+   CONST  PROG_31_STDSEAMLESSVDM   = PROGCATEGORY(15);
+   CONST  PROG_31_STDSEAMLESSCOMMON = PROGCATEGORY(16);
+   CONST  PROG_31_ENHSEAMLESSVDM   = PROGCATEGORY(17);
+   CONST  PROG_31_ENHSEAMLESSCOMMON = PROGCATEGORY(18);
+   CONST  PROG_31_ENH              = PROGCATEGORY(19);
+   CONST  PROG_31_STD              = PROGCATEGORY(20);
+   CONST  PROG_RESERVED            = PROGCATEGORY(255);
+
+   #if ! defined(SESMGR)
+
+      TYPE PROGTYPE = RECORD        (* progt *)
+         progc:        PROGCATEGORY ;
+         fbVisible:    ULONG        ;
+      END;
+      TYPE PPROGTYPE = POINTER TO PROGTYPE;
+
+
+      (*** visibility flag for PROGTYPE structure **************************)
+      CONST  SHE_VISIBLE         = 000H;
+      CONST  SHE_INVISIBLE       = 001H;
+      CONST  SHE_RESERVED        = 0FFH;
+
+      (*** Protected group flag for PROGTYPE structure *********************)
+      CONST  SHE_UNPROTECTED     = 000H;
+      CONST  SHE_PROTECTED       = 002H;
+
+
+
+      (*** Structures associated with 'Prf' calls **************************)
+      TYPE PROGDETAILS = RECORD    (* progde *)
+         Length:         ULONG;    (* set this to sizeof(PROGDETAILS)  *)
+         progt:          PROGTYPE;
+         pszTitle:       PSZ;      (* any of the pointers can be NULL  *)
+         pszExecutable:  PSZ;
+         pszParameters:  PSZ;
+         pszStartupDir:  PSZ;
+         pszIcon:        PSZ;
+         pszEnvironment: PSZ; (* this is terminated by  /0/0      *)
+         swpInitial:     SWP;     (* this replaces XYWINSIZE          *)
+      END;
+      TYPE  PPROGDETAILS = POINTER TO PROGDETAILS;
+
+      TYPE PROGTITLE = RECORD   (* progti *)
+         hprog:         HPROGRAM ;
+         progt:         PROGTYPE ;
+         pszTitle:      PSZ      ;
+      END;
+      TYPE PPROGTITLE = POINTER TO PROGTITLE;
+
+      (*** Program List API Function Definitions ***************************)
+
+
+      (*** Program List API available 'Prf' calls **************************)
+
+      PROCEDURE PrfQueryProgramTitles(hini         : HINI
+                                     ;hprogGroup   : HPROGRAM
+                                     ;pTitles      : PPROGTITLE
+                                     ;cchBufferMax : ULONG
+                                     ;pulCount     : PULONG
+                                     ): ULONG;
+
+      (*********************************************************************)
+      (*  NOTE: string information is concatanated after the array of      *)
+      (*        PROGTITLE structures so you need to allocate storage       *)
+      (*        greater than sizeof(PROGTITLE)*cPrograms to query programs *)
+      (*        in a group.                                                *)
+      (*                                                                   *)
+      (*  PrfQueryProgramTitles recommended usage to obtain titles of all  *)
+      (*  programs in a group (Hgroup=SGH_ROOT is for all groups):         *)
+      (*                                                                   *)
+      (*  BufLen = PrfQueryProgramTitles(Hini; Hgroup;                     *)
+      (*                                  (PPROGTITLE)NULL; 0; &Count);    *)
+      (*                                                                   *)
+      (*  Alocate buffer of  Buflen                                        *)
+      (*                                                                   *)
+      (*  Len = PrfQueryProgramTitles(Hini; Hgroup; (PPROGTITLE)pBuffer;   *)
+      (*                               BufLen; pCount);                    *)
+      (*                                                                   *)
+      (*********************************************************************)
+
+      PROCEDURE PrfAddProgram(hini       : HINI
+                             ;pDetails   : PPROGDETAILS
+                             ;hprogGroup : HPROGRAM
+                             ): HPROGRAM;
+
+      PROCEDURE PrfChangeProgram(hini     : HINI
+                                ;hprog    : HPROGRAM
+                                ;pDetails : PPROGDETAILS
+                                ): BOOL;
+
+      PROCEDURE PrfQueryDefinition(hini         : HINI
+                                  ;hprog        : HPROGRAM
+                                  ;pDetails     : PPROGDETAILS
+                                  ;cchBufferMax : ULONG
+                                  ): ULONG;
+
+      (*********************************************************************)
+      (*  NOTE: string information is concatanated after the PROGDETAILS   *)
+      (*        field structure so you need to allocate storage greater    *)
+      (*        than sizeof(PROGDETAILS) to query programs                 *)
+      (*                                                                   *)
+      (*  PrfQueryDefinition recomended usage:                             *)
+      (*                                                                   *)
+      (*  bufferlen = PrfQueryDefinition(Hini;Hprog;(PPROGDETAILS)NULL;0)  *)
+      (*                                                                   *)
+      (*  Alocate buffer of bufferlen bytes                                *)
+      (*  set Length field (0 will be supported)                           *)
+      (*                                                                   *)
+      (*  (PPROGDETAILS)pBuffer->Length=sizeof(PPROGDETAILS)               *)
+      (*                                                                   *)
+      (*  len = PrfQueryDefinition(Hini; Hprog; (PPROGDETAILS)pBuffer;     *)
+      (*      bufferlen)                                                   *)
+      (*********************************************************************)
+
+      PROCEDURE PrfRemoveProgram(hini  : HINI
+                                ;hprog : HPROGRAM
+                                ): BOOL;
+
+      PROCEDURE PrfQueryProgramHandle(hini         : HINI
+                                     ;pszExe       : PCSZ
+                                     ;phprogArray  : PHPROGARRAY
+                                     ;cchBufferMax : ULONG
+                                     ;pulCount     : PULONG
+                                     ): ULONG;
+
+      PROCEDURE PrfCreateGroup(hini         : HINI
+                              ;pszTitle     : PCSZ
+                              ;chVisibility : UCHAR
+                              ): HPROGRAM;
+
+      PROCEDURE PrfDestroyGroup(hini       : HINI
+                               ;hprogGroup : HPROGRAM
+                               ): BOOL;
+
+      PROCEDURE PrfQueryProgramCategory(hini   : HINI
+                                       ;pszExe : PCSZ
+                                       ): PROGCATEGORY;
+
+      PROCEDURE WinStartApp(hwndNotify : HWND
+                           ;pDetails   : PPROGDETAILS
+                           ;pszParams  : PCSZ
+                           ;Reserved   : PVOID
+                           ;fbOptions  : ULONG
+                           ): HAPP;
+
+      (*** bit values for Options parameter ********************************)
+      CONST  SAF_VALIDFLAGS        = 0001FH;
+
+      CONST  SAF_INSTALLEDCMDLINE  = 00001H;   (* use installed parameters *)
+      CONST  SAF_STARTCHILDAPP     = 00002H;   (* related application      *)
+      CONST  SAF_MAXIMIZED         = 00004H;   (* Start App maximized *)
+      CONST  SAF_MINIMIZED         = 00008H;   (* Start App minimized; if !SAF_MAXIMIZED *)
+      CONST  SAF_BACKGROUND        = 00010H;   (* Start app in the background *)
+
+
+      PROCEDURE WinTerminateApp(happ : HAPP): BOOL;
+
+   #endif (* end of #ifndef SESMGR *)
+#endif (* INCL_WINPROGRAMLIST *)
+
+
+(*** switch list section ***************************************************)
+
+TYPE HSWITCH  = LHANDLE;        (* hsw *)
+TYPE PHSWITCH = POINTER TO HSWITCH;
+
+#if ! defined(SESMGR)
+   #if (defined(INCL_WINSWITCHLIST) || ! defined(INCL_NOCOMMON))
+
+      TYPE SWCNTRL = RECORD         (* swctl *)
+         hwnd:             HWND     ;
+         hwndIcon:         HWND     ;
+         hprog:            HPROGRAM ;
+         idProcess:        PID      ;
+         idSession:        ULONG    ;
+         uchVisibility:    ULONG    ;
+         fbJump:           ULONG    ;
+         szSwtitle:        ARRAY [0..MAXNAMEL+3] OF CHAR;
+         bProgType:        ULONG    ;
+      END;
+      TYPE PSWCNTRL = POINTER TO SWCNTRL;
+
+      (*** visibility flag for SWCNTRL structure ***************************)
+      CONST  SWL_VISIBLE    = 04;
+      CONST  SWL_INVISIBLE  = 01;
+      CONST  SWL_GRAYED     = 02;
+
+      (*** jump flag for SWCNTRL structure *********************************)
+      CONST  SWL_JUMPABLE    = 02;
+      CONST  SWL_NOTJUMPABLE = 01;
+
+
+      (*** Switching Program functions *************************************)
+      PROCEDURE WinAddSwitchEntry(VAR p : SWCNTRL): HSWITCH;
+      PROCEDURE WinRemoveSwitchEntry(h : HSWITCH): ULONG;
+
+   #endif  (* not INCL_NOCOMMON *)
+
+   #if defined(INCL_WINSWITCHLIST)
+
+      TYPE SWENTRY = RECORD         (* swent *)
+         hswitch:   HSWITCH ;
+         swctl:     SWCNTRL ;
+      END;
+      TYPE PSWENTRY = POINTER TO SWENTRY;
+
+      TYPE SWBLOCK = RECORD         (* swblk *)
+         cswentry:         ULONG    ;
+         aswentry:         ARRAY [0..0] OF SWENTRY;
+      END;
+      TYPE PSWBLOCK = POINTER TO SWBLOCK;
+
+
+      (*** 32-bit versions of these APIs have 32-bit parameters *********)
+      PROCEDURE WinChangeSwitchEntry(hswitchSwitch       : HSWITCH
+                                    ;VAR swctlSwitchData : SWCNTRL
+                                    ): ULONG;
+
+      PROCEDURE WinCreateSwitchEntry(hab                 : HAB
+                                    ;VAR swctlSwitchData : SWCNTRL
+                                    ): HSWITCH;
+
+      PROCEDURE WinQuerySessionTitle(hab         : HAB
+                                    ;usSession   : ULONG
+                                    ;VAR szTitle : ARRAY OF CHAR
+                                    ;usTitlelen  : ULONG
+                                    ): ULONG;
+
+      PROCEDURE WinQuerySwitchEntry(hswitchSwitch       : HSWITCH
+                                   ;VAR swctlSwitchData : SWCNTRL
+                                   ): ULONG;
+
+      PROCEDURE WinQuerySwitchHandle(hwnd       : HWND
+                                    ;pidProcess : PID
+                                    ): HSWITCH;
+
+      PROCEDURE WinQuerySwitchList(hab                           : HAB
+                                  ;VAR [NIL] pswblkSwitchEntries : SWBLOCK
+                                  ;usDataLength                  : ULONG
+                                  ): ULONG;
+
+      PROCEDURE WinQueryTaskSizePos(hab                 : HAB
+                                   ;usScreenGroup       : ULONG
+                                   ;VAR swpPositionData : SWP
+                                   ): ULONG;
+
+      PROCEDURE WinQueryTaskTitle(usSession   : ULONG
+                                 ;VAR szTitle : ARRAY OF CHAR
+                                 ;usTitlelen  : ULONG
+                                 ): ULONG;
+
+      PROCEDURE WinSwitchToProgram(hswitchSwHandle : HSWITCH): ULONG;
+
+
+   #endif (* end of INCL_WINSWITCHLIST *)
+
+   #if defined(INCL_WINSHELLDATA)
+
+      (*** OS2.INI Access functions ****************************************)
+
+      PROCEDURE PrfQueryProfileInt(hini     : HINI
+                                  ;szApp    : ARRAY OF CHAR
+                                  ;szKey    : ARRAY OF CHAR
+                                  ;sDefault : LONG
+                                  ): LONG;
+
+      PROCEDURE PrfQueryProfileString(hini         : HINI
+                                     ;pszApp       : PCSZ       (* !!! NIL *)
+                                     ;pszKey       : PCSZ       (* !!! NIL *)
+                                     ;pszDefault   : PCSZ       (* !!! NIL *)
+                                     ;pBuffer      : PVOID
+                                     ;cchBufferMax : ULONG
+                                     ): ULONG;
+
+      PROCEDURE PrfWriteProfileString(hini    : HINI
+                                     ;szApp   : ARRAY OF CHAR
+                                     ;pszKey  : PCSZ            (* !!! NIL *)
+                                     ;pszData : PCSZ            (* !!! NIL *)
+                                     ): BOOL;
+
+      PROCEDURE PrfQueryProfileSize(hini         : HINI
+                                   ;pszApp       : PCSZ         (* !!! NIL *)
+                                   ;pszKey       : PCSZ         (* !!! NIL *)
+                                   ;VAR ulReqLen : ULONG
+                                   ): BOOL;
+
+      PROCEDURE PrfQueryProfileData(hini            : HINI
+                                   ;pszApp          : PCSZ      (* !!! NIL *)
+                                   ;pszKey          : PCSZ      (* !!! NIL *)
+                                   ;pBuffer         : PVOID
+                                   ;VAR ulBuffLen   : ULONG
+                                   ): BOOL;
+
+      PROCEDURE PrfWriteProfileData(hini            : HINI
+                                   ;szApp           : ARRAY OF CHAR
+                                   ;pszKey          : PCSZ      (* !!! NIL *)
+                                   ;pData           : PVOID
+                                   ;cchDataLen      : ULONG
+                                   ): BOOL;
+
+      PROCEDURE PrfOpenProfile(hab        : HAB
+                              ;szFileName : ARRAY OF CHAR
+                              ): HINI;
+
+      PROCEDURE PrfCloseProfile(hini : HINI): BOOL;
+
+      PROCEDURE PrfReset(hab             : HAB
+                        ;VAR pPrfProfile : PRFPROFILE
+                        ): BOOL;
+
+      PROCEDURE PrfQueryProfile(hab            : HAB
+                               ;VAR PrfProfile : PRFPROFILE
+                               ): BOOL;
+
+      (*** public message; broadcast on WinReset ***************************)
+      CONST  PL_ALTERED = 0008EH;  (* WM_SHELLFIRST + 0E *)
+
+   #endif (* INCL_WINSHELLDATA *)
+
+   #if defined(INCL_SHLERRORS )
+      #include <pmerr.hm>
+   #endif (* INCL_SHLERRORS *)
+
+#endif (* of #ifndef SESMGR *)
+
+
+(**************************** end of file **********************************)

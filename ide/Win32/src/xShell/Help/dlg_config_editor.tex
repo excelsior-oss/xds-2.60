@@ -1,0 +1,1017 @@
+\ifenglish
+\section {Configure Editor dialog}
+\else
+\section {диалог Configure Editor}
+\fi
+\public{CFGEDIT\_DIALOG}
+\nominitoc
+
+\ifenglish
+XDS IDE uses its own text editor called {\bf PoorEdit} for its relatively
+small set of functions and modest nature of its developers who will never
+call something {\bf Rich} unless it is really rich.
+
+The editor is not configurable in general sense of a word. The keyboard
+can't be configured now and the editor doesn't have any macro language.
+The editor behaves in a way standard for Windows in most cases. However,
+some of its properties can be tuned to make it resemble some text editors
+from other systems. This can be done in this dialog.
+
+\else
+XDS IDE использует собственный текстовый редактор, называемый {\bf PoorEdit}
+за его относительно малый набор функций, и по причине природной скромности
+его разработчиков, которые никогда не назовут нечто {\bf богатым}, если
+оно не богато в действительности.
+
+Редактор не является настраиваемым в общем смысле слова. На настоящий момент
+нельзя настраивать клавиатуру, и в редакторе нет макроязыка Редактор ведет
+себя обычным во многих случаях для Windows образом. Тем не менее,
+некоторые из его свойств могут настраиваться таким образом, чтобы редактор
+походил на редакторы из других систем. Это может быть сделано в этом диалоге.
+\fi
+
+\ifenglish
+This dialog contains following pages:
+\else
+Этот диалог содержит следующие страницы:
+\fi
+\ref[Tabs and Indents]{CFGEDIT\_TAB\_DIALOG} 
+\ifenglish
+-- set tabulation size and mode and auto-indent mode
+\else
+-- установка режима и размера табуляции и режима авто-отступа.
+\fi
+\ref[Features]{CFGEDIT\_FEATURES\_DIALOG} 
+\ifenglish
+-- fine tune subtle details of editor commands
+\else
+-- тонкая настройка команд редактора.
+\fi
+\ref[Blocks]{CFGEDIT\_BLOCK\_DIALOG} 
+\ifenglish
+-- customize operations with text blocks
+\else
+-- операции кастомизации с текстовыми блоками.
+\fi
+\ref[Show]{CFGEDIT\_SHOW\_DIALOG} 
+\ifenglish
+-- define whether various elements of the editor are visible
+\else
+-- определить, видимы ли различные элементы редактора.
+\fi
+\ref[Encoding]{CFGEDIT\_ENCODING\_DIALOG} 
+\ifenglish
+-- select text encoding, end-of-file and end-of-line style
+\else
+-- выбор кодировки текста, вида конца файла и строки.
+\fi
+\ref[Files]{CFGEDIT\_FILES\_DIALOG} 
+\ifenglish
+-- configure how files are saved
+\else
+-- настройка сохранения файлов на диск.
+\fi
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Tabs and Indents}
+\else
+\subsection{Табуляции и отступы}
+\fi
+\public{CFGEDIT\_TAB\_DIALOG}
+
+\ifenglish
+This page allows to select \ref[tabulation mode]{Tabulation} to use in {\bf Tab style} group.
+
+\else
+Эта страница позволяет выбирать \ref[режим табуляции]{Tabulation}
+ для использования в группе {\bf Tab style}.
+\fi
+\ifenglish
+It also allows to select {\bf tab size} that determines where tab stops are
+situated in the text. Tab stops are situated at positions whose column numbers
+after subtracting 1 are divisible by tab size.
+
+Normally pressing {\bf Enter} key invokes automatic indentation (inserting spaces
+at the beginning of a new line). This option can be turned off and on by
+{\bf Autoindent} checkbox.
+\else
+Она также позволяет выбирать {\bf размер табуляции}, который определяет, где
+располагаются в тексте позиции табуляции. Позиции табуляции разполагаются там,
+где номер столбца с вычтенной единицей нацело делится на размер табуляции.
+
+Обычно нажатие клавиши {\bf Enter} приводит к автоматическому отступу 
+(вставке пробелов в начале новой строки). Эта опция может переключаться с
+помощью контроля {\bf Autoindent}.
+\fi
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Features}
+\else
+\subsection{Свойства}
+\fi
+\public{CFGEDIT\_FEATURES\_DIALOG}
+
+\ifenglish
+This page allows to configure various properties of editor commands such as
+\else
+Эта страница позволяет настраивать различные свойства команд редактора, такие
+как
+\fi
+\begin{itemize}
+\item \ifenglish
+      behavior of {\bf BackSpace} key at the beginning of a line (whether it joins lines or not)
+     \else
+      поведение клавиши {\bf BackSpace} в начале строки (соединяет строки или нет)
+     \fi
+\item \ifenglish
+      behavior of {\bf Delete} key at the end of line (whether it joins lines or not)
+    \else 
+      поведение клавиши {\bf Delete} в конце строки (соединяет строки или нет)
+      \fi
+\item \ifenglish
+      whether {\bf Enter} key in insert mode splits line or just moves to beginning of
+      the next line
+      \else
+      разбивает ли клавиша {\bf Enter} строку в режиме вставки, или лишь
+      передвигает курсор к началу следующей строки
+      \fi
+\item \ifenglish
+      whether {\bf Tab} key in overwrite mode should erase text or just move cursor
+     \else
+      должна ли клавиша {\bf Tab} в режиме перезаписи стирать текст или лишь
+       сдвигать курсор
+      \fi
+\item \ifenglish
+      the state of Insert/Overwrite mode of newly created editor
+      \else
+      состояние Вставки/Перезаписи вновь созданного редактора
+      \fi
+\end{itemize}
+
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Blocks}
+\else
+\subsection{Блоки}
+\fi
+\public{CFGEDIT\_BLOCK\_DIALOG}
+
+\ifenglish
+This page provides means for configuration of editor's handling of selected blocks.
+
+Following features can be configured:
+
+\else
+Эта страница предоставляет средства для настройки работы редактора с блоками
+отметки
+
+Могут быть настроены следующие опции:
+\fi
+\ifenglish
+{\bf Paste when block is selected} group
+-- what happens to existing and inserted block after
+\ref[Paste]{IDM\_PASTE} command.
+Three options are available: new block is
+inserted before the block, after the block or instead of the block.
+\else
+Группа {\bf Paste when block is selected}
+-- что происходит с существующим и вставляемым блоком после команды
+\ref[Paste]{IDM\_PASTE}.
+\fi
+\ifenglish
+{\bf Cursor after Paste operation} group
+-- whether newly pasted block should be selected or, if no, where the cursor should
+be positioned -- before or after the block.
+\else
+Группа {\bf Cursor after Paste operation}
+-- должен ли вклеенный блок отмечаться, или, если нет, то где размещать курсор --
+в начале или в конце блока.
+\fi
+\ifenglish
+{\bf Typing when block is selected}
+-- what happens to the block when new text is typed over it. New text can be inserted
+before the block, after the block or instead of the block.
+\else
+{\bf Набор текста, когда блок отмечен}
+-- что происходит с блоком, когда поверх него пишется новый текст. Новый текст
+может вставляться перед блоком, после блока или на место блока.
+\fi
+\ifenglish
+Note that {\bf Paste} operation is not affected by Insert/Overwrite mode.
+It never overwrites text unless the text is selected and Paste command is
+configured to replace block.
+
+\else
+Заметьте, что на операцию {\bf Paste} не воздействует режим Вставки/Перезаписи
+Текст никогда не перезаписывается, если только текст не отмечен, и команда
+Paste не настроена на замещение блока.
+\fi
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Show}
+\else
+\subsection{Отображение}
+\fi
+\public{CFGEDIT\_SHOW\_DIALOG}
+\ifenglish
+Editor window may have some decorations in and around it.
+This page allows to select what elements to display or to hide:
+\else
+Окно редактирования может быть определенным образом приукрашено.
+Эта страница позволяет выбрать, какие элементы вывести а какие спрятать.
+\fi
+\begin{itemize}
+\item \ifenglish
+      Hard tabs
+      \else
+      Жесткая табуляция
+      \fi
+\item \ifenglish
+      Left margin
+      \else
+      Левые поля
+      \fi
+\item \ifenglish
+      Right margin
+      \else
+      Правые поля
+      \fi
+\item \ifenglish
+      Bookmarks
+      \else
+      Пометки
+      \fi
+\end{itemize}
+
+\ifenglish
+It also allows configuration of right margin position. Note that left margin
+is physical delimiter of areas where you can type and where you can not. Right margin,
+however, is just a reminder for a user that some lines might be too long.
+There is no physical limit of line length.
+
+When bookmarks display is turned on left margin becomes bigger. Bookmarks are
+drawn as circles with bookmark number inside.
+
+Margins are drawn as dotted lines, tabs as small vertical dashed line in tab
+position and horizontal dashed line spanning to the next tab stop.
+\else
+Она также позволяет настраивать положение правого поля. Заметьте, что левые поля
+являются физическим ограничителем области, где вы можете набирать текст. Правые
+поля, однако, -- лишь напоминание пользователю о том, что некоторые строчки могут
+оказаться слишком длинными. Физического ограничения на длину строки не существует.
+
+Когда включено отображение пометок, левые поля становятся больше. Пометки рисуются
+в виде кружков с номером метки внутри.
+
+Поля отображаются как точечный пунктир, табуляция -- в виде небольшой вертикальной
+пунктирной линии в позиции табуляции, и горизонтальной пунктирной линии вплоть до
+следующей позиции табуляции.
+\fi
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Encoding}
+\else
+\subsection{Кодировка}
+\fi
+\public{CFGEDIT\_ENCODING\_DIALOG}
+\ifenglish
+This page allows configuration of text encoding. Following parameters can be
+set:
+
+{\bf OEM conversion} checkbox defines whether edited text is in OEM or Windows encoding.
+For some national character sets such as Cyrillic these encoding really differs,
+and some developers prefer texts to be in OEM encoding to work with it in console mode.
+The OEM conversion mode invokes text conversion during display and typing and
+affects Clipboard operations.
+
+OEM characters also appear when user wishes to use pseudo-graphic characters.
+They'll not be visible in the editor anyway, unless OEM font is used, but when
+OEM encoding is turned on, something reasonable will be displayed on their place
+instead of complete garbage in case it is turned off.
+
+\else
+Эта страница позволяет настраивать кодировку текста. Могут быть установлены
+следующие параметры.
+
+Контроль {\bf OEM conversion} определяет, принадлежит ли редактируемый текст
+кодировке Windows, или OEM. Для некоторых национальных наборов символов, таких
+как Кириллица, эти кодировки различаются, и некоторые разработчики предпочитают
+тексты в OEM кодировке для работы в консольном режиме.
+Режим OEM conversion преобразует текст во время его отображения и набора, и влияет
+на операции с буфером обмена.
+
+Символы OEM появляются также и когда пользователь желает воспользоваться символами
+псевдо-графики. В любом случае, если в редакторе не используется шрифт OEM, они
+видимыми не будут, но если включена OEM кодировка, то на их месте отобразится нечто
+разумное, вместо совершенного хлама в случае, если кодировка отключена.
+\fi
+\ifenglish
+Note that text is stored internally in its original form. It is translated during display
+rather than during load/save operation. That means that even if some OEM characters
+are not present in Windows character set and vice versa, it is still safe to load
+OEM text in the IDE without any risk of information loss.
+
+{\bf End of line style} group defines characters used as line separators when
+files are written to disk. When files are read the IDE recognizes many character
+sequences as line separators: {\bf CR}, {\bf LF}, {\bf CRLF}, and {\bf NUL}
+(zero-code character). When it writes file back it replaces all of them with
+one line separator defined here. Three options are available: {\bf CR}, {\bf LF}
+and {\bf CR LF}.
+\else
+Заметьте, что текст внутри хранится в исходной форме. Он перекодируется скорее во
+время отображения, чем во время операций загрузки/сохранения. Это означает, что
+если даже некоторые OEM символы не присутствуют в наборе символов Windows,
+и наоборот, то все еще можно спокойно загружать в IDE OEM-текст без риска
+потери информации.
+\fi
+\ifenglish
+{\bf Autodetect EOL style} checkbox turns on automatic detection of line separators
+used in files read from disk. When file is read, the editor remembers the line
+separator that is used in it most frequently. This line separator is used when file
+is saved back to disk. This option is very useful if you work with both files that
+you access from UNIX computers by a network and local files at the same time.
+Turning this option on does not disable End-of-line style switch: in this case
+it defines EOL style for newly created file.
+
+{\bf Consider \^Z as EOF} checkbox instruct the editor to stop reading file when
+{\bf Ctrl+Z (0x1A)} character is encountered. It was common to write this
+character at the end of file in old times, and some systems still do it.
+
+{\bf Write \^Z at EOF} checkbox tells the editor to behave like mentioned
+old times systems.
+\else
+Контроль {\bf Autodetect EOL style} включает автоматическое выявление разделителей
+строк, используемых в считываемых с диска файлах. Когда читается файл, редактор
+запоминает разделитель строки, который используется в нем наиболее часто. Этот
+разделитель используется, когда файл снова сохраняется на диск. Эта опция очень
+полезна, когда вы работаете одновременно как с файлами, доступ к которым вы
+получаете через сеть с UNIX компьютеров, так и с локальными файлами. Включение
+этой опции не выключает работу опции стиля конца строки:  в этом случае она
+определяет стиль EOL для вновь созданного файла.
+
+Контроль {\bf Consider \^Z as EOF} заставляет редактор прекращать считывание файла,
+когда встречается символ {\bf Ctrl+Z (0x1A)}. Раньше было принято писать этот
+символ в конце файла, и некоторые системы до сих пор так и делают.
+
+Контроль {\bf Write \^Z at EOF} заставляет редактор вести себя подобно упомянутым
+старомодным системам.
+\fi
+%---------------------------------------------------------------------
+\ifenglish
+\subsection{Files}
+\else
+\subsection{Файлы}
+\fi
+\public{CFGEDIT\_FILES\_DIALOG}
+
+\ifenglish
+In this page you can configure how and when files are saved. Two options are
+currently available:
+
+{\bf Autosave} -- when window with file is closed, IDE is exited or external tool
+is started, system saves all changed files to the disk. Before saving each file the
+systems asks if this file should be saved. Turning this option off tell system
+to save files without asking.
+
+{\bf Create BAK files} -- tell system to keep previous copy of file when file is saved.
+The name of backup copy depends on file system where the file resides.
+If it allows long file names the {\bf .bak} suffix is added to file name.
+Otherwise, suffix {\bf .bak} replaces existing suffix.
+
+\else
+На этой странице вы можете настроить когда и как будут сохранятся файлы.
+Доступны две опции:
+
+{\bf Autosave} -- когда закрывается окно, содержащее файл, происходит выход из
+IDE, или запускается внешняя утилита, то система сохраняет все измененные файлы на
+диск. Перед сохранением каждого файла система спрашивает, нужно ли его сохранять.
+Включение этой опции означает сохранение без запроса.
+
+{\bf Create BAK files} -- заставляет систему сохранять предыдущую копию файла,
+когда файл сохраняется. Название резервной копии зависит от файловой системы.
+Если она допускает длинные имена, то к имени файла добавляется суффикс {\bf .bak},
+иначе {\bf .bak} заменяет существуюий суффикс.
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Hard}
+\else
+\caption{Жесткая табуляция}
+\fi
+\public{CFGEDIT\_TAB\_HARD}
+\ifenglish
+Horizontal tab character (0x09) is inserted in text each time TAB key is pressed.
+This character is expanded into several spaces when displaying on the screen or
+printing. You may make these characters visible by selecting {\bf Hard Tabs} checkbox
+in {\bf Show} page of this dialog.
+
+\else
+Символ горизонтальной табуляции (0x09) вставляется в текст всякий раз, когда
+нажимается клавиша TAB. Этот символ при отображении на экране или печати означает
+несколько пробелов. Вы можете сделать эти символы видимыми, включив контроль
+{\bf Hard Tabs} страницы {\bf Show} этого диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Spaces}
+\else
+\caption{Пробелы}
+\fi
+\public{CFGEDIT\_TAB\_SPACES}
+\ifenglish
+TAB characters are expanded into spaces immediately as they are typed. Exact number
+of spaces is determined by {\bf Tab size} parameter.
+
+\else
+Символы TAB заменяются пробелами сразу же, как они вводятся. Точное количество
+пробелов определяется параметром {\bf Tab size}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Smart}
+\public{CFGEDIT\_TAB\_FLEXIBLE}
+\ifenglish
+This tabulation style appeared initially in Top Speed system.
+Spaces are inserted until cursor positions under beginning of the next
+word in previous line. If cursor is beyond the length of previous line this
+mode works as {\bf Spaces} mode.
+
+\else
+Этот стиль табуляции появился впервые в системе Top Speed.
+Пробелы вставляются до тех пор, пока курсор не окажется под началом следующего
+слова предыдущей строки. Если курсор находится дальше конца предыдущей строки,
+то этот режим работает, как режим {\bf Spaces}.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Tab size}
+\else
+\caption{Размер табуляции}
+\fi
+\public{CFGEDIT\_TAB\_SIZE}
+\ifenglish
+This field determines size of displaying or expanding tabs. Cursor moves to the
+next point whose column number minus 1 is divisible by this number.
+
+Valid range for this field is [1..20]
+
+\else
+Это поле определяет размер раширения символов табуляции. Курсор передвигается к
+следующей позиции, чей номер столбца с вычтенной едиицей делится нацело на это
+число.
+
+Допустимые значения для этого поля -- [1..20]
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Autoindent}
+\else
+\caption{Автоотступ}
+\fi
+\public{CFGEDIT\_TAB\_AUTOINDENT}
+\ifenglish
+If this option is on each command that splits line insert as many spaces in the
+beginning of a line as there are in the beginning of previous line.
+
+If hard tabs mode is used tabs are inserted until remaining number of spaces is
+less than tab size. Spaces are added then.
+
+\else
+Если эта опция включена, то каждая разбивающая строку команда вставляет столько
+пробелов в начало новой строки, сколько их было в начале предыдущей.
+
+Если используется режим жесткой табуляции то до тех пор, пока число остающихся
+пробелов не станет меньше рамера табуляции, вставляются символы табуляции.
+\fi
+\end{popup}
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{BackSpace joins lines}
+\else
+\caption{BackSpace соединяет строки}
+\fi
+\public{CFGEDIT\_FEATURES\_BSJOINS}
+
+\ifenglish
+{\bf BackSpace} key pressed at the first column deletes previous line break
+and joins current line with previous one if this option is turned on, does nothing
+otherwise.
+
+\else
+Клавиша {\bf BackSpace}, будучи нажатой когда курсор находится на первом столбце,
+удаляет предыдущий разделитель строк и присоединяет текущую строку к предыдущей,
+если эта опция включена, и ничего не делает в противном случае.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{DEL joins lines}
+\else
+\caption{DEL соединяет строки}
+\fi
+\public{CFGEDIT\_FEATURES\_DEL\_JOINS}
+\ifenglish
+{\bf Delete} key pressed beyond the end of line deletes following line break
+and joins current line with next one if this option is turned on, does nothing
+otherwise.
+
+\else
+Клавиша {\bf Delete}, будучи нажатой когда курсор находится вне конца строки,
+удаляет следующий разделитель строк и присоединяет следующую строку к текущей,
+если эта опция включена, и ничего не делает в противном случае.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{CR in insert mode splits line}
+\else
+\caption{CR в режиме вставки разбивает строки}
+\fi
+\public{CFGEDIT\_FEATURES\_CRSPLITS}
+\ifenglish
+When this option is turned on {\bf Enter} key pressed in insert mode splits
+line in two. When it is turned off it just moves cursor to the beginning of next line
+and you must use Split Line ({\bf Ctrl+S}) command to split line.
+
+\else
+Когда эта опция включена, клавиша {\bf Enter}, нажатая в режиме вставки, разбивает
+строку на две. Когда она выключена, то курсор только передвигается на начало
+следующей строки, и чтобы разбить строку, нужно использовать команду Split Line.
+({\bf Ctrl+S})
+\fi
+\end{popup}
+
+\ifenglish
+{\bf Enter} never splits line when in overwrite mode.
+
+\else
+{\bf Enter} никогда не разбивает строку в режиме перезаписи.
+\fi
+
+\begin{popup}
+\ifenglish
+\caption{TAB in overwrite mode only moves cursor}
+\else
+\caption{TAB в режиме перезаписи лишь передвигает курсор}
+\fi
+\public{CFGEDIT\_FEATURES\_TABMOVES}
+
+\ifenglish
+Usually (that is, when this option is turned on) pressing {\bf Tab} key in overwrite mode
+actually changes next character by Tab or next several characters by spaces depending
+on tabulation mode. Turning this option off causes it just to move to next tab-stop
+without modifying text.
+
+Tab in insert mode always inserts something (either tab or spaces).
+
+\else
+Обычно, (то есть, когда эта опция включена) нажатие клавиши {\bf Enter} в режиме
+перезаписи изменяет следующий символ на Tab, или следующие несколько символов на
+пробелы, в зависимости от режима табуляции. Выключение этой опции приводит лишь к
+передвижению курсора на следующую позицию табуляции без изменения текста.
+
+В режиме вставки Tab всегда что-либо вставляет (табуляцию или пробелы).
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{}
+\public{CFGEDIT\_FEATURES\_INSERT}
+\ifenglish
+You flip editor from Insert to Overwrite mode and back by pressing {\bf Insert} key.
+Insert mode is maintained separately for each editor window. This option configures
+initial state of Insert mode of newly created editor.
+\else
+Вы переключаете редактор из режима Вставки в режим Перезаписи и обратно нажатием
+клавиши {\bf Insert}. Режим вставки поддерживается отдельно для каждого окна
+редактирования. Эта опция настраивает исходное состояние режима вставки вновь
+созданного редактора.
+\fi
+\end{popup}
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Hard Tabs}
+\else
+\caption{Символы жесткой табуляции}
+\fi
+\public{CFGEDIT\_SHOW\_TABS}
+\ifenglish
+Hard tabs are displayed as dashed lines when this option is on.
+
+\else
+Когда эта опция включена, символы жесткой табуляции отображаются как пунктирная
+линия.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Left Margin}
+\else
+\caption{Левое поле}
+\fi
+\public{CFGEDIT\_SHOW\_LEFTMARGIN}
+
+\ifenglish
+Left edge of edited text is displayed as dotted line when this option is on.
+This is useful when bookmarks displaying is turned on and left margin is wide.
+
+\else
+Когда эта опция включена, левый край редактируемого текста отображается как
+точечный пунктир. Это полезно, когда включено отображение закладок, и левое поле
+-- широкое.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Right Margin}
+\else
+\caption{Правое поле}
+\fi
+\public{CFGEDIT\_SHOW\_RIGHTMARGIN}
+
+\ifenglish
+Right edge of edited text is displayed as dotted line when this option is on.
+This margin is introduced just for user's convenience. Editor allows lines of arbitrary
+length but it is sometimes convenient to see if lines get too big (for example if
+you wish to print text or see it in text mode).
+
+The position of right margin is configurable.
+
+\else
+Когда эта опция включена, правый край редактируемого текста отображается как
+точечный пунктир. Это поле введено только для удобства пользователя. Редактор
+допускает строки произвольной длины, но иногда бывает удобно проверить, не стали
+ли строки слишком длинными (например если вы хотите распечатать текст, или
+просмотреть его в текстовом режиме).
+
+Положение правого поля может настраиваться.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Right Margin position}
+\else
+\caption{Положение правого поля}
+\fi
+\public{CFGEDIT\_SHOW\_RIGHTMARGINVAL}
+
+\ifenglish
+If right margin display is enabled you may set up position of right margin.
+The default value is 80 characters (equals to width of punch cards in medieval times).
+
+\else
+Если включено отображение правого поля, вы можете выбрать положение правого поля.
+Значение по умолчанию -- 80 символов (ширина средневековой перфокарты).
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Bookmarks}
+\else
+\caption{Пометки}
+\fi
+\public{CFGEDIT\_SHOW\_BOOKMARKS}
+
+\ifenglish
+Reserve some space to the left of edited text for displaying bookmarks set
+in the text. Bookmarks are displayed as circles with numbers inside.
+If there are more than one bookmarks set in a line the one with biggest
+number is displayed.
+
+\else
+Оставьте немного места слева от редактируемого текста для отображения закладок,
+установленных в тексте. Закладки отображаются как кружки с номерами внутри.
+Если в строке установлено более одной закладки, то отображается закладка с
+большим номером.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------
+\begin{popup}
+\ifenglish
+\caption{Before the block}
+\else
+\caption{Перед блоком}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_BEFORE}
+
+\ifenglish
+After {\bf Paste} operation cursor is placed in the beginning of pasted block.
+\else
+После операции вклеивания курсор располагается в начале вклеенного блока.
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{After the block}
+\else
+\caption{После блока}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_AFTER}
+
+\ifenglish
+After {\bf Paste} operation cursor is placed in the end of pasted block.
+\else
+После операции вклеивания курсор располагается в конце вклеенного блока.
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Block is selected}
+\else
+\caption{Блок отмечен}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_SELECT}
+\ifenglish
+After {\bf Paste} operation pasted text is selected
+\else
+После операции вклеивания вклеенный текст помечается.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Inserts before the block}
+\else
+\caption{Вставка перед блоком}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_INSERTS\_BEFORE}
+
+\ifenglish
+If you {\bf Paste} text when block is selected new text will be inserted before
+selected block.
+\else
+Если вы {\bf вклеиваете} текст, когда блок отмечен, то новый текст будет вставлен
+перед отмеченным блоком.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Inserts after the block}
+\else
+\caption{Вставка после блока}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_INSERTS\_AFTER}
+
+\ifenglish
+If you {\bf Paste} text when block is selected new text will be inserted after
+selected block.
+\else
+Если вы {\bf вклеиваете} текст когда блок отмечен, то новый текст будет вставлен
+после отмеченного блока.
+\fi
+
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Replaces the block}
+\else
+\caption{Замена блока}
+\fi
+\public{CFGEDIT\_BLOCK\_PASTE\_REPLACES}
+\ifenglish
+If you {\bf Paste} text when block is selected new text will replace the
+selected block.
+\else
+Если вы {\bf вклеиваете} текст, когда блок отмечен, то новый текст заменит
+отмеченный блок.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Inserts before the block}
+\else
+\caption{Вставка перед блоком}
+\fi
+\public{CFGEDIT\_BLOCK\_TYPE\_BEFORE}
+\ifenglish
+Pressing any character when there is a block selected places the character
+before the block and unselects the block.
+\else
+Нажатие любого символа, когда блок отмечен, располагает символ перед блоком
+и отменяет отметку блока.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Inserts after the block}
+\else
+\caption{Вставка после блока}
+\fi
+\public{CFGEDIT\_BLOCK\_TYPE\_AFTER}
+\ifenglish
+Pressing any character when there is a block selected places the character
+after the block and unselects the block.
+\else
+Нажатие любого символа, когда блок отмечен, располагает символ после блока
+и отменяет отметку блока.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Replaces the block}
+\else
+\caption{Замена блока}
+\fi
+\public{CFGEDIT\_BLOCK\_TYPE\_REPLACE}
+\ifenglish
+Pressing any character when there is a block selected
+replaces entire block with this character
+\else
+Нажатие любого символа, когда блок отмечен, заменяет блок
+этим символом.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------
+
+\begin{popup}
+\caption{OEM Conversion}
+\public{CFGEDIT\_ENCODING\_OEMCONVERT}
+\ifenglish
+When this mode is turned on the editor contents is considered to be in OEM encoding.
+Text you type is converted to OEM in this mode. Text is converted to Windows
+encoding when displaying on the screen unless the font used is OEM font.
+
+This option also affects Clipboard operations. For example, if you copy text
+to clipboard in OEM mode, then change mode to Windows and paste text back it is
+translated into Windows mode.
+\else
+Когда этот режим включен, считается, что содержимое редактора задано в кодировке
+OEM. Вводимый вами текст переводится в кодировку OEM. При отображении на экране
+текст переводится в Windows кодировку, если используется не OEM шрифт.
+
+Эта опция также оказывает действие на операции с буфером обмена. Например, если
+вы копируете текст в буфер обмена в OEM режиме, затем меняете режим на Windows,
+и вклеиваете текст, то он переводится в режим Windows.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{CR}
+\public{CFGEDIT\_ENCODING\_CR}
+\ifenglish
+Files are written to disk with {\bf CR (0x0D)} characters between lines.
+\else
+Файлы записываются на диск с символом {\bf CR (0x0D)} между строк.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{LF (UNIX)}
+\public{CFGEDIT\_ENCODING\_LF}
+\ifenglish
+Files are written to disk with {\bf LF (0x0A)} characters between lines.
+This is the standard mode for UNIX systems.
+\else
+Файлы записываются на диск с символом {\bf LF (0x0A)} между строк.
+Это стандартный режим для UNIX систем.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{CR LF (DOS)}
+\public{CFGEDIT\_ENCODING\_CRLF}
+\ifenglish
+Files are written to disk with {\bf CR LF (0x0D 0x0A)} characters between lines.
+This is the standard mode for MS DOS and Windows systems.
+\else
+Файлы записываются на диск с символами {\bf LF (0x0D 0x0A)} между строк.
+Это стандартный режим для MS DOS и Windows систем.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Autodetect EOL style}
+\else
+\caption{Автообнаружение стиля EOL}
+\fi
+\public{CFGEDIT\_ENCODING\_AUTODETECT}
+\ifenglish
+When file is loaded number of different line separators ({\bf CR}s, {\bf LF}s
+and {\bf CRLF}s) is counted
+and the most frequently used line separator is remembered. When this file is lately
+written to disk this separator is placed between lines. This mode is useful
+when you work with files on several systems at the same time.
+
+Manually configured line separator is still used for new files.
+
+\else
+Когда файл загружается, то число различных разделителей строк ({\bf CR}, {\bf LF}
+и {\bf CRLF}) подсчитывается, и наиболее часто используемый разделитель
+запоминается. Когда затем этот файл записывается на диск, между строк помещается
+этот разделитель. Режим полезен, когда вы одновременно работаете с несколькими
+файлами различных систем.
+
+Настроенный вручную разделитель используется для новых файлов.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Consider \^Z as EOF}
+\else
+\caption{Считать \^Z за EOF}
+\fi
+\public{CFGEDIT\_ENCODING\_READEOF}
+\ifenglish
+When reading file consider {\bf Ctrl+Z (0x1A)} character as end of file.
+This option is useful on DOS machines because many of DOS text editors write
+0x1A at the end of file.
+
+\else
+При чтении считать символ {\bf Ctrl+Z (0x1A)} концом файла.
+Эта опция полезна на DOS машинах, так как многие текстовые редакторы DOS пишут
+0x1A в конце файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Write \^Z at EOF}
+\else
+\caption{Писать \^Z как EOF}
+\fi
+\public{CFGEDIT\_ENCODING\_WRITEEOF}
+\ifenglish
+Write {\bf Ctrl+Z (0x1A)} character at end of file. Today this style is obsolete.
+\else
+Записывать символ {\bf Ctrl+Z (0x1A)} в конце файла. На сегодняшний день такой стиль
+вышел из употребления.
+\fi
+\end{popup}
+
+%---------------------------------------------------------------------
+\begin{popup}
+\ifenglish
+\caption{Autosave}
+\else
+\caption{Автосохранение}
+\fi
+\public{CFGEDIT\_FILES\_AUTOSAVE}
+
+\ifenglish
+If this option is turned on the system never asks if changed file must be saved to disk.
+It will silently write it to disk instead. This is done when external tools are run, project
+is closed or at exit of IDE.
+
+\else
+Если эта опция включена, система никогда не спрашивает, нужно ли сохранять измененный файл.
+Вместо этого она сама запишет его на диск. Это происходит, когда запускаются внешние
+утилиты, закрывается проект или завершается работа IDE.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Create BAK files}
+\else
+\caption{Создание BAK файлов}
+\fi
+\public{CFGEDIT\_FILES\_BAK}
+
+\ifenglish
+If this option is turned on, when file is written to disk its old version is saved
+as backup copy file. If the file system used is capable to store long file names
+the {\bf .bak} suffix is added to file name resulting in names such as {\bf test.mod.bak}.
+On other file systems (the only one the author knows is Nowell Netware) suffix {\bf .bak}
+replaces existing suffix resulting in names such as {\bf test.bak}.
+
+\else
+Если эта опция включена, то, когда файл записывается на диск, его предыдущая версия
+сохраняется как резервная копия. Если используемая файловая система поддерживает
+длинные имена файлов, то к имени файла добавляется {\bf .bak}, и получаются имена вроде
+{\bf test.mod.bak}. В других файловых системах {\bf .bak} заменяет существующее
+расширение, и получаются такие имена как {\bf test.bak}.
+\fi
+\end{popup}

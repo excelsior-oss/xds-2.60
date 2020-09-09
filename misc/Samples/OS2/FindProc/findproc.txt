@@ -1,0 +1,31 @@
+
+           FindProc: A Sample Tool For XDS IDE
+           -----------------------------------
+
+To build the executable file, type;
+
+    xc =m findproc.mod
+
+To setup FindProc tool:
+
+  - select Tools/Configure Tools from the IDE main menu
+  - select Add pushbutton
+  - type a name (e.g. "FindProc"), press Tab
+  - type a comment (e.g. "Search for procedures");
+  - select the Ok pushbutton
+  - select the Assign menu item checkbox, press Tab
+  - type a text for the menu item (e.g. "Find Procedures\tAlt+F")
+  - select the Run on files with suffixes checkbox, press Tab
+  - type suffixes list (e.g. "DEF;MOD;OB2")
+  - select the Advanced pushbutton
+  - select the Run in pop-up window radiobutton, press Tab
+  - type a caption (e.g. "Search for procedures"), press Tab
+  - select the Assign hot-key field
+  - press a hot-key combination (e.g. Alt+F)
+  - select the Ok pushbutton
+  - select the command line entry field
+  - type a command line for a tool, using the $(file) macro to substitute
+    a file name (e.g. "c:\xcsamp\findproc.exe $(file)")
+  - select the Ok pushbutton
+
+Now, open a file with .DEF, .MOD or .OB2 extension and invoke the tool.

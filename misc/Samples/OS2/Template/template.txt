@@ -1,0 +1,195 @@
+TEMPLATE.TXT  Copyright (c) 1996 xTech Ltd. All rights reserved.
+                             Copyright (c) 1991 IBM Corporation.
+----------------------------------------------------------------
+
+    SAMPLE PRESENTATION MANAGER APPLICATION TEMPLATE
+    ================================================
+
+The sources contained here are designed to serve as a template for
+your PM application.  These source files contain the overhead
+routines necessary to create a PM application as well as stubs
+for the basic menu items that all applications should have.  The
+source files are organized so that only a few of the files need to
+be modified; most of the source files can be left alone.  All of
+standard initialization and general functionality routines are placed
+in separate source files.  Since most applications will not need to
+change these routines, these files do not need to be changed.
+
+
+    ORGANIZATION OF SOURCE FILES
+    ============================
+
+Here is list of the source files included in the template application
+and their general purpose.  All module names except top-level one
+have been limited to four characters so that you may add a prefix to
+them to designate which ones have been modified for your application.
+
+Control files:
+
+    template.prj - XDS project file
+    template.h2d - H2D project file
+    h2d.red      - H2D redirection file
+    build.cmd    - batch file to build the application
+
+Program files (DEF and SRC subdirectories) :
+
+    Template (top-level module) - initialization, message loop
+    main - main window procedure, basic menu handler
+    init - initialization and Exit List processing routines
+    file - routines for processing File menu items
+    edit - routines for processing Edit menu items
+    user - functions for processing menu items and messages
+           specific to the application
+    dlg  - application specific dialog boxes
+    help - help manager functions
+    pnt  - routines for painting the main window
+    xtrn - application wide constants and variables, general purpose
+           procedures
+
+Resource files (RES) :
+
+    template.rc  - main resource file containing menus, string table, etc.
+    help.rc      - resource file for help panels
+
+    mainres.h    - resource ids (windows, menu items, strings, messages)
+    helpres.h    - help panel ids
+    dlgres.h     - dialog box constants and item ids.  This file is designed
+                   to be used with the Dialog Editor.
+    os2min.h     - minimal set of definitions required to compile resources
+                   in case of OS/2 API headers absence.
+
+    main.ico     - main window icon
+    prodinfo.bmp - picture for the Product Information dialog
+
+On-line help source files (HLP) :
+
+    template.ipf - main help text file, contains the link to the others
+    file.ipf - help text file for the file menu items
+    edit.ipf - help text file for the edit menu items
+    menu.ipf - help text file for the application defined menu items
+    help.ipf - help text file for the help menu
+    dlg.ipf  - help text file for the dialog boxes
+
+
+    ORGANIZATION OF THE SAMPLE TEMPLATE
+    ===================================
+
+Most of the general setup and overhead code is located in the `Template'
+module.  Since this code is standard for all PM applications, you
+will probably not need to modify `Template' at all (except renaming).
+The `main' module contains the window procedure for the main window
+(MainWndProc()) as well as the routine for processing the WM_COMMAND
+message received by the main window (MainCommand()).  MainWndProc()
+handles all the messages that every window must handle.  MainCommand()
+handles all of the WM_COMMAND messages posted by all of the standard
+menu items and by calling the appropriate routine to process the
+command.  There is one routine for each standard menu item and
+they are located in separate source files, one file for each menu.
+
+While these two routines handle all of the standard messages and
+menus, some additions will be required to one or both when you add
+your own menus or other features. Rather than have you modifying the
+module that shouldn't need to be changed, the parts you can modify have
+been moved into their own module, `user'.
+
+Module `user' contains the user defined version of the window procedure
+(UserWndProc()) and the WM_COMMAND message handler (UserCommand()).
+These two routines are called by the main routines if the message was
+not one of the standard messages or menu.  For example, the user window
+WM_COMMAND processor is called if the message was not posted by one of
+the standard menu items.  By placing UserWndProc() and UserCommand()
+into their own file, you can now add the processing necessary for your
+application in a spot isolated from the standard processing code.
+
+
+    USING THE SAMPLE TEMPLATE
+    =========================
+
+If you invoke the BUILD.CMD script now, it will create an application
+that will run.  Although the application will not do anything, it is
+worth building the application in order to test your build environment
+and to see what a basic PM application looks like.
+
+The sample application has only three menu items, File, Edit, and Help.
+The File menu contains commands for use on documents, e.g. opening a
+document or saving it to disk.  The Edit menu contains commands for
+processing data in a document, namely cutting, copying, and pasting
+data to and from the clipboard.  The Help menu contains the standard
+commands for interfacing with the help manager.
+
+The routines for processing the standard menu commands are located in the
+corresponding modules (e.g. `file' for the File menu).  The source file
+contains one routine for each menu item and the routine is named with
+the menu item name prefaced by the menu name.  For example, the routine
+that processes the New menu item of the File menu is FileNew().
+The routines currently perform any actions which most applications will
+also take and then leave it up to you to add any application specific code.
+The FileOpen() routine, for instance, calls the standard File Open dialog
+to retrieve a file name and opens the file for reading.  All you need
+to do is supply the code to read in the file.  You will need to
+supply routines to process all of the menu items whose commands are
+in these files.  Consult your CUA Style Guide if you have any questions
+as to the function of these menus.
+
+You will also need to add any other menus which your application will
+use.  First add the menu item id values in the res\mainres.h file.
+Next add the menu resource to the template.rc file. Convert mainres.h
+to mainres.def using the H2D utility. Now, add the code to process the
+WM_COMMAND messages posted by the menus to the UserCommand() routine
+in user.mod.  Add the menu item id values to the CASE statement and
+include any menu item processing code there.
+
+Should you wish to process any of the messages sent to the main
+window which are not processed by the standard window procedure, you
+can add these to the UserWndProc() routine in user.mod.  Add the
+message id to the switch statement along with the routines for
+processing the message.  Make sure that the default case calls
+WinDefWindowProc().
+
+Any other initalization, such as command line processing, can be done
+by adding code to the Init() routine in init module.  If there is additional
+processing you want done when the main window is created, add these
+routines to the InitMainWindow() function of init module.
+
+Remember to add the source text for new help screens for any menu items
+you add (to menu.ipf) and for any new dialog boxes you create (to dialog.ipf).
+
+Finally, change the the name of the source files you modified to reflect
+the name of your application.  If you use this template for more than
+one application, you will need an easy way to tell which source files
+belong to which application.  Embedding the identification of the
+application within the name of a source file will help you keep
+track of which application that source file is a part.  Now if you use
+this template for more than one application you will be able to
+discern the sources for each application, even if you have copies
+of the sources to more than one application on the same disk.
+
+NOTE: To save time required to correct all qualified identifiers, you
+      can use the "import renaming" language extension:
+
+      IMPORT pnt := App_pnt;
+
+To tag the source files with an identifier for each application but
+still retain the identity of the source file, you should implement
+a prefix_suffix naming scheme for your source files.  The prefix
+should be a three letter abbreviation for your application name
+while the suffix should be the current name of the file.  All
+source files of the same application will then begin with the same
+three letters.  Yet they will still contain the original name of
+the file so that the contents of the file can easily be determined
+by name.  For example, suppose you have two applications,
+APP1.EXE and APP2.EXE.  You would know that the files AP1_INIT.C and
+AP1_DLG.C both are part of application 1.  You also know that
+AP1_PNT.C and AP2_PNT.C contain the paint routines for each
+application.
+
+The project file and maybe top-level module name should be changed
+to use the name of your application, not just an abbreviation.
+Using the above example, your project file for application 1 would
+be APP1.PRJ and the top-level module would be APP1.MOD.
+
+Remember to change all references to files in your make file to
+match the name changes you make.  If you change module names,
+also be sure to change all IMPORT clauses in the source files
+that refer to those modules.
+

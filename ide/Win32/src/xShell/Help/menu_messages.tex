@@ -1,0 +1,105 @@
+\section{Messages Menu}
+\public{M\_MESSAGES}
+\index{Messages Menu}
+\nominitoc
+\ifenglish
+The {\bf Messages} menu contains commands that you use
+to display the tool messages window and to browse through errors
+and warnings positions in source files.
+The following commands appear in the {\bf Messages} menu:
+\else
+Меню {\bf Messages} содержит, команды которые вы используете,
+чтобы выводить окно сообщений утилиты и просматривать места ошибок и
+предупреждений в исходных файлах.
+В меню {\bf Messages} содержатся слдующие команды:
+\fi
+\begin{description}
+\item \ref[Show]{IDM\_SHOWMESS}
+\ifenglish
+  - Displays the {\bf Messages} window
+  \else
+  - Выводит окно {\bf Messages}
+  \fi
+\item \ref[Hide]{IDM\_HIDEMESS}
+\ifenglish
+  - Hides the {\bf Messages} window
+  \else
+  - Сворачивает окно {\bf Messages}
+  \fi
+\item \ref[Previous]{IDM\_PREVMESS}
+\ifenglish
+  - Moves cursor to the previous error position
+  \else
+  - Перемещает курсор к предыдущей ошибке
+  \fi
+\item \ref[Next]{IDM\_NEXTMESS}
+\ifenglish
+  - Moves cursor to the next error position
+  \else
+  - Перемещает курсор к следующей ошибке
+  \fi
+\end{description}
+
+\subsection{Messages: Show}
+\public{IDM\_SHOWMESS}
+
+\ifenglish
+Use the {\bf Show} command to display the {\bf Messages}
+window, which contains error, warning and notification
+messages from the last invoked tool.
+
+If you opened the message window earlier, it will be opened in the
+same position and will have the same size.
+
+It is possible to specify that new message window must be docked.
+
+Keyboard shortcut: {\bf Alt+"0"}
+\else
+Используйте команду {\bf Show}, чтобы отображать окно {\bf Messages},
+содержащее ошибку, предупреждение или сообщения
+последней вызывавшейся утилиты.
+
+Если вы открывали окно сообщений ранее, оно будет открыто на том же месте
+и будет иметь тот же размер.
+
+Существует возможность создать новое неперекрывающееся окно сообщений.
+
+Комбинация клавиш: {\bf Alt+"0"}.
+\fi
+\subsection{Messages: Hide}
+\public{IDM\_HIDEMESS}
+
+\ifenglish
+Use the {\bf Hide} command to hide the {\bf Messages}
+window.
+\else
+Чтобы свернуть окно {\bf Messages}, используйте команду {\bf Hide}.
+\fi
+\subsection{Messages: Previous}
+\public{IDM\_PREVMESS}
+
+\ifenglish
+Use the {\bf Previous} command to move cursor to the position
+of the previous error or warning.
+
+Keyboard shortcut: {\bf F7}
+\else
+Используйте команду {\bf Previous}, чтобы переместить курсор к предыдущей
+ошибке или предупреждению.
+
+Комбинация клавиш: {\bf F7}
+\fi
+\subsection{Messages: Next}
+\public{IDM\_NEXTMESS}
+
+\ifenglish
+Use the {\bf Next} command to move cursor to the position
+of the next error or warning.
+
+Keyboard shortcut: {\bf F8}
+\else
+Используйте команду {\bf Next}, чтобы переместить курсор к следующей ошибке
+или предупреждению.
+
+Комбинация клавиш: {\bf F8}
+\fi

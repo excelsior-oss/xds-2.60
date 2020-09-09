@@ -1,0 +1,60 @@
+(* Created using H2D v1.1 from X11/Intrinsic.h.
+ * X11/mac_Intrinsic.def  May 18  16:12:4  1996
+ *
+ * Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_Intrinsic.def,v $ $Revision: 3 $ $Date: 14.02.98 18:06 $
+ *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_Intrinsic;
+
+IMPORT SYSTEM,
+       Xt := Intrinsic;
+
+TYPE
+	Boolean = Xt.Boolean;
+	String = Xt.String;
+	Widget = Xt.Widget;
+        Cardinal = Xt.Cardinal;
+        XtPointer = Xt.XtPointer;
+
+PROCEDURE ["C"] XtIsApplicationShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsComposite ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsConstraint ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsOverrideShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsRectObj ( object: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsSessionShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsTopLevelShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsTransientShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsVendorShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsWMShell ( widget: Widget ): Boolean;
+
+PROCEDURE ["C"] XtIsWidget ( object: Widget ): Boolean;
+
+PROCEDURE ["C"] XtMapWidget ( widget: Widget );
+
+PROCEDURE ["C"] XtNew ( type: Cardinal ): XtPointer;
+
+PROCEDURE ["C"] XtNewString ( str: ARRAY OF CHAR ): String;
+
+PROCEDURE ["C"] XtNumber ( arr: XtPointer ): Cardinal;
+
+PROCEDURE ["C"] XtSetArg ( VAR arg: Xt.Arg; n: ARRAY OF CHAR; d: Xt.XtArgVal );
+
+PROCEDURE ["C"] XtUnmapWidget ( widget: Widget );
+
+END mac_Intrinsic.

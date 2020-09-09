@@ -1,0 +1,15 @@
+******************************************************************************
+*                                                                            *
+*              MGDemo.mod - XDS version of TS graphics demo                  *
+*              --------------------------------------------                  *
+*                                                                            *
+******************************************************************************
+
+  This program illustrates XDS TopSpeed-like module Graph usage. 
+
+WARNING
+
+  Since the sample directly reads from keyboard, the application window
+  must have the focus (but not the Graph window).
+
+

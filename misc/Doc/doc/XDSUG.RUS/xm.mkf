@@ -1,0 +1,12 @@
+SOURCE = ..\platform.tex ..\backend.tex \
+         xm.tex       preamble.tex body.tex    \
+	 ccomp.tex    config.tex   intro.tex   \
+         limits.tex   lowlevel.tex maptoc.tex  \
+         modula2.tex  multlang.tex oberon2.tex \
+         options.tex  problems.tex rts.tex     \
+         seamless.tex start.tex    usage.tex   \
+	 errors.tex
+
+TARGET = xm
+
+!include ..\$(FORMAT).inc

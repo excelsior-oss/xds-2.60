@@ -1,0 +1,23 @@
+LIBRARY SESMGR
+EXPORTS
+  DosStartSession            @37
+  Dos32StartSession          @37
+  DosSelectSession           @38
+  Dos32SelectSession         @38
+  DosSetSession              @39
+  Dos32SetSession            @39
+  DosStopSession             @40
+  Dos32StopSession           @40
+  DOS16STOPSESSION           @8
+  DOS16SELECTSESSION         @9
+  DOS16SETSESSION            @14
+  DOS16STARTSESSION          @17
+  DOS16SMREGISTERDD          @29
+  DOSSTARTSESSION            @37
+  DOS32STARTSESSION          @37
+  DOSSELECTSESSION           @38
+  DOS32SELECTSESSION         @38
+  DOSSETSESSION              @39
+  DOS32SETSESSION            @39
+  DOSSTOPSESSION             @40
+  DOS32STOPSESSION           @40

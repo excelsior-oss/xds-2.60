@@ -1,0 +1,390 @@
+\section{Edit menu}
+\public{M\_EDIT}
+\nominitoc
+
+\ifenglish
+The {\bf Edit} menu contains commands that you use to undo
+changes you've made to file, to work with Clipboard
+and to find and replace text.
+The following commands appear in the
+{\bf Edit} menu:
+\else
+Меню {\bf Edit} содержит команды, которые вы используете, чтобы отменять 
+произведенные вами в файле изменения, работать с буфером обмена
+и искать и заменять текст. 
+Меню {\bf Edit} содержит следующие команды:
+\fi
+\begin{description}
+\item \ref[Undo]{IDM\_UNDO} -
+  \ifenglish
+  Undoes the last edit action
+  \else
+  Отменяет последнее изменение 
+  \fi
+\item \ref[Cut]{IDM\_CUT} -
+  \ifenglish
+  Cuts selected text to the clipboard
+  \else
+  Перемещает отмеченный текст в буфер обмена
+  \fi
+\item \ref[Copy]{IDM\_COPY} -
+  \ifenglish
+  Copies selected text to the clipboard
+  \else
+  Копирует отмеченный текст в буфер обмена
+  \fi
+\item \ref[Add]{IDM\_ADD} -
+  \ifenglish
+  Adds selected text to the clipboard
+  \else
+  Добавляет отмеченный текст в буфер обмена
+  \fi
+\item \ref[Exchange]{IDM\_EXCHANGE} -
+ \ifenglish
+  Exchanges selected text with clipboard contents
+  \else
+  Меняет отмеченный текст на содержимое буфера обмена
+ \fi
+\item \ref[Paste]{IDM\_PASTE} -
+ \ifenglish
+  Inserts contents of the clipboard at the current position
+  \else
+  Вставляет содержимое буфера обмена на текущую позицию
+  \fi
+\item \ref[Find]{IDM\_FIND} -
+  \ifenglish
+  Searches for a string
+  \else
+  Ищет строку
+  \fi
+\item \ref[Find Next]{IDM\_FINDNEXT} -
+ \ifenglish
+  Searches for the next occurrence of last searched string
+  \else
+  Ищет следующее вхождение последней искомой строки
+  \fi
+\item \ref[Find Previous]{IDM\_FINDPREV} -
+ \ifenglish
+  Searches for the previous occurrence of last searched string
+  \else
+  Ищет предыдущее вхождение последней искомой строки
+ \fi
+\item \ref[Replace]{IDM\_REPLACE} -
+ \ifenglish
+ Searches for a string, replacing it with another one
+ \else
+  Ищет строку, заменяя ее на другую
+ \fi
+\item \ref[Replace Next]{IDM\_REPLACENEXT} -
+ \ifenglish
+  Repeats previous replace action
+ \else
+ Повторяет последнюю операцию замены
+ \fi
+\item \ref[Find in Files]{IDM\_FINDFILES}
+ \ifenglish
+  Searches for the string in multiple files
+ \else
+  Ищет строку во множестве файлов
+ \fi
+\item \ref[Go to line]{IDM\_GOTOLINE}
+ \ifenglish
+  Moves cursor to the line with specified number
+ \else
+  Перемещает курсор на строку с указанным номером
+ \fi
+\end{description}
+
+\subsection{Edit: Undo}
+\public{IDM\_UNDO}
+
+\ifenglish
+Use the {\bf Undo} command to undo the last change you've made to
+the current file.
+\else
+Используйте команду {\bf Undo}, чтобы отменить последнее изменение, 
+произведенное вами в текущем файле
+\fi
+\ifenglish
+For this to work, for your changes the editor saves information necessary to
+revert them into so-called undo buffer.
+This buffer has limited size; when the buffer is full
+you are prompted to abandon current change. If you refuse, the editor will
+automatically drop earliest records from undo buffer in order to make room for
+new records. This leads to inability to undo all the actions.
+
+Casual editing operation such as typing of new text don't use much room in
+undo buffer and so are unlikely to fill it. So you never get into mentioned
+situation unless you frequently delete large blocks of text.
+
+The undo buffer is cleared when you save file to disk, so you can't
+undo changes done before saving.
+
+Keyboard shortcuts: {\bf Alt+Backspace}, {\bf Ctrl+Z}
+\else
+Чтобы это срабатывало, редактор сохраняет необходимую информацию о ваших
+изменениях в так называемом буфере отмены.
+Этот буфер имеет ограниченный размер, когда он заполнится, вас попросят
+отказаться от текущего изменения. Если вы откажетесь, редактор автоматически
+выбросит более ранние сведения из буфера для того, чтобы создать место для
+новых записей. Это приводит к невозможности отменить все изменения.
+
+Нерегулярные операции редактирования, такие, как ввод нового текста, не 
+занимают много места в буфере отмены, и потому вряд ли его переполнят.
+Таким образом, вы никогда ни попадете в упомянутую ситуацию, если не 
+удаляете часто большие участки текста.
+
+Когда вы сохраняете файл на диск, буфер отмены очищается, поэтому вы не
+можете отменить произведенные до записи изменения.
+\fi
+\subsection{Edit: Cut}
+\public{IDM\_CUT}
+
+\ifenglish
+Use the {\bf Cut} command to delete selected text from the
+file and move it to the Clipboard. You can use the \ref[Paste]{IDM\_PASTE}
+command later to insert the Clipboard contents at another position
+or even into another file. You can also insert the text to other applications.
+
+Keyboard shortcuts: {\bf Shift+Delete}, {\bf Ctrl+X}
+\else
+Используйте команду {\bf Cut}, чтобы удалять отмеченный текст из файла и 
+помещать его в буфер обмена. Затем вы можете использовать команду
+\ref[Paste]{IDM\_PASTE}, чтобы вставить содержимое буфера обмена на
+другую позицию или даже в другой файл. Вы также можете вставить текст
+в другие приложения.         
+
+Комбинации клавиш: {\bf Shift+Delete}, {\bf Ctrl+X}
+\fi
+\subsection{Edit: Copy}
+\public{IDM\_COPY}
+
+\ifenglish
+Use the {\bf Copy} command to duplicate selected text. A copy of
+selected text is moved to the Clipboard. You can use the \ref[Paste]{IDM\_PASTE}
+command later to insert the Clipboard contents at another position
+or even into another file.  You can also insert the text to other applications.
+
+Keyboard shortcuts: {\bf Ctrl+Insert}, {\bf Ctrl+C}
+\else
+Используйте команду {\bf Copy}, чтобы дублировать отмеченный текст.
+Копия отмеченного текста помещается в буфер обмена. Затем вы можете 
+использовать команду \ref[Paste]{IDM\_PASTE}, чтобы вставить содержимое 
+буфера обмена на другую позицию или даже в другой файл. Вы также можете 
+вставить текст в другие приложения.         
+
+Комбинации клавиш: {\bf Ctrl+Insert}, {\bf Ctrl+C}
+\fi
+\subsection{Edit: Add}
+\public{IDM\_ADD}
+
+\ifenglish
+Use the {\bf Add} command to combine several portions of text together.
+This command appends selected text to the Clipboard contents.
+If the Clipboard is empty or doesn't contain text, the command works
+exactly as \ref[Copy]{IDM\_COPY} command.
+You can use the {\bf Paste}
+command later to insert the resulting text into desired place.
+\else                                    
+Чтобы сочетать несколько участков текста, используйте команду {\bf Add}.
+Эта команда добавляет отмеченный текст к содержимому буфера обмена.
+Если буфер обмена пуст или не содержит текста, команда действует в точности
+как и команда \ref[Copy]{IDM\_COPY}.
+Затем вы можете использовать команду {\bf Paste},
+чтобы вставить полученный текст на нужное место.
+\fi
+\ifenglish
+Keyboard shortcuts: {\bf Ctrl+Shift+Insert}, {\bf Ctrl+A}
+
+Be careful when pressing {\bf Ctrl+Shift+Insert}: if you release {\bf Shift} key
+the command will be recognized as \ref[Copy]{IDM\_COPY} command and contents
+of the Clipboard will be lost.
+\else
+Комбинации клавиш: {\bf Ctrl+Shift+Insert}, {\bf Ctrl+A}
+
+Будьте внимательны, когда нажимаете {\bf Ctrl+Shift+Insert}, если вы отпустите 
+клавишу {\bf Shift}, команда будет воспринята как \ref[Copy]{IDM\_COPY}, и 
+содержимое буфера обмена будет утеряно.
+\fi
+\subsection{Edit: Paste}
+\public{IDM\_PASTE}
+
+\ifenglish
+Use the {\bf Paste} command to insert the text from the Clipboard
+at the cursor position in the current file.
+
+Text appears in the Clipboard as a result of \ref[Cut]{IDM\_CUT}, \ref[Copy]{IDM\_COPY},
+\ref[Add]{IDM\_ADD}, \ref[Exchange]{IDM\_EXCHANGE} operations, or it can be copied
+from another application.
+
+Keyboard shortcuts: {\bf Shift+Insert}, {\bf Ctrl+V}
+\else
+Используйте команду {\bf Paste}, чтобы вставлять текст из буфера обмена
+на позицию курсора в текущем файле.
+
+Появляющийся в буфере обмена текст есть результат операций \ref[Cut]{IDM\_CUT}, 
+\ref[Copy]{IDM\_COPY}, \ref[Add]{IDM\_ADD}, \ref[Exchange]{IDM\_EXCHANGE} или
+может быть пренесен из других приложений.
+
+Комбинации клавиш: {\bf Shift+Insert}, {\bf Ctrl+V}
+\fi
+\subsection{Edit: Exchange}
+\public{IDM\_EXCHANGE}
+
+\ifenglish
+Use the {\bf Exchange} command to exchange contents of the Clipboard
+with the current selection.
+
+The command is only available when Clipboard contain text.
+
+This command is useful for exchanging two strings in a file. You select one
+string, \ref[Cut]{IDM\_CUT} it to the Clipboard, then select another string,
+{\bf Exchange} it with the Clipboard, then return to a place where first string
+once was, and \ref[Paste]{IDM\_PASTE} the Clipboard.
+
+Keyboard shortcuts: {\bf Ctrl+Shift+Delete}, {\bf Ctrl+E}
+
+Be careful when pressing {\bf Ctrl+Shift+Delete}: if you release {\bf Ctrl} key
+the command will be recognized as \ref[Cut]{IDM\_CUT} command and contents
+of the Clipboard will be lost.
+\else
+Используйте команду {\bf Exchange}, чтобы обменять содержимое буфера обмена и 
+отмеченный в данный момент текст.
+
+Команда доступна только в случае, если буфер обмена содержит текст.
+
+Эта команда полезна при обмене двух строк в файле. Вы отмечаете одну строку
+командой \ref[Cut]{IDM\_CUT}, перемещаете ее в буфер обмена, затем отмечаете
+другую строку командой {\bf Exchange}, меняете ее на содержимое буфера, затем
+возвращаетесь на место, где прежде находилась первая строка, и используете
+команду \ref[Paste]{IDM\_PASTE}.
+
+Комбинации клавиш: {\bf Ctrl+Shift+Delete}, {\bf Ctrl+E}.
+
+Будьте внимательны, когда нажимаете {\bf Ctrl+Shift+Delete}, если вы отпустите 
+клавишу {\bf Ctrl}, команда будет воспринята как \ref[Cut]{IDM\_CUT}, и 
+содержимое буфера обмена будет утеряно.
+\fi
+\subsection{Edit: Find}
+\public{IDM\_FIND}
+
+\ifenglish
+Use the {\bf Find} command to locate occurrences of a string in
+the current file. A dialog box will appear, allowing you to
+specify the string to find and various options such as case sensitiveness,
+search direction and others.
+
+Keyboard shortcut: {\bf Ctrl+F}
+\else
+Используйте команду {\bf Find}, чтобы обнаружить вхождения строки в текущем 
+файле. Будет выведен диалог, позволяющий вам указать искомую строку и различные
+опции, такие как чувствительность к регистру, направление поиска и другие.
+
+Комбинация клавиш: {\bf Ctrl+F}
+\fi
+\subsection{Edit: Find Next}
+\public{IDM\_FINDNEXT}
+
+\ifenglish
+Use the {\bf Find Next} command to find the next occurrence
+of the current search string.
+
+Note that term "next" here is relative to search direction: if last search was
+backwards this command will find previous occurrence of a text.
+
+Keyboard shortcut: {\bf Ctrl+L}
+\else
+Чтобы найти следующее вхождение текущей искомой строки, используйте команду
+{\bf Find Next}.
+
+Заметьте, что термин "следующее" относится здесь к направлению поиска: если
+последний поиск велся в обратном направлении: эта команда найдет предыдущее 
+вхождение текста.
+
+Комбинация клавиш: {\bf Ctrl+L}
+\fi
+\subsection{Edit: Find Previous}
+\public{IDM\_FINDPREV} {\bf Ctrl+L}
+
+\ifenglish
+Use the {\bf Find Previous} command to find the previous occurrence
+of the current search string.
+
+Note that term "previous" here is relative to search direction: if last search was
+backwards this command will find next occurrence of a text.
+
+Keyboard shortcut: {\bf Ctrl+Shift+L}
+\else
+Для того, чтобы найти предыдущее вхождение текущей искомой строки, 
+используйте команду {\bf Find Previous}. 
+
+Заметьте, что термин "предыдущее" относится здесь к направлению поиска, если
+последний поиск велся в обратном направлении, эта команда найдет следующее
+вхождение текста.
+
+Комбинация клавиш: {\bf Ctrl+Shift+L}
+\fi
+\subsection{Edit: Replace}
+\public{IDM\_REPLACE}
+
+\ifenglish
+Use the {\bf Replace} command to locate occurrences of a string in
+the current file, replacing it with another string. 
+A dialog box will appear, allowing you to
+specify the search string, the replacement string, and various options such as
+operation scope, case-sensetiveness and others.
+
+Keyboard shortcut: {\bf Ctrl+H}
+\else
+Используйте команду {\bf Replace}, чтобы обнаруживать вхождения строки
+в текущем файле, заменяя их на другую строку.
+Будет выведен диалог, позволяющий указать искомую строку, строку замены и 
+различные опции, такие как рамки операции, чувствительность к регистру и другие.
+
+Комбинация клавиш: {\bf Ctrl+H}
+\fi
+\subsection{Edit: Replace Next}
+\public{IDM\_REPLACENEXT}
+
+\ifenglish
+Use the {\bf Replace Next} command to repeat the previous replace
+action.
+\else
+Используйте команду {\bf Replace Next}, чтобы повторить предыдущую замену.
+\fi
+\subsection{Edit: Find in Files}
+\public{IDM\_FINDFILES}
+
+\ifenglish
+Use the {\bf Find in Files} command to search a string in several files.
+You can search for files in open windows, in project files or in files in
+specified directory on disk.
+A dialog box will appear, allowing you to
+specify the search string, and various options such as search scope and
+case-sensetiveness.
+
+Keyboard shortcut: {\bf Ctrl+Shift+F}
+
+\else
+Используйте команду {\bf Find in Files}, чтобы производить поиск в нескольких
+файлах. Вы можете производить поиск в файлах открытых окон, файлах проекта
+или файлах в указанной директории или диске.
+Будет выведен диалог, позволяющий указать искомую строку и различные опции,
+вроде рамок поиска и чувствительности к регистру.
+
+Комбинация клавиш: {\bf Ctrl+Shift+F}
+\fi
+\subsection{Edit: Go to Line}
+\public{IDM\_GOTOLINE}
+
+\ifenglish
+Use the {\bf Go to Line} command to quickly move the cursor
+to the line with a specific number.
+
+Keyboard shortcut: {\bf Ctrl+G}
+\else
+Чтобы быстро перемещать курсор на строку с указанным номером, 
+используйте команду {\bf Go to Line}.
+
+Комбинация клавиш: {\bf Ctrl+G}
+\fi

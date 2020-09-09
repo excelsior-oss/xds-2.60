@@ -1,0 +1,7 @@
+SOURCE = ..\platform.tex \
+	 xd.tex       preamble.tex body.tex    \
+         intro.tex start.tex dialog.tex batch.tex keys.tex
+
+TARGET = xd
+
+!include ..\$(FORMAT).inc

@@ -1,0 +1,20 @@
+-lookup = *.mod = $!
+-lookup = *.def = $!
+-lookup = *.c   = $!
+-lookup = *.tem = $!
+
++m2extensions
+
+-cc=OS2SYS_CALL
+
+-gendebug-
+-lineno-
+
+-makefile+
+-mkfname=cdemo
+-mkfext=mkf
+-template=cset.tem
+
+-link="nmake /f %s",mkfname#mkfext;
+
+!module m2test.mod cmain.c c_test.c

@@ -1,0 +1,31 @@
+% Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+%
+% Motif 1.2.4 macros implementation library 
+%
+% $RCSfile: libmac_Xm.prj,v $ $Revision: 2.1 $ $Date/10/20 17:56:54 $
+%
+
+% Let's define library project
+-library:+
+-libname!libmac_Xm
+-genlib+
+
+% We have to generate makefile
+-makefile+
+-mkfname=$(libname)
+-mkfext=mkf
+
+% Make library
+-link = "make -f %s",mkfname#mkfext
+
+-lookup = *.def = $!/def
+-lookup = *.mod = $!
+-lookup = *.sym=$(sym_place)
+-lookup = *.o = $(tmp_place)
+-lookup = *.a = $(lib_place)
+-lookup = $(mkfname).$(mkfext) = $(tmp_place)
+
+% Modules list
+!module mac_XmAllP.mod
+
+

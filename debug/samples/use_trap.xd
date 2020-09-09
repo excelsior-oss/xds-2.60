@@ -1,0 +1,7 @@
+#IMPORT trap
+
+ LOAD program arg1 .. argN
+
+ MODE PAK-
+ GOSUB Init_Trap
+ START

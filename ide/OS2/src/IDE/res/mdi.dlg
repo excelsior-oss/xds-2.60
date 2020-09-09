@@ -1,0 +1,27 @@
+// File MDI.DLG
+
+DLGTEMPLATE IDD_MDILISTDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "More windows",
+           IDD_MDILISTDLG, 63, 67, 252, 142,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+    {
+        CONTROL "",
+                IDD_MDILB, 3, 22, 245, 117, WC_LISTBOX,
+                WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 14, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Help",
+                IDD_MDIPBHELP, 208, 3, 40, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+

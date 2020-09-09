@@ -1,0 +1,254 @@
+%-----------------------------------------------------------------------
+\ifenglish
+\section{New Project Creation Options dialog}
+\else
+\section{диалог New Project Creation Options }
+\fi
+\public{CFGPROJ\_DIALOG}
+\nominitoc
+
+\ifenglish
+Use this dialog box to specify default values of new project creation
+options:
+
+\else
+Используйте этот диалог, чтобы указывать значения опций нового проекта, 
+принимаемые по умолчанию:
+\fi
+\begin{itemize}
+\item \ifenglish
+      subdirectories to create in the project directory
+      \else
+      поддиректории, которые надлежит создать в директории проекта
+      \fi
+\item \ifenglish
+      project file template
+      \else
+      шаблон файла проекта
+      \fi
+\item \ifenglish
+      redirection file template
+      \else
+      шаблон файла путей поиска
+      \fi
+\item \ifenglish
+      main module name
+      \else
+      имя главного модуля
+      \fi
+\end{itemize}
+
+
+{\bf Directories to create}
+\ifenglish
+\ref[Create New Project]{NEWPROJ\_DIALOG} dialog allows defining of set of
+subdirectories to create in project directory. Here you can enter values that
+will be suggested by default. Initial value of this string is
+
+\verb'SRC;OBJ;SYM'
+
+so that directories are created for source, symbol and object files.
+\else
+Диалог \ref[Create New Project]{NEWPROJ\_DIALOG} позволяет указывать набор 
+поддиректорий, которые будут созданы в директории проекта. Здесь вы можете 
+ввести значения, которые будут предложены по умолчанию. Исходное значение этой 
+строки 
+
+\verb'SRC;OBJ;SYM'
+
+так что создаются директории для исходных символьных и объектных файлов.
+\fi
+
+{\bf Default template}
+
+\ifenglish
+Here you can change default name of \ref{ProjectTemplate} file to be suggested
+by default in Create New Project dialog.
+
+\ref{variables} may be used in this field.
+
+Default value of this field is
+
+\verb'$(xdsdir)\$(xdsname).tpr'
+
+\else
+Здесь вы можете менять имя файла \ref{ProjectTemplate}, которое будет предлагаться
+по умолчанию диалогом Create New Project.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+Значение по умолчанию этого поля 
+
+\verb'$(xdsdir)\$(xdsname).tpr'
+\fi
+
+{\bf Default RED file}
+\ifenglish
+Don't be afraid - no file will be painted red by default.
+
+Here you can change default name of \ref{RedirectionTemplate} file to be suggested
+by default in Create New Project dialog.
+
+\ref{variables} may be used in this field.
+
+Default value of this field is
+
+\verb'$(xdsdir)\$(xdsname).trd'
+
+\else
+Не опасайтесь, что какой-либо файл будет по умолчанию окрашен в красное.
+
+Здесь вы можете менять значение файла \ref{RedirectionTemplate}, которое будет
+предлагаться по умолчанию диалогом Create New Project.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+Значение по умолчанию этого поля 
+
+\verb'$(xdsdir)\$(xdsname).trd'
+\fi
+
+{\bf Default main module}
+\ifenglish
+Type a name of a main module which you want to be used by default.
+A file with this name will be created and reference to this name
+({\bf !module} project directive) will be added to the project.
+
+No file is created and no reference is added if main module name is left blank.
+
+\ref{variables} may be used in this field. This allows the name to
+depend on project name. Default value is
+
+\verb'$(projname).mod'
+
+\else
+Введите имя главного модуля, которое вы хотите использовать по умолчанию.  
+Будет создан файл с таким именем, и ссылка на это имя (проектная директива 
+{\bf !module}) будет добавлена в проект.
+
+Если имя главного модуля оставлено пустым, то файл и ссылка на него не создаются.
+
+В этом поле могут быть использованы \ref[переменные]{variables}. Это позволяет 
+имени модуля зависеть от имени проекта. Значение по умолчанию --
+
+\verb'$(projname).mod'
+\fi
+%-----------------------------------------------------------------------
+\begin{popup}
+\caption{Directories to create}
+\public{CFGPROJ\_DIRECTORIES}
+\ifenglish
+Type a semicolon-separated list of subdirectories which you would like
+to be created in a new project directory.
+\else
+Наберите список поддиректорий, которые вы хотите создать в директории нового
+проекта, разделяя их точкой с запятой.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Default template}
+\public{CFGPROJ\_TEMPLATE}
+
+\ifenglish
+New project creation dialog contains entry field with project template name.
+It is initialized by the string you type here or file name you select by pressing
+{\bf Browse} button.
+\else
+Диалог создания нового проекта содержит поле ввода названия шаблона проекта.
+Оно инициализируется строкой, которую вы здесь вводите или именем файла, которое
+вы выбираете с помощью кнопки {\bf Browse}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGPROJ\_BROWSETEMPLATE}
+
+\ifenglish
+New project creation dialog contains entry field with project template name.
+It is initialized by the file name you select by pressing this button or type
+in entry field.
+\else
+Диалог создания нового проекта содержит поле ввода названия шаблона проекта.
+Оно инициализируется именем файла, которое вы выбираете с помощью нажатия этой 
+кнопки, или набираете в поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Default RED file}
+\else
+\caption{Файл путей поиска, используемый по умолчанию}
+\fi
+\public{CFGPROJ\_REDFILE}
+
+\ifenglish
+New project creation dialog contains entry field with redirection file template name.
+It is initialized by the string you type here or file name you select by pressing
+{\bf Browse} button.
+
+\else
+Диалог создания нового проекта содержит поле ввода имени файла шаблона путей поиска.
+Оно инициализируется строкой, которую вы здесь вводите, или файлом, который вы выбираете
+с помощью кнопки {\bf Browse}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGPROJ\_BROWSEREDFILE}
+
+\ifenglish
+New project creation dialog contains entry field with redirection file template name.
+It is initialized by the file name you select by pressing this button or type
+in entry field.
+\else
+Диалог создания нового проекта содержит поле ввода имени файла шаблона путей поиска.
+Оно инициалируется именем файла, которое вы выбирате с помощью нажатия этой 
+кнопки, или набираете в поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Default main module}
+\public{CFGPROJ\_DEFMAINMOD}
+
+\ifenglish
+Type a name of a main module which you want to be used by default.
+Substitution variables may be used here.
+
+\else
+Введите имя главного модуля, которое вы хотите использовать по умолчанию. 
+Здесь можно использовать переменные замены.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{CFGPROJ\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to accept the changes you have made
+to the new project creation options.
+
+\else
+Нажмите кнопку {\bf OK}, чтобы подтвердить изменения, произведенные вами
+в опциях создания нового проекта. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{CFGPROJ\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton to dismiss the dialog without
+making any changes to the new project creation options.
+
+\else
+Нажмите кнопку {\bf Cancel}, чтобы закрыть диалог без внесения изменений в 
+опции соэдания нового проекта.
+\fi
+\end{popup}

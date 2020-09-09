@@ -1,0 +1,54 @@
+#include "pentarc.h"
+
+MAIN_ICON ICON "penta.ico"
+
+MAIN_MENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open",                       IDC_READ
+        MENUITEM "&Save",                       IDC_WRITE
+        MENUITEM SEPARATOR
+	MENUITEM "E&xit",                       IDC_CLOSE
+    END
+    POPUP "&Edit"
+    BEGIN
+	MENUITEM "&Draw pattern",               IDC_DRAW
+	MENUITEM "&Clear field",                IDC_CLEAR
+    END
+    POPUP "&Solve"
+    BEGIN
+	MENUITEM "&Play manually",              IDC_PLAY
+	MENUITEM "Return pieces &home",         IDC_HOME
+        MENUITEM SEPARATOR
+        MENUITEM "&Solve automatically",        IDC_SOLVE
+        MENUITEM "&Abort  solving",             IDC_STOP
+
+    END
+END
+    
+
+
+MAIN_DIALOG DIALOGEX 0, 0, 362, 202
+STYLE WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX
+MENU MAIN_MENU
+CAPTION "Pentamino Solver"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "E&xit",IDC_CLOSE,5,180,50,14
+    CONTROL         "",IDC_FIELD,"FIELD",0x0,85,5,270,190,
+                    WS_EX_DLGMODALFRAME
+    PUSHBUTTON      "&Draw",IDC_DRAW,5,5,30,15
+    PUSHBUTTON      "&Play",IDC_PLAY,5,30,30,15
+    PUSHBUTTON      "&Home",IDC_HOME,40,30,30,15
+    PUSHBUTTON      "&Solve",IDC_SOLVE,5,65,30,15
+    PUSHBUTTON      "&Clear",IDC_CLEAR,40,5,30,15
+    LTEXT           "Solutions:",IDC_STATIC,5,95,35,10
+    RTEXT           "0",IDC_SOLUTIONS,50,95,25,10
+    LTEXT           "",IDC_TIME,10,150,70,10
+    PUSHBUTTON      "S&top",IDC_STOP,40,65,30,15
+    LTEXT           "Current:",IDC_STATIC,5,110,35,10
+    RTEXT           "",IDC_CURSOL,50,110,25,10
+    SCROLLBAR       IDC_SCROLL,5,130,75,10
+END
+

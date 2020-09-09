@@ -1,0 +1,11 @@
+*.sym = $!/sym;$!;$(xdsdir)/../sym/c
+*.tem = $!;$(xdsdir)
+*.lib = $!;$(xdsdir)/../lib/c
+*.prj = $!
+*.def = $!/def; $!
+*.mod = $!/src; $!
+*.ob2 = $!/src; $!
+*.c   = $!/ch;  $!
+*.h   = $!/ch;  $!
+*.obj = $!/obj; $!
+*.mkf = $!

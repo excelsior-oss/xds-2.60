@@ -1,0 +1,65 @@
+(**************************************************************************
+ *  File name  :  xtrn.def
+ *
+ *  Description:  This module contains the application-wide constants,
+ *                variables, and general purpose procedures.                    
+ *
+ *                This module exports the following procedures:
+ *
+ *                MessageBox(hwndOwner, idMsg, fsStyle, fBeep)
+ *
+ *  Concepts   :  global definition
+ *                message boxes
+ *
+ *  Copyright (C) 1996 xTech Ltd. All rights reserved.
+ *  Copyright (C) 1991 IBM Corporation
+ *
+ *      DISCLAIMER OF WARRANTIES.  The following [enclosed] code is
+ *      sample code created by IBM Corporation. This sample code is not
+ *      part of any standard or IBM product and is provided to you solely
+ *      for  the purpose of assisting you in the development of your
+ *      applications.  The code is provided "AS IS", without
+ *      warranty of any kind.  IBM shall not be liable for any damages
+ *      arising out of your use of the sample code, even if they have been
+ *      advised of the possibility of such damages.
+ *************************************************************************)
+
+DEFINITION MODULE xtrn;
+
+IMPORT OS2;
+
+(*
+ *  Ids of messages used between threads
+ *)
+CONST TM_THREADINITFAILED       = OS2.WM_USER+300;
+
+(*
+ *  Other constants
+ *)
+CONST MESSAGELEN        = 50;   (* maximum length for messages *)
+CONST TITLESEPARATORLEN = 4;
+
+(*
+ *  Global variables
+ *)
+VAR
+  hab           : OS2.HAB;      (* Main anchor block handle     *)
+  hmq           : OS2.HMQ;      (* Main message queue handle    *)
+  hwndMainFrame : OS2.HWND;     (* Main frame window handle     *)
+  hwndMain      : OS2.HWND;     (* Main client window handle    *)
+  hdcMain       : OS2.HDC;      (* Main client window DC handle *)
+
+  szAppName     : ARRAY [0..OS2.MAXNAMEL-1] OF CHAR;
+  szUntitled    : ARRAY [0..MESSAGELEN-1] OF CHAR;
+
+  fPrintEnabled : OS2.BOOL;
+  fHelpEnabled  : OS2.BOOL;     (* TRUE is help manager was loaded *)
+
+PROCEDURE [OS2.APIENTRY] MessageBox(hwndOwner : OS2.HWND
+                                   ;idMsg     : OS2.ULONG
+                                   ;fsStyle   : OS2.ULONG
+                                   ;fBeep     : OS2.BOOL
+                                   ): OS2.ULONG;
+
+END xtrn.
+

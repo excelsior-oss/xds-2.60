@@ -1,0 +1,25 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=xds.chm
+Contents file=xds.hhc
+Default Window=Main
+Default topic=xds.html
+Display compile progress=No
+Full-text search=Yes
+Language=0x409 English (United States)
+Title=XDS Overview
+
+[WINDOWS]
+Main="XDS Overview","xds.hhc",,"xds000.html",,,,,,0x2520,,0x300e,[30,30,994,708],,,,,,,0
+
+[ALIAS]
+#include "xds.hha"
+
+[MAP]
+
+[FILES]
+xds.html
+..\default.css
+
+[INFOTYPES]
+

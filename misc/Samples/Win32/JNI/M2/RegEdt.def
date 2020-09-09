@@ -1,0 +1,21 @@
+
+DEFINITION MODULE ["StdCall"] RegEdt;
+
+IMPORT Windows, SYSTEM, JNI;
+
+PROCEDURE ["StdCall"] Java_RegistryKey_RegCreateKey(PJNIENV : JNI.PJNIEnv; This : JNI.jclass;
+        ParentKey : JNI.jobject; KeyName : JNI.jstring; HKey : JNI.jobject) : JNI.jint;
+
+PROCEDURE ["StdCall"] Java_RegistryKey_RegCloseKey(PJNIENV : JNI.PJNIEnv; This : JNI.jclass; HKey : JNI.jobject);
+
+PROCEDURE ["StdCall"] Java_RegistryKey_RegSetValue(PJNIENV : JNI.PJNIEnv; This : JNI.jclass;
+        HKey : JNI.jobject; ValName : JNI.jstring;
+                             ValType : JNI.jobject; Data : JNI.jobject);
+
+PROCEDURE ["StdCall"] Java_RegistryKey_RegGetValue(PJNIENV : JNI.PJNIEnv; This : JNI.jclass;
+    HKey : JNI.jobject; ValName : JNI.jstring; ValType : JNI.jobject; Data : JNI.jobject);
+
+PROCEDURE ["StdCall"] Java_RegistryKey_RegOpenKey(PJNIENV : JNI.PJNIEnv; This : JNI.jclass;
+        ParentKey : JNI.jobject; KeyName : JNI.jstring; HKey : JNI.jobject) : JNI.jint;
+
+END RegEdt.

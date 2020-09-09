@@ -1,0 +1,37 @@
+(* Created using H2D v1.00 from X11/Xresource.h.
+ * X11/mac_Xresource.def  Apr 7  20:5:12  1996
+ *
+ * Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_Xresource.def,v $ $Revision: 3 $ $Date: 14.02.98 18:06 $
+ *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_Xresource;
+
+IMPORT Xresource;
+
+FROM Xresource IMPORT XrmClass, XrmClassList, XrmString, XrmRepresentation,
+     	       	      XrmName, XrmNameList;
+
+PROCEDURE ["C"] XrmClassToString ( c_class: XrmClass ): XrmString;
+
+PROCEDURE ["C"] XrmNameToString ( name: XrmName ): XrmString;
+
+PROCEDURE ["C"] XrmRepresentationToString ( type: XrmRepresentation ): XrmString;
+
+PROCEDURE ["C"] XrmStringToClass ( c_class: ARRAY OF CHAR ): XrmClass;
+
+PROCEDURE ["C"] XrmStringToClassList ( str: ARRAY OF CHAR; c_class: XrmClassList );
+
+PROCEDURE ["C"] XrmStringToName ( string: ARRAY OF CHAR ): XrmName;
+
+PROCEDURE ["C"] XrmStringToNameList ( str: ARRAY OF CHAR; name: XrmNameList);
+
+PROCEDURE ["C"] XrmStringToRepresentation ( string: ARRAY OF CHAR ): XrmRepresentation;
+
+PROCEDURE ["C"] XrmStringsEqual ( a1, a2: ARRAY OF CHAR ): BOOLEAN;
+
+END mac_Xresource.

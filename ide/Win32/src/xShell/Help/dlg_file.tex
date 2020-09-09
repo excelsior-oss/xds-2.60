@@ -1,0 +1,229 @@
+%-----------------------------------------------------------------------
+\ifenglish
+\section{Open File dialog}
+ \else
+\section{диалог Open File}
+\fi
+\public{OPENFILE\_DIALOG}
+\nominitoc
+
+\ifenglish
+The {\bf Open File} dialog box allows you to load an existent file
+into a new window.
+
+Why special dialog not the standard File Open dialog everyone is used to?
+
+The standard dialog requires the user to specify both file name and its position
+(directory). XDS has powerful instrument of finding files, called {\bf Redirection}.
+With the Redirection you only need to type file name. File will be searched for
+in directories specified by Redirection.
+ \else
+Диалог {\bf Open File}  позволяет загрузить в окно существующий файл.
+
+Почему не использован стандартный диалог File Open?
+
+Стандартный диалог требует от пользователя указания и имени файла, и его 
+местоположения (директории). XDS обладает мощным инструментом поиска файлов 
+называемым {\bf пути поиска}. Вам нужно лишь набрать имя файла. Файл будет отыскан
+в директориях указанных в путях поиска.
+\fi
+\ifenglish
+In {\bf File Open} dialog you may either:
+ \else
+В диалоге {\bf File Open} вы также можете:
+\fi
+\begin{itemize}
+\item 
+      \ifenglish
+      Type in the edit box a file name {\em without}
+      path and select the {\bf OK}
+      pushbutton to search for a file using the current redirection
+       \else
+   Набрать в строке редактирования имя файла без пути и нажать
+   кнопку {\bf OK}, чтобы начать поиск файла, используя текущий файл 
+   путей поиска
+    \fi
+\item 
+      \ifenglish
+      Select the {\bf Browse} pushbutton to load a file via a
+      standard file dialog
+       \else
+ Нажмите кнопку {\bf Browse}, чтобы загрузить файл с помощью стандартного 
+ файлового диалога.
+ \fi
+\item 
+      \ifenglish
+      Select the {\bf File history} pushbutton to pick a file
+      from the list of the most recently loaded files
+       \else
+  Нажмите кнпоку {\bf File history}, чтобы выбрать файл из списка 
+  наиболее часто загружаемах файлов.
+  \fi
+\end{itemize}
+
+%-----------------------------------------------------------------------
+
+\begin{popup}
+
+\ifenglish
+\caption{Type a File Name}
+ \else
+\caption{Введите имя файла}
+\fi
+\public{OPENFILE\_COMBOBOX}
+
+\ifenglish
+Type here the name of a file you want to open and select
+the {\bf OK} pushbutton. You may also select the down arrow button
+next to this field to pick from a drop-down list one of the strings
+you typed here before.
+
+If you type a name without a path (either absolute or relative),
+the IDE will search for a file using the current redirection.
+
+If you type a name containing wildcard characters ({\bf *} and
+{\bf ?}), a standard file dialog will be displayed with that name
+used as a filter.
+
+ \else
+Наберите здесь имя файла, который вы хотите открыть и нажмите кнопку {\bf OK}.
+Вы также можете нажать кнопку с направленной вниз стрелкой рядом с этим
+полем, чтобы выбрать из ниспадающего списка одну из введенных ранее строк.
+
+Если вы введете имя файла без пути (абсолютного или относительного),
+IDE будет искать файл пользуясь текущим файлом путей поиска.
+
+Если вы наберете имя, содержащее шаблонные символы {\bf *} и
+{\bf ?}), будет выведен стандартный файловый диалог с фильтром в виде 
+этого имени.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{OPENFILE\_BROWSE}
+
+\ifenglish
+Select this pushbutton to display a standard file open
+dialog.
+ \else
+Нажмите эту кнопку, чтобы вызвать стандартный диалог открытия файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{File History}
+\public{OPENFILE\_FILELIST}
+
+\ifenglish
+Select the {\bf File History} pushbutton to pick a file from
+the list of the most recently loaded files.
+
+The system keeps track of 100 most recently opened files.
+First 5 of them are available in a {\bf File} menu.
+Others are available through {\bf More Files} dialog
+that is displayed after pressing {\bf File History} button here, or by
+{\bf File:More Files} menu.
+
+ \else
+Нажмите кнопку  {\bf File History}, чтобы выбрать файл из списка 
+наиболее часто загружаемых файлов
+
+Система содержит сведения о 100 наиболее часто открываемых файлах.
+Первые 5 из них доступны в меню {\bf File}.
+Остальные доступны в диалоге {\bf More Files},
+который появляется после нажатия кнопки {\bf File History} или в меню
+{\bf File:More Files}.
+\fi
+
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{OPENFILE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to open the file with the name you have typed.
+Standard file open dialog appears if the name is absent or contains wildcard
+characters  ({\bf *} and {\bf ?}).
+ \else
+Нажмите кнопку {\bf OK}, чтобы открыть файл с введенным вами именем. 
+В случае, если имя отсутствует или содержит шаблонные символы ({\bf *} и {\bf ?}), 
+появится стандартный диалог открытия файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{OPENFILE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to open a file.
+ \else
+Нажмите кнопку {\bf Cancel}, если решили не открывать файл.
+\fi
+\end{popup}
+%-----------------------------------------------------------------------
+
+\ifenglish
+\section{More files dialog}
+ \else
+\section{диалог More files}
+\fi
+\public{MOREFILES\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog contains a list of the most recently opened files, allowing
+to quickly re-open one of them. Maximum 100 files are remembered. First 5 of them
+are available in {\bf File} menu.
+
+Files are sorted in reverse order of last opening time.
+
+ \else
+Диалог содержит список недавно открытых файлов, позволяя быстро открыть один
+из них снова. Запоминается самое большее 100 файлов. Первые 5 из них
+доступны в меню.
+
+Файлы отсортированы в обратном по времени последнего открытия порядке.
+\fi
+
+\begin{popup}
+\ifenglish
+\caption{File list}
+ \else
+\caption{Список файлов}
+\fi
+\public{MOREFILES\_LBOX}
+
+\ifenglish
+This list box contains a list of the most recently opened files.
+You may double-click on a file to re-open it and leave the dialog.
+ \else
+Здесь содержится список недавно открытых файлов .
+С помощью двойного щелчка вы можете открыть один из них и выйти 
+из диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{MOREFILES\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to open the currently selected file.
+ \else
+Нажмите кнопку {\bf OK}, чтобы открыть выбранный в данный момент файл.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{MOREFILES\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to open a file.
+ \else
+Нажмите кнопку {\bf Cancel}, если решили не открывать файл.
+\fi
+\end{popup}

@@ -1,0 +1,244 @@
+\section{File Menu}
+\public{M\_FILE}
+\index{File Menu}
+\nominitoc
+
+\ifenglish
+The {\bf File} menu contains commands that you use to create,
+open, and save source files. It also contains a list of files
+that were most recently opened or saved using the {\bf Save As} command.
+The following commands appear in the {\bf File} menu:
+\else
+Меню {\bf File} содержит команды, которые вы используете, чтобы создавать,
+открывать и сохранять исходные файлы. Оно также содержит список наиболее часто 
+открывавшихся или сохраненных командой {\bf Save As} файлов.
+В меню {\bf File} содержатся следующие команды:
+\fi
+
+\begin{description}
+\item \ref[New]{IDM\_NEW} - 
+  \ifenglish
+    Opens new empty window
+  \else 
+    Открывает новое пустое окно
+  \fi
+\item \ref[Open]{IDM\_OPEN} -
+  \ifenglish
+    Opens a new window and load a file into it
+  \else
+    Открывает новое окно и загружает в него файл
+  \fi
+\item \ref[Save]{IDM\_SAVE} -
+  \ifenglish
+    Saves any changes made to the current file
+  \else
+    Сохраняет любые произведенные в текущем файле изменения
+  \fi
+\item \ref[Save As]{IDM\_SAVEAS} -
+  \ifenglish
+    Saves the current file using a new name
+  \else
+    Сохраняет текущий файл под новым именем
+  \fi
+\item \ref[Save All]{IDM\_SAVEALL} - 
+  \ifenglish
+    Saves all changed files
+  \else
+    Сохраняет все измененные файлы
+  \fi
+\item \ref[Share]{IDM\_SHARE} -
+  \ifenglish
+    Opens another window with same file
+  \else
+    Открывает новое окно с тем же самым файлом
+  \fi
+\item \ref[Print]{IDM\_PRINT} -
+  \ifenglish
+    Prints the current file or selection
+  \else
+    Распечатывает содержимое текущего файла или отмеченный текст
+  \fi
+\item \ref[Close]{IDM\_CLOSE} -
+  \ifenglish
+    Closes the current window
+  \else
+    Закрывает текущее окно
+  \fi
+\item \ref[Exit]{IDM\_EXIT} -
+  \ifenglish
+    Exits the IDE
+  \else
+    Закрывает IDE 
+  \fi
+\item \ref[More Files]{IDM\_MOREFILES} -
+  \ifenglish
+    Show long history of opened files
+  \else
+    Отображает полный архив сведений по открывавшимся файлам
+  \fi
+\end{description}
+
+\subsection{File: New}
+\public{IDM\_NEW}
+
+\ifenglish
+Use the {\bf New} command to create a new empty window.
+
+The words "New file" will appear in its title bar,
+You'll have to specify a name for the new file when you save it.
+\else
+Используйте команду {\bf New}, чтобы создать новое пустое окно
+
+В заголовке нового окна появятся слова "New file" .
+При сохранении нового файла вы должны будете указать его имя.
+\fi
+
+\subsection{File: Open}
+\public{IDM\_OPEN}
+
+\ifenglish
+Use the {\bf Open} command to load an existing file into
+a new window.
+
+A dialog will appear, providing different methods of
+loading files.
+
+Keyboard shortcut: {\bf F3}
+\else
+Используйте команду {\bf Open}, чтобы загрузить существующий файл в новое 
+окно.
+
+Появится диалог, обеспечивающий различные способы загрузки файлов.
+
+Комбинация клавиш: {\bf F3} 
+\fi
+
+\subsection{File; Save}
+\public{IDM\_SAVE}
+
+\ifenglish
+Use the {\bf Save} command to store the current file to disk.
+After the file is saved, the text remains in the window
+so that you can continue editing it. However, undo buffer is cleared
+so you can't undo the changes made before file was saved.
+
+Keyboard shortcut: {\bf F2}
+
+{\bf Note:} If you are editing a new file, select the
+{\bf Save} or {\bf Save as} choices to display the
+{\bf Save as} dialog so that you can name the file you are editing.
+A file must have a name to be saved.
+\else
+Используйте команду {\bf Save}, чтобы сохранить содержимое текущего файла на 
+диск. После того, как файл сохранен, текст остается в окне, так что вы можете 
+продолжить его изменять. Тем не менее, буфер отмены очищается, так что вы не 
+можете отменить изменения, произведенные до того, как файл был сохранен.
+
+{\bf Замечание: } если вы редактируете новый файл, выберите {\bf Save} или 
+{\bf Save as}, чтобы отобразить {\bf Save as}-диалог, позволяющий вам дать имя
+редактируемому файлу. Для того, чтобы быть сохраненным, файл дожен иметь имя. 
+\fi
+
+\subsection{File: Save As}
+\public{IDM\_SAVEAS}
+
+\ifenglish
+Use the {\bf Save As} command to name and save a new file
+or to save a file under a different name, or to a different location.
+
+A dialog box will appear, prompting you for a new filename. You can
+also select different drive/directory.
+
+The new name will appear in the title bar of current window. If there are
+several windows with the file being saved, all of them change title bar.
+\else
+Используйте команду {\bf Save As}, чтобы назвать и сохранить новый файл,
+или сохранить файл под другим именем или в другом месте.
+
+Появится диалог, запрашивающий имя файла. Вы также можете указать носитель
+и директорию.
+
+Новое имя будет отображено в заголовке текущего окна. Если сохраняемый файл 
+содержат несколько окон, все они изменят заголовок.
+\fi
+
+\subsection{File: Save All}
+\public{IDM\_SAVEALL}
+
+\ifenglish
+Use the {\bf Save All} command to save all changed files.
+\else
+Используйте команду {\bf Save All}, чтобы сохранить все измененные файлы.
+\fi
+
+\subsection{File: Share}
+\public{IDM\_SHARE}
+
+\ifenglish
+Use the {\bf Share} command to open another window with current file.
+Both windows are kept consistent; all changes made in one window
+are immediately visible in other window.
+
+You may open as many copies of a file as you wish.
+
+{\bf Note:} You will be prompted if you wish to save file to disk only when
+the last window with a file is closed.
+\else
+Используйте команду {\bf Share}, чтобы открыть другое окно, содержащее текущий 
+файл. Оба окна согласуются, все изменения, произведенные в одном окне, сразу же
+отображаются в другом.  
+
+Вы можете открывать сколько угодно копий одного и того же файла.
+
+{\bf Замечание:} Вас запросят, хотите ли вы сохранить файл на диск, только тогда,
+когда будет закрыто последнее окно, содержащее файл.  
+\fi
+
+\subsection{File: Print}
+\public{IDM\_PRINT}
+
+\ifenglish
+Use the {\bf Print} command to print the current file or
+selection.
+\else
+Используйте команду {\bf Print}, чтобы распечатать содержимое текущего файла
+или отмеченный текст.
+\fi
+
+\subsection{File: Close}
+\public{IDM\_CLOSE}
+
+\ifenglish
+Use the {\bf Close} command to close the current window.
+You will be prompted to save changes, if any.
+\else
+Используйте команду {\bf Close}, чтобы закрыть текущее окно.
+Вас запросят, хотите ли вы сохранить изменения, если они были произведены.
+\fi
+
+\subsection{File: Exit}
+\public{IDM\_EXIT}
+
+\ifenglish
+Use the {\bf Exit} command to close all edit windows
+and terminate the IDE. You will be prompted to save changes,
+if any.
+\else
+Используйте команду {\bf Exit}, чтобы закрыть все окна ввода и завершить IDE. 
+Вас запросят, хотите ли вы сохранить изменения, если они были произведены.
+\fi
+
+\subsection{File: More Files}
+\public{IDM\_MOREFILES}
+
+\ifenglish
+Only 5 last opened files appear at the bottom of \ref[File]{M\_FILE} menu.
+The IDE actually remembers last 100 opened files. To display \ref[full list]{MOREFILES\_DIALOG}
+of them use the {\bf More Files} command.
+\else
+Только 5 последних открывавшихся файлов появятся в нижней части меню 
+\ref[File]{M\_FILE}. IDE на самом деле запоминает 100 последних открывавшихся
+файлов.
+Чтобы отобразить их полный список, используйте команду 
+\ref[full list]{MOREFILES\_DIALOG}.
+\fi

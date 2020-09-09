@@ -1,0 +1,27 @@
+(* Copyright (c) 1997 xTech Ltd, Russia. All rights reserved. *)
+
+(* $RCSfile: mac_stat.def,v $ $Revision: 1.1.1.1 $ $Date: 1997/10/20 19:32:35 $ *)
+
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_stat;
+
+(*
+    Title: 	Definitions for implementation of C macros
+                in POSIX 1003.1 sys/stat.h
+    Created:	Thu Aug 21 19:16:48 1997
+    Author: 	Igor L. Ziryanov
+		<ego@pluto.xTech.RU>
+*)
+
+PROCEDURE ["C"] S_ISREG  ( m: BITSET ): BOOLEAN;
+PROCEDURE ["C"] S_ISBLK  ( m: BITSET ): BOOLEAN;
+PROCEDURE ["C"] S_ISDIR  ( m: BITSET ): BOOLEAN;
+PROCEDURE ["C"] S_ISCHR  ( m: BITSET ): BOOLEAN;
+PROCEDURE ["C"] S_ISFIFO ( m: BITSET ): BOOLEAN;
+------- LiNUX 2.0 feature or BUG? -------
+-- PROCEDURE ["C"] S_ISUID  ( m: BITSET ): BOOLEAN;
+------- LiNUX 2.0 feature or BUG? -------
+-- PROCEDURE ["C"] S_ISGID  ( m: BITSET ): BOOLEAN;
+
+END mac_stat.

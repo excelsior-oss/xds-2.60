@@ -1,0 +1,322 @@
+#define         INCL_PM
+#define         INCL_NLS
+#include        <os2.h>
+#include        "..\xdsbase.h"
+
+
+ICON    RES_MAIN        nedmain.ico
+ICON    ICO_MDICLIENT   edwindow.ico
+ICON    ICO_REXXMON     rexxmon.ico
+ICON    PTR_DROPGITEM   dGItem.ptr
+ICON    PTR_NODROPGITEM ndGItem.ptr
+ICON    PTR_DROPFILE    drgFile.ptr
+ICON    PTR_NODROPFILE  ndrgFile.ptr
+ICON    PTR_DROPFILES   drgFls.ptr
+ICON    PTR_NODROPFILES ndrgFls.ptr
+POINTER PTR_MOVE        move.ptr
+POINTER PTR_COPY        copy.ptr
+BITMAP  IDB_LOGOBMP     logo.bmp
+BITMAP  IDB_TBBNEW      filenew.bmp
+BITMAP  IDB_TBBOPEN     fileopen.bmp
+BITMAP  IDB_TBBSAVE     filesave.bmp
+BITMAP  IDB_TBBPRINT    print.bmp
+BITMAP  IDB_TBBUNDO     undo.bmp
+BITMAP  IDB_TBBCUT      cut.bmp
+BITMAP  IDB_TBBCOPY     copy.bmp
+BITMAP  IDB_TBBPASTE    paste.bmp
+BITMAP  IDB_TBBFIND     find.bmp
+BITMAP  IDB_TBBFINDNEXT findnext.bmp
+BITMAP  IDB_TBBSETTINGS settings.bmp
+//--- Tools:
+BITMAP  IDB_TOOL0       compile.bmp
+BITMAP  IDB_TOOL1       make.bmp
+BITMAP  IDB_TOOL2       makeall.bmp
+BITMAP  IDB_TOOL3       run.bmp
+BITMAP  IDB_TOOL4       debug.bmp
+BITMAP  IDB_TOOL5       tool0.bmp
+BITMAP  IDB_TOOL6       tool1.bmp
+BITMAP  IDB_TOOL7       tool2.bmp
+BITMAP  IDB_TOOL8       tool3.bmp
+BITMAP  IDB_TOOL9       tool4.bmp
+BITMAP  IDB_TOOL10      tool5.bmp
+BITMAP  IDB_TOOL11      tool6.bmp
+BITMAP  IDB_TOOL12      tool7.bmp
+BITMAP  IDB_TOOL13      tool8.bmp
+BITMAP  IDB_TOOL14      tool9.bmp
+// File load dialog
+BITMAP   BMP_FILE2LST   file2lst.bmp
+BITMAP   BMP_FNEW2LST   fnew2lst.bmp
+BITMAP   BMP_GRP2LST    grp2lst.bmp
+BITMAP   BMP_GOP2LST    gop2lst.bmp
+BITMAP   BMP_RGB2LST    rgb2lst.bmp
+// Modify project dialog
+BITMAP   BMP_OPOPTION   OpOpt.bmp
+BITMAP   BMP_CLOPTION   ClOpt.bmp
+// Font/color dialog
+BITMAP   BMP_COLORS     clr.bmp
+// Popup window
+BITMAP  IDB_FLASH_ON    flash_ON.bmp
+BITMAP  IDB_FLASH_OF    flash_OF.bmp
+BITMAP  IDB_FLASH_OK    flash_OK.bmp
+BITMAP  IDB_FLASH_ER    flash_ER.bmp
+
+
+rcinclude  "xdss.dlg"
+rcinclude  "mdi.dlg"
+
+MENU RES_MAIN
+
+{
+    SUBMENU     "~File", IDM_FILE, MIS_TEXT
+    {
+        MENUITEM    "~New",                              IDM_FILENEW,           MIS_TEXT
+        MENUITEM    "~Load...\tF3",                      IDM_FILELOAD,          MIS_TEXT
+        MENUITEM    "~Reload\tCtrl+F3",                  IDM_FILERELOAD,        MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "~Save\tF2",                         IDM_FILESAVE,          MIS_TEXT
+        MENUITEM    "Save ~as...",                       IDM_FILESAVEAS,        MIS_TEXT
+        MENUITEM    "Sa~ve all\tCtrl+F2",                IDM_FILESAVEALL,       MIS_TEXT
+        MENUITEM    "~Print...",                         IDM_FILEPRINT,         MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "A~utosave",                         IDM_FILEAUTOSAVE,      MIS_TEXT
+        MENUITEM    "~Maximize new windows",             IDM_FILEMAXNEW,        MIS_TEXT
+        MENUITEM    "~Create backup files",              IDM_FILEBAK,           MIS_TEXT
+        MENUITEM    "Use single 'Auto window'",          IDM_FILE1AUTOWIN,      MIS_TEXT
+    }
+
+    SUBMENU     "~Edit", IDM_EDIT, MIS_TEXT
+    {
+        MENUITEM    "Undo\tAlt+Backspace",               IDM_EDITUNDO,          MIS_TEXT
+        MENUITEM    "Redo\tCtrl+Enter",                  IDM_EDITREDO,          MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "Cut\tShift+Delete",                 IDM_EDITCUT,           MIS_TEXT
+        MENUITEM    "Copy\tCtrl+Insert",                 IDM_EDITCOPY,          MIS_TEXT
+        MENUITEM    "Paste\tShift+Insert",               IDM_EDITPASTE,         MIS_TEXT
+        MENUITEM    "Select all",                        IDM_EDITSELALL,        MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "Clear\tDelete",                     IDM_EDITCLEAR,         MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "Find...\tCtrl+F",                   IDM_EDITFIND,          MIS_TEXT
+        MENUITEM    "Find next\tCtrl+L",                 IDM_EDITFINDNEXT,      MIS_TEXT
+        MENUITEM    "Find previous\tShift+Ctrl+L",       IDM_EDITFINDPREVIOUS,  MIS_TEXT
+        MENUITEM    "File find...\tShift+Ctrl+F",        IDM_EDITFILEFIND,      MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "Previous error\tF7",                IDM_EDITPREVERR,       MIS_TEXT
+        MENUITEM    "Next error\tF8",                    IDM_EDITNEXTERR,       MIS_TEXT
+        MENUITEM    "Goto line...\tCtrl+G",              IDM_EDITGOTOLINE,      MIS_TEXT
+    }
+
+    SUBMENU     "~Options", IDM_OPTIONS, MIS_TEXT
+    {
+        MENUITEM    "~Settings...",                      IDM_OPTSETTINGS,       MIS_TEXT
+        MENUITEM    "~Associations...",                  IDM_OPTASS,            MIS_TEXT
+        MENUITEM    "~Macros...",                        IDM_OPTMACROS,         MIS_TEXT
+        MENUITEM    "~Recall macro editor...",           IDM_OPTRECALLMACROED,  MIS_TEXT
+        MENUITEM    "Edit ~variable table...",           IDM_OPTVARTABLE,       MIS_TEXT
+    }
+
+    SUBMENU     "Wor~kplace", IDM_WORKPLACE, MIS_TEXT
+    {
+        MENUITEM    "~New...",                           IDM_WPNEW,             MIS_TEXT
+        MENUITEM    "~List...",                          IDM_WPLIST,            MIS_TEXT
+        MENUITEM    "~Properties...",                    IDM_WPPROPERTIES,      MIS_TEXT
+        MENUITEM    "~Save as...",                       IDM_WPSAVEAS,          MIS_TEXT
+        MENUITEM    "~Templates...",                     IDM_WPTEMPLATES,       MIS_TEXT
+    }
+
+    SUBMENU     "~Tools", IDM_TOOLS, MIS_TEXT
+    {
+        MENUITEM    "Configure ~tools...",               IDM_TOOLCONFIGURE,     MIS_TEXT
+        MENUITEM    "Recal ~popup window...\tCtrl+R",    IDM_WINREPOPUP,        MIS_TEXT
+    }
+
+    SUBMENU     "~Project", IDM_PROJECT, MIS_TEXT
+    {
+        MENUITEM    "~New project...",                   IDM_PROJNEW,           MIS_TEXT
+        MENUITEM    "~Open project...",                  IDM_PROJOPEN,          MIS_TEXT
+        MENUITEM    "~Close project",                    IDM_PROJCLOSE,         MIS_TEXT
+        MENUITEM    "~Modify project...",                IDM_PROJMODIFY,        MIS_TEXT
+        MENUITEM    "~Edit project file",                IDM_PROJEDTEXT,        MIS_TEXT
+    }
+
+    SUBMENU     "~Window", IDM_WINDOW, MIS_TEXT
+    {
+        MENUITEM SEPARATOR
+        MENUITEM    "Recal ~popup window...\tCtrl+R",    IDM_WINREPOPUP,        MIS_TEXT
+        MENUITEM    "REXX execution ~monitor",           IDM_WINREXXMON,        MIS_TEXT
+        MENUITEM    "~Cascade",                          IDM_WINCASCADE,        MIS_TEXT
+        MENUITEM    "Ma~ximize all",                     IDM_WINMAXALL,         MIS_TEXT
+        MENUITEM    "Close ~all",                        IDM_WINCLOSEALL,       MIS_TEXT
+    }
+
+    SUBMENU     "~Help",    IDM_HELP,   MIS_TEXT
+    {
+        MENUITEM    "Help ~index",                       IDM_HELPINDEX,         MIS_TEXT
+        MENUITEM    "~General help",                     IDM_HELPGENERAL,       MIS_TEXT
+        MENUITEM    "~Using help",                       IDM_HELPUSINGHELP,     MIS_TEXT
+        MENUITEM    "~Keys help",                        IDM_HELPKEYS,          MIS_TEXT
+        MENUITEM SEPARATOR
+        MENUITEM    "~Product information...",           IDM_HELPPRODUCTINFO,   MIS_TEXT
+    }
+}
+
+MENU IDM_POPUP_MSGLIST
+{
+  MENUITEM    "~Font...",         IDM_POP_FONT,  MIS_TEXT
+    SUBMENU   "~Sort",            IDM_POP_SORT,  MIS_TEXT
+    {
+        MENUITEM    "~Default",   IDM_POP_DEFAULT,  MIS_TEXT
+        MENUITEM    "~Unsorted",  IDM_POP_UNSORTED, MIS_TEXT
+    }
+    MENUITEM  "~Copy",            IDM_POP_COPY,       MIS_TEXT
+}
+
+MENU IDM_POPUP_SRCLIST
+{
+  MENUITEM    "~Font...",                  IDM_POP_FONT,       MIS_TEXT
+  MENUITEM    "Full ~names",               IDM_POP_FULLNAMES,  MIS_TEXT
+  MENUITEM    "~Copy",                     IDM_POP_COPY,       MIS_TEXT
+  MENUITEM    SEPARATOR
+  MENUITEM    "Select...\tGray +",         IDM_POP_SELFILES,   MIS_TEXT
+  MENUITEM    "Unselect...\tGray -",       IDM_POP_UNSELFILES, MIS_TEXT
+  MENUITEM    "Invert selection\tGray *",  IDM_POP_INVSELFILES,MIS_TEXT
+  MENUITEM    "Invert file selection\tIns",IDM_POP_FILEINVSEL, MIS_TEXT
+  MENUITEM    "File find\tShift+Ctrl+F",   IDM_POP_FILEFIND,   MIS_TEXT
+  MENUITEM    SEPARATOR
+    SUBMENU   "~Open file",             IDM_POP_GROUPS,  MIS_TEXT
+    {
+        MENUITEM    "In ~Auto window",  IDM_POP_AGROUP,  MIS_TEXT
+        MENUITEM    "In ~1 group",      IDM_POP_1GROUP,  MIS_TEXT
+        MENUITEM    "In ~2 group",      IDM_POP_2GROUP,  MIS_TEXT
+        MENUITEM    "In ~3 group",      IDM_POP_3GROUP,  MIS_TEXT
+        MENUITEM    "In ~4 group",      IDM_POP_4GROUP,  MIS_TEXT
+        MENUITEM    "In ~5 group",      IDM_POP_5GROUP,  MIS_TEXT
+        MENUITEM    "In ~6 group",      IDM_POP_6GROUP,  MIS_TEXT
+        MENUITEM    "In ~7 group",      IDM_POP_7GROUP,  MIS_TEXT
+        MENUITEM    "In ~8 group",      IDM_POP_8GROUP,  MIS_TEXT
+        MENUITEM    "In ~9 group",      IDM_POP_9GROUP,  MIS_TEXT
+    }
+
+}
+
+MENU IDM_POPUP_POPUPWIN
+{
+  MENUITEM    "~Font...",         IDM_POP_FONT,       MIS_TEXT
+  MENUITEM    "~Copy",            IDM_POP_COPY,       MIS_TEXT
+}
+
+MENU IDM_POPUP_GOBM
+{
+  MENUITEM    "Goto marker ~0",        IDM_POP_GOBM0,       MIS_TEXT
+  MENUITEM    "Goto marker ~1",        IDM_POP_GOBM0+1,     MIS_TEXT
+  MENUITEM    "Goto marker ~2",        IDM_POP_GOBM0+2,     MIS_TEXT
+  MENUITEM    "Goto marker ~3",        IDM_POP_GOBM0+3,     MIS_TEXT
+  MENUITEM    "Goto marker ~4",        IDM_POP_GOBM0+4,     MIS_TEXT
+  MENUITEM    "Goto marker ~5",        IDM_POP_GOBM0+5,     MIS_TEXT
+  MENUITEM    "Goto marker ~6",        IDM_POP_GOBM0+6,     MIS_TEXT
+  MENUITEM    "Goto marker ~7",        IDM_POP_GOBM0+7,     MIS_TEXT
+  MENUITEM    "Goto marker ~8",        IDM_POP_GOBM0+8,     MIS_TEXT
+  MENUITEM    "Goto marker ~9",        IDM_POP_GOBM0+9,     MIS_TEXT
+}
+
+MENU IDM_POPUP_SETBM
+{
+  MENUITEM    "Set marker ~0",         IDM_POP_SETBM0,      MIS_TEXT
+  MENUITEM    "Set marker ~1",         IDM_POP_SETBM0+1,    MIS_TEXT
+  MENUITEM    "Set marker ~2",         IDM_POP_SETBM0+2,    MIS_TEXT
+  MENUITEM    "Set marker ~3",         IDM_POP_SETBM0+3,    MIS_TEXT
+  MENUITEM    "Set marker ~4",         IDM_POP_SETBM0+4,    MIS_TEXT
+  MENUITEM    "Set marker ~5",         IDM_POP_SETBM0+5,    MIS_TEXT
+  MENUITEM    "Set marker ~6",         IDM_POP_SETBM0+6,    MIS_TEXT
+  MENUITEM    "Set marker ~7",         IDM_POP_SETBM0+7,    MIS_TEXT
+  MENUITEM    "Set marker ~8",         IDM_POP_SETBM0+8,    MIS_TEXT
+  MENUITEM    "Set marker ~9",         IDM_POP_SETBM0+9,    MIS_TEXT
+}
+
+MENU IDM_POPUP_EDTITLEBAR
+{
+  MENUITEM    "Show full filenames",   IDM_POP_FULLNAMES,   MIS_TEXT
+}
+
+
+MENU IDM_POPUP_WINBAR
+{
+  MENUITEM    "Close",           IDM_POP_WBBCLOSE,     MIS_TEXT
+  MENUITEM    "Restore",         IDM_POP_WBBRESTORE,   MIS_TEXT
+  MENUITEM    "Maximize",        IDM_POP_WBBMAXIMIZE,  MIS_TEXT
+  MENUITEM    "Hide",            IDM_POP_WBBHIDE,      MIS_TEXT
+  MENUITEM    "Tile vertical",   IDM_POP_WBBVTILE,     MIS_TEXT
+  MENUITEM    "Tile horizontal", IDM_POP_WBBHTILE,     MIS_TEXT
+  SUBMENU     "Move to group",   IDM_POP_MVGROUPS,     MIS_TEXT  // :-(
+  {
+    MENUITEM  "1 group",         IDM_POP_MV1GROUP,     MIS_TEXT
+    MENUITEM  "2 group",         IDM_POP_MV2GROUP,     MIS_TEXT
+    MENUITEM  "3 group",         IDM_POP_MV3GROUP,     MIS_TEXT
+    MENUITEM  "4 group",         IDM_POP_MV4GROUP,     MIS_TEXT
+    MENUITEM  "5 group",         IDM_POP_MV5GROUP,     MIS_TEXT
+    MENUITEM  "6 group",         IDM_POP_MV6GROUP,     MIS_TEXT
+    MENUITEM  "7 group",         IDM_POP_MV7GROUP,     MIS_TEXT
+    MENUITEM  "8 group",         IDM_POP_MV8GROUP,     MIS_TEXT
+    MENUITEM  "9 group",         IDM_POP_MV9GROUP,     MIS_TEXT
+    MENUITEM  "Auto group",      IDM_POP_MVAGROUP,     MIS_TEXT
+  }
+  MENUITEM    SEPARATOR
+  MENUITEM    "Font...",         IDM_POP_WBFONT,       MIS_TEXT
+  MENUITEM    "Show colors",     IDM_POP_WBCOLORS,     MIS_TEXT
+  MENUITEM    "Wrap winbar",     IDM_POP_WBWARP,       MIS_TEXT
+}
+
+MENU IDM_POPUP_FILELIST
+{
+  MENUITEM    "Unselect all",         IDM_POP_UNSELALL,  MIS_TEXT
+  MENUITEM    SEPARATOR
+  MENUITEM    "Font...",              IDM_POP_FONT,      MIS_TEXT
+    SUBMENU   "Sort",                 IDM_POP_SORT,      MIS_TEXT
+    {
+        MENUITEM    "Name \tCtrl+F3", IDM_POP_NAME,      MIS_TEXT
+        MENUITEM    "Type \tCtrl+F4", IDM_POP_TYPE,      MIS_TEXT
+    }
+}
+
+MENU IDM_POPUP_GRPLIST
+{
+  MENUITEM    "New file",             IDM_POP_NEWFILE,   MIS_TEXT
+  MENUITEM    "Close window \tDel",   IDM_POP_CLOSEWIN,  MIS_TEXT
+  MENUITEM    SEPARATOR
+  MENUITEM    "Font...",              IDM_POP_FONT,      MIS_TEXT
+  MENUITEM    "Show full filenames",  IDM_POP_FULLNAMES, MIS_TEXT
+}
+
+MENU IDM_POPUP_GRPLIST1
+{
+  MENUITEM    "Specify new file",       IDM_POP_NEWFILE,   MIS_TEXT
+  MENUITEM    "Remove from list \tDel", IDM_POP_CLOSEWIN,  MIS_TEXT
+  MENUITEM    SEPARATOR
+  MENUITEM    "Font...",                IDM_POP_FONT,      MIS_TEXT
+  MENUITEM    "Show full filenames",    IDM_POP_FULLNAMES, MIS_TEXT
+}
+
+
+ACCELTABLE RES_MAIN
+{
+//      "\\",           IDM_WINSRCLIST,     ALT
+//      "`",            IDM_WINMSGLIST,     ALT
+//      "1",            IDM_WINEDFIRST+0,   ALT
+//      "2",            IDM_WINEDFIRST+1,   ALT
+//      "3",            IDM_WINEDFIRST+2,   ALT
+//      "4",            IDM_WINEDFIRST+3,   ALT
+//      "5",            IDM_WINEDFIRST+4,   ALT
+//      "6",            IDM_WINEDFIRST+5,   ALT
+//      "7",            IDM_WINEDFIRST+6,   ALT
+//      "8",            IDM_WINEDFIRST+7,   ALT
+//      "9",            IDM_WINEDFIRST+8,   ALT
+//      "0",            IDM_WINEDAUTO,      ALT
+/// MDI client system menu uses CTRL
+      VK_F4,          MDICL_CLOSE,        VIRTUALKEY, CONTROL
+      VK_F5,          MDICL_RESTORE,      VIRTUALKEY, CONTROL
+      VK_F7,          MDICL_MOVE,         VIRTUALKEY, CONTROL
+      VK_F8,          MDICL_SIZE,         VIRTUALKEY, CONTROL
+      VK_F10,         MDICL_MAXIMIZE,     VIRTUALKEY, CONTROL
+      VK_F11,         MDICL_HIDE,         VIRTUALKEY, CONTROL
+      "-",            MDICL_SYSMENU,      ALT
+}

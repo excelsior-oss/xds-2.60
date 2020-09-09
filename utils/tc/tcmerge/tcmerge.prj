@@ -1,0 +1,76 @@
+% Copyright (c) 1995 xTexh Ltd. Russia
+% Hady. 20.10.95
+% Project file for XDS Librarian.
+%
+% Valid modes are: work,enduser,demo
+%       The differences are: debug settings, lookup paths
+
+!if not defined mode then
+  !new mode = work
+!end
+
+ -changesym+ 
+
+ -gendebug+
+ -lineno+
+ -genhistory+
+ -assert+
+ -checkindex-
+ -checkdindex-
+ -checkrange-
+ -checkset-
+ -checknil-
+ -checkproc-
+ -ioverflow-
+ -coverflow-
+ -foverflow-
+
+ -debug:-
+
+!if mode="work" then
+  -lookup = *.ob2=src\tc\tcmerge
+  -lookup = *.def=src\tc\tcmerge
+  -lookup = *.mod=src\tc\tcmerge
+  -lookup = *.obj=ch
+  -lookup = *.sym=sym
+  -lookup = *.lib=.
+!elsif mode="enduser" then
+  -lookup = *.ob2=$!
+  -lookup = *.def=$!
+  -lookup = *.mod=$!
+  -lookup = *.obj = enduser\tmp
+  -lookup = *.sym = enduser\tmp;enduser\xds\sym\X86
+  -lookup = *.exe = enduser\xds\bin
+  -lookup = *.lib = enduser\xds\lib\X86
+!elsif mode="demo" then
+  -lookup = *.ob2=$!
+  -lookup = *.def=$!
+  -lookup = *.mod=$!
+  -lookup = *.obj = demo\tmp
+  -lookup = *.exe = demo\xds\bin
+  -lookup = *.lib = demo\tmp
+  -lookup = *.sym = demo\tmp
+!end
+
+!if env_target="x86nt" then
+  %-template=$!/../m/xc.tem
+  -link="xlink @%s",mkfname#mkfext
+!end
+
+
+-o2extensions+
+-o2isopragma+
+
+-makefile+
+-mkfext=lnk
+!if mode="work" then
+  -mkfname=xlib
+!elsif mode="demo" then
+  -mkfname=demo\tmp\xlib
+!else
+  -mkfname=enduser\tmp\xlib
+!end
+
+-heaplimit = 50000000
+
+!module tcmerge

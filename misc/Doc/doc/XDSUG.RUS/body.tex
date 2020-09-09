@@ -1,0 +1,36 @@
+\input{intro.tex}
+
+\input{config.tex}
+\input{start.tex}
+\input{usage.tex}
+\ifgenc
+  %\input{program.tex}  % programming in the large
+\fi
+\input{options.tex}
+
+\input{modula2.tex}
+\input{oberon2.tex}
+\input{multlang.tex}
+\input{rts.tex}
+\ifgencode
+  \ifgenintel
+%         \input{xlink.tex}
+         \input{ccomp.tex}
+         \input{lowlevel.tex}
+  \else\ifgenvax
+    \input{vaxlink.tex}
+  \else\JNO
+  \fi\fi
+\fi
+\ifgenc
+        \input{maptoc.tex}
+        \input{problems.tex}
+\fi
+\input{errors.tex}
+\input{limits.tex}
+
+\printindex
+
+%installation guide (or READ.ME) !!!
+%
+

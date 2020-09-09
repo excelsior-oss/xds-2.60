@@ -1,0 +1,932 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: BSESUB.H
+*
+* OS/2 Base include file.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+* Subcomponents marked with "+" are partially included by default:
+*
+*   #define:                To include:
+*
+*   INCL_KBD                KBD
+*   INCL_VIO                VIO
+*   INCL_MOU                MOU
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE  line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+#if defined(INCL_SUB)
+   #define INCL_KBD
+   #define INCL_VIO
+   #define INCL_MOU
+#endif (* INCL_SUB *)
+
+#if defined(INCL_KBD)
+
+
+   TYPE HKBD   = SYSTEM.CARD16;
+   TYPE PHKBD  = POINTER TO HKBD;
+
+   PROCEDURE KbdRegister(szModName : ARRAY OF CHAR
+                        ;szEntryPt : ARRAY OF CHAR
+                        ;FunMask   : ULONG
+                        ): APIRET16;
+
+   CONST KR_KBDCHARIN               = 000000001H;
+   CONST KR_KBDPEEK                 = 000000002H;
+   CONST KR_KBDFLUSHBUFFER          = 000000004H;
+   CONST KR_KBDGETSTATUS            = 000000008H;
+   CONST KR_KBDSETSTATUS            = 000000010H;
+   CONST KR_KBDSTRINGIN             = 000000020H;
+   CONST KR_KBDOPEN                 = 000000040H;
+   CONST KR_KBDCLOSE                = 000000080H;
+   CONST KR_KBDGETFOCUS             = 000000100H;
+   CONST KR_KBDFREEFOCUS            = 000000200H;
+   CONST KR_KBDGETCP                = 000000400H;
+   CONST KR_KBDSETCP                = 000000800H;
+   CONST KR_KBDXLATE                = 000001000H;
+   CONST KR_KBDSETCUSTXT            = 000002000H;
+
+   CONST IO_WAIT                  =  0;
+   CONST IO_NOWAIT                =  1;
+
+   PROCEDURE KbdDeRegister(): APIRET16;
+
+   (* KBDKEYINFO structure, for KbdCharIn and KbdPeek *)
+   <* ALIGNMENT = "2" *>
+
+   TYPE KBDKEYINFO = RECORD     (* kbci *)
+      chChar:          UCHAR ;
+      chScan:          UCHAR ;
+      fbStatus:        UCHAR ;
+      bNlsShift:       UCHAR ;
+      fsState:         USHORT;
+      time:            ULONG ;
+   END;
+   TYPE PKBDKEYINFO = POINTER TO KBDKEYINFO;
+
+   PROCEDURE KbdCharIn(VAR kbci : KBDKEYINFO
+                      ;fWait    : USHORT
+                      ;hkbd     : HKBD
+                      ): APIRET16;
+
+   PROCEDURE KbdPeek(VAR kbci : KBDKEYINFO
+                    ;hkbd     : HKBD
+                    ): APIRET16;
+
+   (* structure for KbdStringIn() *)
+
+   TYPE STRINGINBUF = RECORD    (* kbsi *)
+      cb:    USHORT ;
+      cchIn: USHORT ;
+   END;
+   TYPE PSTRINGINBUF = POINTER TO STRINGINBUF;
+
+   PROCEDURE KbdStringIn(VAR ch   : ARRAY OF CHAR
+                        ;VAR chIn : STRINGINBUF
+                        ;fsWait   : USHORT
+                        ;hkbd     : HKBD
+                        ): APIRET16;
+
+   PROCEDURE KbdFlushBuffer(hkbd : HKBD): APIRET16;
+
+   (* KBDINFO.fsMask *)
+
+   CONST KEYBOARD_ECHO_ON                = 00001H;
+   CONST KEYBOARD_ECHO_OFF               = 00002H;
+   CONST KEYBOARD_BINARY_MODE            = 00004H;
+   CONST KEYBOARD_ASCII_MODE             = 00008H;
+   CONST KEYBOARD_MODIFY_STATE           = 00010H;
+   CONST KEYBOARD_MODIFY_INTERIM         = 00020H;
+   CONST KEYBOARD_MODIFY_TURNAROUND      = 00040H;
+   CONST KEYBOARD_2B_TURNAROUND          = 00080H;
+   CONST KEYBOARD_SHIFT_REPORT           = 00100H;
+
+   #if ! defined(INCL_DOSDEVIOCTL)  (* following constants defined in bsedev.h *)
+      (* KBDINFO.fsState/KBDKEYINFO.fsState/KBDTRANS.fsState *)
+      CONST KBDSTF_RIGHTSHIFT               = 00001H;
+      CONST KBDSTF_LEFTSHIFT                = 00002H;
+      CONST KBDSTF_CONTROL                  = 00004H;
+      CONST KBDSTF_ALT                      = 00008H;
+      CONST KBDSTF_SCROLLLOCK_ON            = 00010H;
+      CONST KBDSTF_NUMLOCK_ON               = 00020H;
+      CONST KBDSTF_CAPSLOCK_ON              = 00040H;
+      CONST KBDSTF_INSERT_ON                = 00080H;
+      CONST KBDSTF_LEFTCONTROL              = 00100H;
+      CONST KBDSTF_LEFTALT                  = 00200H;
+      CONST KBDSTF_RIGHTCONTROL             = 00400H;
+      CONST KBDSTF_RIGHTALT                 = 00800H;
+      CONST KBDSTF_SCROLLLOCK               = 01000H;
+      CONST KBDSTF_NUMLOCK                  = 02000H;
+      CONST KBDSTF_CAPSLOCK                 = 04000H;
+      CONST KBDSTF_SYSREQ                   = 08000H;
+   #endif  (* INCL_DOSDEVIOCTL *)
+
+   (* KBDINFO structure, for KbdSet/GetStatus *)
+   TYPE KBDINFO = RECORD         (* kbst *)
+      cb:                USHORT ;
+      fsMask:            USHORT ;
+      chTurnAround:      USHORT ;
+      fsInterim:         USHORT ;
+      fsState:           USHORT ;
+   END;
+   TYPE  PKBDINFO = POINTER TO KBDINFO;
+
+
+   PROCEDURE KbdSetStatus(VAR kbdinfo : KBDINFO
+                         ;hkbd        : HKBD
+                         ): APIRET16;
+
+   PROCEDURE KbdGetStatus(VAR kbdinfo : KBDINFO
+                         ;hdbd        : HKBD
+                         ): APIRET16;
+
+   PROCEDURE KbdSetCp(usReserved : USHORT
+                     ;pidCP      : USHORT
+                     ;hdbd       : HKBD
+                     ): APIRET16;
+
+   PROCEDURE KbdGetCp(ulReserved : ULONG
+                     ;VAR idCP   : USHORT
+                     ;hkbd       : HKBD
+                     ): APIRET16;
+
+   PROCEDURE KbdOpen(VAR hkbd : HKBD): APIRET16;
+
+   PROCEDURE KbdClose(hkbd : HKBD): APIRET16;
+
+   PROCEDURE KbdGetFocus(fWait : USHORT
+                        ;hkbd  : HKBD
+                        ): APIRET16;
+
+   PROCEDURE KbdFreeFocus(hkbd : HKBD): APIRET16;
+
+   PROCEDURE KbdSynch(fsWait : USHORT): APIRET16;
+
+   PROCEDURE KbdSetFgnd(): APIRET16;
+
+   (* structure for KbdGetHWID() *)
+   TYPE KBDHWID = RECORD        (* kbhw *)
+      cb:          USHORT ;
+      idKbd:       USHORT ;
+      usReserved1: USHORT ;
+      usReserved2: USHORT ;
+   END;
+   TYPE  PKBDHWID = POINTER TO KBDHWID;
+
+   PROCEDURE KbdGetHWID(VAR kbdhwid : KBDHWID
+                       ;hkbd        : HKBD
+                       ): APIRET16;
+
+   PROCEDURE KbdSetHWID(VAR kbdhwid : KBDHWID
+                       ;hkbd        : HKBD
+                       ): APIRET16;
+
+   (* KBDTRANS.fbStatus *)
+
+   CONST KBDTRF_SHIFT_KEY_IN             = 001H;
+   CONST KBDTRF_CONVERSION_REQUEST       = 020H;
+   CONST KBDTRF_FINAL_CHAR_IN            = 040H;
+   CONST KBDTRF_INTERIM_CHAR_IN          = 080H;
+
+   (* structure for KbdXlate() *)
+   <* ALIGNMENT = "2" *>
+
+   TYPE  KBDTRANS = RECORD       (* kbxl *)
+      chChar:         UCHAR ;
+      chScan:         UCHAR ;
+      fbStatus:       UCHAR ;
+      bNlsShift:      UCHAR ;
+      fsState:        USHORT;
+      time:           ULONG ;
+      fsDD:           USHORT;
+      fsXlate:        USHORT;
+      fsShift:        USHORT;
+      sZero:          USHORT;
+   END;
+   TYPE  PKBDTRANS = POINTER TO KBDTRANS;
+
+   PROCEDURE KbdXlate(VAR kbdtrans : KBDTRANS
+                     ;hkbd         : HKBD
+                     ): APIRET16;
+
+   PROCEDURE KbdSetCustXt(usCodePage : ARRAY OF USHORT
+                         ;hkbd       : HKBD
+                         ): APIRET16;
+
+#endif (* INCL_KBD *)
+
+#if defined(INCL_VIO)
+
+   TYPE  HVIO  = SYSTEM.CARD16;
+   TYPE  PHVIO = POINTER TO HVIO;
+
+   PROCEDURE VioRegister(pszModName   : ARRAY OF CHAR
+                        ;pszEntryName : ARRAY OF CHAR
+                        ;flFun1       : ULONG
+                        ;flFun2       : ULONG
+                        ): APIRET16;
+
+   PROCEDURE VioGlobalReg(pszModName   : ARRAY OF CHAR
+                         ;pszEntryName : ARRAY OF CHAR
+                         ;flFun1       : ULONG
+                         ;flFun2       : ULONG
+                         ;usReturn     : USHORT
+                         ): APIRET16;
+
+   (* first parameter registration constants   *)
+   CONST VR_VIOGETCURPOS            = 000000001H;
+   CONST VR_VIOGETCURTYPE           = 000000002H;
+   CONST VR_VIOGETMODE              = 000000004H;
+   CONST VR_VIOGETBUF               = 000000008H;
+   CONST VR_VIOGETPHYSBUF           = 000000010H;
+   CONST VR_VIOSETCURPOS            = 000000020H;
+   CONST VR_VIOSETCURTYPE           = 000000040H;
+   CONST VR_VIOSETMODE              = 000000080H;
+   CONST VR_VIOSHOWBUF              = 000000100H;
+   CONST VR_VIOREADCHARSTR          = 000000200H;
+   CONST VR_VIOREADCELLSTR          = 000000400H;
+   CONST VR_VIOWRTNCHAR             = 000000800H;
+   CONST VR_VIOWRTNATTR             = 000001000H;
+   CONST VR_VIOWRTNCELL             = 000002000H;
+   CONST VR_VIOWRTTTY               = 000004000H;
+   CONST VR_VIOWRTCHARSTR           = 000008000H;
+
+   CONST VR_VIOWRTCHARSTRATT        = 000010000H;
+   CONST VR_VIOWRTCELLSTR           = 000020000H;
+   CONST VR_VIOSCROLLUP             = 000040000H;
+   CONST VR_VIOSCROLLDN             = 000080000H;
+   CONST VR_VIOSCROLLLF             = 000100000H;
+   CONST VR_VIOSCROLLRT             = 000200000H;
+   CONST VR_VIOSETANSI              = 000400000H;
+   CONST VR_VIOGETANSI              = 000800000H;
+   CONST VR_VIOPRTSC                = 001000000H;
+   CONST VR_VIOSCRLOCK              = 002000000H;
+   CONST VR_VIOSCRUNLOCK            = 004000000H;
+   CONST VR_VIOSAVREDRAWWAIT        = 008000000H;
+   CONST VR_VIOSAVREDRAWUNDO        = 010000000H;
+   CONST VR_VIOPOPUP                = 020000000H;
+   CONST VR_VIOENDPOPUP             = 040000000H;
+   CONST VR_VIOPRTSCTOGGLE          = 080000000H;
+
+   (* second parameter registration constants  *)
+   CONST VR_VIOMODEWAIT             = 000000001H;
+   CONST VR_VIOMODEUNDO             = 000000002H;
+   CONST VR_VIOGETFONT              = 000000004H;
+   CONST VR_VIOGETCONFIG            = 000000008H;
+   CONST VR_VIOSETCP                = 000000010H;
+   CONST VR_VIOGETCP                = 000000020H;
+   CONST VR_VIOSETFONT              = 000000040H;
+   CONST VR_VIOGETSTATE             = 000000080H;
+   CONST VR_VIOSETSTATE             = 000000100H;
+
+   PROCEDURE VioDeRegister(): APIRET16;
+
+   PROCEDURE VioGetBuf(VAR LVB   : ULONG
+                      ;VAR cbLVB : USHORT
+                      ;hvio      : HVIO
+                      ): APIRET16;
+
+   PROCEDURE VioGetCurPos(VAR usRow    : USHORT
+                         ;VAR usColumn : USHORT
+                         ;hvio         : HVIO
+                         ): APIRET16;
+
+   PROCEDURE VioSetCurPos(usRow    : USHORT
+                         ;usColumn : USHORT
+                         ;hvio     : HVIO
+                         ): APIRET16;
+
+   (* structure for VioSet/GetCurType() *)
+   TYPE VIOCURSORINFO = RECORD  (* vioci *)
+      yStart:  USHORT   ;
+      cEnd:    USHORT   ;
+      cx:      USHORT   ;
+      attr:    USHORT   ;
+   END;
+
+   TYPE  PVIOCURSORINFO = POINTER TO VIOCURSORINFO;
+
+   PROCEDURE VioGetCurType(VAR vioCursorInfo : VIOCURSORINFO
+                          ;hvio              : HVIO
+                          ): APIRET16;
+
+   PROCEDURE VioSetCurType(VAR vioCursorInfo : VIOCURSORINFO
+                          ;hvio              : HVIO
+                          ): APIRET16;
+
+   (* VIOMODEINFO.color constants *)
+
+   CONST COLORS_2        = 00001H;
+   CONST COLORS_4        = 00002H;
+   CONST COLORS_16       = 00004H;
+
+   (* structure for VioSet/GetMode() *)
+   <* ALIGNMENT = "1" *>
+
+   TYPE VIOMODEINFO = RECORD    (* viomi *)
+      cb:             USHORT ;
+      fbType:         UCHAR  ;
+      color:          UCHAR  ;
+      col:            USHORT ;
+      row:            USHORT ;
+      hres:           USHORT ;
+      vres:           USHORT ;
+      fmt_ID:         UCHAR  ;
+      attrib:         UCHAR  ;
+      buf_addr:       ULONG  ;
+      buf_length:     ULONG  ;
+      full_length:    ULONG  ;
+      partial_length: ULONG  ;
+      ext_data_addr:  PCH    ;
+   END;
+   TYPE  PVIOMODEINFO = POINTER TO VIOMODEINFO;
+
+   CONST VGMT_OTHER                 = 001H;
+   CONST VGMT_GRAPHICS              = 002H;
+   CONST VGMT_DISABLEBURST          = 004H;
+
+   PROCEDURE VioGetMode(VAR vioModeInfo : VIOMODEINFO
+                       ;hvio            : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioSetMode(VAR vioModeInfo : VIOMODEINFO
+                       ;hvio            : HVIO
+                       ): APIRET16;
+
+   (* structure for VioGetPhysBuf() *)
+   TYPE VIOPHYSBUF = RECORD      (* viopb *)
+      pBuf: PBYTE    ;
+      cb:   ULONG    ;
+      asel: ARRAY [0..0] OF SEL;
+   END;
+
+   TYPE  PVIOPHYSBUF  = POINTER TO VIOPHYSBUF;
+
+   PROCEDURE VioGetPhysBuf(VAR vioPhysBuf : VIOPHYSBUF
+                          ;usReserved     : USHORT
+                          ): APIRET16;
+
+   PROCEDURE VioReadCellStr(VAR chCellStr : ARRAY OF SYSTEM.BYTE
+                           ;VAR cb        : USHORT
+                           ;usRow         : USHORT
+                           ;usColumn      : USHORT
+                           ;hvio          : HVIO
+                           ): APIRET16;
+
+   PROCEDURE VioReadCharStr(VAR chCellStr : ARRAY OF CHAR
+                           ;VAR cb        : PUSHORT
+                           ;usRow         : USHORT
+                           ;usColumn      : USHORT
+                           ;hvio          : HVIO
+                           ): APIRET16;
+
+   PROCEDURE VioWrtCellStr(chCellStr  : ARRAY OF SYSTEM.BYTE
+                          ;cb         : USHORT
+                          ;usRow      : USHORT
+                          ;usColumn   : USHORT
+                          ;hvio       : HVIO
+                          ): APIRET16;
+
+   PROCEDURE VioWrtCharStr(chStr    : ARRAY OF CHAR
+                          ;cb       : USHORT
+                          ;usRow    : USHORT
+                          ;usColumn : USHORT
+                          ;hvio     : HVIO
+                          ): APIRET16;
+
+   PROCEDURE VioScrollDn(usTopRow   : USHORT
+                        ;usLeftCol  : USHORT
+                        ;usBotRow   : USHORT
+                        ;usRightCol : USHORT
+                        ;cbLines    : USHORT
+                        ;Cell       : ARRAY OF SYSTEM.BYTE
+                        ;hvio       : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioScrollUp(usTopRow   : USHORT
+                        ;usLeftCol  : USHORT
+                        ;usBotRow   : USHORT
+                        ;usRightCol : USHORT
+                        ;cbLines    : USHORT
+                        ;Cell       : ARRAY OF SYSTEM.BYTE
+                        ;hvio       : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioScrollLf(usTopRow   : USHORT
+                        ;usLeftCol  : USHORT
+                        ;usBotRow   : USHORT
+                        ;usRightCol : USHORT
+                        ;cbCol      : USHORT
+                        ;Cell       : ARRAY OF SYSTEM.BYTE
+                        ;hvio       : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioScrollRt(usTopRow   : USHORT
+                        ;usLeftCol  : USHORT
+                        ;usBotRow   : USHORT
+                        ;usRightCol : USHORT
+                        ;cbCol      : USHORT
+                        ;Cell       : ARRAY OF SYSTEM.BYTE
+                        ;hvio       : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioWrtNAttr(Attr     : ARRAY OF SYSTEM.BYTE
+                        ;cb       : USHORT
+                        ;usRow    : USHORT
+                        ;usColumn : USHORT
+                        ;hvio     : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioWrtNCell(Cell     : ARRAY OF SYSTEM.BYTE
+                        ;cb       : USHORT
+                        ;usRow    : USHORT
+                        ;usColumn : USHORT
+                        ;hvio     : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioWrtNChar(chChar   : ARRAY OF CHAR
+                        ;cb       : USHORT
+                        ;usRow    : USHORT
+                        ;usColumn : USHORT
+                        ;hvio     : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioWrtTTY(ch   : ARRAY OF CHAR
+                      ;cb   : USHORT
+                      ;hvio : HVIO
+                      ): APIRET16;
+
+   PROCEDURE VioWrtCharStrAtt(ch       : ARRAY OF CHAR
+                             ;cb       : USHORT
+                             ;usRow    : USHORT
+                             ;usColumn : USHORT
+                             ;pAttr    : ARRAY OF SYSTEM.BYTE
+                             ;hvio     : HVIO
+                             ): APIRET16;
+
+   CONST VCC_SBCSCHAR             =  0;
+   CONST VCC_DBCSFULLCHAR         =  1;
+   CONST VCC_DBCS1STHALF          =  2;
+   CONST VCC_DBCS2NDHALF          =  3;
+
+   PROCEDURE VioCheckCharType(VAR Type : USHORT
+                             ;usRow    : USHORT
+                             ;usColumn : USHORT
+                             ;hvio     : HVIO
+                             ): APIRET16;
+
+   PROCEDURE VioShowBuf(offLVB : USHORT
+                       ;cb     : USHORT
+                       ;hvio   : HVIO
+                       ): APIRET16;
+
+   CONST ANSI_ON                   = 1;
+   CONST ANSI_OFF                  = 0;
+
+   PROCEDURE VioSetAnsi(fAnsi : USHORT
+                       ;hvio  : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioGetAnsi(VAR fAnsi : USHORT
+                       ;hvio      : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioPrtSc(hvio : HVIO): APIRET16;
+
+   PROCEDURE VioPrtScToggle(hvio : HVIO): APIRET16;
+
+   CONST VSRWI_SAVEANDREDRAW       = 0;
+   CONST VSRWI_REDRAW              = 1;
+
+   CONST VSRWN_SAVE                = 0;
+   CONST VSRWN_REDRAW              = 1;
+
+   CONST UNDOI_GETOWNER            = 0;
+   CONST UNDOI_RELEASEOWNER        = 1;
+
+   CONST UNDOK_ERRORCODE           = 0;
+   CONST UNDOK_TERMINATE           = 1;
+
+   PROCEDURE VioRedrawSize(pcbRedraw : PULONG): APIRET16;  (* !!! *)
+
+   PROCEDURE VioSavRedrawWait(usRedrawInd    : USHORT
+                             ;VAR NotifyType : USHORT
+                             ;usReserved     : USHORT
+                             ): APIRET16;
+
+   PROCEDURE VioSavRedrawUndo(usOwnerInd : USHORT
+                             ;usKillInd  : USHORT
+                             ;usReserved : USHORT
+                             ): APIRET16;
+
+   CONST VMWR_POPUP                = 0;
+   CONST VMWN_POPUP                = 0;
+
+   PROCEDURE VioModeWait(usReqType      : USHORT
+                        ;VAR NotifyType : USHORT
+                        ;usReserved     : USHORT
+                        ): APIRET16;
+
+   PROCEDURE VioModeUndo(usOwnerInd : USHORT
+                        ;usKillInd  : USHORT
+                        ;usReserved : USHORT
+                        ): APIRET16;
+
+   CONST LOCKIO_NOWAIT            =  0;
+   CONST LOCKIO_WAIT              =  1;
+
+   CONST LOCK_SUCCESS             =  0;
+   CONST LOCK_FAIL                =  1;
+
+   PROCEDURE VioScrLock(fWait          : USHORT
+                       ;VAR fNotLocked : UCHAR
+                       ;hvio           : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioScrUnLock(hvio : HVIO): APIRET16;
+
+   CONST VP_NOWAIT                  = 00000H;
+   CONST VP_WAIT                    = 00001H;
+   CONST VP_OPAQUE                  = 00000H;
+   CONST VP_TRANSPARENT             = 00002H;
+
+   PROCEDURE VioPopUp(VAR fWait : USHORT
+                     ;hvio      : HVIO
+                     ): APIRET16;
+
+   PROCEDURE VioEndPopUp(hvio : HVIO): APIRET16;
+
+
+   (* VIOCONFIGINFO.adapter constants *)
+
+   CONST DISPLAY_MONOCHROME      = 00000H;
+   CONST DISPLAY_CGA             = 00001H;
+   CONST DISPLAY_EGA             = 00002H;
+   CONST DISPLAY_VGA             = 00003H;
+   CONST DISPLAY_8514A           = 00007H;
+   CONST DISPLAY_IMAGEADAPTER    = 00008H;
+   CONST DISPLAY_XGA             = 00009H;
+
+   (* VIOCONFIGINFO.display constants *)
+
+   CONST MONITOR_MONOCHROME      = 00000H;
+   CONST MONITOR_COLOR           = 00001H;
+   CONST MONITOR_ENHANCED        = 00002H;
+   CONST MONITOR_8503            = 00003H;
+   CONST MONITOR_851X_COLOR      = 00004H;
+   CONST MONITOR_8514            = 00009H;
+   CONST MONITOR_FLATPANEL       = 0000AH;
+   CONST MONITOR_8507_8604       = 0000BH;
+   CONST MONITOR_8515            = 0000CH;
+   CONST MONITOR_9515            = 0000FH;
+   CONST MONITOR_9517            = 00011H;
+   CONST MONITOR_9518            = 00012H;
+
+   (* structure for VioGetConfig() *)
+   <* ALIGNMENT = "2" *>
+
+   TYPE  VIOCONFIGINFO = RECORD  (* vioin *)
+      cb:               USHORT  ;
+      adapter:          USHORT  ;
+      display:          USHORT  ;
+      cbMemory:         ULONG   ;
+      Configuration:    USHORT  ;
+      VDHVersion:       USHORT  ;
+      Flags:            USHORT  ;
+      HWBufferSize:     ULONG   ;
+      FullSaveSize:     ULONG   ;
+      PartSaveSize:     ULONG   ;
+      EMAdaptersOFF:    USHORT  ;
+      EMDisplaysOFF:    USHORT  ;
+   END;
+
+   TYPE  PVIOCONFIGINFO = POINTER TO VIOCONFIGINFO;
+
+
+   CONST VIO_CONFIG_CURRENT       =  0;
+   CONST VIO_CONFIG_PRIMARY       =  1;
+   CONST VIO_CONFIG_SECONDARY     =  2;
+
+   PROCEDURE VioGetConfig(usConfigId : USHORT
+                         ;VAR vioin  : VIOCONFIGINFO
+                         ;hvio       : HVIO
+                         ): APIRET16;
+
+   (* structure for VioGet/SetFont() *)
+   TYPE VIOFONTINFO = RECORD    (* viofi *)
+      cb:       USHORT  ;
+      type:     USHORT  ;
+      cxCell:   USHORT  ;
+      cyCell:   USHORT  ;
+      pbData:   PVOID   ;   (* !!! 16:16 *)
+      cbData:   USHORT  ;
+   END;
+   TYPE  PVIOFONTINFO = POINTER TO VIOFONTINFO;
+
+   CONST VGFI_GETCURFONT          =  0;
+   CONST VGFI_GETROMFONT          =  1;
+
+   PROCEDURE VioGetFont(VAR viofi : VIOFONTINFO
+                       ;hvio   : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioSetFont(VAR viofi : VIOFONTINFO
+                       ;hvio      : HVIO
+                       ): APIRET16;
+
+   PROCEDURE VioGetCp(usReserved     : USHORT
+                     ;VAR IdCodePage : USHORT
+                     ;hvio           : HVIO
+                     ): APIRET16;
+
+   PROCEDURE VioSetCp(usReserved : USHORT
+                     ;idCodePage : USHORT
+                     ;hvio       : HVIO
+                     ): APIRET16;
+
+   TYPE VIOPALSTATE = RECORD    (* viopal *)
+      cb:       USHORT  ;
+      type:     USHORT  ;
+      iFirst:   USHORT  ;
+      acolor:   ARRAY [0..0] OF USHORT;
+   END;
+   TYPE  PVIOPALSTATE = POINTER TO VIOPALSTATE;
+
+   TYPE VIOOVERSCAN = RECORD     (* vioos *)
+      cb:       USHORT  ;
+      type:     USHORT  ;
+      color:    USHORT  ;
+   END;
+   TYPE  PVIOOVERSCAN = POINTER TO VIOOVERSCAN;
+
+   TYPE VIOINTENSITY = RECORD   (* vioint *)
+      cb:    USHORT  ;
+      type:  USHORT  ;
+      fs:    USHORT  ;
+   END;
+   TYPE  PVIOINTENSITY = POINTER TO VIOINTENSITY;
+
+   TYPE VIOCOLORREG = RECORD   (* viocreg *)
+      cb:               USHORT  ;
+      type:             USHORT  ;
+      firstcolorreg:    USHORT  ;
+      numcolorregs:     USHORT  ;
+      colorregaddr:     PCH;
+   END;
+   TYPE  PVIOCOLORREG = POINTER TO VIOCOLORREG;
+
+   TYPE VIOSETULINELOC = RECORD   (* viouline *)
+      cb:       USHORT  ;
+      type:     USHORT  ;
+      scanline: USHORT  ;
+   END;
+   TYPE  PVIOSETULINELOC = POINTER TO VIOSETULINELOC;
+
+   TYPE VIOSETTARGET = RECORD   (* viosett *)
+      cb:               USHORT  ;
+      type:             USHORT  ;
+      defaultalgorithm: USHORT  ;
+   END;
+   TYPE  PVIOSETTARGET = POINTER TO VIOSETTARGET;
+
+   PROCEDURE VioGetState(pState : PVOID
+                        ;hvio   : HVIO
+                        ): APIRET16;
+
+   PROCEDURE VioSetState(pState : PVOID
+                        ;hvio   : HVIO
+                        ): APIRET16;
+#endif (* INCL_VIO *)
+
+#if defined(INCL_MOU)
+
+   TYPE  HMOU  = SYSTEM.CARD16;
+   TYPE  PHMOU = POINTER TO HMOU;
+
+   PROCEDURE MouRegister(szModName   : ARRAY OF CHAR
+                        ;szEntryName : ARRAY OF CHAR
+                        ;flFuns      : ULONG
+                        ): APIRET16;
+
+   CONST MR_MOUGETNUMBUTTONS        = 000000001H;
+   CONST MR_MOUGETNUMMICKEYS        = 000000002H;
+   CONST MR_MOUGETDEVSTATUS         = 000000004H;
+   CONST MR_MOUGETNUMQUEEL          = 000000008H;
+   CONST MR_MOUREADEVENTQUE         = 000000010H;
+   CONST MR_MOUGETSCALEFACT         = 000000020H;
+   CONST MR_MOUGETEVENTMASK         = 000000040H;
+   CONST MR_MOUSETSCALEFACT         = 000000080H;
+   CONST MR_MOUSETEVENTMASK         = 000000100H;
+   CONST MR_MOUOPEN                 = 000000800H;
+   CONST MR_MOUCLOSE                = 000001000H;
+   CONST MR_MOUGETPTRSHAPE          = 000002000H;
+   CONST MR_MOUSETPTRSHAPE          = 000004000H;
+   CONST MR_MOUDRAWPTR              = 000008000H;
+   CONST MR_MOUREMOVEPTR            = 000010000H;
+   CONST MR_MOUGETPTRPOS            = 000020000H;
+   CONST MR_MOUSETPTRPOS            = 000040000H;
+   CONST MR_MOUINITREAL             = 000080000H;
+   CONST MR_MOUSETDEVSTATUS         = 000100000H;
+
+   PROCEDURE MouDeRegister(): APIRET16;
+
+   PROCEDURE MouFlushQue(hmou : HMOU): APIRET16;
+
+   CONST MHK_BUTTON1                = 00001H;
+   CONST MHK_BUTTON2                = 00002H;
+   CONST MHK_BUTTON3                = 00004H;
+
+   (* structure for MouGet/SetPtrPos() *)
+   TYPE PTRLOC = RECORD     (* moupl *)
+      row:    USHORT ;
+      col:    USHORT ;
+   END;
+   TYPE  PPTRLOC = POINTER TO PTRLOC;
+
+   PROCEDURE MouGetPtrPos(VAR mouLoc : PTRLOC
+                         ;hmou       : HMOU
+                         ): APIRET16;
+
+   PROCEDURE MouSetPtrPos(VAR mouLoc : PTRLOC
+                         ;hmou       : HMOU
+                         ): APIRET16;
+
+   (* structure for MouGet/SetPtrShape() *)
+   TYPE PTRSHAPE = RECORD   (* moups *)
+      cb:        USHORT ;
+      col:       USHORT ;
+      row:       USHORT ;
+      colHot:    USHORT ;
+      rowHot:    USHORT ;
+   END;
+   TYPE  PPTRSHAPE = POINTER TO PTRSHAPE;
+
+   PROCEDURE MouSetPtrShape(pBuf          : ARRAY OF SYSTEM.BYTE
+                           ;VAR moupsInfo : PTRSHAPE
+                           ;hmou          : HMOU
+                           ): APIRET16;
+
+   PROCEDURE MouGetPtrShape(VAR pBuf      : ARRAY OF SYSTEM.BYTE
+                           ;VAR moupsInfo : PTRSHAPE
+                           ;hmou          : HMOU
+                           ): APIRET16;
+
+   (* MouGetDevStatus/MouSetDevStatus device status constants *)
+
+#ifndef INCL_DOSDEVIOCTL
+
+   CONST MOUSE_QUEUEBUSY        = 00001H;
+   CONST MOUSE_BLOCKREAD        = 00002H;
+   CONST MOUSE_FLUSH            = 00004H;
+   CONST MOUSE_UNSUPPORTED_MODE = 00008H;
+   CONST MOUSE_DISABLED         = 00100H;
+   CONST MOUSE_MICKEYS          = 00200H;
+
+#endif
+
+   PROCEDURE MouGetDevStatus(VAR fsDevStatus : USHORT
+                            ;hmou            : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouGetNumButtons(VAR cButtons : USHORT
+                             ;hmou         : HMOU
+                             ): APIRET16;
+
+   PROCEDURE MouGetNumMickeys(VAR cMickeys : USHORT
+                             ;hmou         : HMOU
+                             ): APIRET16;
+
+   (* MouReadEventQue *)
+
+   CONST MOU_NOWAIT      = 00000H;
+   CONST MOU_WAIT        = 00001H;
+
+   (* structure for MouReadEventQue() *)
+
+   TYPE   MOUEVENTINFO = RECORD   (* mouev *)
+      fs:       USHORT ;
+      time:     ULONG  ;
+      row:      SHORT  ;
+      col:      SHORT  ;
+   END;
+   TYPE  PMOUEVENTINFO = POINTER TO MOUEVENTINFO;
+
+   PROCEDURE MouReadEventQue(VAR mouevEvent : MOUEVENTINFO
+                            ;VAR fWait      : USHORT
+                            ;hmou           : HMOU
+                            ): APIRET16;
+
+   (* structure for MouGetNumQueEl() *)
+   TYPE MOUQUEINFO = RECORD     (* mouqi *)
+      cEvents:           USHORT ;
+      cmaxEvents:        USHORT ;
+   END;
+   TYPE  PMOUQUEINFO = POINTER TO MOUQUEINFO;
+
+   PROCEDURE MouGetNumQueEl(VAR mouqi : MOUQUEINFO
+                           ;hmou      : HMOU
+                           ): APIRET16;
+
+   (* MouGetEventMask/MouSetEventMask events *)
+
+   CONST MOUSE_MOTION                 = 00001H;
+   CONST MOUSE_MOTION_WITH_BN1_DOWN   = 00002H;
+   CONST MOUSE_BN1_DOWN               = 00004H;
+   CONST MOUSE_MOTION_WITH_BN2_DOWN   = 00008H;
+   CONST MOUSE_BN2_DOWN               = 00010H;
+   CONST MOUSE_MOTION_WITH_BN3_DOWN   = 00020H;
+   CONST MOUSE_BN3_DOWN               = 00040H;
+
+   PROCEDURE MouGetEventMask(VAR fsEvents : USHORT
+                            ;hmou         : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouSetEventMask(VAR fsEvents : USHORT
+                            ;hmou         : HMOU
+                            ): APIRET16;
+
+   (* structure for MouGet/SetScaleFact() *)
+   TYPE  SCALEFACT = RECORD   (* mousc *)
+      rowScale:        USHORT ;
+      colScale:        USHORT ;
+   END;
+   TYPE  PSCALEFACT = POINTER TO SCALEFACT;
+
+   PROCEDURE MouGetScaleFact(VAR mouscFactors : SCALEFACT
+                            ;hmou             : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouSetScaleFact(VAR mouscFactors : SCALEFACT
+                            ;hmou             : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouOpen(VAR [NIL] szDvrName : ARRAY OF CHAR
+                    ;VAR hmou            : HMOU
+                    ): APIRET16;
+
+   PROCEDURE MouClose(hmou : HMOU): APIRET16;
+
+   (* structure for MouRemovePtr() *)
+   TYPE NOPTRRECT = RECORD   (* mourt *)
+      row:       USHORT ;
+      col:       USHORT ;
+      cRow:      USHORT ;
+      cCol:      USHORT ;
+   END;
+   TYPE  PNOPTRRECT = POINTER TO NOPTRRECT;
+
+   PROCEDURE MouRemovePtr(VAR mourtRect : NOPTRRECT
+                         ;hmou          : HMOU
+                         ): APIRET16;
+
+   PROCEDURE MouDrawPtr(hmou : HMOU): APIRET16;
+
+   CONST MOU_NODRAW                 = 00001H;
+   CONST MOU_DRAW                   = 00000H;
+   CONST MOU_MICKEYS                = 00002H;
+   CONST MOU_PELS                   = 00000H;
+
+   PROCEDURE MouSetDevStatus(VAR fsDevStatus : USHORT
+                            ;hmou            : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouInitReal(sz : ARRAY OF CHAR): APIRET16;
+
+   PROCEDURE MouSynch(pszDvrName : USHORT): APIRET16;
+
+   TYPE THRESHOLD = RECORD       (* threshold *)
+      Length:   USHORT;   (* Length Field            *)
+      Level1:   USHORT;   (* First movement level    *)
+      Lev1Mult: USHORT;   (* First level multiplier  *)
+      Level2:   USHORT;   (* Second movement level   *)
+      lev2Mult: USHORT;   (* Second level multiplier *)
+   END;
+   TYPE  PTHRESHOLD = POINTER TO THRESHOLD;
+
+   PROCEDURE MouGetThreshold(VAR threshold : THRESHOLD
+                            ;hmou          : HMOU
+                            ): APIRET16;
+
+   PROCEDURE MouSetThreshold(VAR threshold : THRESHOLD
+                            ;hmou          : HMOU
+                            ): APIRET16;
+
+#endif (* INCL_MOU *)
+
+(**************************** end of file **********************************)
+

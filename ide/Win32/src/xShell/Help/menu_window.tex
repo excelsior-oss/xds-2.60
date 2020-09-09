@@ -1,0 +1,202 @@
+\section{Window Menu}
+\public{M\_WINDOWS}
+\index{Window Menu}
+\nominitoc
+
+\ifenglish
+The {\bf Window} menu contains commands that you use to arrange
+open IDE windows. It also contains a list of all open windows,
+allowing you to switch to a specific window.
+The following commands appear in the {\bf Window} menu:
+\else
+Меню {\bf Window} содержит команды, которые вы используете для выстраивания
+открытых окон IDE. Оно также содержит список всех открытых окон, позволяя
+переключаться на одно из них.
+Меню {\bf Window} содержит следующие команды:
+\fi
+\begin{description}
+\item \ref[Cascade]{IDM\_CASCADE}
+\ifenglish
+  - Makes an overlapping windows layout
+  \else
+  - Создает систему перекрывающихся окон
+  \fi
+\item \ref[Tile Vertically]{IDM\_TILEVERT}
+\ifenglish
+  - Makes a non-overlapping layout of "vertical" windows
+  \else
+  - Создает систему окон, неперекрывающихся по-вертикали
+  \fi
+\item \ref[Tile Horizontally]{IDM\_TILEHORIZ}
+\ifenglish
+  - Makes a non-overlapping layout of "horizontal" windows
+  \else
+  - Создает систему окон, неперекрывающихся по-горизонтали
+  \fi
+\item \ref[Arrange Icons]{IDM\_ARRANGE}
+\ifenglish
+  - Arranges icons of minimized windows into rows
+  \else
+  - Перестраивает иконки минимизированных окон в ряды
+  \fi
+\item \ref[Close All Windows]{IDM\_CLOSEALL}
+\ifenglish
+  - Close all opened windows
+  \else
+  - Закрывает все открытые окна
+  \fi
+\item \ref[Free]{IDM\_FREE}
+\ifenglish
+  - Make current window free
+  \else
+  - Делает текущее окно свободным
+  \fi
+\item \ref[Dock]{IDM\_DOCK}
+\ifenglish
+  - Dock current window
+  \else
+  - Осуществляет привязку текущего окна
+  \fi
+\item \ref[Undock]{IDM\_UNDOCK}
+\ifenglish
+  - Undock previously docked window
+  \else
+  - Отменяет привязку окна
+ \fi
+\item \ref[Windows List]{IDM\_MOREWINDOWS}
+\ifenglish
+  - Display full list of all MDI windows
+  \else
+  - Отображает полный список всех окон MDI 
+ \fi
+\end{description}
+
+\subsection{Window: Cascade}
+\public{IDM\_CASCADE}
+
+\ifenglish
+Use the {\bf Cascade} command to arrange all open windows
+in an overlapping manner, making their titles visible.
+\else
+Используйте команду {\bf Cascade} чтобы расположить все открытые окна 
+каскадом, оставляя видимым их заголовок.
+\fi
+\subsection{Windows: Tile Vertically}
+\public{IDM\_TILEVERT}
+
+\ifenglish
+Use the {\bf Tile Vertically} command to arrange all open windows
+in a non-overlapping manner, so that the whole windows are
+visible, when the number of lines visible at the same time 
+is more important than the number of columns.
+\else
+Используйте команду {\bf Tile Vertically} чтобы перестроить все открытые
+окна так, чтобы, по возможности, они были видимы полностью, или чтобы количество
+видимых строк преобладало над количеством видимых столбцов.
+\fi
+\subsection{Window: Tile Horizontally}
+\public{IDM\_TILEHORIZ}
+
+\ifenglish
+Use the {\bf Tile Horizontally} command to arrange all open windows
+in a non-overlapping manner, so that the whole windows are
+visible, when the number of columns visible at the same time 
+is more important than the number of lines.
+\else
+Используйте команду {\bf Tile Vertically} чтобы перестроить все открытые
+окна так, чтобы по возможности они были видимы полностью, или чтобы количество
+видимых столбцов преобладало над количеством видимых строк.
+\fi
+\subsection{Window: Arrange Icons}
+\public{IDM\_ARRANGE}
+
+\ifenglish
+Use the {\bf Arrange Icons} command to arrange icons of minimized 
+windows into rows.
+\else
+Используйте команду {\bf Arrange Icons}, чтобы перестроить иконки 
+минимизированных окон в ряды.
+\fi
+\subsection{Window: Close All Windows}
+\public{IDM\_CLOSEALL}
+
+\ifenglish
+Use the {\bf Close All Windows} command to close all opened windows.
+If some of them contain changed files you will be asked to save the files
+on disk.
+\else
+Используйте команду {\bf Close All Windows}, чтобы закрыть все открытые окна.
+Если одно из них содержит измененный файл, вас запросят, хотите ли вы сохранить
+изменения на диск.
+\fi
+\subsection{Window: Free}
+\public{IDM\_FREE}
+
+\ifenglish
+In classic {\bf MDI} interface all the windows are children of main (frame)
+windows. In MDI version used in XDS IDE you can {\bf Free} window. After that
+the window is not clipped by IDE frame window but exists on computer desktop
+as an application window. It can be switched to or from using {\bf Alt+Tab} keys
+and is accessible using Windows 95 TaskBar. It does not disappear from XDS IDE
+WinBar. To return the window to the child state use {\bf Return to Frame} command
+of its System menu.
+\else
+В классическом интерфейсе MDI все окна являются дочерними по отношению к 
+главному окну. В версии MDI, использованной в XDS IDE, вы можете {\bf освободить}
+окно. После этого окно не принадлежит каркасному окну оболочки а существует 
+на рабочем столе, как окно приложения. К нему можно обращаться с помощью 
+комбинации клавиш {\bf Alt+Tab}. Чтобы вернуть окно в дочернее состояние,
+используйте команду {\bf Return to Frame} Системного меню.	
+\fi
+\subsection{Window: Dock}
+\public{IDM\_DOCK}
+
+\ifenglish
+This command {\bf Docks} current window. Docked windows are arranged along the
+sides of frame window without overlapping. All non-docked windows occupy area
+free of docked windows. They are clipped by this area and therefore never overlap
+docked windows. Maximized non-docked window occupy all this area.
+
+Docked windows are useful for information you want displayed permanently such
+as project files list and messages window.
+
+Once the window is docked, you can undock it using \ref[Undock]{IDM\_UNDOCK}
+command of \ref[Window]{M\_WINDOWS} menu.
+\else
+Эта команда делает текущее окно {\bf неперекрывающимся}. Неперекрывающиеся окна
+выстраиваются вдоль сторон окна оболочки, не закрывая друг друга. Все остальные
+окна занимают свободное от неперекрывающихся окон пространство. Они ограничены
+этим пространством, и, таким образом, никогда не оказываются поверх 
+неперекрывающихся окон. Если максимизировать такое окно, то оно займет все это 
+пространство. 
+
+Как только окно сделано неперекрывающимся, вы можете отменить привязку,
+используя команду \ref[Undock]{IDM\_UNDOCK} меню \ref[Window]{M\_WINDOWS}.
+\fi
+\subsection{Window: Undock}
+\public{IDM\_UNDOCK}
+
+\ifenglish
+This command returns previously \ref[docked]{IDM\_DOCK} window to normal MDI
+child state.
+\else
+Эта команда возвращает сделанное некогда \ref[неперекрывающимся]{IDM\_DOCK} окно
+в нормальное дочернее MDI- состояние.
+\fi
+\subsection{Window: Windows List}
+\public{IDM\_MOREWINDOWS}
+
+\ifenglish
+In classic MDI full windows list can be displayed only if there is no room in Window
+menu and is called {\bf More Windows}. In XDS version you can display it any time
+using {\bf Windows List} menu.
+
+You can dock, undock, save or close the window right from Windows List dialog.
+\else
+В классическом MDI полный список окон может быть отображен, только если 
+в меню Window недостаточно места, и называется он {\bf More Windows}. В варианте
+XDS вы можете вывести его в любой момент с помощью меню {\bf Windows List}.
+
+Вы можете сделать окно неперекрывающимся, отменить привязку, сохранить или 
+закрыть окно прямо из диалога Windows List.
+\fi

@@ -1,0 +1,45 @@
+(* Created using H2D v1.18 from X11/IntrinsicP.h.
+ * X11/mac_IntrinsicP.def  Nov 1  19:26:18  1996
+ *
+ * Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_IntrinsicP.def,v $ $Revision: 4 $ $Date: 14.02.98 18:06 $
+ *)
+
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+(* Prototypes for macro implementation *)
+
+DEFINITION MODULE mac_IntrinsicP;
+
+IMPORT  SYSTEM,
+      	X, Xlib,
+      	Xt:=IntrinsicP;
+
+VAR
+  _XtShellPositionValid  -: SHORTCARD;
+  _XtShellNotReparented  -: SHORTCARD;
+  _XtShellPPositionOK    -: SHORTCARD;
+  _XtShellGeometryParsed -: SHORTCARD;
+
+PROCEDURE ["C"] XtClass ( widget: Xt.Widget ): Xt.WidgetClass;
+
+PROCEDURE ["C"] XtDisplay ( widget: Xt.Widget ): Xlib.PtrDisplay;
+
+PROCEDURE ["C"] XtIsRealized ( object: Xt.Widget ): Xt.Boolean;
+
+PROCEDURE ["C"] XtCheckSubclass ( w: Xt.Widget;
+				  widget_class_ptr: Xt.WidgetClass;
+			          message: ARRAY OF CHAR );
+
+PROCEDURE ["C"] XtParent ( widget: Xt.Widget ): Xt.Widget;
+
+PROCEDURE ["C"] XtScreen ( widget: Xt.Widget ): Xlib.PtrScreen;
+
+PROCEDURE ["C"] XtSuperclass ( widget: Xt.Widget ): Xt.WidgetClass;
+
+PROCEDURE ["C"] XtWindow ( widget: Xt.Widget ): X.Window;
+
+END mac_IntrinsicP.

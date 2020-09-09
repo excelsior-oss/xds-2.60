@@ -1,0 +1,201 @@
+\ifenglish
+\section{Configure languages}
+\else
+\section{Настройка языков}
+\fi
+\public{CFGLANG\_DIALOG}
+
+\ifenglish
+This dialog allows to define set of \ref[programming languages]{Languages}
+that the system recognize.
+
+All known languages are collected in the list. For each language you may define
+\ref[language driver]{LangDriver} -- the DLL responsible for actions that depend
+on a language such as syntax highlighting. Type the name of language driver
+in the {\bf Language driver} edit field or select it in a standard
+file dialog by pressing {\bf Browse} button.
+\else
+Этот диалог позволяет определять множество распознаваемых системой
+\ref[языков программирования]{Languages}.
+
+В списке собраны все известные языки. Для каждого языка вы можете определить   
+\ref[драйвер языка]{LangDriver} -- DLL, ответственную за действия, которые 
+зависят от языка, как, например, подсветка синтаксиса. Наберите название драйвера 
+языка в поле редактирования {\bf Language driver} или выберите его в стандартном 
+файловом диалоге (кнопка {\bf Browse}).
+\fi
+\ifenglish
+You must specify set of file extensions for files that are recognized as
+belonging to this language. Type it in {\bf Extensions} entry field. Extensions
+are typed without {\bf "."} character and are separated by semicolons.
+
+You may add new or remove existing language by pressing {\bf Add} or {\bf Remove}
+button. You will be prompted for a name of new language.
+
+You may configure a language by pressing {\bf Configure} button. If the driver
+provides configuration dialog it will appear, otherwise the message will appear
+that describes the situation. So pressing this button lets you know if the driver
+is found and loaded.
+
+Configuration is kept separately for each language, not just for each driver.
+\else
+Вы можете указать набор расширений файлов, которые будут считаться 
+принадлежащими этому языку. Введите это в поле ввода {\bf Extensions}. 
+Расширения вводятся без символа {\bf "."} и разделяются точкой с запятой.
+
+Вы можете добавить новый или удалить существующий язык нажатием кнопки {\bf Add}
+или {\bf Remove}. Будет выведен запрос о названии нового языка.
+
+Вы можете настраивать язык, используя кнопку {\bf Configure}. Если позволяет
+драйвер, то будет выведен конфигурационный диалог, иначе появится описывающее
+ситуацию сообщение. Таким образом, нажатие этой кнопки дает знать, найден и 
+загружен ли драйвер.
+ 
+Настройки для каждого языка хранятся отдельно (не для каждого драйвера).
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\caption{OK}
+\public{CFGLANG\_OK}
+
+\ifenglish
+Save the changes made in the languages configuration and close the dialog.
+\else
+Сохранить изменения, произведенные в настройках языков, и закрыть диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{CFGLANG\_CANCEL}
+
+\ifenglish
+Close the dialog without saving changes made in languages configuration.
+\else
+Закрыть диалог без сохранения изменений в настройках языков.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Languages available}
+\else
+\caption{Доступные языки}
+\fi
+\public{CFGLANG\_LIST}
+
+\ifenglish
+List of all known programming languages
+\else
+Список всех известных языков программирования
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Language driver}
+\else
+\caption{Драйвер языка}
+\fi
+\public{CFGLANG\_DRIVER}
+\public{CFGLANG\_DRIVERTITLE}
+
+\ifenglish
+Language driver for currently selected language. The driver is a DLL that
+supplies functions responsible for syntax highlighting. It is possible to
+have language without language driver but syntax highlighting will be
+inaccessible for it.
+
+\else
+Драйвер языка для выбранного языка. Драйвер -- это DLL, которая поставляет 
+функции, ответственные за подсветку синтаксиса. Существует возможность 
+использовать язык без драйвера, но тогда для него будет невозможна подсветка
+синтаксиса.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Add}
+\public{CFGLANG\_ADD}
+
+\ifenglish
+Add new language. You will be asked for new language name. New language has neither
+file extensions set for it nor language driver.
+\else
+Добавить новый язык. Вас запросят об имени нового языка. Новый язык не содержит ни
+набора расширений, ни драйвера.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Remove}
+\public{CFGLANG\_REMOVE}
+
+\ifenglish
+Remove selected language from language list.
+\else
+Удалить выбранный язык из списка.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Extensions}
+\else
+\caption{Расширения}
+\fi
+\public{CFGLANG\_EXTENSIONS}
+\public{CFGLANG\_EXTENSIONS_TITLE}
+
+\ifenglish
+Type here semicolon-separated list of extensions of files that must
+be recognized as belonging for current language. Don't use {\bf "."}
+character. For example, this line for Modula-2 looks like this"
+\verb'def;mod'
+
+\else
+Введите здесь список расширений файлов, которые будут считаться принадлежащими
+языку, разделяя их точкой с запятой. Не используйте символ {\bf "."}.
+К примеру, строчка для Modula-2 выглядит так \verb'def;mod'
+\fi
+                     
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGLANG\_BROWSE}
+
+\ifenglish
+Select a language driver DLL using standard File dialog.
+\else
+Выберите DLL языкового драйвера с помощью стандартного файлового диалога.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Configure}
+\public{CFGLANG\_CONFIGURE}
+
+\ifenglish
+Configure current language driver. A driver may provide a dialog for configuration.
+This command invokes this dialog. If driver can't be loaded or if it doesn't
+provide a dialog the message will appear with description of situation.
+Even if you don't need any configuration you can press this button to see if language
+driver can be found, loaded and initialized.
+
+The results of the configuration dialog are stored in the main XDS configuration
+file under the name of a language. Separate configuration is kept for each language,
+not just for each driver.
+\else
+Настроить текущий драйвер языка. Драйвер может предоставлять диалог для настройки.
+Эта команда выводит этот диалог. Если драйвер не может быть загружен, или если он
+не предоставляет диалог, то появится сообщение с описанием ситуации.
+Даже если вам и не нужна настройка, вы можете нажать эту кнопку, чтобы проверить,
+может ли драйвер быть найден, загружен и инициализирован. 
+
+Результаты работы конфигурационного диалога сохраняются в главном конфигурационном 
+файле XDS под именем языка. Настройки для каждого языка хранятся отдельно (не для 
+каждого драйвера).
+\fi
+\end{popup}

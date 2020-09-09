@@ -1,0 +1,15 @@
+#!/bin/sh
+
+XDSDIR=~/xds-c
+PATH=$XDSDIR/bin:$PATH
+
+rm -f bin/Linux.o
+rm -f  ../src/xd_rmt/Media.mod
+cp -fp ../src/xd_rmt/Linux/Media.mod ../src/xd_rmt
+
+mkdir ch/linux_layer
+cp -Rpf ../src/xd_386/Linux/linux_layer ch
+cp -pf  ch/linux_layer/Linux.c ch
+cp -Rpf ch/linux_layer/ch .
+
+xm =p xd_srv.prj

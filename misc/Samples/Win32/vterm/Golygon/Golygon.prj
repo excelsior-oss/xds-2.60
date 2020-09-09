@@ -1,0 +1,5 @@
+-GUI+
++MULTITHREAD
+
+!module Golygon.mod
+!module VTerm.lib

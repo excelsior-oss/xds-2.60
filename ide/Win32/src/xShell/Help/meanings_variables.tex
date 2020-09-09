@@ -1,0 +1,172 @@
+\ifenglish
+\section{Substitution variables}
+\else
+\section{Переменные замены}
+\fi
+\label{variables}
+\public{xdsmain}
+\public{xdsname}
+\public{xdsdir}
+\public{file}
+\public{filedir}
+\public{filename}
+\public{filewholename}
+\public{fileext}
+\public{project}
+\public{projdir}
+\public{projname}
+\public{projwholename}
+\public{projext}
+\public{projini}
+\public{homedir}
+\public{startdir}
+\public{inifile}
+\public{arguments}
+\public{exefile}
+\public{rundir}
+
+\ifenglish
+The Environment maintains a number of {\em substitution variables}
+containing string values, for instance, full name of the
+currently open project file, the directory in which it resides, the
+currently used XDS compiler executable, etc. When configuring
+tools or creating a project, you may use these variables in some of
+the entry fields to have their values to be substituted:
+\else
+Оболочка поддерживает некоторое количество {\em переменных замены},
+содержащих строковые значения, например, полное имя открытого на данный 
+момент файла проекта, директорию в котором он размещается, используемый
+на данный момент исполняемый файл XDS-компилятора, и т.д. При настройке
+утилит или создании проекта вы можете использовать эти переменные в 
+некоторых полях ввода для того, чтобы их значения заменялись: 
+\fi
+\verb'    $(variable-name)'
+
+\ifenglish
+The full list of all variables follows:
+\else
+Ниже приведен полный список всех переменных:
+\fi
+\begin{description}
+\item[{\tt \$(xdsmain)}] 
+ \ifenglish
+ XDS compiler executable
+ \else
+ исполняемый файл XDS компилятора
+ \fi
+\item[{\tt \$(xdsname)}] 
+ \ifenglish
+ its name without directory and extension
+ \else
+ его имя без директории и расширения
+ \fi
+\item[{\tt \$(xdsdir)}] 
+ \ifenglish
+ its directory
+ \else
+ его директория
+ \fi
+\item[{\tt \$(file)}] 
+ \ifenglish
+ full file name in current edit window
+ \else
+ полное имя файла в текущем окне редактирования
+ \fi
+\item[{\tt \$(filedir)}] 
+ \ifenglish
+ current file directory
+ \else
+ директория текущего файла
+ \fi
+\item[{\tt \$(filename)}] 
+ \ifenglish
+ current file name without path and extension
+ \else
+ имя текущего файла без директории и расширения
+ \fi
+\item[{\tt \$(filewholename)}] 
+ \ifenglish
+ current file name with extension but without path
+ \else
+ имя текущего файла с расширением, но без пути 
+ \fi
+\item[{\tt \$(fileext)}] 
+ \ifenglish
+ current file extension
+ \else
+ расширение теущего файла
+ \fi
+\item[{\tt \$(project)}] 
+ \ifenglish
+ full project file name
+ \else
+ полное имя файла проекта
+ \fi
+\item[{\tt \$(projdir)}] 
+ \ifenglish
+ project directory
+ \else
+ директория проекта
+ \fi
+\item[{\tt \$(projname)}] 
+ \ifenglish
+ project name without path and extension
+ \else
+ имя проекта без пути и расширения
+ \fi
+\item[{\tt \$(projwholename)}] 
+ \ifenglish
+ project name with extension but without path
+ \else
+ имя проекта с расширением, но без пути
+ \fi
+\item[{\tt \$(projext)}] 
+ \ifenglish
+ project file extension
+ \else
+ расширение файла проекта
+ \fi
+\item[{\tt \$(projini)}] 
+ \ifenglish
+ full name of ini file corresponding to project file
+ \else
+ полное имя ini-файла, соответствующего файлу проекта
+ \fi
+\item[{\tt \$(homedir)}] 
+ \ifenglish
+ directory where XDS Environment executable resides
+ \else
+ директория, где размещается рабочая среда XDS
+ \fi
+\item[{\tt \$(startdir)}] 
+ \ifenglish
+ the current directory on the Environment startup
+ \else
+ текущая директория запуска рабочей среды
+ \fi
+\item[{\tt \$(inifile)}] 
+ \ifenglish
+ full name of the Environment ini file
+ \else
+ полное имя ini-файла рабочей среды
+ \fi
+\item[{\tt \$(arguments)}] 
+ \ifenglish
+ command line arguments for user program
+  \else
+ аргументы командной строки пользовательской программы 
+ \fi
+\item[{\tt \$(exefile)}] 
+ \ifenglish
+ full name of the user program executable file
+ \else
+ полное имя исполняемого файла пользовательской программы
+ \fi
+\item[{\tt \$(rundir)}] 
+ \ifenglish
+ directory to be set current when running user program
+ \else
+ директория, которую надлежит сделать текущей на время работы пользовательской
+ программы  
+ \fi
+\end{description}

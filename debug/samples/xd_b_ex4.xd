@@ -1,0 +1,26 @@
+ PRINT "--- Example 4 ---"
+ LOAD d:\xds\samples\bench\dry.exe
+ BREAK 1,ADDR,dry.Proc0,Break1
+ BREAK 2,XCPT,Break2
+ BREAK 3,WRITE,ADR(dry.Char1Glob),1,Break3
+ BREAK 4,READ,ADR(dry.Char1Glob),1,Break4
+ BREAK 5,LINE,dry,210,Break5
+ START
+ QUIT
+
+Break1 DEL 1,5
+       RESUME
+
+Break2 PRINT "Program terminated by XCPT"
+       STOP
+ 
+Break3 PRINT "Dry.Char1Glob=%c",dry.Char1Glob
+       RESUME
+
+Break4 DEL 3,4
+       PRINT "Dry.Char1Glob=%c",dry.Char1Glob
+       RESUME
+
+Break5 PRINT "Error!"
+       STOP
+ 

@@ -1,0 +1,14 @@
+% XDS project file
+
+-lookup = *.def = $!
+-lookup = *.mod = $!
+-lookup = *.dll = $!/..
+
+-compilerheap  = 20000000
+
+-GENDLL+
+-USEDLL+
+-DLLEXPORT+
+-IMPLIB-
+-M2EXTENSIONS+
+!module init.mod

@@ -1,0 +1,275 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMTYPES.H
+*
+* OS/2 Presentation Manager Datatypes include file
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* Comments at the end of each typedef line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+
+#define TYPES_INCLUDED
+
+CONST DTYP_USER              = 16384;
+
+CONST DTYP_CTL_ARRAY         =  1;
+CONST DTYP_CTL_PARRAY        = -1;
+CONST DTYP_CTL_OFFSET        =  2;
+CONST DTYP_CTL_LENGTH        =  3;
+
+
+(**********************************************************************)
+(* Ordinary datatypes                                                 *)
+(**********************************************************************)
+CONST DTYP_ACCEL             = 28;
+CONST DTYP_ACCELTABLE        = 29;
+CONST DTYP_ARCPARAMS         = 38;
+CONST DTYP_AREABUNDLE        = 139;
+CONST DTYP_ATOM              = 90;
+CONST DTYP_BITMAPINFO        = 60;
+CONST DTYP_BITMAPINFOHEADER  = 61;
+CONST DTYP_BITMAPINFO2       = 170;
+CONST DTYP_BITMAPINFOHEADER2 = 171;
+CONST DTYP_BIT16             = 20;
+CONST DTYP_BIT32             = 21;
+CONST DTYP_BIT8              = 19;
+CONST DTYP_BOOL              = 18;
+CONST DTYP_BTNCDATA          = 35;
+CONST DTYP_BYTE              = 13;
+CONST DTYP_CATCHBUF          = 141;
+CONST DTYP_CHAR              = 15;
+CONST DTYP_CHARBUNDLE        = 135;
+CONST DTYP_CLASSINFO         = 95;
+CONST DTYP_COUNT2            = 93;
+CONST DTYP_COUNT2B           = 70;
+CONST DTYP_COUNT2CH          = 82;
+CONST DTYP_COUNT4            = 152;
+CONST DTYP_COUNT4B           = 42;
+CONST DTYP_CPID              = 57;
+CONST DTYP_CREATESTRUCT      = 98;
+CONST DTYP_CURSORINFO        = 34;
+CONST DTYP_DEVOPENSTRUC      = 124;
+CONST DTYP_DLGTEMPLATE       = 96;
+CONST DTYP_DLGTITEM          = 97;
+CONST DTYP_ENTRYFDATA        = 127;
+CONST DTYP_ERRORID           = 45;
+CONST DTYP_FATTRS            = 75;
+CONST DTYP_FFDESCS           = 142;
+CONST DTYP_FIXED             = 99;
+CONST DTYP_FONTMETRICS       = 74;
+CONST DTYP_FRAMECDATA        = 144;
+CONST DTYP_GRADIENTL         = 48;
+CONST DTYP_HAB               = 10;
+CONST DTYP_HACCEL            = 30;
+CONST DTYP_HAPP              = 146;
+CONST DTYP_HATOMTBL          = 91;
+CONST DTYP_HBITMAP           = 62;
+CONST DTYP_HCINFO            = 46;
+CONST DTYP_HDC               = 132;
+CONST DTYP_HENUM             = 117;
+CONST DTYP_HHEAP             = 109;
+CONST DTYP_HINI              = 53;
+CONST DTYP_HLIB              = 147;
+CONST DTYP_HMF               = 85;
+CONST DTYP_HMQ               = 86;
+CONST DTYP_HPOINTER          = 106;
+CONST DTYP_HPROGRAM          = 131;
+CONST DTYP_HPS               = 12;
+CONST DTYP_HRGN              = 116;
+CONST DTYP_HSEM              = 140;
+CONST DTYP_HSPL              = 32;
+CONST DTYP_HSWITCH           = 66;
+CONST DTYP_HVPS              = 58;
+CONST DTYP_HWND              = 11;
+CONST DTYP_IDENTITY          = 133;
+CONST DTYP_IDENTITY4         = 169;
+CONST DTYP_IMAGEBUNDLE       = 136;
+CONST DTYP_INDEX2            = 81;
+CONST DTYP_IPT               = 155;
+CONST DTYP_KERNINGPAIRS      = 118;
+CONST DTYP_LENGTH2           = 68;
+CONST DTYP_LENGTH4           = 69;
+CONST DTYP_LINEBUNDLE        = 137;
+CONST DTYP_LONG              = 25;
+CONST DTYP_MARKERBUNDLE      = 138;
+CONST DTYP_MATRIXLF          = 113;
+CONST DTYP_MLECTLDATA        = 161;
+CONST DTYP_MLEMARGSTRUCT     = 157;
+CONST DTYP_MLEOVERFLOW       = 158;
+CONST DTYP_OFFSET2B          = 112;
+CONST DTYP_OWNERITEM         = 154;
+CONST DTYP_PID               = 92;
+CONST DTYP_PIX               = 156;
+CONST DTYP_POINTERINFO       = 105;
+CONST DTYP_POINTL            = 77;
+CONST DTYP_PROGCATEGORY      = 129;
+CONST DTYP_PROGRAMENTRY      = 128;
+CONST DTYP_PROGTYPE          = 130;
+CONST DTYP_PROPERTY2         = 88;
+CONST DTYP_PROPERTY4         = 89;
+CONST DTYP_QMSG              = 87;
+CONST DTYP_RECTL             = 121;
+CONST DTYP_RESID             = 125;
+CONST DTYP_RGB               = 111;
+CONST DTYP_RGNRECT           = 115;
+CONST DTYP_SBCDATA           = 159;
+CONST DTYP_SEGOFF            = 126;
+CONST DTYP_SHORT             = 23;
+CONST DTYP_SIZEF             = 101;
+CONST DTYP_SIZEL             = 102;
+CONST DTYP_STRL              = 17;
+CONST DTYP_STR16             = 40;
+CONST DTYP_STR32             = 37;
+CONST DTYP_STR64             = 47;
+CONST DTYP_STR8              = 33;
+CONST DTYP_SWBLOCK           = 63;
+CONST DTYP_SWCNTRL           = 64;
+CONST DTYP_SWENTRY           = 65;
+CONST DTYP_SWP               = 31;
+CONST DTYP_TID               = 104;
+CONST DTYP_TIME              = 107;
+CONST DTYP_TRACKINFO         = 73;
+CONST DTYP_UCHAR             = 22;
+CONST DTYP_ULONG             = 26;
+CONST DTYP_USERBUTTON        = 36;
+CONST DTYP_USHORT            = 24;
+CONST DTYP_WIDTH4            = 108;
+CONST DTYP_WNDPARAMS         = 83;
+CONST DTYP_WNDPROC           = 84;
+CONST DTYP_WPOINT            = 59;
+CONST DTYP_WRECT             = 55;
+CONST DTYP_XYWINSIZE         = 52;
+
+
+(**********************************************************************)
+(* Pointer datatypes                                                  *)
+(**********************************************************************)
+CONST DTYP_PACCEL             = -28;
+CONST DTYP_PACCELTABLE        = -29;
+CONST DTYP_PARCPARAMS         = -38;
+CONST DTYP_PAREABUNDLE        = -139;
+CONST DTYP_PATOM              = -90;
+CONST DTYP_PBITMAPINFO        = -60;
+CONST DTYP_PBITMAPINFOHEADER  = -61;
+CONST DTYP_PBITMAPINFO2       = -170;
+CONST DTYP_PBITMAPINFOHEADER2 = -171;
+CONST DTYP_PBIT16             = -20;
+CONST DTYP_PBIT32             = -21;
+CONST DTYP_PBIT8              = -19;
+CONST DTYP_PBOOL              = -18;
+CONST DTYP_PBTNCDATA          = -35;
+CONST DTYP_PBYTE              = -13;
+CONST DTYP_PCATCHBUF          = -141;
+CONST DTYP_PCHAR              = -15;
+CONST DTYP_PCHARBUNDLE        = -135;
+CONST DTYP_PCLASSINFO         = -95;
+CONST DTYP_PCOUNT2            = -93;
+CONST DTYP_PCOUNT2B           = -70;
+CONST DTYP_PCOUNT2CH          = -82;
+CONST DTYP_PCOUNT4            = -152;
+CONST DTYP_PCOUNT4B           = -42;
+CONST DTYP_PCPID              = -57;
+CONST DTYP_PCREATESTRUCT      = -98;
+CONST DTYP_PCURSORINFO        = -34;
+CONST DTYP_PDEVOPENSTRUC      = -124;
+CONST DTYP_PDLGTEMPLATE       = -96;
+CONST DTYP_PDLGTITEM          = -97;
+CONST DTYP_PENTRYFDATA        = -127;
+CONST DTYP_PERRORID           = -45;
+CONST DTYP_PFATTRS            = -75;
+CONST DTYP_PFFDESCS           = -142;
+CONST DTYP_PFIXED             = -99;
+CONST DTYP_PFONTMETRICS       = -74;
+CONST DTYP_PFRAMECDATA        = -144;
+CONST DTYP_PGRADIENTL         = -48;
+CONST DTYP_PHAB               = -10;
+CONST DTYP_PHACCEL            = -30;
+CONST DTYP_PHAPP              = -146;
+CONST DTYP_PHATOMTBL          = -91;
+CONST DTYP_PHBITMAP           = -62;
+CONST DTYP_PHCINFO            = -46;
+CONST DTYP_PHDC               = -132;
+CONST DTYP_PHENUM             = -117;
+CONST DTYP_PHHEAP             = -109;
+CONST DTYP_PHINI              = -53;
+CONST DTYP_PHLIB              = -147;
+CONST DTYP_PHMF               = -85;
+CONST DTYP_PHMQ               = -86;
+CONST DTYP_PHPOINTER          = -106;
+CONST DTYP_PHPROGRAM          = -131;
+CONST DTYP_PHPS               = -12;
+CONST DTYP_PHRGN              = -116;
+CONST DTYP_PHSEM              = -140;
+CONST DTYP_PHSPL              = -32;
+CONST DTYP_PHSWITCH           = -66;
+CONST DTYP_PHVPS              = -58;
+CONST DTYP_PHWND              = -11;
+CONST DTYP_PIDENTITY          = -133;
+CONST DTYP_PIDENTITY4         = -169;
+CONST DTYP_PIMAGEBUNDLE       = -136;
+CONST DTYP_PINDEX2            = -81;
+CONST DTYP_PIPT               = -155;
+CONST DTYP_PKERNINGPAIRS      = -118;
+CONST DTYP_PLENGTH2           = -68;
+CONST DTYP_PLENGTH4           = -69;
+CONST DTYP_PLINEBUNDLE        = -137;
+CONST DTYP_PLONG              = -25;
+CONST DTYP_PMARKERBUNDLE      = -138;
+CONST DTYP_PMATRIXLF          = -113;
+CONST DTYP_PMLECTLDATA        = -161;
+CONST DTYP_PMLEMARGSTRUCT     = -157;
+CONST DTYP_PMLEOVERFLOW       = -158;
+CONST DTYP_POFFSET2B          = -112;
+CONST DTYP_POWNERITEM         = -154;
+CONST DTYP_PPID               = -92;
+CONST DTYP_PPIX               = -156;
+CONST DTYP_PPOINTERINFO       = -105;
+CONST DTYP_PPOINTL            = -77;
+CONST DTYP_PPROGCATEGORY      = -129;
+CONST DTYP_PPROGRAMENTRY      = -128;
+CONST DTYP_PPROGTYPE          = -130;
+CONST DTYP_PPROPERTY2         = -88;
+CONST DTYP_PPROPERTY4         = -89;
+CONST DTYP_PQMSG              = -87;
+CONST DTYP_PRECTL             = -121;
+CONST DTYP_PRESID             = -125;
+CONST DTYP_PRGB               = -111;
+CONST DTYP_PRGNRECT           = -115;
+CONST DTYP_PSBCDATA           = -159;
+CONST DTYP_PSEGOFF            = -126;
+CONST DTYP_PSHORT             = -23;
+CONST DTYP_PSIZEF             = -101;
+CONST DTYP_PSIZEL             = -102;
+CONST DTYP_PSTRL              = -17;
+CONST DTYP_PSTR16             = -40;
+CONST DTYP_PSTR32             = -37;
+CONST DTYP_PSTR64             = -47;
+CONST DTYP_PSTR8              = -33;
+CONST DTYP_PSWBLOCK           = -63;
+CONST DTYP_PSWCNTRL           = -64;
+CONST DTYP_PSWENTRY           = -65;
+CONST DTYP_PSWP               = -31;
+CONST DTYP_PTID               = -104;
+CONST DTYP_PTIME              = -107;
+CONST DTYP_PTRACKINFO         = -73;
+CONST DTYP_PUCHAR             = -22;
+CONST DTYP_PULONG             = -26;
+CONST DTYP_PUSERBUTTON        = -36;
+CONST DTYP_PUSHORT            = -24;
+CONST DTYP_PWIDTH4            = -108;
+CONST DTYP_PWNDPARAMS         = -83;
+CONST DTYP_PWNDPROC           = -84;
+CONST DTYP_PWPOINT            = -59;
+CONST DTYP_PWRECT             = -55;
+CONST DTYP_PXYWINSIZE         = -52;
+
+(**************************** end of file **********************************)

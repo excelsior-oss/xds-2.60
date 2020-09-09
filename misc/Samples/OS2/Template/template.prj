@@ -1,0 +1,38 @@
+-lookup = *.def  = $!/def
+-lookup = *.mod  = $!/src
+-lookup = *.ob2  = $!/src
+-lookup = *.sym  = $!/sym
+-lookup = *.obj  = $!/obj
+-lookup = *.rsp  = $!/obj
+-lookup = *.res  = $!/res
+-lookup = *.c    = $!/ch
+-lookup = *.h    = $!/ch;$!/res
+
+-lineno+
+-gendebug+
++pm
++m2extensions
+-compilerheap=8000000
+
+!if __GEN_X86__ then
+  -INCL_DOSPROCESS:+
+  -INCL_DOSSEMAPHORES:+
+  -INCL_WINFRAMEMGR:+
+  -INCL_WINHELP:+
+  -INCL_WINMENUS:+
+  -INCL_WINMESSAGEMGR:+
+  -INCL_WINSTDFILE:+
+  -INCL_WINSWITCHLIST:+
+  -INCL_WINSYS:+
+  -INCL_WINWINDOWMGR:+
+!elsif __GEN_C__ then
+  -INCL_DOS:+
+  -INCL_WIN:+
+  -INCLUDE=res
+!end
+
+-DEBUG_HELP:-
+-BACKGROUND_THREAD:-
+
+!module template.mod
+!module template.res

@@ -1,0 +1,217 @@
+<*+ M2EXTENSIONS *>
+--------------------------------------------------------------------------------
+--                        Excelsior XDS Test Coverage
+--                          (c) 2002, Excelsior Ltd.
+--
+-- Module:       xrTCov
+-- Author:       Lvov Konstantin
+-- Modified By:
+-- Created:      10-Dec-2002
+-- Purpose:      Test Coverage Run-Time Support
+-- Functions:
+-- Comment:      
+-- Synonym:      tc
+--------------------------------------------------------------------------------
+<* IF ~ DEFINED(TESTCOVERAGE) THEN *>  <* NEW TESTCOVERAGE- *>
+<* ELSE *>                             <*- TESTCOVERAGE *>
+<* END *>
+<*+ M2ADDTYPES *>
+DEFINITION MODULE xrTCov;
+IMPORT sys := SYSTEM;
+
+CONST TCSOUT_ENV_VAR = "TCSOUT";
+
+TYPE
+  -- cource line and column
+  TSourceLine = LONGINT;
+  TSourceCol  = LONGINT;
+  -- index of used test conditions
+  TIndex   = sys.INT32;
+  -- test condition pass counter
+  TCounter = sys.INT32;
+  -- source file modification time
+  TTime    = sys.CARD32;
+
+  -- type of test condition
+  TestConditionType = (
+    cr_File                --  0
+
+  -- C1 criterion 
+  , cr_C1_Procedure        --  1
+  , cr_C1_Module           --  2
+  , cr_C1_Finally          --  3
+
+  , cr_C1_IF               --  4
+  , cr_C1_IF_else          --  5
+  , cr_C1_IF_elsif         --  6
+  , cr_C1_IF_end           --  7
+  
+  , cr_C1_Case             --  8
+  , cr_C1_Case_else        --  9
+  , cr_C1_Case_end         -- 10
+  
+  , cr_C1_OberonWith       -- 11
+  , cr_C1_OberonWith_else  -- 12
+  , cr_C1_OberonWith_end   -- 13
+
+  , cr_C1_While            -- 14
+  , cr_C1_While_end        -- 15
+
+  , cr_C1_Repeat           -- 16
+  , cr_C1_Repeat_end       -- 17
+  
+  , cr_C1_For              -- 18
+  , cr_C1_For_end          -- 19
+  
+  , cr_C1_Loop             -- 20
+  , cr_C1_Loop_end         -- 21
+
+  -- Iteration criterion
+  , cr_Itr_While           -- 22
+  , cr_Itr_Repeat          -- 23
+  , cr_Itr_For             -- 24
+  , cr_Itr_Loop            -- 25
+  );
+
+
+  -- test conditions source code affixment
+  TSourceRef = RECORD
+    line: TSourceLine;
+    col:  TSourceCol;
+    end_line: TSourceLine;
+    end_col:  TSourceCol;
+    type: TestConditionType;
+  END; -- TSourceRef
+
+
+  -- test coverage module information
+  TModuleInfoPtr = POINTER TO TModuleInfo;
+  TModuleInfo = RECORD
+    count:    TIndex;
+    -- module info
+    modtime:  TTime;
+    modname:  sys.ADDRESS;
+    srcrefs:  sys.ADDRESS;
+    counters: sys.ADDRESS;
+    -- rts info
+    next:  TModuleInfoPtr;
+  END; -- TModuleInfo
+
+
+--------------------------------------------------------------------------------
+PROCEDURE InitIterationLocal (VAR local_counter: TCounter);
+
+--------------------------------------------------------------------------------
+PROCEDURE IncreaseIterationCounter ( index: TIndex
+                                   ; VAR local_counter: TCounter
+                                   ; VAR counters: ARRAY OF TCounter 
+                                   );
+
+
+--------------------------------------------------------------------------------
+PROCEDURE IncreaseCounter ( index: TIndex
+                          ; VAR counters: ARRAY OF TCounter 
+                          );
+
+--------------------------------------------------------------------------------
+PROCEDURE IncreaseCounterExt ( index: TIndex 
+                             ; VAR counters: ARRAY OF TCounter 
+                             ; modtime:  TTime
+                             ; module:   TModuleInfoPtr
+                             ; modname:  ARRAY OF CHAR
+                             ; srcrefs:  ARRAY OF TSourceRef 
+                             );
+
+
+--------------------------------------------------------------------------------
+PROCEDURE RegistryModule ( module:   TModuleInfoPtr
+                         ; modtime:  TTime
+                         ; modname:  ARRAY OF CHAR
+                         ; srcrefs:  ARRAY OF TSourceRef 
+                         ; counters: ARRAY OF TCounter 
+                         );
+
+--------------------------------------------------------------------------------
+
+-- Must be call earliest as possible. Discard module registration.
+PROCEDURE ["C"] X2C_INIT_TESTCOVERAGE ();
+
+
+--------------------------------------------------------------------------------
+CONST
+  MAX_TypeNameLen = 18;
+
+TYPE
+  TTestConditionTypeNames = ARRAY TestConditionType OF 
+                            ARRAY [0..MAX_TypeNameLen-1] OF CHAR;
+CONST
+  TestConditionNames = TTestConditionTypeNames {
+     "file"
+  -- C1 criterion 
+  ,  "C1_proc"
+  ,  "C1_proc_module"
+  ,  "C1_proc_finally"
+
+  ,  "C1_if"
+  ,  "C1_if_else"
+  ,  "C1_if_elsif"
+  ,  "C1_if_end"
+
+  ,  "C1_case"
+  ,  "C1_case_else"
+  ,  "C1_case_end"
+
+  ,  "C1_o2with"
+  ,  "C1_o2with_else"
+  ,  "C1_o2with_end"
+
+  ,  "C1_loop_while"
+  ,  "C1_loop_while_end"
+
+  ,  "C1_loop_repeat"
+  ,  "C1_loop_repeat_end"
+
+  ,  "C1_loop_for"
+  ,  "C1_loop_for_end"
+  
+  ,  "C1_loop_loop"
+  ,  "C1_loop_loop_end"
+
+  -- Iteration criterion
+  ,  "Itr_loop_while"
+  ,  "Itr_loop_repeat"
+  ,  "Itr_loop_for"
+  ,  "Itr_loop_loop"
+  };
+
+
+--------------------------------------------------------------------------------
+--                     Support Test Coverage Utilities
+--------------------------------------------------------------------------------
+TYPE
+  TModuleName = POINTER TO ARRAY [0..32000] OF CHAR;
+  TSourceRefs = POINTER TO ARRAY [0..MAX(TIndex)-1] OF TSourceRef;
+  TCounters   = POINTER TO ARRAY [0..MAX(TIndex)-1] OF TCounter;
+
+--------------------------------------------------------------------------------
+PROCEDURE MakeBackUp (fname: ARRAY OF CHAR);
+
+PROCEDURE ReadTCFile ( fname: ARRAY OF CHAR
+                     ; regModuleList: TModuleInfoPtr
+                     ; VAR unregModuleList: TModuleInfoPtr );
+
+PROCEDURE WriteTCFile ( fname: ARRAY OF CHAR
+                      ; regModuleList: TModuleInfoPtr
+                      ; VAR unregModuleList: TModuleInfoPtr
+                      );
+
+PROCEDURE CancelTCFileOperation (VAR unregModuleList: TModuleInfoPtr);
+
+--------------------------------------------------------------------------------
+TYPE
+  FILE_LINE_ITERATOR = PROCEDURE (ARRAY OF CHAR);
+
+PROCEDURE EnumFileLines (fname: ARRAY OF CHAR; action: FILE_LINE_ITERATOR);
+
+
+END xrTCov.

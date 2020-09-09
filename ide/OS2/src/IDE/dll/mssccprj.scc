@@ -1,0 +1,7 @@
+SCC = This is a Source Code Control file
+
+[xdscppdll.mak]
+SCC_Project_Name = "$/xds2.6/ide/OS2/src/IDE/dll", EVEYAAAA
+
+[xdsdll.mak]
+SCC_Project_Name = "$/xds2.6/ide/OS2/src/IDE/dll", EVEYAAAA

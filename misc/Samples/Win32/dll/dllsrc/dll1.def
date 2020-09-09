@@ -1,0 +1,8 @@
+DEFINITION MODULE dll1;
+
+VAR 
+  Var : CARDINAL;
+
+PROCEDURE Proc;
+
+END dll1.

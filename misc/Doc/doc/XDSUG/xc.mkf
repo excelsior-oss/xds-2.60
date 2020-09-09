@@ -1,0 +1,13 @@
+SOURCE = ..\platform.tex ..\backend.tex \
+	 xc.tex       preamble.tex body.tex    \
+	 config.tex   errors.tex   intro.tex   \
+         limits.tex   lowlevel.tex maptoc.tex  \
+         modula2.tex  multlang.tex oberon2.tex \
+         os2api.tex   osa.tex \
+         options.tex  problems.tex rts.tex     \
+         seamless.tex start.tex    usage.tex   \
+         win32api.tex xlib.tex     xlink.tex
+
+TARGET = xc
+
+!include ..\$(FORMAT).inc

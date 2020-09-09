@@ -1,0 +1,22 @@
+(* Copyright (c) xTech 1997.  All Rights Reserved *)
+
+(* $RCSfile: utime.def,v $ $Revision: 4 $ $Date: 1/31/04 4:26p $ *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] utime;
+
+FROM time IMPORT time_t;
+
+<* IF __GEN_C__ THEN *> <*- GENTYPEDEF *> <* END *>
+TYPE
+  utimbuf = RECORD
+    actime:	time_t;
+    modtime:	time_t;
+  END;
+
+PROCEDURE utime (filename: ARRAY OF CHAR; VAR utimebuf: utimbuf): INTEGER;
+
+END utime.

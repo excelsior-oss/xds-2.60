@@ -1,0 +1,92 @@
+
+!if not defined mode then
+  -mode := work
+!end
+
+!if not defined placement then
+  !if (mode="user") then
+    -placement ! makefile
+  !elsif (mode="debug") or (mode="nodebug") then
+    -placement ! release
+  !else
+    -placement ! current
+  !end
+!end
+
+-compilerheap=60000000
+
+!if (mode="debug") or (mode="work") then
+  -assert+
+  -checkindex+
+  -checkdindex+
+  -checkrange+
+  -checkset+
+  -checknil+
+  -checkproc+
+  -checkdiv+
+  -checktype+
+  -ioverflow+
+  -coverflow+
+  -foverflow+
+!elsif mode="nodebug" then
+  -assert+
+  -checkindex-
+  -checkdindex-
+  -checkrange-
+  -checkset-
+  -checknil-
+  -checkproc-
+  -checkdiv-
+  -checktype-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+!end
+
+!if (mode="debug") or (mode="work") then
+  -gendebug+
+  -lineno+
+  !if backend#"C" then
+    -genframe+
+    -genhistory+
+  !end
+!elsif (mode="nodebug") then
+  -gendebug-
+  -lineno-
+  !if backend#"C" then
+    -genframe-
+    -genhistory-
+  !end
+!end
+
+-multithread+
+
+!if placement="release" then
+-lookup = *.obj = $!/../../enduser/tmp
+-lookup = *.rsp = $!/../../enduser/tmp
+-lookup = *.sym = $!/../../enduser/xds/sym/x86
+-lookup = *.lib = $!/../../enduser/xds/lib/x86
+
+!else
+  -lookup = *.obj = $!/../../ch/x86
+  -lookup = *.rsp = $!/../../ch/x86
+  -lookup = *.sym = $!/../../enduser/sym/x86
+  -lookup = *.lib = $!/../../enduser/lib/x86
+!end
+
+-lookup = *.def = $!
+-lookup = *.mod = $!
+-lookup = *.tem = $!
+
+-genlib+
+-libname = vterm
+-mkfname = vterm
+-mkfext  = rsp
+
+
+!if backend#"C" then
+  -genframe-
+  -genhistory-
+!end
+
+!module VTerm VTerm_t

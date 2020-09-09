@@ -1,0 +1,6 @@
+-implib-
+-usedll+
+
+-lookup = *.mod = $!/exesrc
+
+!module exe1.mod

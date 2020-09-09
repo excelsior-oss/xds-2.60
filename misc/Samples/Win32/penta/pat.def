@@ -1,0 +1,32 @@
+DEFINITION MODULE pat;
+
+CONST N  = 5;
+      NFIGS = 12;
+
+TYPE PAT = RECORD
+            x   : ARRAY [1..10] OF INTEGER;
+            y   : ARRAY [1..10] OF INTEGER;
+            sx  : INTEGER;
+            sy  : INTEGER;
+            y0  : INTEGER;
+        END;
+
+TYPE FIG = RECORD
+                pats : ARRAY [1..8] OF PAT;
+                n    : INTEGER;
+                c    : CHAR;
+           END;
+
+VAR figs  : ARRAY [1..NFIGS] OF FIG;
+
+PROCEDURE makefigs;
+
+TYPE FIG_POS = RECORD
+                    pat : INTEGER;
+                    x   : INTEGER;
+                    y   : INTEGER;
+               END;
+
+TYPE SOLUTION = ARRAY [1..NFIGS] OF FIG_POS;
+
+END pat.

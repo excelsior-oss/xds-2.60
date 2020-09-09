@@ -1,0 +1,854 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMSPL.H
+*
+* OS/2 Presentation Manager Spooler constants, types and function declarations
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1993
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_SPLERRORS          defined if INCL_ERRORS defined
+*   INCL_SPLFSE             file system emulation calls
+*   INCL_SPLDOSPRINT        DosPrint APIs
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+#if ! defined(PMSPL_INCLUDED)
+   (* XLATON *)
+   #define PMSPL_INCLUDED
+
+
+
+   (* XLATOFF *)
+   (* XLATON *)
+
+   (*** if error definitions are required then allow Spooler errors ********)
+   #if defined(INCL_ERRORS)
+      #define INCL_SPLERRORS
+   #endif (* INCL_ERRORS *)
+
+   (*** Names of various OS2SYS.INI spooler variables **********************)
+
+   CONST SPL_INI_SPOOLER       =  "PM_SPOOLER"                ;
+   CONST SPL_INI_QUEUE         =  "PM_SPOOLER_QUEUE"          ;
+   CONST SPL_INI_PRINTER       =  "PM_SPOOLER_PRINTER"        ;
+   CONST SPL_INI_PRINTERDESCR  =  "PM_SPOOLER_PRINTER_DESCR"  ;
+   CONST SPL_INI_QUEUEDESCR    =  "PM_SPOOLER_QUEUE_DESCR"    ;
+   CONST SPL_INI_QUEUEDD       =  "PM_SPOOLER_QUEUE_DD"       ;
+   CONST SPL_INI_QUEUEDDDATA   =  "PM_SPOOLER_QUEUE_DDDATA"   ;
+
+   (*** General SPL return values ******************************************)
+   CONST SPL_ERROR   =  0;
+   CONST SPL_OK      =  1;
+
+   (*** handle to a spool file *********************************************)
+   TYPE HSPL = LHANDLE;               (* hspl *)
+
+   (* Used in recording of PM_Q_STD data via SplStdxxx calls *)
+   TYPE HSTD  = LHANDLE;               (* hstd *)
+   TYPE PHSTD = POINTER TO HSTD;
+
+   (*** spooler manager open data ******************************************)
+   TYPE PQMOPENDATA = POINTER TO PSZ;       (* pqmdop *)
+
+
+   (*** Spooler Queue Processor interface **********************************)
+
+   (* control codes for SplQpControl *)
+   CONST SPLC_ABORT    = 1;
+   CONST SPLC_PAUSE    = 2;
+   CONST SPLC_CONTINUE = 3;
+
+   (* flag defines for optional SplQpQueryFlags           *)
+   (* set this to allow spooler to bypass Queue Processor *)
+   (* for PM_Q_RAW jobs.  This allows print while a job   *)
+   (* is still spooling.                                  *)
+   CONST QP_RAWDATA_BYPASS = 000000001H;
+
+   (*** handle to a spooler queue processor ********************************)
+   TYPE HPROC = LHANDLE;              (* hproc *)
+
+   (*** spooler processor open data ****************************************)
+   TYPE PQPOPENDATA = POINTER TO PSZ;       (* pqpdop *)
+
+   (*** Spooler Queue Processor interface **********************************)
+   (* API's exported by Queue Processor DLL's                              *)
+   PROCEDURE [EXPENTRY] SplQpOpen(cData     : LONG
+                                 ;pQPDataIn : PQPOPENDATA
+                                 ): HPROC;
+
+   PROCEDURE [EXPENTRY] SplQpPrint(hproc       : HPROC
+                                  ;pszFileName : PCSZ
+                                  ): BOOL;
+
+   PROCEDURE [EXPENTRY] SplQpClose(hproc : HPROC): BOOL;
+
+   PROCEDURE [EXPENTRY] SplQpControl(hproc   : HPROC
+                                    ;cmdCode : LONG
+                                    ): BOOL;
+
+   PROCEDURE [EXPENTRY] SplQpQueryDt(pcDataType    : PLONG
+                                    ;paszDataTypes : PPCSZ
+                                    ): BOOL;
+
+   PROCEDURE [EXPENTRY] SplQpInstall(hwnd : HWND): BOOL;
+
+   (* The next API is optionally exported by Queue Processors *)
+   (* The flags may be set to QP_RAWDATA_BYPASS to allow the  *)
+   (* spooler to print the job while spooling, bypassing this *)
+   (* queue processor                                         *)
+
+   PROCEDURE [EXPENTRY] SplQpQueryFlags(pulFlags : PULONG): BOOL;
+
+   (*************************************************************************
+   * There are two definitions governing the QpOpen data block :-
+   * 1) the original  QPOPENDATA, which is used as
+   *    an array of PSZ and has a list of associated QPDAT defines
+   *    for accessing elements of the array. This has been extended
+   *    from 6 to 12 elements. The last element is a numeric type
+   *    and cannot satisfactorily be accessed via array indexing.
+   *
+   * 2) a new SQPOPENDATA structure (see below)
+   *
+   * The old defn has been retained to support existing QProcs.
+   *
+   *************************************************************************)
+
+   (*** Definition for elements within the PQPOPENDATA block ***************)
+   CONST QPDAT_ADDRESS     =0;
+   CONST QPDAT_DRIVER_NAME =1;
+   CONST QPDAT_DRIVER_DATA =2;
+   CONST QPDAT_DATA_TYPE   =3;
+   CONST QPDAT_COMMENT     =4;
+   CONST QPDAT_PROC_PARAMS =5;
+   CONST QPDAT_SPL_PARAMS  =6;     (* SplQmOpen Spooler params **       *)
+   CONST QPDAT_NET_PARAMS  =7;     (* SplQmOpen Network params **       *)
+   CONST QPDAT_DOC_NAME    =8;     (* SplQmStartDoc name       **       *)
+   CONST QPDAT_QUEUE_NAME  =9;     (* Queue name for job       **       *)
+   CONST QPDAT_TOKEN      =10;     (* SplQmOpen token name     **       *)
+   CONST QPDAT_JOBID      =11;     (* SQM job identity         **       *)
+
+   TYPE SQPOPENDATA = RECORD      (* SplQpOpenData *)
+      pszLogAddress:    PSZ;
+      pszDriverName:    PSZ;
+      pdriv:            PDRIVDATA;
+      pszDataType:      PSZ;
+      pszComment:       PSZ;
+      pszProcParams:    PSZ;
+      pszSpoolParams:   PSZ;
+      pszNetworkParams: PSZ;
+      pszDocName:       PSZ;
+      pszQueueName:     PSZ;
+      pszToken:         PSZ;
+      idJobId:          USHORT;
+   END;
+   TYPE PSQPOPENDATA = POINTER TO SQPOPENDATA; (* ptr to SQPOPENDATA *)
+
+
+   (*************************************************************************
+   *** Error information and return codes
+   *************************************************************************)
+
+   (* Error information for SplMessageBox *)
+   CONST SPLINFO_QPERROR     =  00001H;
+   CONST SPLINFO_DDERROR     =  00002H;
+   CONST SPLINFO_SPLERROR    =  00004H;
+   CONST SPLINFO_OTHERERROR  =  00080H;
+   CONST SPLINFO_INFORMATION =  00100H;
+   CONST SPLINFO_WARNING     =  00200H;
+   CONST SPLINFO_ERROR       =  00400H;
+   CONST SPLINFO_SEVERE      =  00800H;
+   CONST SPLINFO_USERINTREQD =  01000H;
+
+   (* Error Data for SplMessageBox *)
+   CONST SPLDATA_PRINTERJAM  =  00001H;
+   CONST SPLDATA_FORMCHGREQD =  00002H;
+   CONST SPLDATA_CARTCHGREQD =  00004H;
+   CONST SPLDATA_PENCHGREQD  =  00008H;
+   CONST SPLDATA_DATAERROR   =  00010H;
+   CONST SPLDATA_UNEXPECTERROR= 00020H;
+   CONST SPLDATA_OTHER       =  08000H;
+
+   (* return code for fSplStdQueryLength *)
+   CONST SSQL_ERROR = -1;
+
+   #if defined(INCL_SPLERRORS)
+      #include <pmerr.hm>
+   #endif (* INCL_SPLERRORS *)
+
+   TYPE SPLERR = SYSTEM.CARD32;
+
+   #if defined(INCL_SPLDOSPRINT)
+      (* length for character arrays in structs (excluding zero terminator) *)
+      CONST CNLEN         =  15;            (* Computer name length      *)
+      CONST UNLEN         =  20;            (* Maximum user name length  *)
+      CONST QNLEN         =  12;            (* Queue name maximum length *)
+      CONST PDLEN         =   8;            (* Print destination length  *)
+      CONST DTLEN         =   9;            (* Spool file data type      *)
+      (* e.g. PM_Q_STD,PM_Q_RAW    *)
+      CONST QP_DATATYPE_SIZE      =  15;    (* returned by SplQpQueryDt  *)
+      CONST DRIV_DEVICENAME_SIZE  =  31;    (* see DRIVDATA struc        *)
+      CONST DRIV_NAME_SIZE        =   8;    (* name of device driver     *)
+      CONST PRINTERNAME_SIZE      =  32;    (* max printer name length   *)
+      CONST FORMNAME_SIZE         =  31;    (* max form name length      *)
+      CONST MAXCOMMENTSZ          =  48;    (* queue comment length      *)
+
+      TYPE DRIVPROPS = RECORD     (* dprop *)
+         pszKeyName: PSZ;
+         cbBuf:      ULONG;
+         pBuf:       PVOID;
+      END;
+      TYPE PDRIVPROPS  = POINTER TO DRIVPROPS;
+      TYPE NPDRIVPROPS = POINTER TO DRIVPROPS;
+
+      TYPE PRJINFO = RECORD     (* prj1 *)
+         uJobId:       USHORT;
+         szUserName:   ARRAY [0..UNLEN] OF CHAR;
+         pad_1:        CHAR;
+         szNotifyName: ARRAY [0..CNLEN] OF CHAR;
+         szDataType:   ARRAY [0..DTLEN] OF CHAR;
+         pszParms:     PSZ;
+         uPosition:    USHORT;
+         fsStatus:     USHORT;
+         pszStatus:    PSZ;
+         ulSubmitted:  ULONG;
+         ulSize:       ULONG;
+         pszComment:   PSZ;
+      END;
+      TYPE PPRJINFO  = POINTER TO PRJINFO;
+      TYPE NPPRJINFO = POINTER TO PRJINFO;
+
+      TYPE PRJINFO2 = RECORD     (* prj2 *)
+         uJobId:       USHORT;
+         uPriority:    USHORT;
+         pszUserName:  PSZ;
+         uPosition:    USHORT;
+         fsStatus:     USHORT;
+         ulSubmitted:  ULONG;
+         ulSize:       ULONG;
+         pszComment:   PSZ;
+         pszDocument:  PSZ;
+      END;
+      TYPE PPRJINFO2  = POINTER TO PRJINFO2;
+      TYPE NPPRJINFO2 = POINTER TO PRJINFO2;
+
+      TYPE PRJINFO3 = RECORD     (* prj *)
+         uJobId:         USHORT;
+         uPriority:      USHORT;
+         pszUserName:    PSZ;
+         uPosition:      USHORT;
+         fsStatus:       USHORT;
+         ulSubmitted:    ULONG;
+         ulSize:         ULONG;
+         pszComment:     PSZ;
+         pszDocument:    PSZ;
+         pszNotifyName:  PSZ;
+         pszDataType:    PSZ;
+         pszParms:       PSZ;
+         pszStatus:      PSZ;
+         pszQueue:       PSZ;
+         pszQProcName:   PSZ;
+         pszQProcParms:  PSZ;
+         pszDriverName:  PSZ;
+         pDriverData:    PDRIVDATA;
+         pszPrinterName: PSZ;
+      END;
+      TYPE PPRJINFO3  = POINTER TO PRJINFO3;
+      TYPE NPPRJINFO3 = POINTER TO PRJINFO3;
+
+      TYPE PRDINFO = RECORD      (* prd1 *)
+         szName:       ARRAY [0..PDLEN] OF CHAR;
+         szUserName:   ARRAY [0..UNLEN] OF CHAR;
+         uJobId:       USHORT;
+         fsStatus:     USHORT;
+         pszStatus:    PSZ;
+         time:         USHORT;
+      END;
+      TYPE PPRDINFO  = POINTER TO PRDINFO;
+      TYPE NPPRDINFO = POINTER TO PRDINFO;
+
+      TYPE PRDINFO3 = RECORD     (* prd *)
+         pszPrinterName:  PSZ;
+         pszUserName:     PSZ;
+         pszLogAddr:      PSZ;
+         uJobId:          USHORT;
+         fsStatus:        USHORT;
+         pszStatus:       PSZ;
+         pszComment:      PSZ;
+         pszDrivers:      PSZ;
+         time:            USHORT;
+         usTimeOut:       USHORT;
+      END;
+      TYPE PPRDINFO3  = POINTER TO PRDINFO3;
+      TYPE NPPRDINFO3 = POINTER TO PRDINFO3;
+
+      TYPE PRQINFO = RECORD     (* prq1 *)
+         szName:           ARRAY [0..QNLEN] OF CHAR;
+         pad_1:            CHAR;
+         uPriority:        USHORT;
+         uStartTime:       USHORT;
+         uUntilTime:       USHORT;
+         pszSepFile:       PSZ;
+         pszPrProc:        PSZ;
+         pszDestinations:  PSZ;
+         pszParms:         PSZ;
+         pszComment:       PSZ;
+         fsStatus:         USHORT;
+         cJobs:            USHORT;
+      END;
+      TYPE PPRQINFO  = POINTER TO PRQINFO;
+      TYPE NPPRQINFO = POINTER TO PRQINFO;
+
+      TYPE PRQINFO3 = RECORD    (* prq *)
+         pszName:         PSZ;
+         uPriority:       USHORT;
+         uStartTime:      USHORT;
+         uUntilTime:      USHORT;
+         fsType:          USHORT;
+         pszSepFile:      PSZ;
+         pszPrProc:       PSZ;
+         pszParms:        PSZ;
+         pszComment:      PSZ;
+         fsStatus:        USHORT;
+         cJobs:           USHORT;
+         pszPrinters:     PSZ;
+         pszDriverName:   PSZ;
+         pDriverData:     PDRIVDATA;
+      END;
+      TYPE PPRQINFO3  = POINTER TO PRQINFO3;
+      TYPE NPPRQINFO3 = POINTER TO PRQINFO3;
+
+      TYPE PRQINFO6 = RECORD    (* prq6 *)
+         pszName:           PSZ;
+         uPriority:         USHORT;
+         uStartTime:        USHORT;
+         uUntilTime:        USHORT;
+         fsType:            USHORT;
+         pszSepFile:        PSZ;
+         pszPrProc:         PSZ;
+         pszParms:          PSZ;
+         pszComment:        PSZ;
+         fsStatus:          USHORT;
+         cJobs:             USHORT;
+         pszPrinters:       PSZ;
+         pszDriverName:     PSZ;
+         pDriverData:       PDRIVDATA;
+         pszRemoteComputerName: PSZ;
+         pszRemoteQueueName: PSZ;
+      END;
+      TYPE PPRQINFO6  = POINTER TO PRQINFO6;
+      TYPE NPPRQINFO6 = POINTER TO PRQINFO6;
+
+      (*
+      * structure for DosPrintJobGetId
+      *)
+      TYPE PRIDINFO = RECORD    (* prjid *)
+         uJobId:         USHORT;
+         szComputerName: ARRAY [0..CNLEN] OF CHAR;
+         szQueueName:    ARRAY [0..QNLEN] OF CHAR;
+         pad_1:          CHAR;
+      END;
+      TYPE PPRIDINFO  = POINTER TO PRIDINFO;
+      TYPE NPPRIDINFO = POINTER TO PRIDINFO;
+
+      (*
+      * structure for DosPrintDriverEnum
+      *)
+      TYPE PRDRIVINFO = RECORD   (* prdid *)
+         szDrivName: ARRAY [0..DRIV_NAME_SIZE+1+DRIV_DEVICENAME_SIZE] OF CHAR;
+      END;
+      TYPE PPRDRIVINFO  = POINTER TO PRDRIVINFO;
+      TYPE NPPRDRIVINFO = POINTER TO PRDRIVINFO;
+
+      (*
+      * structure for DosPrintQProcessorEnum
+      *)
+      TYPE PRQPROCINFO = RECORD   (* prqp *)
+         szQProcName: ARRAY [0..QNLEN] OF CHAR;
+      END;
+      TYPE PPRQPROCINFO  = POINTER TO PRQPROCINFO;
+      TYPE NPPRQPROCINFO = POINTER TO PRQPROCINFO;
+
+      (*
+      * structure for DosPrintPortEnum Level 0
+      *)
+      TYPE PRPORTINFO = RECORD   (* prpo *)
+         szPortName: ARRAY [0..PDLEN] OF CHAR;
+      END;
+      TYPE PPRPORTINFO  = POINTER TO PRPORTINFO;
+      TYPE NPPRPORTINFO = POINTER TO PRPORTINFO;
+
+      (*
+      * structure for DosPrintPortEnum Level 1
+      *)
+      TYPE PRPORTINFO1 = RECORD   (* prpo1 *)
+         pszPortName :           PSZ;
+         pszPortDriverName :     PSZ;
+         pszPortDriverPathName : PSZ;
+      END;
+      TYPE PPRPORTINFO1  = POINTER TO PRPORTINFO1;
+      TYPE NPPRPORTINFO1 = POINTER TO PRPORTINFO1;
+
+
+      (*** Values for parmnum in DosPrintQSetInfo/SplSetQueue  *************)
+      CONST PRQ_PRIORITY_PARMNUM         =   2;
+      CONST PRQ_STARTTIME_PARMNUM        =   3;
+      CONST PRQ_UNTILTIME_PARMNUM        =   4;
+      CONST PRQ_SEPARATOR_PARMNUM        =   5;
+      CONST PRQ_PROCESSOR_PARMNUM        =   6;
+      CONST PRQ_DESTINATIONS_PARMNUM     =   7;
+      CONST PRQ_PARMS_PARMNUM            =   8;
+      CONST PRQ_COMMENT_PARMNUM          =   9;
+      CONST PRQ_TYPE_PARMNUM             =  10;
+      CONST PRQ_PRINTERS_PARMNUM         =  12;
+      CONST PRQ_DRIVERNAME_PARMNUM       =  13;
+      CONST PRQ_DRIVERDATA_PARMNUM       =  14;
+      CONST PRQ_REMOTE_COMPUTER_PARMNUM  =  15;
+      CONST PRQ_REMOTE_QUEUE_PARMNUM     =  16;
+      CONST PRQ_MAXPARMNUM               =  16;
+
+      (*** Print Queue Priority ********************************************)
+      CONST PRQ_MAX_PRIORITY             =   1;       (* highest priority *)
+      CONST PRQ_DEF_PRIORITY             =   5;
+      CONST PRQ_MIN_PRIORITY             =   9;       (* lowest priority  *)
+      CONST PRQ_NO_PRIORITY              =   0;
+
+      (*** Print queue status bitmask and values for level 1 ***************)
+      CONST PRQ_STATUS_MASK              =   3;
+      CONST PRQ_ACTIVE                   =   0;
+      CONST PRQ_PAUSED                   =   1;       (* queue is held    *)
+      CONST PRQ_ERROR                    =   2;
+      CONST PRQ_PENDING                  =   3;       (* pending deletion *)
+
+      (*** Print queue status bits for level 3 *****************************)
+      CONST PRQ3_PAUSED                 =  01H;      (* queue is held    *)
+      CONST PRQ3_PENDING                =  02H;      (* pending deletion *)
+
+      (*** Print queue type bits for level 3 *******************************)
+      CONST PRQ3_TYPE_RAW       =  00001H; (* spools printer-specific data *)
+      CONST PRQ3_TYPE_BYPASS    =  00002H; (* allow print while spooling   *)
+      CONST PRQ3_TYPE_APPDEFAULT=  00004H; (* set for Application default Q*)
+
+      (*** Values for parmnum in DosPrintJobSetInfo/SplSetJob **************)
+      CONST PRJ_NOTIFYNAME_PARMNUM     =   3;
+      CONST PRJ_DATATYPE_PARMNUM       =   4;
+      CONST PRJ_PARMS_PARMNUM          =   5;
+      CONST PRJ_POSITION_PARMNUM       =   6;
+      CONST PRJ_JOBFILEINUSE_PARMNUM   =   7;
+      CONST PRJ_COMMENT_PARMNUM        =  11;
+      CONST PRJ_DOCUMENT_PARMNUM       =  12;
+      CONST PRJ_STATUSCOMMENT_PARMNUM  =  13;
+      CONST PRJ_PRIORITY_PARMNUM       =  14;
+      CONST PRJ_PROCPARMS_PARMNUM      =  16;
+      CONST PRJ_DRIVERDATA_PARMNUM     =  18;
+      CONST PRJ_MAXPARMNUM             =  18;
+
+      (*** Bitmap masks for status field of PRJINFO. ***********************)
+      (* 2-7 bits also used in device status *)
+      CONST PRJ_QSTATUS     = 00003H;    (* Bits 0,1  *)
+      CONST PRJ_DEVSTATUS   = 00ffcH;    (* 2-11 bits *)
+      CONST PRJ_COMPLETE    = 00004H;    (* Bit 2     *)
+      CONST PRJ_INTERV      = 00008H;    (* Bit 3     *)
+      CONST PRJ_ERROR       = 00010H;    (* Bit 4     *)
+      CONST PRJ_DESTOFFLINE = 00020H;    (* Bit 5     *)
+      CONST PRJ_DESTPAUSED  = 00040H;    (* Bit 6     *)
+      CONST PRJ_NOTIFY      = 00080H;    (* Bit 7     *)
+      CONST PRJ_DESTNOPAPER = 00100H;    (* Bit 8     *)
+      CONST PRJ_DESTFORMCHG = 00200H;    (* BIT 9     *)
+      CONST PRJ_DESTCRTCHG  = 00400H;    (* BIT 10    *)
+      CONST PRJ_DESTPENCHG  = 00800H;    (* BIT 11    *)
+      CONST PRJ_JOBFILEINUSE= 04000H;    (* Bit 14    *)
+      CONST PRJ_DELETED     = 08000H;    (* Bit 15    *)
+
+      (*** Values of PRJ_QSTATUS bits in fsStatus field of PRJINFO. ********)
+      CONST PRJ_QS_QUEUED              =   0;
+      CONST PRJ_QS_PAUSED              =   1;
+      CONST PRJ_QS_SPOOLING            =   2;
+      CONST PRJ_QS_PRINTING            =   3;
+
+      (*** Print Job Priority **********************************************)
+      CONST PRJ_MAX_PRIORITY           =  99;         (* lowest priority  *)
+      CONST PRJ_MIN_PRIORITY           =   1;         (* highest priority *)
+      CONST PRJ_NO_PRIORITY            =   0;
+
+
+      (*** Bitmap masks for status field of PRDINFO. ***********************)
+      CONST PRD_STATUS_MASK     =  00003H;    (* Bits 0,1 *)
+      CONST PRD_DEVSTATUS       =  00ffcH;    (* 2-11 bits *)
+
+      (*** Values of PRD_STATUS_MASK bits in fsStatus field of PRDINFO. ****)
+      CONST PRD_ACTIVE           =      0;
+      CONST PRD_PAUSED           =      1;
+
+      (*** Control codes used in DosPrintDestControl/SplControlDevice ******)
+      CONST PRD_DELETE           =         0;
+      CONST PRD_PAUSE            =         1;
+      CONST PRD_CONT             =         2;
+      CONST PRD_RESTART          =         3;
+
+      (*** Values for parmnum in DosPrintDestSetInfo/SplSetDevice **********)
+      CONST PRD_LOGADDR_PARMNUM  =    3 ;
+      CONST PRD_COMMENT_PARMNUM  =    7 ;
+      CONST PRD_DRIVERS_PARMNUM  =    8 ;
+      CONST PRD_TIMEOUT_PARMNUM  =    10;
+
+      (*** structure for SplEnumPrinter ************************************)
+      TYPE PRINTERINFO = RECORD    (* prtin *)
+         flType:                  ULONG;
+         pszComputerName:         PSZ;
+         pszPrintDestinationName: PSZ;
+         pszDescription:          PSZ;
+         pszLocalName:            PSZ;
+      END;
+      TYPE PPRINTERINFO = POINTER TO PRINTERINFO;
+
+      (*** Flags for flType in  PRINTERINFO and SplEnumPrinter *************)
+      CONST    SPL_PR_QUEUE         =   000000001H; (* include queues *)
+      CONST    SPL_PR_DIRECT_DEVICE =   000000002H; (* unattached devices *)
+      CONST    SPL_PR_QUEUED_DEVICE =   000000004H; (* queued devices *)
+      CONST    SPL_PR_LOCAL_ONLY    =   000000100H; (* exclude remote queues *)
+
+
+   #endif  (* INCL_SPLDOSPRINT *)
+
+   (*********************************************************************)
+   (*                      FUNCTION PROTOTYPES                          *)
+   (*                                                                   *)
+   (* In the case of the DosPrintxxx, the API is presented by new name  *)
+   (* with the old name in parenthesis.                                 *)
+   (*********************************************************************)
+
+   PROCEDURE SplQmOpen(szToken   : ARRAY OF CHAR
+                      ;lCount    : LONG
+                      ;qmdopData : PQMOPENDATA
+                      ): HSPL;
+
+   PROCEDURE SplQmStartDoc(hspl      : HSPL
+                          ;szDocName : ARRAY OF CHAR
+                          ): BOOL;
+
+   PROCEDURE SplQmWrite(hspl   : HSPL
+                       ;lCount : LONG
+                       ;pData  : PVOID
+                       ): BOOL;
+
+   PROCEDURE SplQmEndDoc(hspl : HSPL): BOOL;
+
+   PROCEDURE SplQmClose(hspl : HSPL): BOOL;
+
+   PROCEDURE SplQmAbort(hspl : HSPL): BOOL;
+
+   PROCEDURE SplQmAbortDoc(hspl : HSPL): BOOL;
+
+   PROCEDURE SplMessageBox(szLogAddr : ARRAY OF CHAR
+                          ;fErrInfo  : ULONG
+                          ;fErrData  : ULONG
+                          ;szText    : ARRAY OF CHAR
+                          ;szCaption : ARRAY OF CHAR
+                          ;idWindow  : ULONG
+                          ;fStyle    : ULONG
+                          ): ULONG;
+
+   #if defined(INCL_SPLFSE)
+      (* types HFILE, PHFILE are defined in bsedos.h *)
+      (*** Direct Device File System Interface **************************)
+      PROCEDURE PrtOpen(pszDeviceName : PCSZ
+                       ;phDevice      : PHFILE
+                       ;pActionTaken  : PULONG
+                       ;cbFileSize    : ULONG
+                       ;uFileAttr     : ULONG
+                       ;openFlag      : ULONG
+                       ;openMode      : ULONG
+                       ;reserved      : ULONG
+                       ): ULONG;
+
+      PROCEDURE PrtClose(hDevice : HFILE): ULONG;
+
+      PROCEDURE PrtWrite(hDevice    : HFILE
+                        ;pchData    : PVOID
+                        ;cbData     : ULONG
+                        ;pcbWritten : PULONG
+                        ): ULONG;
+
+      PROCEDURE PrtDevIOCtl(pData     : PVOID
+                           ;pParms    : PVOID
+                           ;uFunction : ULONG
+                           ;uCategory : ULONG
+                           ;hDevice   : HFILE
+                           ): ULONG;
+
+      PROCEDURE PrtAbort(hDevice : HFILE);
+   #endif (* include File System Emulation functions *)
+
+   PROCEDURE SplStdOpen(hdc : HDC): BOOL;
+
+   PROCEDURE SplStdClose(hdc : HDC): BOOL;
+
+   PROCEDURE SplStdStart(hdc : HDC): BOOL;
+
+   PROCEDURE SplStdStop(hdc : HDC): HSTD;
+
+   PROCEDURE SplStdDelete(hMetaFile : HSTD): BOOL;
+
+   PROCEDURE SplStdGetBits(hMetaFile : HSTD
+                          ;offData   : LONG
+                          ;cbData    : LONG
+                          ;pchData   : PCH
+                          ): BOOL;
+
+   PROCEDURE SplStdQueryLength(hMetaFile : HSTD): LONG;
+
+
+   (*              SplCreateDevice(DosPrintDestAdd) *)
+   PROCEDURE SplCreateDevice(pszComputerName : PCSZ      (* !!! NIL *)
+                            ;ulLevel         : ULONG
+                            ;pBuf            : PVOID
+                            ;cbBuf           : ULONG
+                            ): SPLERR;
+
+   (*              SplControlDevice(DosPrintDestControl) *)
+   PROCEDURE SplControlDevice(pszComputerName : PCSZ      (* !!! NIL *)
+                             ;szPortName      : ARRAY OF CHAR
+                             ;ulControl       : ULONG
+                             ): SPLERR;
+
+   (*              SplDeleteDevice(DosPrintDestDel) *)
+   PROCEDURE SplDeleteDevice(pszComputerName   : PCSZ      (* !!! NIL *)
+                            ;szPrintDeviceName : ARRAY OF CHAR
+                            ): SPLERR;
+
+
+   (*              SplEnumDevice(DosPrintDestEnum) *)
+   PROCEDURE SplEnumDevice(pszComputerName : PCSZ      (* !!! NIL *)
+                          ;ulLevel         : ULONG
+                          ;pBuf            : PVOID
+                          ;cbBuf           : ULONG
+                          ;VAR cReturned   : ULONG
+                          ;VAR cTotal      : ULONG
+                          ;VAR cbNeeded    : ULONG
+                          ;pReserved       : PVOID
+                          ): SPLERR;
+
+   (*              SplQueryDevice(DosPrintDestGetInfo) *)
+   PROCEDURE SplQueryDevice(pszComputerName   : PCSZ      (* !!! NIL *)
+                           ;szPrintDeviceName : ARRAY OF CHAR
+                           ;ulLevel           : ULONG
+                           ;pBuf              : PVOID
+                           ;cbBuf             : ULONG
+                           ;VAR cbNeeded      : ULONG
+                           ): SPLERR;
+
+   (*              SplSetDevice(DosPrintDestSetInfo) *)
+   PROCEDURE SplSetDevice(pszComputerName   : PCSZ      (* !!! NIL *)
+                         ;szPrintDeviceName : ARRAY OF CHAR
+                         ;ulLevel           : ULONG
+                         ;pBuf              : PVOID
+                         ;cbBuf             : ULONG
+                         ;ulParmNum         : ULONG
+                         ): SPLERR;
+
+   (*              SplReleaseJob(DosPrintJobContinue) *)
+   PROCEDURE SplReleaseJob(pszComputerName : PCSZ      (* !!! NIL *)
+                          ;szQueueName     : ARRAY OF CHAR
+                          ;ulJob           : ULONG
+                          ): SPLERR;
+
+   (*              SplDeleteJob(DosPrintJobDel) *)
+   PROCEDURE SplDeleteJob(pszComputerName : PCSZ      (* !!! NIL *)
+                         ;szQueueName     : ARRAY OF CHAR
+                         ;ulJob           : ULONG
+                         ): SPLERR;
+
+   (*              SplEnumJob(DosPrintJobEnum) *)
+   PROCEDURE SplEnumJob(pszComputerName : PCSZ      (* !!! NIL *)
+                       ;szQueueName     : ARRAY OF CHAR
+                       ;ulLevel         : ULONG
+                       ;pBuf            : PVOID
+                       ;cbBuf           : ULONG
+                       ;VAR cReturned   : ULONG
+                       ;VAR cTotal      : ULONG
+                       ;VAR cbNeeded    : ULONG
+                       ;pReserved       : PVOID
+                       ): SPLERR;
+
+   (*** See above for change to PRIDINFO datatype for this API. *********)
+
+   (*              SplQueryJob(DosPrintJobGetInfo)  *)
+   PROCEDURE SplQueryJob(pszComputerName : PCSZ      (* !!! NIL *)
+                        ;szQueueName     : ARRAY OF CHAR
+                        ;ulJob           : ULONG
+                        ;ulLevel         : ULONG
+                        ;pBuf            : PVOID
+                        ;cbBuf           : ULONG
+                        ;VAR cbNeeded    : ULONG
+                        ): SPLERR;
+
+   (*              SplHoldJob(DosPrintJobPause)   *)
+   PROCEDURE SplHoldJob(pszComputerName : PCSZ      (* !!! NIL *)
+                       ;szQueueName     : ARRAY OF CHAR
+                       ;ulJob           : ULONG
+                       ): SPLERR;
+
+   (*              SplSetJob(DosPrintJobSetInfo)*)
+   PROCEDURE SplSetJob(pszComputerName : PCSZ      (* !!! NIL *)
+                      ;szQueueName     : ARRAY OF CHAR
+                      ;ulJob           : ULONG
+                      ;ulLevel         : ULONG
+                      ;pBuf            : PVOID
+                      ;cbBuf           : ULONG
+                      ;ulParmNum       : ULONG
+                      ): SPLERR;
+
+   (*              SplCreateQueue(DosPrintQAdd) *)
+   PROCEDURE SplCreateQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                           ;ulLevel         : ULONG
+                           ;pBuf            : PVOID
+                           ;cbBuf           : ULONG
+                           ): SPLERR;
+
+   (*              SplReleaseQueue(DosPrintQContinue) *)
+   PROCEDURE SplReleaseQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                            ;szQueueName     : ARRAY OF CHAR
+                            ): SPLERR;
+
+
+   (*              SplDeleteQueue(DosPrintQDel) *)
+   PROCEDURE SplDeleteQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                           ;szQueueName     : ARRAY OF CHAR
+                           ): SPLERR;
+
+
+   (*              SplEnumQueue(DosPrintQEnum) *)
+   PROCEDURE SplEnumQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                         ;ulLevel         : ULONG
+                         ;pBuf            : PVOID
+                         ;cbBuf           : ULONG
+                         ;VAR cReturned   : ULONG
+                         ;VAR cTotal      : ULONG
+                         ;VAR cbNeeded    : ULONG
+                         ;pReserved       : PVOID
+                         ): SPLERR;
+
+   (*               SplQueryQueue(DosPrintQGetInfo) *)
+   PROCEDURE SplQueryQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                          ;szQueueName     : ARRAY OF CHAR
+                          ;ulLevel         : ULONG
+                          ;pBuf            : PVOID
+                          ;cbBuf           : ULONG
+                          ;VAR cbNeeded    : ULONG
+                          ): SPLERR;
+
+   (*              SplHoldQueue(DosPrintQPause) *)
+   PROCEDURE SplHoldQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                         ;szQueueName     : ARRAY OF CHAR
+                         ): SPLERR;
+
+
+   (*              SplPurgeQueue(DosPrintQPurge) *)
+   PROCEDURE SplPurgeQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                          ;szQueueName     : ARRAY OF CHAR
+                          ): SPLERR;
+
+
+   (*               SplSetQueue(DosPrintQSetInfo) *)
+   PROCEDURE SplSetQueue(pszComputerName : PCSZ      (* !!! NIL *)
+                        ;szQueueName     : ARRAY OF CHAR
+                        ;ulLevel         : ULONG
+                        ;pBuf            : PVOID
+                        ;cbBuf           : ULONG
+                        ;ulParmNum       : ULONG
+                        ): SPLERR;
+
+   (*               SplEnumDriver(DosPrintDriverEnum) *)
+   PROCEDURE SplEnumDriver(pszComputerName : PCSZ      (* !!! NIL *)
+                          ;ulLevel         : ULONG
+                          ;pBuf            : PVOID
+                          ;cbBuf           : ULONG
+                          ;VAR cReturned   : ULONG
+                          ;VAR cTotal      : ULONG
+                          ;VAR cbNeeded    : ULONG
+                          ;pReserved       : PVOID
+                          ): SPLERR;
+
+   (*               SplEnumPort(DosPrintPortEnum) *)
+   PROCEDURE SplEnumPort(pszComputerName : PCSZ      (* !!! NIL *)
+                        ;ulLevel         : ULONG
+                        ;pBuf            : PVOID
+                        ;cbBuf           : ULONG
+                        ;VAR cReturned   : ULONG
+                        ;VAR cTotal      : ULONG
+                        ;VAR cbNeeded    : ULONG
+                        ;pReserved       : PVOID
+                        ): SPLERR;
+
+   (*               SplEnumQueueProcessor(DosPrintQProcessorEnum) *)
+   PROCEDURE SplEnumQueueProcessor(pszComputerName : PCSZ      (* !!! NIL *)
+                                  ;ulLevel         : ULONG
+                                  ;pBuf            : PVOID
+                                  ;cbBuf           : ULONG
+                                  ;VAR cReturned   : ULONG
+                                  ;VAR cTotal      : ULONG
+                                  ;VAR cbNeeded    : ULONG
+                                  ;pReserved       : PVOID
+                                  ): SPLERR;
+
+
+   PROCEDURE SplEnumPrinter(pszComputerName : PCSZ      (* !!! NIL *)
+                           ;uLevel          : ULONG
+                           ;flType          : ULONG
+                           ;pBuf            : PVOID
+                           ;cbbuf           : ULONG
+                           ;VAR cReturned   : ULONG
+                           ;VAR cTotal      : ULONG
+                           ;VAR cbNeeded    : ULONG
+                           ;pReserved       : PVOID
+                           ): SPLERR;
+
+   PROCEDURE SplCopyJob(pszComputerName    : PCSZ      (* !!! NIL *)
+                       ;szSrcQueueName     : ARRAY OF CHAR
+                       ;ulSrcJob           : ULONG
+                       ;pszTrgComputerName : PCSZ      (* !!! NIL *)
+                       ;pszTrgQueueName    : PCSZ      (* !!! NIL *)
+                       ;VAR ulTrgJob       : ULONG
+                       ): SPLERR;
+
+
+   CONST DosPrintDestControl    =   SplControlDevice   ;
+   CONST DosPrintDestGetInfo    =   SplQueryDevice     ;
+   CONST DosPrintDestEnum       =   SplEnumDevice      ;
+   CONST DosPrintJobContinue    =   SplReleaseJob      ;
+   CONST DosPrintJobPause       =   SplHoldJob         ;
+   CONST DosPrintJobDel         =   SplDeleteJob       ;
+   CONST DosPrintJobGetInfo     =   SplQueryJob        ;
+   CONST DosPrintJobSetInfo     =   SplSetJob          ;
+   CONST DosPrintJobEnum        =   SplEnumJob         ;
+   CONST DosPrintQAdd           =   SplCreateQueue     ;
+   CONST DosPrintQPause         =   SplHoldQueue       ;
+   CONST DosPrintQContinue      =   SplReleaseQueue    ;
+   CONST DosPrintQDel           =   SplDeleteQueue     ;
+   CONST DosPrintQGetInfo       =   SplQueryQueue      ;
+   CONST DosPrintQSetInfo       =   SplSetQueue        ;
+   CONST DosPrintQEnum          =   SplEnumQueue       ;
+   CONST DosPrintDestAdd        =   SplCreateDevice    ;
+   CONST DosPrintDestSetInfo    =   SplSetDevice       ;
+   CONST DosPrintDestDel        =   SplDeleteDevice    ;
+   CONST DosPrintQPurge         =   SplPurgeQueue      ;
+   CONST DosPrintDriverEnum     =   SplEnumDriver      ;
+   CONST DosPrintQProcessorEnum =   SplEnumQueueProcessor;
+   CONST DosPrintPortEnum       =   SplEnumPort        ;
+
+#endif
+(**************************** end of file **********************************)

@@ -1,0 +1,2 @@
+! { main imp oberon: "%s\n",#; {oberon def : "-        %s\n", #; } }
+! { def : "%s\n",#; {def : "--->     %s\n", #; } }

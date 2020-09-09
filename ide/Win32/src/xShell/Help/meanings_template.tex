@@ -1,0 +1,158 @@
+\ifenglish
+\section{Project template}
+\else
+\section{Шаблон проекта}
+\fi
+\public{ProjectTemplate}
+
+\ifenglish
+When new project file is created it is not initially empty. It contains
+reference to main module. It may also contain some predefined values
+for project options. This is accomplished by creating new project file
+on basis of {\bf project file template}.
+
+Project file template is a text file, usually with {\bf .tpr} extension.
+During project creation this file is copied into target directory. As the
+file is copied all \ref{variables} found in it are expanded (replaced by their
+values).
+\else
+Новый файл проекта создается непустым. Он содержит ссылку на главный модуль.
+Также он может содержать некоторые стандартные значения для опций проекта.
+Это получается в результате создания нового файла проекта на основе
+{\bf файла шаблона проекта}.
+
+Файл шаблона проекта -- это текстовый файл, обычно с расширением {\bf .tpr}.
+Во время создания проекта этот файл копируется в целевую директорию. 
+Как только файл скопирован, все обнаруженные в нем \ref[переменные]{variables}  
+заменяются на соответствующие значения.
+\fi
+\ifenglish
+Variables that refer to the project name are allowed,
+despite the fact the project does not exist yet.
+
+Note that {\bf !module} directive is not copied from the template. 
+If project file resulting from a template contains {\bf !module} directive, the file
+name in this directive is replaced by file name provided in
+\ref[Create New Project dialog]{NEWPROJ\_DIALOG}. Otherwise this directive with this
+file is appended at the end of the project, unless start file name in a dialog is left blank.
+\else
+Допускаются переменные, ссылающиеся на имя проекта, несмотря на то,
+что проект еще не существует.
+
+Заметьте, что директива {\bf !module} не копируется из шаблона. 
+Если получающийся в результате использования шаблона файл проекта содержит
+директиву {\bf !module}, то имя файла в этой директиве заменяется на имя файла
+из \ref[диалога Create New Project]{NEWPROJ\_DIALOG}. В противном случае эта
+директива с этим файлом заносится в конец проекта, если только имя стартового 
+файла в диалоге не оставлено пустым. 
+\fi
+\ifenglish
+Initially project template file name is equal to
+\else
+Сперва имя файла шаблона проекта полагается равным 
+\fi
+\verb'$(xdsdir)\$(xdsname).tpr'
+
+\ifenglish
+This allows to have different project templates for different compiler executables
+(for example, one template for native compiler, another one for converter to C).
+
+Project file template to use can be configured in
+\ref[Create New Project]{NEWPROJ\_DIALOG} dialog.
+Default value for template name can be changed in
+\ref[New Project Creation Options]{CFGPROJ\_DIALOG}
+dialog that is invoked by
+\ref[Configure]{M\_CONFIGURE}:\ref[Project Creation]{IDM\_CONFIGUREPROJECT} menu command.
+\else
+Это позволяет иметь разные шаблоны проектов для разных исполняемых файлов компилятора.
+
+Шаблон файла проекта может быть настроен в диалоге
+\ref[Create New Project]{NEWPROJ\_DIALOG}.
+Значение по умолчанию для шаблона может быть изменено в диалоге 
+\ref[New Project Creation Options]{CFGPROJ\_DIALOG},
+который вызывается с помощью команды меню
+\ref[Configure]{M\_CONFIGURE}:\ref[Project Creation]{IDM\_CONFIGUREPROJECT}.
+\fi
+%---------------------------------------------------------------------------
+\ifenglish
+\section{Redirection file template}
+\else
+\section{Шаблон файла путей поиска}
+\fi
+\public{RedirectionTemplate}
+
+\ifenglish
+When new project is created a {\bf Redirection file} is usually created in
+project directory (this can be turned off in project creation dialog).
+
+This file contains common file name patterns and lists of directories to find
+them. Some patterns and directories must be present in the file to keep system
+working -- for example, directories for run-time library components must be provided.
+That's why redirection file is constructed on basis of
+{\bf Redirection file template}.
+\else
+Когда создается новый проект, в директории проекта обычно создается 
+{\bf файл путей поиска} (это можно отключить в диалоге создания проекта).
+
+Этот файл содержит общие шаблоны имен файлов и списки директорий для их поиска.
+Некоторые шаблоны и директории должны присутствовать в файле чтобы поддерживать
+работу системы -- например, должны указываться директории для компонент библиотеки
+рабочих программ. Вот почему файл путей поиска создается на основе 
+{\bf шаблона файла путей поиска}.
+\fi
+\ifenglish
+Redirection file template is a text file, usually with {\bf .trd} extension.
+During project creation this file is copied into target directory. As the
+file is copied all \ref{variables} found in it are expanded (replaced by their
+values).
+
+Variables that refer to the project name are allowed,
+despite the fact the project does not exist yet. This allows using
+file patterns and paths that depend on project.
+\else
+Шаблон файла путей поиска -- это текстовый файл, обычно с расширением {\bf .trd}.
+Во время создания проекта этот файл копируется в целевую директорию. Как только
+файл скопирован, все обнаруженные в нем \ref[переменные]{variables} заменяются
+на соответствующие значения.
+
+Допускаются переменные, ссылающиеся на имя проекта, несмотря на то,
+что проект еще не существует. Это дает возможность использовать шаблоны 
+файлов и путей в зависимости от проекта. 
+\fi
+\ifenglish
+Initially redirection file name is defined as
+\else
+Сперва имя файла путей поиска определяется как
+\fi
+\verb'$(xdsdir)\$(xdsname).trd'
+
+\ifenglish
+The name of redirection file created is
+\else
+Имя создаваемого файла путей поиска -- 
+ \fi
+\verb'$(projdir)\$(xdsname).red'
+
+\ifenglish
+So both redirection file template and redirection file itself depend on
+XDS compiler executable name, so multiple redirection files may exist
+for multiple compilers.
+
+Redirection file template to use can be configured in
+\ref[Create New Project dialog]{NEWPROJ\_DIALOG}.
+Default value for template name can be changed in
+\ref[New Project Creation Options]{CFGPROJ\_DIALOG} dialog
+that is invoked by
+\ref[Configure]{M\_CONFIGURE}:\ref[Project Creation]{IDM\_CONFIGUREPROJECT} menu command.
+\else
+Таким образом, как шаблон файла путей поиска, так и сам файл путей поиска 
+зависят от имени исполняемого файла XDS-компилятора, так что для многих 
+компиляторов могут существовать многие файлы путей поиска.
+
+Шаблон файла путей поиска может быть настроен в диалоге
+\ref[Create New Project]{NEWPROJ\_DIALOG}.
+Значение по умолчанию для шаблона может быть изменено в диалоге 
+\ref[New Project Creation Options]{CFGPROJ\_DIALOG},
+который вызывается с помощью команды меню
+\ref[Configure]{M\_CONFIGURE}:\ref[Project Creation]{IDM\_CONFIGUREPROJECT}.
+\fi     

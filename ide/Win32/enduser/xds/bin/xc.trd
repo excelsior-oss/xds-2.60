@@ -1,0 +1,10 @@
+*.sym = $!/sym;$!;$(xdsdir)/../sym/x86
+*.tem = $!;$(xdsdir)
+*.lib = $!;$(xdsdir)/../lib/x86
+*.prj = $!
+*.def = $!/def; $!
+*.mod = $!/src; $!
+*.ob2 = $!/src; $!
+*.obj = $!/obj
+*.lnk = $!/obj
+*.res = $!

@@ -1,0 +1,322 @@
+(*      SCCSID = @(#)bsexcpt.h  6.9 92/03/15 *)
+
+(*************************** START OF SPECIFICATION *****************
+ *
+ * Source File Name: bsexcpt.h
+ *
+ * Descriptive Name: Thread Exception Constants and Structure Definitions.
+ *
+ * Copyright: IBM Corp. 1989  - 1992
+ *
+ * Function: This file provides constants and data structure
+ *      definitions required by application programs to use 32 bit
+ *      thread exceptions management facility.
+ *
+ * Notes: None.
+ *
+ *************************** END OF SPECIFICATION *******************)
+
+(*
+ * User Exception Handler Return Codes:
+ *)
+
+CONST XCPT_CONTINUE_SEARCH    = 000000000H;      (* exception not handled   *)
+CONST XCPT_CONTINUE_EXECUTION = 0FFFFFFFFH;      (* exception handled       *)
+CONST XCPT_CONTINUE_STOP      = 000716668H;      (* exception handled by    *)
+                                                (* debugger (VIA DosDebug) *)
+
+(*
+ * fHandlerFlags values (see ExceptionReportRecord):
+ *
+ * The user may only set (but not clear) the EH_NONCONTINUABLE flag.
+ * All other flags are set by the system.
+ *
+ *)
+
+CONST EH_NONCONTINUABLE   = 1H;          (* Noncontinuable exception *)
+CONST EH_UNWINDING        = 2H;          (* Unwind is in progress *)
+CONST EH_EXIT_UNWIND      = 4H;          (* Exit unwind is in progress *)
+CONST EH_STACK_INVALID    = 8H;          (* Stack out of limits or unaligned *)
+CONST EH_NESTED_CALL      = 10H;         (* Nested exception handler call *)
+
+
+(*
+ * Unwind all exception handlers (see DosUnwindException API)
+ *)
+CONST UNWIND_ALL          = 0H;
+
+
+(*
+ *   Exception values are 32 bit values layed out as follows:
+ *
+ *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+ *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+ *   +---+-+-------------------------+-------------------------------+
+ *   |Sev|C|       Facility          |               Code            |
+ *   +---+-+-------------------------+-------------------------------+
+ *
+ *   where
+ *
+ *       Sev - is the severity code
+ *           00 - Success
+ *           01 - Informational
+ *           10 - Warning
+ *           11 - Error
+ *
+ *       C - is the Customer code flag
+ *
+ *       Facility - is the facility code
+ *
+ *       Code - is the facility's status code
+ *
+ *   Exceptions specific to OS/2 2.0 (e.g. XCPT_SIGNAL) will be marked
+ *   with a facility code of 1.
+ *
+ *   System defined exceptions have a facility code of zero.
+ *
+ *   Each exception may also have several pieces of additional information.
+ *   These are stored in the ExceptionInfo fields of the
+ *   ExceptionReportRecord. They are documented here with the exceptions
+ *   only for ease of reference.
+ *)
+
+CONST XCPT_FATAL_EXCEPTION    = 0C0000000H;
+CONST XCPT_SEVERITY_CODE      = 0C0000000H;
+CONST XCPT_CUSTOMER_CODE      = 020000000H;
+CONST XCPT_FACILITY_CODE      = 01FFF0000H;
+CONST XCPT_EXCEPTION_CODE     = 00000FFFFH;
+
+(*  Violation flags in ExceptionInfo *)
+
+CONST XCPT_UNKNOWN_ACCESS     = 00000000H;      (* Unknown access *)
+CONST XCPT_READ_ACCESS        = 00000001H;      (* Read access    *)
+CONST XCPT_WRITE_ACCESS       = 00000002H;      (* Write access   *)
+CONST XCPT_EXECUTE_ACCESS     = 00000004H;      (* Execute access *)
+CONST XCPT_SPACE_ACCESS       = 00000008H;      (* Address space access *)
+CONST XCPT_LIMIT_ACCESS       = 00000010H;      (* Address space limit violation *)
+CONST XCPT_DATA_UNKNOWN       = 0FFFFFFFFH;
+
+(*  Signal numbers for XCPT_SIGNAL *)
+
+CONST XCPT_SIGNAL_INTR      =  1H;
+CONST XCPT_SIGNAL_KILLPROC  =  3H;
+CONST XCPT_SIGNAL_BREAK     =  4H;
+
+(*  Portable non-fatal software generated exceptions *)
+
+CONST XCPT_GUARD_PAGE_VIOLATION       = 80000001H;
+      (* ExceptionInfo[ 0 ] - Access Code: XCPT_READ_ACCESS
+                                           XCPT_WRITE_ACCESS *)
+      (* ExceptionInfo[ 1 ] - FaultAddr *)
+
+CONST XCPT_UNABLE_TO_GROW_STACK       = 80010001H;
+
+(*  Portable fatal hardware generated exceptions *)
+
+CONST XCPT_DATATYPE_MISALIGNMENT      = 0C000009EH;
+      (* ExceptionInfo[ 0 ] - Access Code: XCPT_READ_ACCESS
+                                           XCPT_WRITE_ACCESS *)
+      (* ExceptionInfo[ 1 ] - Alignment *)
+      (* ExceptionInfo[ 2 ] - FaultAddr *)
+
+CONST XCPT_BREAKPOINT                 = 0C000009FH;
+CONST XCPT_SINGLE_STEP                = 0C00000A0H;
+CONST XCPT_ACCESS_VIOLATION           = 0C0000005H;
+      (* ExceptionInfo[ 0 ] - Access Code: XCPT_READ_ACCESS
+                                           XCPT_WRITE_ACCESS
+                                           XCPT_SPACE_ACCESS
+                                           XCPT_LIMIT_ACCESS
+                                           XCPT_UNKNOWN_ACCESS *)
+      (* ExceptionInfo[ 1 ] - FaultAddr (XCPT_READ_ACCESS/XCPT_WRITE_ACCESS)
+                              Selector  (XCPT_SPACE_ACCESS)
+                              -1        (XCPT_LIMIT_ACCESS) *)
+
+CONST XCPT_ILLEGAL_INSTRUCTION        = 0C000001CH;
+CONST XCPT_FLOAT_DENORMAL_OPERAND     = 0C0000094H;
+CONST XCPT_FLOAT_DIVIDE_BY_ZERO       = 0C0000095H;
+CONST XCPT_FLOAT_INEXACT_RESULT       = 0C0000096H;
+CONST XCPT_FLOAT_INVALID_OPERATION    = 0C0000097H;
+CONST XCPT_FLOAT_OVERFLOW             = 0C0000098H;
+CONST XCPT_FLOAT_STACK_CHECK          = 0C0000099H;
+CONST XCPT_FLOAT_UNDERFLOW            = 0C000009AH;
+CONST XCPT_INTEGER_DIVIDE_BY_ZERO     = 0C000009BH;
+CONST XCPT_INTEGER_OVERFLOW           = 0C000009CH;
+CONST XCPT_PRIVILEGED_INSTRUCTION     = 0C000009DH;
+
+(*  Portable fatal software generated exceptions *)
+
+CONST XCPT_IN_PAGE_ERROR              = 0C0000006H;
+      (* ExceptionInfo[ 0 ] - FaultAddr *)
+
+CONST XCPT_PROCESS_TERMINATE          = 0C0010001H;
+CONST XCPT_ASYNC_PROCESS_TERMINATE    = 0C0010002H;
+      (* ExceptionInfo[ 0 ] - TID of 'terminator' thread *)
+
+CONST XCPT_NONCONTINUABLE_EXCEPTION   = 0C0000024H;
+CONST XCPT_INVALID_DISPOSITION        = 0C0000025H;
+
+(*  Non-portable fatal exceptions *)
+
+CONST XCPT_INVALID_LOCK_SEQUENCE      = 0C000001DH;
+CONST XCPT_ARRAY_BOUNDS_EXCEEDED      = 0C0000093H;
+CONST XCPT_B1NPX_ERRATA_02            = 0C0010004H;
+
+(*  Misc exceptions *)
+
+CONST XCPT_UNWIND                     = 0C0000026H;
+CONST XCPT_BAD_STACK                  = 0C0000027H;
+CONST XCPT_INVALID_UNWIND_TARGET      = 0C0000028H;
+
+(*  Signal Exceptions *)
+
+CONST XCPT_SIGNAL                     = 0C0010003H;
+      (* ExceptionInfo[ 0 ] - Signal Number *)
+
+(*
+ * ContextRecord
+ *
+ * This is the machine specific register contents for the thread
+ * at the time of the exception. Note that only the register sets
+ * specified by ContextFlags contain valid data. Conversely, only
+ * registers specified in ContextFlags will be restored if an exception
+ * is handled.
+ *)
+
+(*  The following flags control the contents of the CONTEXT structure. *)
+
+CONST CONTEXT_CONTROL        = 00000001H; (* SS:ESP, CS:EIP,    *)
+                                          (* EFLAGS, EBP        *)
+CONST CONTEXT_INTEGER        = 00000002H; (* EAX, EBX, ECX, EDX,*)
+                                                    (* ESI, EDI           *)
+CONST CONTEXT_SEGMENTS       = 00000004H; (* DS, ES, FS, GS     *)
+CONST CONTEXT_FLOATING_POINT = 00000008H; (* num. coprocessor state *)
+
+CONST CONTEXT_FULL           = CONTEXT_CONTROL + CONTEXT_INTEGER +
+                               CONTEXT_SEGMENTS + CONTEXT_FLOATING_POINT;
+
+(*XLATOFF *)
+<* ALIGNMENT = "1" *>
+(*XLATON  *)
+TYPE FPREG = RECORD (* coprocessor stack register element *)
+   losig:     ULONG;
+   hisig:     ULONG;
+   signexp:   USHORT;
+END;
+TYPE PFPREG = POINTER TO FPREG;
+<* ALIGNMENT = "4" *>
+
+TYPE CONTEXTRECORD = RECORD
+  (*
+   * The flags values within this flag control the contents of
+   * a ContextRecord.
+   *
+   * If the ContextRecord is used as an input parameter, then
+   * for each portion of the ContextRecord controlled by a flag
+   * whose value is set, it is assumed that that portion of the
+   * ContextRecord contains valid context. If the ContextRecord
+   * is being used to modify a thread's context, then only that
+   * portion of the thread's context will be modified.
+   *
+   * If the ContextRecord is used as an Input/Output parameter to
+   * capture the context of a thread, then only those portions of the
+   * thread's context corresponding to set flags will be returned.
+   *)
+
+   ContextFlags:  ULONG;
+
+  (*
+   * This section is specified/returned if the ContextFlags
+   * contains the flag CONTEXT_FLOATING_POINT.
+   *)
+
+   ctx_env:     ARRAY [0..6] OF ULONG;
+   ctx_stack:   ARRAY [0..7] OF FPREG;
+
+  (*
+   * This section is specified/returned if the ContextFlags
+   * contains the flag CONTEXT_SEGMENTS.
+   *)
+
+   ctx_SegGs:     ULONG;
+   ctx_SegFs:     ULONG;
+   ctx_SegEs:     ULONG;
+   ctx_SegDs:     ULONG;
+
+  (*
+   * This section is specified/returned if the ContextFlags
+   * contains the flag CONTEXT_INTEGER.
+   *)
+
+   ctx_RegEdi:    ULONG;
+   ctx_RegEsi:    ULONG;
+   ctx_RegEax:    ULONG;
+   ctx_RegEbx:    ULONG;
+   ctx_RegEcx:    ULONG;
+   ctx_RegEdx:    ULONG;
+
+  (*
+   * This section is specified/returned if the ContextFlags
+   * contains the flag CONTEXT_CONTROL.
+   *)
+
+   ctx_RegEbp:    ULONG;
+   ctx_RegEip:    ULONG;
+   ctx_SegCs:     ULONG;
+   ctx_EFlags:    ULONG;
+   ctx_RegEsp:    ULONG;
+   ctx_SegSs:     ULONG;
+
+END;
+
+TYPE PCONTEXTRECORD = POINTER TO CONTEXTRECORD;
+
+
+(*
+ * ExceptionReportRecord
+ *
+ * This structure contains machine independant information about an
+ * exception/unwind. No system exception will ever have more than
+ * EXCEPTION_MAXIMUM_PARAMETERS parameters. User exceptions are not
+ * bound to this limit.
+ *)
+
+
+CONST EXCEPTION_MAXIMUM_PARAMETERS = 4;  (* Enough for all system exceptions. *)
+
+TYPE PEXCEPTIONREPORTRECORD = POINTER TO EXCEPTIONREPORTRECORD;
+TYPE EXCEPTIONREPORTRECORD = RECORD
+   ExceptionNum:           ULONG;        (* exception number *)
+   fHandlerFlags:          ULONG;
+   NestedExceptionReportRecord:    PEXCEPTIONREPORTRECORD;
+   ExceptionAddress:       PVOID;
+   cParameters:            ULONG;        (* Size of Exception Specific Info *)
+   ExceptionInfo:          ARRAY [0..EXCEPTION_MAXIMUM_PARAMETERS-1] OF ULONG;
+                                         (* Exception Specfic Info *)
+END;
+
+(*
+ * ExceptionRegistrationRecord
+ *
+ * These are linked together to form a chain of exception handlers that
+ * will be dispatched to upon receipt of an exception.
+ *)
+
+(* ??? volatile spec. is there;  *)
+
+TYPE PEXCEPTIONREGISTRATIONRECORD = POINTER TO EXCEPTIONREGISTRATIONRECORD;
+
+TYPE ERR = PROCEDURE [APIENTRY] (PEXCEPTIONREPORTRECORD,
+                                 PEXCEPTIONREGISTRATIONRECORD,
+                                 PCONTEXTRECORD,
+                                 PVOID): ULONG;
+
+TYPE EXCEPTIONREGISTRATIONRECORD = RECORD
+   prev_structure:     PEXCEPTIONREGISTRATIONRECORD;
+   ExceptionHandler:   ERR;
+END;
+
+(* End of exception chain marker. *)
+
+CONST END_OF_CHAIN = PEXCEPTIONREGISTRATIONRECORD(-1);
+
+(************************** End of file ***************************************)

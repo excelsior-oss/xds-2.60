@@ -1,0 +1,76 @@
+(*static char *SCCSID = "@(#)bsememf.h  6.8 92/03/15";*)
+ (******************************************************************************\
+ *                                                                             *
+ * Module Name: BSEMEMF.H                                                      *
+ *                                                                             *
+ * OS/2 Base MEMory Flags include file                                         *
+ *                                                                             *
+ * Copyright (c) 1989  - 1992 IBM Corporation                                  *
+ *                                                                             *
+ *******************************************************************************)
+
+
+ (* Access protection *)
+
+ CONST PAG_READ       =   (00000001H);      (* read access                      *)
+ CONST PAG_WRITE      =   (00000002H);      (* write access                     *)
+ CONST PAG_EXECUTE    =   (00000004H);      (* execute access                   *)
+ CONST PAG_GUARD      =   (00000008H);      (* guard protection                 *)
+ CONST PAG_DEFAULT    =   (00000400H);      (* default (initial) access         *)
+
+ (* Commit *)
+ CONST PAG_COMMIT      =  (00000010H);      (* commit storage                   *)
+ CONST PAG_DECOMMIT    =  (00000020H);      (* decommit storage                 *)
+
+ (* Allocation attributes *)
+ CONST OBJ_TILE        =  (00000040H);      (* tile object             *)
+ CONST OBJ_PROTECTED   =  (00000080H);      (* protect object          *)
+                         (* NOTE: This flag is NOT available at the api level *)
+
+ CONST OBJ_GETTABLE    =  (00000100H);     (* gettable by other processes      *)
+ CONST OBJ_GIVEABLE    =  (00000200H);     (* giveable to other processes      *)
+
+ CONST fPERM  = PAG_EXECUTE + PAG_READ + PAG_WRITE;
+ CONST fSHARE = OBJ_GETTABLE + OBJ_GIVEABLE;
+
+ (* DosAllocMem flags *)
+ CONST fALLOC = OBJ_TILE + PAG_COMMIT + fPERM;
+
+ (* DosAllocSharedMem flags *)
+ CONST fALLOCSHR = OBJ_TILE + PAG_COMMIT + fSHARE + fPERM;
+
+ (* DosGetNamedSharedMem flags *)
+ CONST  fGETNMSHR = fPERM;
+
+ (* DosGetSharedMem flags *)
+ CONST fGETSHR = fPERM;
+
+ (* DosGiveSharedMem flags *)
+ CONST fGIVESHR = fPERM;
+
+ (* DosSetMem flags *)
+ CONST fSET = PAG_COMMIT + PAG_DECOMMIT + PAG_DEFAULT + fPERM;
+
+ (* Dos32SubSet flags *)
+ CONST DOSSUB_INIT =       01H;          (* initialize memory object for     *)
+                                         (* suballocation                    *)
+
+ CONST DOSSUB_GROW      =   02H;          (* increase size of memory pool     *)
+                                         (* for suballocation                *)
+
+ CONST DOSSUB_SPARSE_OBJ=   04H;          (* indicator for DosSub to          *)
+                                         (* manage the commitment of         *)
+                                         (* pages spanned by the memory      *)
+                                         (* pool                             *)
+
+ CONST DOSSUB_SERIALIZE =   08H;          (* indicates that access to the     *)
+                                         (* memory pool is to be             *)
+                                         (* serialized by DosSub             *)
+
+ (* Allocation type (returned from DosQueryMem) *)
+ CONST PAG_SHARED      =  (00002000H);    (* shared object                    *)
+ CONST PAG_FREE        =  (00004000H);    (* pages are free                   *)
+ CONST PAG_BASE        =  (00010000H);    (* first page in object             *)
+
+(************************** End of file ***************************************)
+

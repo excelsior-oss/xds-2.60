@@ -1,0 +1,160 @@
+\ifenglish
+\section{Programming Languages}
+\else
+\section{Языки программирования}
+\fi
+\public{Languages}
+\nominitoc
+
+\ifenglish
+The XDS IDE allows you to configure several {\bf programming languages} and specify
+which files belong to each language. This allows the editor to behave differently
+depending on the language in which the file is written.
+
+{\bf New in 2.6:} 
+
+You may define a set of \ref[keyboard macros]{Macros} specific for a language 
+as described in \ref{MacroSets}.
+
+The only other feature the languages affect is text coloring.
+Each language has its own set of syntax elements such as
+identifiers, numbers, etc. You may define how each element looks in the
+editor window.
+\else
+Оболочка XDS позволяет настраивать несколько {\bf языков программирования} и указывать, 
+какие файлы относятся к каждому языку. Это дает редактору возможность по-разному
+вести себя, в зависимости от того, на каком языке пишется данный файл.
+
+{\bf Новое в версии 2.6:}
+
+Вы можете определить набор \ref[макрокоманд]{Macros}, специфичный для конкретного
+языка, как описано в \ref{MacroSets}.
+
+Помимо этого, единственный атрибут, на который имеет влияние язык, 
+это окраска текста. У каждого языка есть свой собственный набор синтаксических
+элементов, таких как идентификаторы, числа и т.д. Вы можете определить, как 
+будет выглядеть каждый из элементов в окне редактирования. 
+\fi
+\ifenglish
+The set of programming languages is not built in the IDE. You may specify
+as many languages as you wish, provided that files in different languages
+have names with different suffixes.
+
+You must assign a suffix or several suffixes to the language. After this you
+can configure properties that depend on a language, for example, you can define
+the color of a text in all windows with the text in this language. To use
+syntax highlighting you must provide a \ref[language driver]{LangDriver} --
+external component that possesses knowledge of the language and structure of
+texts in it.
+
+One driver can handle more than one language.
+\else
+Набор языков программирования не встроен в IDE. Вы можете задать столько 
+языков, сколько вам угодно, лишь бы относящиеся к ним файлы имели разные 
+расширения.
+
+Вы должны приписать языку одно или несколько расширений. После этого вы можете 
+настроить зависящие от языка свойства, например, вы можете определить цвет текста
+во всех окнах для этого языка. Чтобы воспользоваться подсветкой синтаксиса вы 
+должны располагать \ref[драйвером языка]{LangDriver} -- внешней составляющей,
+обладающей знаниями о языке и структуре его текста.
+\fi
+\ifenglish
+\subsection{Language Drivers}
+\else
+\subsection{Драйверы языков}
+\fi
+\public{LangDriver}
+
+\ifenglish
+Language driver is external dynamic link library (DLL) that implements
+specific interface and provides functionality necessary for working with
+programming languages.
+
+The language driver provides:
+\else
+Драйвер языка -- это внешняя динамически подключаемая библиотека (DLL),
+которая предоставляет специфический интерфейс и необходимую для работы с 
+языками программирования функциональность.
+
+Драйвер языка предоставляет: 
+\fi
+\begin{itemize}
+\item \ifenglish
+      the set of syntax elements it can recognize in a program such as constants,
+      identifiers and keywords
+      \else
+      набор синтаксических элементов, которые он может распознавать в программе, 
+      таких как константы, идентификаторы и ключевые слова.
+      \fi
+\item \ifenglish
+      the routine to parse given line of text into the sequence of syntax elements
+      \else
+      порядок разбора данной строки текста на последовательность синтаксических 
+      элементов
+      \fi
+\item \ifenglish
+      the routine to be called when some text fragment has changed to prepare
+      some data for parsing (for example, Modula-2 driver calculates comment nesting
+      in this routine)
+      \else
+      процедуру, подготавливающую текст к анализу после того, как некоторый его
+      участок был изменен (например, драйвер Modula-2 высчитывает с помощью этой
+      процедуры границы комментариев).  
+      \fi
+\item \ifenglish
+      the sample text in a language for color selection dialog
+      \else
+      шаблонный текст языка для диалога выбора цвета
+      \fi
+\item \ifenglish
+      the configure dialog (for example, Modula-2 driver allows to configure
+      name of file with keywords and to turn on and off syntax extensions)
+      \else
+      диалог настройки (например, драйвер Modula-2 позволяет указывать имя 
+      файла, содержащего ключевые слова, и переключать расширения синтаксиса)
+      \fi
+\item \ifenglish
+      the size of driver environment block
+      \else
+      размер блока рабочей среды драйвера
+      \fi
+\end{itemize}
+
+\ifenglish
+All the components are optional. For example, driver may have no configure
+dialog or no sample text.
+
+Currently the system has only one language driver for Modula-2 and Oberon-2 but
+the interface of language driver is specified so it is possible to develop
+custom drivers. The interface of a driver is not shipped with XDS but is available upon request.
+
+One driver can be used for several programming languages. This is convenient if
+languages are similar (such as Modula-2 and Oberon-2 and as C and C++).
+The driver is loaded independently for each language and is configured independently.
+This allows to have different settings for different programming languages, for
+example, to use different keyword files.
+
+All the driver DLLs are loaded at IDE startup so you can't change DLL on disk
+while IDE is running and this DLL is configured for any language. DLL is unloaded if
+you configure another DLL or remove the language from the IDE.
+
+\else
+Все компоненты необязательны. Например, у драйвера может не быть диалога 
+настройки или шаблонного текста.
+
+На настоящий момент в системе есть только один драйвер для Modula-2 и Oberon-2,
+но интерфейс языкового драйвера устроен так, что его можно перенастраивать,
+получая другие драйверы. Интерфейс драйвера не поставляется с XDS, но его 
+можно потребовать.
+ 
+Один драйвер может быть использован для нескольких языков программирования.
+Это удобно в случае, когда языки похожи (как Modula-2 и Oberon-2 или C и C++).
+Драйвер для каждого языка загружается и настраивается независимо. Это дает 
+возможность иметь разные установки для разных язаков программирования, например,
+использовать разные файлы ключевых слов. 
+
+Все DLL драйвера загружаются при запуске IDE, так что нельзя изменять DLL на 
+диске во время работы IDE, и эта DLL настраивается для любого языка. DLL 
+выгружается, если вы настраиваете другую DLL или удаляете язык из IDE.
+\fi

@@ -1,0 +1,2502 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: BSEDOS.H
+*
+* OS/2 Base include file.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+* If INCL_BSE is defined, all subcomponents are included.
+*
+* Subcomponents marked with "+" are partially included by default:
+*
+*   CONST:                To include:
+*
+* + INCL_DOSPROCESS         Process and thread support
+* + INCL_DOSFILEMGR         File Management
+* + INCL_DOSMEMMGR          Memory Management
+* + INCL_DOSSEMAPHORES      Semaphore support
+* + INCL_DOSDATETIME        Date/Time and Timer support
+*   INCL_DOSMODULEMGR       Module manager
+* + INCL_DOSRESOURCES       Resource support
+*   INCL_DOSNLS             National Language Support
+*   INCL_DOSEXCEPTIONS      Exception Management Support
+*   INCL_DOSMISC            Miscellaneous
+*   INCL_DOSMONITORS        Monitors
+*   INCL_DOSQUEUES          Queues
+*   INCL_DOSSESMGR          Session Manager Support
+*   INCL_DOSDEVICES         Device specific, ring 2 support
+*   INCL_DOSNMPIPES         Named Pipes Support
+*   INCL_DOSPROFILE         DosProfile API
+*   INCL_DOSMVDM            MVDM support
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+
+#define INCL_DOSINCLUDED
+
+#ifdef INCL_DOS
+   #define INCL_DOSPROCESS
+   #define INCL_DOSFILEMGR
+   #define INCL_DOSMEMMGR
+   #define INCL_DOSSEMAPHORES
+   #define INCL_DOSDATETIME
+   #define INCL_DOSMODULEMGR
+   #define INCL_DOSRESOURCES
+   #define INCL_DOSNLS
+   #define INCL_DOSEXCEPTIONS
+   #define INCL_DOSMISC
+   #define INCL_DOSMONITORS
+   #define INCL_DOSQUEUES
+   #define INCL_DOSSESMGR
+   #define INCL_DOSDEVICES
+   #define INCL_DOSNMPIPES
+   #define INCL_DOSPROFILE
+   #define INCL_DOSMVDM
+#endif (* INCL_DOS *)
+
+#ifdef INCL_ERRORS
+   #define INCL_DOSERRORS
+#endif (* INCL_ERRORS *)
+
+#if (defined(INCL_DOSPROCESS) || !defined(INCL_NOCOMMON))
+   (*** General services *)
+   PROCEDURE DosBeep(freq : ULONG
+                    ;dur  : ULONG
+                    ): APIRET;
+
+   (*** Process and Thread support *)
+   PROCEDURE DosExit(action : ULONG
+                    ;result : ULONG
+                    );
+
+   (* DosExit codes *)
+   CONST EXIT_THREAD        = 0;
+   CONST EXIT_PROCESS       = 1;
+#endif (* common INCL_DOSPROCESS stuff *)
+
+#ifdef INCL_DOSPROCESS
+
+   #include <bsetib.hm>
+
+   TYPE PFNTHREAD = PROCEDURE [APIENTRY] (ULONG);
+
+   PROCEDURE DosCreateThread(VAR tid : TID
+                            ;pfn     : PFNTHREAD
+                            ;param   : ULONG
+                            ;flag    : ULONG
+                            ;cbStack : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosResumeThread(tid : TID): APIRET;
+
+   PROCEDURE DosSuspendThread(tid : TID): APIRET;
+
+   TYPE PPTIB = POINTER TO PTIB;
+   TYPE PPPIB = POINTER TO PPIB;
+   PROCEDURE DosGetInfoBlocks(VAR ptib : PTIB
+                             ;VAR ppib : PPIB
+                             ): APIRET;
+
+   PROCEDURE DosKillThread(tid : TID): APIRET;
+
+   PROCEDURE DosAllocThreadLocalMemory(cb    : ULONG
+                                      ;VAR p : PULONG
+                                      ): APIRET;
+
+   PROCEDURE DosFreeThreadLocalMemory(p : PULONG): APIRET;
+
+   (* Action code values *)
+
+   CONST DCWA_PROCESS      = 0;
+   CONST DCWA_PROCESSTREE  = 1;
+
+   (* Wait option values *)
+
+   CONST DCWW_WAIT         = 0;
+   CONST DCWW_NOWAIT       = 1;
+
+(* Thread Flags for DosCreateThread options 59468 *)
+
+CONST CREATE_READY       = 0;                   (* defect 65437  *)
+CONST CREATE_SUSPENDED   = 1;
+CONST STACK_SPARSE       = 0;
+CONST STACK_COMMITTED    = 2;
+
+   TYPE RESULTCODES = RECORD      (* resc *)
+      codeTerminate:  ULONG ;
+      codeResult:     ULONG ;
+   END;
+   TYPE PRESULTCODES = POINTER TO RESULTCODES;
+
+   PROCEDURE DosWaitChild(action  : ULONG
+                         ;option  : ULONG
+                         ;VAR res : RESULTCODES
+                         ;VAR pid : PID
+                         ;waitpid : PID
+                         ): APIRET;
+
+   CONST DosCwait = DosWaitChild;
+
+   PROCEDURE DosWaitThread(VAR tid : TID
+                          ;option  : ULONG
+                          ): APIRET;
+
+   PROCEDURE DosSleep(msec : ULONG): APIRET;
+
+(***ET+ uDB -   User's Debug Buffer structure
+ *
+ *      A pointer to a uDB is the sole parameter to DosDebug.  It
+ *      contains all the information required for each DosDebug
+ *      command.
+ *
+ *)
+
+TYPE uDB_t = RECORD   (* uDB *)
+  Pid:       SYSTEM.CARD32;       (* Debuggee Process id          *)
+  Tid:       SYSTEM.CARD32;       (* Debuggee Thread id           *)
+  Cmd:       SYSTEM.INT32;        (* Command or Notification      *)
+  Value:     SYSTEM.INT32;        (* Generic Data Value           *)
+  Addr:      SYSTEM.CARD32;       (* Debuggee Address             *)
+  Buffer:    SYSTEM.CARD32;       (* Debugger Buffer Address      *)
+  Len:       SYSTEM.CARD32;       (* Length of Range              *)
+  Index:     SYSTEM.CARD32;       (* Generic Identifier Index     *)
+  MTE:       SYSTEM.CARD32;       (* Module Table Entry Handle    *)
+  EAX:       SYSTEM.CARD32;       (* Register Set                 *)
+  ECX:       SYSTEM.CARD32;
+  EDX:       SYSTEM.CARD32;
+  EBX:       SYSTEM.CARD32;
+  ESP:       SYSTEM.CARD32;
+  EBP:       SYSTEM.CARD32;
+  ESI:       SYSTEM.CARD32;
+  EDI:       SYSTEM.CARD32;
+  EFlags:    SYSTEM.CARD32;
+  EIP:       SYSTEM.CARD32;
+  CSLim:     SYSTEM.CARD32;
+  CSBase:    SYSTEM.CARD32;
+  CSAcc:     CHAR;
+  CSAtr:     CHAR;
+  CS:        SYSTEM.CARD16;
+  DSLim:     SYSTEM.CARD32;
+  DSBase:    SYSTEM.CARD32;
+  DSAcc:     CHAR;
+  DSAtr:     CHAR;
+  DS:        SYSTEM.CARD16;
+  ESLim:     SYSTEM.CARD32;
+  ESBase:    SYSTEM.CARD32;
+  ESAcc:     CHAR;
+  ESAtr:     CHAR;
+  ES:        SYSTEM.CARD16;
+  FSLim:     SYSTEM.CARD32;
+  FSBase:    SYSTEM.CARD32;
+  FSAcc:     CHAR;
+  FSAtr:     CHAR  ;
+  FS:        SYSTEM.CARD16;
+  GSLim:     SYSTEM.CARD32;
+  GSBase:    SYSTEM.CARD32;
+  GSAcc:     CHAR;
+  GSAtr:     CHAR;
+  GS:        SYSTEM.CARD16;
+  SSLim:     SYSTEM.CARD32;
+  SSBase:    SYSTEM.CARD32;
+  SSAcc:     CHAR;
+  SSAtr:     CHAR;
+  SS:        SYSTEM.CARD16;
+END;
+
+(***EK+ DBG_C - DosDebug Command Numbers
+ *
+ *      These numbers are placed in the Cmd field of the uDB on
+ *      entry to DosDebug.
+ *
+ *      These numbers identify which command DosDebug is requested
+ *      to perform.
+ *
+ *)
+
+CONST DBG_C_Null            =  0;       (* Null                         *)
+CONST DBG_C_ReadMem         =  1;       (* Read Word                    *)
+CONST DBG_C_ReadMem_I       =  1;       (* Read Word                    *)
+CONST DBG_C_ReadMem_D       =  2;       (* Read Word (same as 1)        *)
+CONST DBG_C_ReadReg         =  3;       (* Read Register Set            *)
+CONST DBG_C_WriteMem        =  4;       (* Write Word                   *)
+CONST DBG_C_WriteMem_I      =  4;       (* Write Word                   *)
+CONST DBG_C_WriteMem_D      =  5;       (* Write Word (same as 4)       *)
+CONST DBG_C_WriteReg        =  6;       (* Write Register Set           *)
+CONST DBG_C_Go              =  7;       (* Go                           *)
+CONST DBG_C_Term            =  8;       (* Terminate                    *)
+CONST DBG_C_SStep           =  9;       (* Single Step                  *)
+CONST DBG_C_Stop            =  10;      (* Stop                         *)
+CONST DBG_C_Freeze          =  11;      (* Freeze Thread                *)
+CONST DBG_C_Resume          =  12;      (* Resume Thread                *)
+CONST DBG_C_NumToAddr       =  13;      (* Object Number to Address     *)
+CONST DBG_C_ReadCoRegs      =  14;      (* Read Coprocessor Registers   *)
+CONST DBG_C_WriteCoRegs     =  15;      (* Write Coprocessor Registers  *)
+                                        (* 16 is reserved               *)
+CONST DBG_C_ThrdStat        =  17;      (* Get Thread Status            *)
+CONST DBG_C_MapROAlias      =  18;      (* Map read-only alias          *)
+CONST DBG_C_MapRWAlias      =  19;      (* Map read-write alias         *)
+CONST DBG_C_UnMapAlias      =  20;      (* Unmap Alias                  *)
+CONST DBG_C_Connect         =  21;      (* Connect to Debuggee          *)
+CONST DBG_C_ReadMemBuf      =  22;      (* Read Memory Buffer           *)
+CONST DBG_C_WriteMemBuf     =  23;      (* Write Memory Buffer          *)
+CONST DBG_C_SetWatch        =  24;      (* Set Watchpoint               *)
+CONST DBG_C_ClearWatch      =  25;      (* Clear Watchpoint             *)
+CONST DBG_C_RangeStep       =  26;      (* Range Step                   *)
+CONST DBG_C_Continue        =  27;      (* Continue after an Exception  *)
+CONST DBG_C_AddrToObject    =  28;      (* Address to Object            *)
+CONST DBG_C_XchgOpcode      =  29;      (* Exchange opcode and go       *)
+CONST DBG_C_LinToSel        =  30;      (* 32 to 16 conversion      A001*)
+CONST DBG_C_SelToLin        =  31;      (* 16 to 32 conversion      A001*)
+
+(***            DosDebug Notification Numbers
+ *
+ *      These numbers are placed in the Cmd field of the uDB upon
+ *      exit from DosDebug.
+ *
+ *      These numbers identify which DosDebug Event just occured,
+ *      or whether a particular command succeeded or failed.
+ *
+ *)
+
+CONST DBG_N_Success         =  0;      (* Command completed successfully  *)
+CONST DBG_N_Error           =  -1;     (* Error detected during command   *)
+CONST DBG_N_ProcTerm        =  -6;     (* Process exiting - ExitList done *)
+CONST DBG_N_Exception       =  -7;     (* Exception detected              *)
+CONST DBG_N_ModuleLoad      =  -8;     (* Module loaded                   *)
+CONST DBG_N_CoError         =  -9;     (* Coprocessor not in use error    *)
+CONST DBG_N_ThreadTerm      =  -10;    (* Thread exiting - Exitlist soon  *)
+CONST DBG_N_AsyncStop       =  -11;    (* Async Stop detected             *)
+CONST DBG_N_NewProc         =  -12;    (* New Process started             *)
+CONST DBG_N_AliasFree       =  -13;    (* Alias needs to be freed         *)
+CONST DBG_N_Watchpoint      =  -14;    (* Watchpoint hit                  *)
+CONST DBG_N_ThreadCreate    =  -15;    (* New thread created              *)
+CONST DBG_N_ModuleFree      =  -16;    (* Module freed                    *)
+CONST DBG_N_RangeStep       =  -17;    (* Range Step completed            *)
+
+(***          - Thread Status Buffer structure
+ *
+ *      A pointer to a TStat structure is required for the
+ *      DBG_C_ThrdStat command.
+ *
+ *      The TStat structure returns information about a thread.
+ *
+ *      DbgState in the Thread Status buffer contains info about the
+ *      current state of debugging, and will have one of the following
+ *      values upon return :
+ *
+ *      DBG_D_Thawed, DBG_D_Frozen
+ *
+ *      TState in the Thread Status buffer contains info about the
+ *      scheduling state of the thread, and will have one of the
+ *      following values upon return.
+ *
+ *      DBG_T_Runnable, DBG_T_Suspended, DBG_T_Blocked, DBG_T_CritSec
+ *
+ *      TPriority in the Thread Status buffer contains the thread's
+ *      base scheduling priority.  This priority will be expressed as
+ *      scheduling class and delta values upon return.
+ *
+ *)
+
+TYPE TStat_t = RECORD       (* TS *)
+  DbgState  : SYSTEM.CARD8;         (* Thread's Debugging State     *)
+  TState    : SYSTEM.CARD8;         (* Thread's Scheduler State     *)
+  TPriority : SYSTEM.CARD16;        (* Thread's Scheduler Priority  *)
+END;
+
+(***            DbgState values
+ *
+ *      These are the possible values which can be returned
+ *      in the DbgState field of the TStat structure. These
+ *      bits identify debugging information.
+ *
+ *)
+
+CONST DBG_D_Thawed  =  0;
+CONST DBG_D_Frozen  =  1;
+
+(***            TState values
+ *
+ *      These are the possible values which can be returned in
+ *      the TState field of the TStat structure.  These values
+ *      identify scheduler state information.
+ *
+ *)
+
+CONST DBG_T_Runnable  = 0;
+CONST DBG_T_Suspended = 1;
+CONST DBG_T_Blocked   = 2;
+CONST DBG_T_CritSec   = 3;
+
+(***             Coprocessor Type Parameters
+ *
+ *      These are the possible values identifying the coprocessor
+ *      types supported by DosDebug used when accessing the
+ *      coprocessor register set.
+ *
+ *)
+
+CONST DBG_CO_387     = 1;
+
+(***EK+ DBG_LEN - Coprocessor Buffer Lengths
+ *
+ *      These are the possible values identifying the length of
+ *      the coprocessor buffer when accessing the coprocessor
+ *      register set.
+ *
+ *)
+
+CONST DBG_LEN_387    = 108;
+
+(***            Debugging Level Parameter
+ *
+ *      This is the only possible value for the DBG_C_Connect command,
+ *      and identifies that debugging on the 386 envoronment is desired.
+ *
+ *)
+
+CONST DBG_L_386      = 1;
+
+(***            Watchpoint Scope and Type Parameters
+ *
+ *      These are the possible Watchpoint Scope values, as used by
+ *      the DBG_C_SetWatch command.     The DBG_C_SetWatch command
+ *      expects a  combination (using either an ADD or an OR) of
+ *      the Scope and Type parameters to be passed as a single value.
+ *
+ *)
+
+(*      Watchpoint Scope Parameters     *)
+
+CONST DBG_W_Global   = 00000001;
+CONST DBG_W_Local    = 00000002;
+
+(*      Watchpoint Type Parameters      *)
+
+CONST DBG_W_Execute  = 00010000H;
+CONST DBG_W_Write    = 00020000H;
+CONST DBG_W_ReadWrite= 00030000H;
+
+(***            Object flags
+ *
+ *      This flag indicates whether the MTE field contains the object's
+ *      MTE after a DBG_C_AddrToObject call.
+ *
+ *)
+
+CONST DBG_O_OBJMTE   = 10000000H;
+
+(***            Exception chances
+ *
+ *      The three scenarios under which a debug exception is reported
+ *      are pre-1st, 1st, and last chance. The value field of the
+ *      user debug buffer will indicate which chance a given call is
+ *      for. Additional parameter values will be:
+ *
+ *         For pre-1st chance (XCPT_BREAKPOINT):
+ *              Addr   = Linear address of breakpoint
+ *              Buffer = XCPT_BREAKPOINT
+ *
+ *         For pre-1st change (XCPT_SINGLE_STEP):
+ *              Addr   = Linear address of instruction after Single Step
+ *              Buffer = XCPT_SINGLE_STEP
+ *
+ *         For 1st chance (all exceptions):
+ *              Addr   = Linear address of exception
+ *              Buffer = Pointer to Exception Report Record in
+ *                       Debuggee's context
+ *              Len    = Pointer to Exception Context Record in
+ *                       Debuggee's context
+ *
+ *         For Last chance (all exceptions):
+ *              Addr   = Linear address of exception
+ *              Buffer = Pointer to Exception Report Record in
+ *                       Debuggee's context
+ *              Len    = Pointer to Exception Context Record in
+ *                       Debuggee's context
+ *
+ *         For Invalid stack notification (all exceptions)
+ *              Addr   = Linear address of exception
+ *              Buffer = Exception number
+ *)
+
+CONST DBG_X_PRE_FIRST_CHANCE = 00000000H;
+CONST DBG_X_FIRST_CHANCE     = 00000001H;
+CONST DBG_X_LAST_CHANCE      = 00000002H;
+CONST DBG_X_STACK_INVALID    = 00000003H;
+
+   PROCEDURE DosDebug(pdbgbuf : PVOID): APIRET;
+
+   (* codeTerminate values (also passed to ExitList routines) *)
+
+   CONST TC_EXIT            =0;
+   CONST TC_HARDERROR       =1;
+   CONST TC_TRAP            =2;
+   CONST TC_KILLPROCESS     =3;
+   CONST TC_EXCEPTION       =4;
+
+   TYPE PFNEXITLIST = PROCEDURE [APIENTRY] (ULONG);
+
+   PROCEDURE DosEnterCritSec(): APIRET;
+
+   PROCEDURE DosExitCritSec(): APIRET;
+
+   PROCEDURE DosExitList(ordercode : ULONG
+                        ;pfn       : PFNEXITLIST
+                        ): APIRET;
+
+   (* DosExitList functions *)
+
+   CONST EXLST_ADD         = 1;
+   CONST EXLST_REMOVE      = 2;
+   CONST EXLST_EXIT        = 3;
+
+   PROCEDURE DosExecPgm(VAR Objname   : ARRAY OF CHAR
+                       ;cbObjname     : LONG
+                       ;execFlag      : ULONG
+                       ;pArg          : PCHAR
+                       ;pEnv          : PCHAR
+                       ;VAR Res       : RESULTCODES
+                       ;Name          : ARRAY OF CHAR
+                       ): APIRET;
+
+   (* DosExecPgm functions *)
+
+   CONST EXEC_SYNC         = 0;
+   CONST EXEC_ASYNC        = 1;
+   CONST EXEC_ASYNCRESULT  = 2;
+   CONST EXEC_TRACE        = 3;
+   CONST EXEC_BACKGROUND   = 4;
+   CONST EXEC_LOAD         = 5;
+   CONST EXEC_ASYNCRESULTDB= 6;
+
+
+   PROCEDURE DosSetPriority(scope   : ULONG
+                           ;ulclass : ULONG
+                           ;delta   : LONG
+                           ;PorTid  : ULONG
+                           ): APIRET;
+
+   CONST DosSetPrty = DosSetPriority;
+
+   (* Priority scopes *)
+
+   CONST PRTYS_PROCESS     = 0;
+   CONST PRTYS_PROCESSTREE = 1;
+   CONST PRTYS_THREAD      = 2;
+
+   (* Priority classes *)
+
+   CONST PRTYC_NOCHANGE    = 0;
+   CONST PRTYC_IDLETIME    = 1;
+   CONST PRTYC_REGULAR     = 2;
+   CONST PRTYC_TIMECRITICAL= 3;
+   CONST PRTYC_FOREGROUNDSERVER =4;
+
+   (* Priority deltas *)
+
+   CONST PRTYD_MINIMUM    = -31;
+   CONST PRTYD_MAXIMUM    =  31;
+
+   PROCEDURE DosKillProcess(action : ULONG
+                           ;pid    : PID
+                           ): APIRET;
+
+   CONST DKP_PROCESSTREE  =  0;
+   CONST DKP_PROCESS      =  1;
+#endif (* INCL_DOSPROCESS *)
+
+#ifndef INCL_SAADEFS
+   (*************************************************************************\
+    * CCHMAXPATH is the maximum fully qualified path name length including  *
+    * the drive letter, colon, backslashes and terminating NULL.            *
+   \*************************************************************************)
+   CONST CCHMAXPATH       =  260;
+
+   (*************************************************************************\
+    * CCHMAXPATHCOMP is the maximum individual path component name length   *
+    * including a terminating NULL.                                         *
+   \*************************************************************************)
+   CONST CCHMAXPATHCOMP   =  256;
+#endif (* !INCL_SAADEFS *)
+
+#if (defined(INCL_DOSFILEMGR) || !defined(INCL_NOCOMMON))
+   (*** File manager *)
+   (* DosSetFilePtr() file position codes *)
+
+   CONST FILE_BEGIN     = 00000H;   (* Move relative to beginning of file *)
+   CONST FILE_CURRENT   = 00001H;   (* Move relative to current fptr position *)
+   CONST FILE_END       = 00002H;   (* Move relative to end of file *)
+
+   (* DosFindFirst/Next Directory handle types *)
+   CONST HDIR_SYSTEM     =          1;    (* Use system handle (1) *)
+   CONST HDIR_CREATE     = 0FFFFFFFFH;    (* Allocate a new, unused handle *)
+
+   (* DosCopy control bits; may be or'ed together *)
+   CONST DCPY_EXISTING  = 00001H;   (* Copy even if target exists *)
+   CONST DCPY_APPEND    = 00002H;   (* Append to existing file, do not replace *)
+   CONST DCPY_FAILEAS   = 00004H;   (* Fail if EAs not supported on target*)
+
+   (* DosOpen/DosQFHandState/DosQueryFileInfo et al file attributes; also *)
+   (* known as Dos File Mode bits... *)
+   CONST FILE_NORMAL    = 00000H;
+   CONST FILE_READONLY  = 00001H;
+   CONST FILE_HIDDEN    = 00002H;
+   CONST FILE_SYSTEM    = 00004H;
+   CONST FILE_DIRECTORY = 00010H;
+   CONST FILE_ARCHIVED  = 00020H;
+
+   CONST FILE_IGNORE    = 010000H;     (* ignore file attribute in *)
+   (* DosSetPath/File Info if *)
+   (* this bit is set*)
+
+   CONST MUST_HAVE_READONLY     = ( (FILE_READONLY  * 256) + FILE_READONLY  );
+   CONST MUST_HAVE_HIDDEN       = ( (FILE_HIDDEN    * 256) + FILE_HIDDEN    );
+   CONST MUST_HAVE_SYSTEM       = ( (FILE_SYSTEM    * 256) + FILE_SYSTEM    );
+   CONST MUST_HAVE_DIRECTORY    = ( (FILE_DIRECTORY * 256) + FILE_DIRECTORY );
+   CONST MUST_HAVE_ARCHIVED     = ( (FILE_ARCHIVED  * 256) + FILE_ARCHIVED  );
+
+   (* DosOpen() actions *)
+   CONST FILE_EXISTED    =00001H;
+   CONST FILE_CREATED    =00002H;
+   CONST FILE_TRUNCATED  =00003H;
+
+   (* DosOpen() open flags *)
+   CONST FILE_OPEN      = 00001H;
+   CONST FILE_TRUNCATE  = 00002H;
+   CONST FILE_CREATE    = 00010H;
+
+   (*     this nibble applies if file already exists                xxxx *)
+   CONST OPEN_ACTION_FAIL_IF_EXISTS    = 00000H;  (* ---- ---- ---- 0000 *)
+   CONST OPEN_ACTION_OPEN_IF_EXISTS    = 00001H;  (* ---- ---- ---- 0001 *)
+   CONST OPEN_ACTION_REPLACE_IF_EXISTS = 00002H;  (* ---- ---- ---- 0010 *)
+
+   (*     this nibble applies if file does not exist           xxxx      *)
+   CONST OPEN_ACTION_FAIL_IF_NEW       = 00000H;  (* ---- ---- 0000 ---- *)
+   CONST OPEN_ACTION_CREATE_IF_NEW     = 00010H;  (* ---- ---- 0001 ---- *)
+
+   (* DosOpen/DosSetFHandState flags *)
+   CONST OPEN_ACCESS_READONLY          = 00000H;  (* ---- ---- ---- -000 *)
+   CONST OPEN_ACCESS_WRITEONLY         = 00001H;  (* ---- ---- ---- -001 *)
+   CONST OPEN_ACCESS_READWRITE         = 00002H;  (* ---- ---- ---- -010 *)
+   CONST OPEN_SHARE_DENYREADWRITE      = 00010H;  (* ---- ---- -001 ---- *)
+   CONST OPEN_SHARE_DENYWRITE          = 00020H;  (* ---- ---- -010 ---- *)
+   CONST OPEN_SHARE_DENYREAD           = 00030H;  (* ---- ---- -011 ---- *)
+   CONST OPEN_SHARE_DENYNONE           = 00040H;  (* ---- ---- -100 ---- *)
+   CONST OPEN_FLAGS_NOINHERIT          = 00080H;  (* ---- ---- 1--- ---- *)
+   CONST OPEN_FLAGS_NO_LOCALITY        = 00000H;  (* ---- -000 ---- ---- *)
+   CONST OPEN_FLAGS_SEQUENTIAL         = 00100H;  (* ---- -001 ---- ---- *)
+   CONST OPEN_FLAGS_RANDOM             = 00200H;  (* ---- -010 ---- ---- *)
+   CONST OPEN_FLAGS_RANDOMSEQUENTIAL   = 00300H;  (* ---- -011 ---- ---- *)
+   CONST OPEN_FLAGS_NO_CACHE           = 01000H;  (* ---1 ---- ---- ---- *)
+   CONST OPEN_FLAGS_FAIL_ON_ERROR      = 02000H;  (* --1- ---- ---- ---- *)
+   CONST OPEN_FLAGS_WRITE_THROUGH      = 04000H;  (* -1-- ---- ---- ---- *)
+   CONST OPEN_FLAGS_DASD               = 08000H;  (* 1--- ---- ---- ---- *)
+   CONST OPEN_FLAGS_NONSPOOLED         = 000040000H;
+   CONST OPEN_FLAGS_PROTECTED_HANDLE =040000000H;
+
+
+   (* DosSearchPath() constants *)
+   CONST SEARCH_PATH          = 00000H;
+   CONST SEARCH_CUR_DIRECTORY = 00001H;
+   CONST SEARCH_ENVIRONMENT   = 00002H;
+   CONST SEARCH_IGNORENETERRS = 00004H;
+
+
+   (************************************************************
+   EA Info Levels & Find First/Next
+   =========================================
+   API's: DosFindFirst, DosQueryFileInfo, DosQueryPathInfo, DosSetFileInfo,
+   DosSetPathInfo
+   ************************************************************)
+
+   (* File info levels&gml All listed API's *)
+   CONST FIL_STANDARD         = 1;     (* Info level 1, standard file info *)
+   CONST FIL_QUERYEASIZE      = 2;     (* Level 2, return Full EA size *)
+   CONST FIL_QUERYEASFROMLIST = 3;     (* Level 3, return requested EA's *)
+
+   (* File info levels: Dos...PathInfo only *)
+   CONST FIL_QUERYFULLNAME    = 5;     (* Level 5, return fully qualified
+   name of file *)
+
+
+   (* DosFsAttach() *)
+   (* Attact or detach *)
+   CONST FS_ATTACH            = 0;     (* Attach file server *)
+   CONST FS_DETACH            = 1;     (* Detach file server *)
+   CONST FS_SPOOLATTACH       = 2;     (* Register a spooler device *)
+   CONST FS_SPOOLDETACH       = 3;     (* De-register a spooler device *)
+
+
+   (* DosFsCtl() *)
+   (* Routing type *)
+   CONST FSCTL_HANDLE         = 1;     (* File Handle directs req routing *)
+   CONST FSCTL_PATHNAME       = 2;     (* Path Name directs req routing *)
+   CONST FSCTL_FSDNAME        = 3;     (* FSD Name directs req routing *)
+
+   (* defined FSCTL functions *)
+   CONST FSCTL_ERROR_INFO     = 1;     (* return error info from FSD *)
+   CONST FSCTL_MAX_EASIZE     = 2;     (* Max ea size for the FSD *)
+
+   TYPE EASIZEBUF = RECORD      (* struct for FSCTL fn 2 - max ea size *)
+      cbMaxEASize:      USHORT;        (* max. size of one EA *)
+      cbMaxEAListSize:  ULONG;    (* max size of the full EA List *)
+   END;
+   TYPE PEASIZEBUF = POINTER TO EASIZEBUF;
+
+
+
+   (* DosQueryFSAttach() *)
+   (* Information level types (defines method of query) *)
+   CONST FSAIL_QUERYNAME      = 1;     (* Return data for a Drive or Device *)
+   CONST FSAIL_DEVNUMBER      = 2;     (* Return data for Ordinal Device # *)
+   CONST FSAIL_DRVNUMBER      = 3;     (* Return data for Ordinal Drive # *)
+
+   (* Item types (from data structure item "iType") *)
+   CONST FSAT_CHARDEV         = 1;     (* Resident character device *)
+   CONST FSAT_PSEUDODEV       = 2;     (* Pusedu-character device *)
+   CONST FSAT_LOCALDRV        = 3;     (* Local drive *)
+   CONST FSAT_REMOTEDRV       = 4;     (* Remote drive attached to FSD *)
+
+   TYPE FSQBUFFER = RECORD      (* fsqbuf Data structure for QFSAttach*)
+      iType:        USHORT;                 (* Item type *)
+      cbName:       USHORT;                 (* Length of item name, sans NULL *)
+      szName:       ARRAY [0..0] OF UCHAR;  (* ASCIIZ item name *)
+      cbFSDName:    USHORT;                 (* Length of FSD name, sans NULL *)
+      szFSDName:    ARRAY [0..0] OF UCHAR;  (* ASCIIZ FSD name *)
+      cbFSAData:    USHORT;                 (* Length of FSD Attach data returned *)
+      rgFSAData:    ARRAY [0..0] OF UCHAR;  (* FSD Attach data from FSD *)
+   END;
+   TYPE PFSQBUFFER = POINTER TO FSQBUFFER;
+
+
+   TYPE FSQBUFFER2 = RECORD      (* fsqbuf Data structure for QFSAttach*)
+      iType:            USHORT  ;
+      cbName:           USHORT  ;
+      cbFSDName:        USHORT  ;
+      cbFSAData:        USHORT  ;
+      szName:           ARRAY [0..0] OF UCHAR;
+      szFSDName:        ARRAY [0..0] OF UCHAR;
+      rgFSAData:        ARRAY [0..0] OF UCHAR;
+   END;
+   TYPE PFSQBUFFER2 = POINTER TO FSQBUFFER2;
+
+   TYPE SPOOLATTACH = RECORD     (* Data structure for spooler operations *)
+      hNmPipe:   USHORT;            (* Named pipe handle *)
+      ulKey:     ULONG;             (* Attached key *)
+   END;
+   TYPE PSPOOLATTACH  = POINTER TO SPOOLATTACH;
+
+
+   (*****************************************************************************
+   * File System Drive Information&gml DosQueryFSInfo DosSetFSInfo              *
+   *****************************************************************************)
+
+   (* FS Drive Info Levels *)
+   CONST FSIL_ALLOC            =1;     (* Drive allocation info (Query only) *)
+   CONST FSIL_VOLSER           =2;     (* Drive Volum/Serial info *)
+
+   (* DosQueryFHType() *)
+   (* Handle classes (low 8 bits of Handle Type) *)
+   CONST FHT_DISKFILE         = 00000H;   (* Disk file handle *)
+   CONST FHT_CHRDEV           = 00001H;   (* Character device handle *)
+   CONST FHT_PIPE             = 00002H;   (* Pipe handle *)
+
+   (* Handle bits (high 8 bits of Handle Type) *)
+   CONST FHB_DSKREMOTE        = 08000H;   (* Remote disk *)
+   CONST FHB_CHRDEVREMOTE     = 08000H;   (* Remote character device *)
+   CONST FHB_PIPEREMOTE       = 08000H;   (* Remote pipe *)
+
+
+
+   #ifndef INCL_SAADEFS
+      (* File time and date types *)
+      (* --- Now we can't process this bit fields ---------
+      #ifdef __IBMC__
+         TYPE FTIME = RECORD          (* ftime *)
+           twosecs: [0..31];   --       UINT   twosecs : 5;
+           minutes: [0..63];   --       UINT   minutes : 6;
+           hours:   [0..31];   --       UINT   hours   : 5;
+         END;
+         TYPE PFTIME = POINTER TO FTIME;
+      #else
+         TYPE FTIME = RECORD          (* ftime *)
+           twosecs: [0..31];   --       USHORT   twosecs : 5;
+           minutes: [0..63];   --       USHORT   minutes : 6;
+           hours:   [0..31];   --       USHORT   hours   : 5;
+         END;
+         TYPE PFTIME = POINTER TO FTIME;
+      #endif
+
+      #ifdef __IBMC__
+         TYPE FDATE = RECORD          (* fdate *)
+           day:   [0..31];     --       UINT   day     : 5;
+           month: [0..15];     --       UINT   month   : 4;
+           year:  [0..127];    --       UINT   year    : 7;
+         END;
+         TYPE PFDATE = POINTER TO FDATE;
+      #else
+         TYPE FDATE = RECORD          (* fdate *)
+           day:   [0..31];     --       USHORT   day     : 5;
+           month: [0..15];     --       USHORT   month   : 4;
+           year:  [0..127];    --       USHORT   year    : 7;
+         END;
+         TYPE PFDATE = POINTER TO FDATE;
+      #endif
+      ------------------------------------------------------*)
+      TYPE FTIME = SYSTEM.CARD16;  -- Temporary
+      TYPE FDATE = SYSTEM.CARD16;  -- Temporary
+
+   #endif(* INCL_SAADEFS *)
+
+   TYPE VOLUMELABEL = RECORD     (* vol *)
+      cch:         BYTE ;
+      szVolLabel:  ARRAY [0..11] OF CHAR;
+   END;
+   TYPE PVOLUMELABEL = POINTER TO VOLUMELABEL;
+
+   TYPE FSINFO = RECORD     (* fsinf *)
+      fdateCreation:  FDATE ;
+      ftimeCreation:  FTIME ;
+      vol:            VOLUMELABEL ;
+   END;
+   TYPE PFSINFO = POINTER TO FSINFO;
+
+   (* HANDTYPE values *)
+   CONST HANDTYPE_FILE        = 00000H;
+   CONST HANDTYPE_DEVICE      = 00001H;
+   CONST HANDTYPE_PIPE        = 00002H;
+   CONST HANDTYPE_PROTECTED   = 04000H;
+   CONST HANDTYPE_NETWORK     = 08000H;
+
+   TYPE FILELOCK = RECORD     (* flock *)
+      lOffset:      LONG ;
+      lRange:       LONG ;
+   END;
+   TYPE PFILELOCK = POINTER TO FILELOCK;
+
+   TYPE HFILE  = LHANDLE;     (* hf *)
+   TYPE PHFILE = POINTER TO HFILE;
+
+   #ifndef __HEV__            (* INCL_SEMAPHORE may also define HEV *)
+      #define __HEV__
+      TYPE  HEV  = ULONG;             (* hev *)
+      TYPE  PHEV = POINTER TO HEV;
+   #endif
+
+   TYPE  FHLOCK   = ULONG;
+   TYPE  PFHLOCK = PULONG;
+
+   PROCEDURE DosSetFileLocks(hFile        : HFILE
+                            ;VAR flUnlock : FILELOCK
+                            ;VAR flLock   : FILELOCK
+                            ;timeout      : ULONG
+                            ;flags        : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosProtectSetFileLocks(hFile              : HFILE
+                                   ;VAR flUnlock       : FILELOCK
+                                   ;VAR flLock         : FILELOCK
+                                   ;timeout            : ULONG
+                                   ;flags              : ULONG
+                                   ;fhFileHandleLockID : FHLOCK
+                                   ): APIRET;
+
+   PROCEDURE DosCancelLockRequest(hFile      : HFILE
+                                 ;VAR flLock : FILELOCK
+                                 ): APIRET;
+
+   #ifndef INCL_SAADEFS
+
+      TYPE FILEFINDBUF = RECORD    (* findbuf *)
+         fdateCreation:     FDATE  ;
+         ftimeCreation:     FTIME  ;
+         fdateLastAccess:   FDATE  ;
+         ftimeLastAccess:   FTIME  ;
+         fdateLastWrite:    FDATE  ;
+         ftimeLastWrite:    FTIME  ;
+         cbFile:            ULONG  ;
+         cbFileAlloc:       ULONG  ;
+         attrFile:          USHORT ;
+         cchName:           UCHAR  ;
+         achName:           ARRAY [0..CCHMAXPATHCOMP-1] OF CHAR;
+      END;
+
+      TYPE PFILEFINDBUF = POINTER TO FILEFINDBUF;
+
+      (*NOINC *)
+      <* ALIGNMENT = "2" *>
+      (*INC  *)
+      TYPE FILEFINDBUF2 = RECORD   (* findbuf2 *)
+         fdateCreation:     FDATE  ;
+         ftimeCreation:     FTIME  ;
+         fdateLastAccess:   FDATE  ;
+         ftimeLastAccess:   FTIME  ;
+         fdateLastWrite:    FDATE  ;
+         ftimeLastWrite:    FTIME  ;
+         cbFile:            ULONG  ;
+         cbFileAlloc:       ULONG  ;
+         attrFile:          USHORT ;
+         cbList:            ULONG  ;
+         cchName:           UCHAR  ;
+         achName:           ARRAY [0..CCHMAXPATHCOMP-1] OF CHAR;
+      END;
+      TYPE PFILEFINDBUF2 = POINTER TO FILEFINDBUF2;
+
+      TYPE FILEFINDBUF3 = RECORD                (* findbuf3 *)
+         oNextEntryOffset:      ULONG   ;       (* new field *)
+         fdateCreation:         FDATE   ;
+         ftimeCreation:         FTIME   ;
+         fdateLastAccess:       FDATE   ;
+         ftimeLastAccess:       FTIME   ;
+         fdateLastWrite:        FDATE   ;
+         ftimeLastWrite:        FTIME   ;
+         cbFile:                ULONG   ;
+         cbFileAlloc:           ULONG   ;
+         attrFile:              ULONG   ;        (* widened field *)
+         cchName:               UCHAR   ;
+         achName:               ARRAY [0..CCHMAXPATHCOMP-1] OF CHAR;
+      END;
+      TYPE PFILEFINDBUF3 = POINTER TO FILEFINDBUF3;
+
+      TYPE FILEFINDBUF4 = RECORD                (* findbuf4 *)
+         oNextEntryOffset:    ULONG   ; (* new field *)
+         fdateCreation:       FDATE   ;
+         ftimeCreation:       FTIME   ;
+         fdateLastAccess:     FDATE   ;
+         ftimeLastAccess:     FTIME   ;
+         fdateLastWrite:      FDATE   ;
+         ftimeLastWrite:      FTIME   ;
+         cbFile:              ULONG   ;
+         cbFileAlloc:         ULONG   ;
+         attrFile:            ULONG   ; (* widened field *)
+         cbList:              ULONG   ;
+         cchName:             UCHAR   ;
+         achName:             ARRAY [0..CCHMAXPATHCOMP-1] OF CHAR;
+      END;
+      TYPE PFILEFINDBUF4 = POINTER TO FILEFINDBUF4;
+
+      (* extended attribute structures *)
+
+      TYPE GEA = RECORD        (* gea *)
+         cbName:    BYTE;                  (* name length not including NULL *)
+         szName:    ARRAY [0..0] OF CHAR;  (* attribute name *)
+      END;
+      TYPE PGEA = POINTER TO GEA;
+
+      TYPE GEALIST = RECORD    (* geal *)
+         cbList:   ULONG;       (* total bytes of structure including full list *)
+         list:     ARRAY [0..0] OF GEA;        (* variable length GEA structures *)
+      END;
+      TYPE PGEALIST = POINTER TO GEALIST;
+
+      TYPE FEA = RECORD        (* fea *)
+         fEA:        BYTE;       (* flags                              *)
+         cbName:     BYTE;       (* name length not including NULL *)
+         cbValue:    USHORT;     (* value length *)
+      END;
+      TYPE PFEA = POINTER TO FEA;
+
+      (* flags for _FEA.fEA *)
+      CONST FEA_NEEDEA        = 080H;     (* need EA bit *)
+
+      TYPE FEALIST = RECORD    (* feal *)
+         cbList: ULONG;       (* total bytes of structure including full list *)
+         list:   ARRAY [0..0] OF FEA;        (* variable length FEA structures *)
+      END;
+      TYPE PFEALIST = POINTER TO FEALIST;
+
+      TYPE EAOP = RECORD       (* eaop *)
+         fpGEAList:  PGEALIST; (* general EA list *)
+         fpFEAList:  PFEALIST; (* full EA list *)
+         oError:     ULONG;
+      END;
+      TYPE PEAOP = POINTER TO EAOP;
+
+      (*NOINC*)
+      <* ALIGNMENT = "1" *>
+      (*INC*)
+
+      TYPE FEA2 = RECORD        (* fea2 *)
+         oNextEntryOffset:  ULONG; (* new field *)
+         fEA:               BYTE    ;
+         cbName:            BYTE    ;
+         cbValue:           USHORT  ;
+         szName:            ARRAY [0..0] OF CHAR;   (* new field *)
+      END;
+      TYPE PFEA2 = POINTER TO FEA2;
+
+
+      TYPE FEA2LIST = RECORD    (* fea2l *)
+         cbList:        ULONG   ;
+         list:          ARRAY [0..0] OF FEA2;
+      END;
+      TYPE PFEA2LIST = POINTER TO FEA2LIST;
+
+      TYPE GEA2 = RECORD         (* gea2 *)
+         oNextEntryOffset:      ULONG   ;  (*  new field *)
+         cbName:                BYTE    ;
+         szName:                ARRAY [0..0] OF CHAR; (* new field *)
+      END;
+      TYPE PGEA2 = POINTER TO GEA2;
+
+      TYPE GEA2LIST = RECORD      (* gea2l *)
+         cbList:          ULONG   ;
+         list:            ARRAY [0..0] OF GEA2;
+      END;
+      TYPE PGEA2LIST = POINTER TO GEA2LIST;
+
+      TYPE EAOP2 = RECORD        (* eaop2 *)
+         fpGEA2List:  PGEA2LIST; (* GEA set *)
+         fpFEA2List:  PFEA2LIST; (* FEA set *)
+         oError:      ULONG;     (* offset of FEA error *)
+      END;
+      TYPE PEAOP2 = POINTER TO EAOP2;
+
+
+      (*
+      * Equates for the types of EAs that follow the convention that we have
+      * established.
+      *
+      * Values 0xFFFE thru 0x8000 are reserved.
+      * Values 0x0000 thru 0x7fff are user definable.
+      * Value  0xFFFC is not used
+      *)
+
+      CONST EAT_BINARY      =0FFFEH;      (* length preceeded binary *)
+      CONST EAT_ASCII       =0FFFDH;      (* length preceeded ASCII *)
+      CONST EAT_BITMAP      =0FFFBH;      (* length preceeded bitmap *)
+      CONST EAT_METAFILE    =0FFFAH;      (* length preceeded metafile *)
+      CONST EAT_ICON        =0FFF9H;      (* length preceeded icon *)
+      CONST EAT_EA          =0FFEEH;      (* length preceeded ASCII *)
+                                          (* name of associated data (#include) *)
+      CONST EAT_MVMT        =0FFDFH;      (* multi-valued, multi-typed field *)
+      CONST EAT_MVST        =0FFDEH;      (* multi-valued, single-typed field *)
+      CONST EAT_ASN1        =0FFDDH;      (* ASN.1 field *)
+
+   #endif  (* !INCL_SAADEFS *)
+   (*NOINC*)
+   <* ALIGNMENT = "4" *>
+   (*INC*)
+
+   PROCEDURE DosOpen(szFileName      : ARRAY OF CHAR
+                    ;VAR Hf          : HFILE
+                    ;VAR ulAction    : ULONG
+                    ;cbFile          : ULONG
+                    ;ulAttribute     : ULONG
+                    ;fsOpenFlags     : ULONG
+                    ;fsOpenMode      : ULONG
+                    ;VAR [NIL] eaop2 : EAOP2
+                    ): APIRET;
+
+   PROCEDURE DosProtectOpen(szFileName             : ARRAY OF CHAR
+                           ;VAR hf                 : HFILE
+                           ;VAR ulAction           : ULONG
+                           ;cbFile                 : ULONG
+                           ;ulAttribute            : ULONG
+                           ;fsOpenFlags            : ULONG
+                           ;fsOpenMode             : ULONG
+                           ;VAR [NIL] eaop2        : EAOP2
+                           ;VAR fhFileHandleLockID : FHLOCK
+                           ): APIRET;
+
+   PROCEDURE DosClose(hFile : HFILE): APIRET;
+
+   PROCEDURE DosProtectClose(hFile              : HFILE
+                            ;fhFileHandleLockID : FHLOCK
+                            ): APIRET;
+
+   PROCEDURE DosRead(hFile        : HFILE
+                    ;pBuffer      : PVOID
+                    ;cbRead       : ULONG
+                    ;VAR cbActual : ULONG
+                    ): APIRET;
+
+   PROCEDURE DosProtectRead(hFile              : HFILE
+                           ;pBuffer            : PVOID
+                           ;cbRead             : ULONG
+                           ;VAR cbActual       : ULONG
+                           ;fhFileHandleLockID : FHLOCK
+                           ): APIRET;
+
+   PROCEDURE DosWrite(hFile        : HFILE
+                     ;pBuffer      : PVOID
+                     ;cbWrite      : ULONG
+                     ;VAR cbActual : ULONG
+                     ): APIRET;
+
+   PROCEDURE DosProtectWrite(hFile              : HFILE
+                            ;pBuffer            : PVOID
+                            ;cbWrite            : ULONG
+                            ;VAR cbActual       : ULONG
+                            ;fhFileHandleLockID : FHLOCK
+                            ): APIRET;
+
+   (* File time and date types *)
+
+   TYPE FILESTATUS = RECORD     (* fsts *)
+      fdateCreation:     FDATE  ;
+      ftimeCreation:     FTIME  ;
+      fdateLastAccess:   FDATE  ;
+      ftimeLastAccess:   FTIME  ;
+      fdateLastWrite:    FDATE  ;
+      ftimeLastWrite:    FTIME  ;
+      cbFile:            ULONG  ;
+      cbFileAlloc:       ULONG  ;
+      attrFile:          USHORT ;
+   END;
+   TYPE PFILESTATUS = POINTER TO FILESTATUS;
+
+   TYPE FILESTATUS2 = RECORD    (* fsts2 *)
+      fdateCreation:      FDATE  ;
+      ftimeCreation:      FTIME  ;
+      fdateLastAccess:    FDATE  ;
+      ftimeLastAccess:    FTIME  ;
+      fdateLastWrite:     FDATE  ;
+      ftimeLastWrite:     FTIME  ;
+      cbFile:             ULONG  ;
+      cbFileAlloc:        ULONG  ;
+      attrFile:           USHORT ;
+      cbList:             ULONG  ;
+   END;
+   TYPE PFILESTATUS2 = POINTER TO FILESTATUS2;
+
+   TYPE FILESTATUS3 = RECORD    (* fsts3 *)
+      fdateCreation:      FDATE  ;
+      ftimeCreation:      FTIME  ;
+      fdateLastAccess:    FDATE  ;
+      ftimeLastAccess:    FTIME  ;
+      fdateLastWrite:     FDATE  ;
+      ftimeLastWrite:     FTIME  ;
+      cbFile:             ULONG  ;
+      cbFileAlloc:        ULONG  ;
+      attrFile:           ULONG  ;
+   END;
+   TYPE PFILESTATUS3 = POINTER TO FILESTATUS3;
+
+   TYPE FILESTATUS4 = RECORD     (* fsts4 *)
+      fdateCreation:      FDATE  ;
+      ftimeCreation:      FTIME  ;
+      fdateLastAccess:    FDATE  ;
+      ftimeLastAccess:    FTIME  ;
+      fdateLastWrite:     FDATE  ;
+      ftimeLastWrite:     FTIME  ;
+      cbFile:             ULONG  ;
+      cbFileAlloc:        ULONG  ;
+      attrFile:           ULONG  ;
+      cbList:             ULONG  ;
+   END;
+   TYPE PFILESTATUS4 = POINTER TO FILESTATUS4;
+
+
+   TYPE FSALLOCATE = RECORD     (* fsalloc *)
+      idFileSystem:      ULONG  ;
+      cSectorUnit:       ULONG  ;
+      cUnit:             ULONG  ;
+      cUnitAvail:        ULONG  ;
+      cbSector:          USHORT ;
+   END;
+   TYPE PFSALLOCATE = POINTER TO FSALLOCATE;
+
+   TYPE HDIR  = LHANDLE;        (* hdir *)
+   TYPE PHDIR = POINTER TO HDIR;
+
+
+   PROCEDURE DosDelete(szFile : ARRAY OF CHAR): APIRET;
+
+   PROCEDURE DosForceDelete(szFile : ARRAY OF CHAR): APIRET;
+
+   PROCEDURE DosDupHandle(hFile     : HFILE
+                         ;VAR Hfile : HFILE
+                         ): APIRET;
+
+   PROCEDURE DosQueryFHState(hFile    : HFILE
+                            ;VAR Mode : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosProtectQueryFHState(hFile              : HFILE
+                                   ;VAR Mode           : ULONG
+                                   ;fhFileHandleLockID : FHLOCK
+                                   ): APIRET;
+
+   PROCEDURE DosSetFHState(hFile : HFILE
+                          ;mode  : ULONG
+                          ): APIRET;
+
+   PROCEDURE DosProtectSetFHState(hFile              : HFILE
+                                 ;mode               : ULONG
+                                 ;fhFileHandleLockID : FHLOCK
+                                 ): APIRET;
+
+   PROCEDURE DosQueryHType(hFile    : HFILE
+                          ;VAR Type : ULONG
+                          ;VAR Attr : ULONG
+                          ): APIRET;
+
+   PROCEDURE DosFindFirst(szFileSpec     : ARRAY OF CHAR
+                         ;VAR hdir       : HDIR
+                         ;flAttribute    : ULONG
+                         ;pfindbuf       : PVOID
+                         ;cbBuf          : ULONG
+                         ;VAR cFileNames : ULONG
+                         ;ulInfoLevel    : ULONG
+                         ): APIRET;
+
+   PROCEDURE DosFindNext(hDir           : HDIR
+                        ;pfindbuf       : PVOID
+                        ;cbfindbuf      : ULONG
+                        ;VAR cFilenames : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosFindClose(hDir : HDIR): APIRET;
+
+   PROCEDURE DosFSAttach(szDevice     : ARRAY OF CHAR
+                        ;szFilesystem : PCHAR
+                        ;pData        : PVOID
+                        ;cbData       : ULONG
+                        ;flag         : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosQueryFSAttach(szDeviceName     : ARRAY OF CHAR
+                             ;ulOrdinal        : ULONG
+                             ;ulFSAInfoLevel   : ULONG
+                             ;VAR fsqb         : FSQBUFFER2
+                             ;VAR cbBuffLength : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosFSCtl(pData       : PVOID
+                     ;cbData      : ULONG
+                     ;VAR cbData  : ULONG
+                     ;pParms      : PVOID
+                     ;cbParmsMax  : ULONG
+                     ;VAR cbParms : ULONG
+                     ;function    : ULONG
+                     ;szRoute     : PCHAR
+                     ;hFile       : HFILE
+                     ;method      : ULONG
+                     ): APIRET;
+
+   PROCEDURE DosSetFileSize(hFile  : HFILE
+                           ;cbSize : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosProtectSetFileSize(hFile              : HFILE
+                                  ;cbSize             : ULONG
+                                  ;fhFileHandleLockID : FHLOCK
+                                  ): APIRET;
+
+   PROCEDURE DosResetBuffer(hFile : HFILE): APIRET;
+
+   PROCEDURE DosSetFilePtr(hFile    : HFILE
+                          ;ib       : LONG
+                          ;method   : ULONG
+                          ;ibActual : PULONG
+                          ): APIRET;
+
+   PROCEDURE DosProtectSetFilePtr(hFile              : HFILE
+                                 ;ib                 : LONG
+                                 ;method             : ULONG
+                                 ;VAR ibActual       : ULONG
+                                 ;fhFileHandleLockID : FHLOCK
+                                 ): APIRET;
+
+   PROCEDURE DosMove(szOld : ARRAY OF CHAR
+                    ;szNew : ARRAY OF CHAR
+                    ): APIRET;
+
+   PROCEDURE DosCopy(szOld  : ARRAY OF CHAR
+                    ;szNew  : ARRAY OF CHAR
+                    ;option : ULONG
+                    ): APIRET;
+
+   PROCEDURE DosEditName(metalevel    : ULONG
+                        ;szSource     : ARRAY OF CHAR
+                        ;szEdit       : ARRAY OF CHAR
+                        ;VAR szTarget : ARRAY OF CHAR
+                        ;cbTarget     : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosCreateDir(szDirName       : ARRAY OF CHAR
+                         ;VAR [NIL] eaop2 : EAOP2
+                         ): APIRET;
+
+   PROCEDURE DosDeleteDir(szDir : ARRAY OF CHAR): APIRET;
+
+   PROCEDURE DosSetDefaultDisk(disknum : ULONG): APIRET;
+
+   PROCEDURE DosQueryCurrentDisk(VAR disknum : ULONG
+                                ;VAR logical : ULONG
+                                ): APIRET;
+
+   PROCEDURE DosSetCurrentDir(szDir : ARRAY OF CHAR): APIRET;
+
+   PROCEDURE DosQueryCurrentDir(disknum   : ULONG
+                               ;VAR Buf   : ARRAY OF CHAR
+                               ;VAR cbBuf : ULONG
+                               ): APIRET;
+
+   PROCEDURE DosQueryFSInfo(disknum   : ULONG
+                           ;infolevel : ULONG
+                           ;pBuf      : PVOID
+                           ;cbBuf     : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosSetFSInfo(disknum   : ULONG
+                         ;infolevel : ULONG
+                         ;pBuf      : PVOID
+                         ;cbBuf     : ULONG
+                         ): APIRET;
+
+   PROCEDURE DosQueryVerify(VAR Bool : BOOL32): APIRET;
+
+   PROCEDURE DosSetVerify(bool : BOOL32): APIRET;
+
+   PROCEDURE DosSetMaxFH(cFH : ULONG): APIRET;
+
+   PROCEDURE DosSetRelMaxFH(VAR cbReqCount : LONG
+                           ;VAR cbCurMaxFH : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosQueryFileInfo(hf          : HFILE
+                             ;ulInfoLevel : ULONG
+                             ;pInfo       : PVOID
+                             ;cbInfoBuf   : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosProtectQueryFileInfo(hf                 : HFILE
+                                    ;ulInfoLevel        : ULONG
+                                    ;pInfo              : PVOID
+                                    ;cbInfoBuf          : ULONG
+                                    ;fhFileHandleLockID : FHLOCK
+                                    ): APIRET;
+
+   PROCEDURE DosSetFileInfo(hf          : HFILE
+                           ;ulInfoLevel : ULONG
+                           ;pInfoBuf    : PVOID
+                           ;cbInfoBuf   : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosProtectSetFileInfo(hf                 : HFILE
+                                  ;ulInfoLevel        : ULONG
+                                  ;pInfoBuf           : PVOID
+                                  ;cbInfoBuf          : ULONG
+                                  ;fhFileHandleLockID : FHLOCK
+                                  ): APIRET;
+
+   PROCEDURE DosQueryPathInfo(szPathName  : ARRAY OF CHAR
+                             ;ulInfoLevel : ULONG
+                             ;pInfoBuf    : PVOID
+                             ;cbInfoBuf   : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosSetPathInfo(szPathName  : ARRAY OF CHAR
+                           ;ulInfoLevel : ULONG
+                           ;pInfoBuf    : PVOID
+                           ;cbInfoBuf   : ULONG
+                           ;flOptions   : ULONG
+                           ): APIRET;
+
+   (* defines for DosSetPathInfo -pathinfo flag *)
+   CONST DSPI_WRTTHRU    = 010H;    (* write through *)
+
+   PROCEDURE DosShutdown(ulReserved : ULONG): APIRET;
+
+   PROCEDURE DosEnumAttribute(ulRefType   : ULONG
+                             ;pvFile      : PVOID
+                             ;ulEntry     : ULONG
+                             ;pvBuf       : PVOID
+                             ;cbBuf       : ULONG
+                             ;VAR ulCount : ULONG
+                             ;ulInfoLevel : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosProtectEnumAttribute(ulRefType          : ULONG
+                                    ;pvFile             : PVOID
+                                    ;ulEntry            : ULONG
+                                    ;pvBuf              : PVOID
+                                    ;cbBuf              : ULONG
+                                    ;VAR ulCount        : ULONG
+                                    ;ulInfoLevel        : ULONG
+                                    ;fhFileHandleLockID : FHLOCK
+                                    ): APIRET;
+
+   (*NOINC*)
+   <* ALIGNMENT = "1" *>
+   (*INC *)
+
+   TYPE DENA1 = RECORD(* _dena1 level 1 info returned from DosEnumAttribute *)
+      reserved: UCHAR;       (* 0 *)
+      cbName:   UCHAR;         (* length of name exculding NULL *)
+      cbValue:  USHORT;        (* length of value *)
+      szName:   ARRAY [0..0] OF UCHAR;      (* variable length asciiz name *)
+   END;
+   TYPE PDENA1 = POINTER TO DENA1;
+
+   TYPE DENA2  = FEA2;
+   TYPE PDENA2 = PFEA2;
+
+   (*NOINC*)
+   <* ALIGNMENT = "4" *>
+   (*INC *)
+   (* Infolevels for DosEnumAttribute  *)
+   CONST ENUMEA_LEVEL_NO_VALUE  = 1;      (* FEA without value *)
+   (* Reference types for DosEnumAttribute *)
+   CONST ENUMEA_REFTYPE_FHANDLE = 0;       (* file handle *)
+   CONST ENUMEA_REFTYPE_PATH    = 1;       (* path name *)
+   CONST ENUMEA_REFTYPE_MAX     = ENUMEA_REFTYPE_PATH;
+
+   CONST DosOpen2       = DosOpen;
+   CONST DosFindFirst2  = DosFindFirst;
+   CONST DosQFHandState = DosQueryFHState;
+   CONST DosProtectQFHandState = DosProtectQueryFHState;
+   CONST DosSetFHandState = DosSetFHState;
+   CONST DosProtectSetFHandState = DosProtectSetFHState;
+   CONST DosQHandType   = DosQueryHType;
+   CONST DosQFSAttach   = DosQueryFSAttach;
+   CONST DosNewSize     = DosSetFileSize;
+   CONST DosProtectNewSize = DosProtectSetFileSize;
+   CONST DosBufReset    = DosResetBuffer;
+   CONST DosChgFilePtr  = DosSetFilePtr;
+   CONST DosProtectChgFilePtr  = DosProtectSetFilePtr;
+   CONST DosMkDir       = DosCreateDir;
+   CONST DosMkDir2      = DosCreateDir;
+   CONST DosRmDir       = DosDeleteDir;
+   CONST DosSelectDisk  = DosSetDefaultDisk;
+   CONST DosQCurDisk    = DosQueryCurrentDisk;
+   CONST DosChDir       = DosSetCurrentDir;
+   CONST DosQCurDir     = DosQueryCurrentDir;
+   CONST DosQFSInfo     = DosQueryFSInfo;
+   CONST DosQVerify     = DosQueryVerify;
+   CONST DosQFileInfo   = DosQueryFileInfo;
+   CONST DosProtectQFileInfo   = DosProtectQueryFileInfo;
+   CONST DosQPathInfo   = DosQueryPathInfo;
+
+#endif (* common INCL_DOSFILEMGR *)
+
+#if (defined(INCL_DOSMEMMGR) || !defined(INCL_NOCOMMON))
+   (*** Memory management *)
+
+   PROCEDURE DosAllocMem(VAR pb : PVOID
+                        ;cb     : ULONG
+                        ;flag   : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosFreeMem(pb : PVOID): APIRET;
+
+   PROCEDURE DosSetMem(pb   : PVOID
+                      ;cb   : ULONG
+                      ;flag : ULONG
+                      ): APIRET;
+
+   PROCEDURE DosGiveSharedMem(pb   : PVOID
+                             ;pid  : PID
+                             ;flag : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosGetSharedMem(pb   : PVOID
+                            ;flag : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosGetNamedSharedMem(VAR pb : PVOID
+                                 ;szName : ARRAY OF CHAR
+                                 ;flag   : ULONG
+                                 ): APIRET;
+
+   PROCEDURE DosAllocSharedMem(VAR pb : PVOID
+                              ;szName : ARRAY OF CHAR
+                              ;cb     : ULONG
+                              ;flag   : ULONG
+                              ): APIRET;
+
+   PROCEDURE DosQueryMem(pb       : PVOID
+                        ;VAR cb   : ULONG
+                        ;VAR Flag : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosSubAllocMem(pbBase : PVOID
+                           ;VAR pb : PVOID
+                           ;cb     : ULONG
+                           ): APIRET;
+   CONST DosSubAlloc   =  DosSubAllocMem;
+   CONST DOSSUBALLOC   =  DosSubAllocMem;
+
+   PROCEDURE DosSubFreeMem(pbBase : PVOID
+                          ;pb     : PVOID
+                          ;cb     : ULONG
+                          ): APIRET;
+   CONST DosSubFree    =  DosSubFreeMem;
+   CONST DOSSUBFREE    =  DosSubFreeMem;
+
+   PROCEDURE DosSubSetMem(pbBase : PVOID
+                         ;flag   : ULONG
+                         ;cb     : ULONG
+                         ): APIRET;
+   CONST DosSubSet     =  DosSubSetMem;
+   CONST DOSSUBSET     =  DosSubSetMem;
+
+   PROCEDURE DosSubUnsetMem(pbBase : PVOID): APIRET;
+   CONST DosSubUnset   =  DosSubUnsetMem;
+   CONST DOSSUBUNSET   =  DosSubUnsetMem;
+
+   #include <bsememf.hm>    (* get flags for API                            *)
+
+#endif (* INCL_DOSMEMMGR *)
+
+
+
+#if (defined(INCL_DOSSEMAPHORES) || !defined(INCL_NOCOMMON))
+
+   (*
+   *     32-bit Semaphore Support
+   *)
+
+   (* Semaphore Attributes *)
+
+   CONST DC_SEM_SHARED  = 001H;   (* DosCreateMutex; DosCreateEvent; and     *)
+                                  (*   DosCreateMuxWait use it to indicate   *)
+                                  (*   whether the semaphore is shared or    *)
+                                  (*   private when the PSZ is null          *)
+   CONST DCMW_WAIT_ANY  = 002H;   (* DosCreateMuxWait option for wait on any *)
+                                  (*   event/mutex to occur                  *)
+   CONST DCMW_WAIT_ALL  = 004H;   (* DosCreateMuxWait option for wait on all *)
+                                  (*   events/mutexs to occur                *)
+
+   CONST SEM_INDEFINITE_WAIT   =  0FFFFFFFFH;
+   CONST SEM_IMMEDIATE_RETURN  =  0;
+
+   #ifndef __HSEM__
+      #define __HSEM__
+      TYPE HSEM  = SYSTEM.ADDRESS;
+      TYPE PHSEM = POINTER TO HSEM;
+   #endif
+
+   TYPE SEMRECORD = RECORD     (* psr *)
+      hsemCur:     HSEM        ;
+      ulUser:      ULONG       ;
+   END;
+   TYPE PSEMRECORD = POINTER TO SEMRECORD;
+
+#endif (* common INCL_DOSSEMAPHORES *)
+
+
+
+#ifdef INCL_DOSSEMAPHORES
+
+   #ifndef __HEV__            (* INCL_SEMAPHORE may also define HEV *)
+      #define __HEV__
+      TYPE  HEV  = ULONG;             (* hev *)
+      TYPE  PHEV = POINTER TO HEV;
+   #endif
+
+   TYPE  HMTX  = ULONG;            (* hmtx *)
+   TYPE  PHMTX = POINTER TO HMTX;
+   TYPE  HMUX  = ULONG;            (* hmux *)
+   TYPE  PHMUX = POINTER TO HMUX;
+
+   PROCEDURE DosCreateEventSem(szName  : PCHAR
+                              ;VAR hev : HEV
+                              ;flAttr  : ULONG
+                              ;fState  : BOOL32
+                              ): APIRET;
+
+   PROCEDURE DosOpenEventSem(szName  : PCHAR
+                            ;VAR hev : HEV
+                            ): APIRET;
+
+   PROCEDURE DosCloseEventSem(hev : HEV): APIRET;
+
+   PROCEDURE DosResetEventSem(hev          : HEV
+                             ;VAR ulPostCt : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosPostEventSem(hev : HEV): APIRET;
+
+   PROCEDURE DosWaitEventSem(hev       : HEV
+                            ;ulTimeout : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosQueryEventSem(hev          : HEV
+                             ;VAR ulPostCt : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosCreateMutexSem(szName   : PCHAR
+                              ;VAR hmtx : HMTX
+                              ;flAttr   : ULONG
+                              ;fState   : BOOL32
+                              ): APIRET;
+
+   PROCEDURE DosOpenMutexSem(szName   : PCHAR
+                            ;VAR hmtx : HMTX
+                            ): APIRET;
+
+   PROCEDURE DosCloseMutexSem(hmtx : HMTX): APIRET;
+
+   PROCEDURE DosRequestMutexSem(hmtx      : HMTX
+                               ;ulTimeout : ULONG
+                               ): APIRET;
+
+   PROCEDURE DosReleaseMutexSem(hmtx : HMTX): APIRET;
+
+   PROCEDURE DosQueryMutexSem(hmtx        : HMTX
+                             ;VAR pid     : PID
+                             ;VAR tid     : TID
+                             ;VAR ulCount : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosCreateMuxWaitSem(szName   : PCHAR
+                                ;VAR hmux : HMUX
+                                ;cSemRec  : ULONG
+                                ;aSemRec  : ARRAY OF SEMRECORD
+                                ;flAttr   : ULONG
+                                ): APIRET;
+
+   PROCEDURE DosOpenMuxWaitSem(szName   : PCHAR
+                              ;VAR hmux : HMUX
+                              ): APIRET;
+
+   PROCEDURE DosCloseMuxWaitSem(hmux : HMUX): APIRET;
+
+   PROCEDURE DosWaitMuxWaitSem(hmux       : HMUX
+                              ;ulTimeout  : ULONG
+                              ;VAR ulUser : ULONG
+                              ): APIRET;
+
+   PROCEDURE DosAddMuxWaitSem(hmux       : HMUX
+                             ;VAR SemRec : SEMRECORD
+                             ): APIRET;
+
+   PROCEDURE DosDeleteMuxWaitSem(hmux : HMUX
+                                ;hSem : HSEM
+                                ): APIRET;
+
+   PROCEDURE DosQueryMuxWaitSem(hmux        : HMUX
+                               ;VAR cSemRec : ULONG
+                               ;VAR SemRec  : ARRAY OF SEMRECORD
+                               ;VAR flAttr  : ULONG
+                               ): APIRET;
+
+#endif (* INCL_DOSSEMAPHORES *)
+
+#if (defined(INCL_DOSDATETIME) || !defined(INCL_NOCOMMON))
+
+   (*** Time support *)
+
+   TYPE DATETIME = RECORD     (* date *)
+      hours:          UCHAR   ;
+      minutes:        UCHAR   ;
+      seconds:        UCHAR   ;
+      hundredths:     UCHAR   ;
+      day:            UCHAR   ;
+      month:          UCHAR   ;
+      year:           USHORT  ;
+      timezone:       SHORT   ;
+      weekday:        UCHAR   ;
+   END;
+   TYPE PDATETIME = POINTER TO DATETIME;
+
+   PROCEDURE DosGetDateTime(VAR dt : DATETIME): APIRET;
+
+   PROCEDURE DosSetDateTime(VAR dt : DATETIME): APIRET;
+
+#endif (* common INCL_DOSDATETIME *)
+
+#ifdef INCL_DOSDATETIME
+
+   TYPE HTIMER  = LHANDLE;
+   TYPE PHTIMER = POINTER TO HTIMER;
+
+   PROCEDURE DosAsyncTimer(msec       : ULONG
+                          ;hsem       : HSEM
+                          ;VAR htimer : HTIMER
+                          ): APIRET;
+
+   PROCEDURE DosStartTimer(msec       : ULONG
+                          ;hsem       : HSEM
+                          ;VAR htimer : PHTIMER
+                          ): APIRET;
+
+   PROCEDURE DosStopTimer(htimer : HTIMER): APIRET;
+
+   CONST DosTimerAsync  = DosAsyncTimer;
+   CONST DosTimerStart  = DosStartTimer;
+   CONST DosTimerStop   = DosStopTimer;
+
+#endif  (* INCL_DOSDATETIME *)
+
+(*** Module manager *)
+
+#ifdef INCL_DOSMODULEMGR
+
+   PROCEDURE DosLoadModule(VAR szName : ARRAY OF CHAR
+                          ;cbName     : ULONG
+                          ;szModname  : ARRAY OF CHAR
+                          ;VAR hmod   : HMODULE
+                          ): APIRET;
+
+   PROCEDURE DosFreeModule(hmod : HMODULE): APIRET;
+
+   PROCEDURE DosQueryProcAddr(hmod    : HMODULE
+                             ;ordinal : ULONG
+                             ;szName  : PCHAR
+                             ;VAR pfn : PFN
+                             ): APIRET;
+
+   PROCEDURE DosQueryModuleHandle(szModname : ARRAY OF CHAR
+                                 ;VAR hmod  : HMODULE
+                                 ): APIRET;
+
+   PROCEDURE DosQueryModuleName(hmod   : HMODULE
+                               ;cbName : ULONG
+                               ;VAR ch : ARRAY OF CHAR
+                               ): APIRET;
+
+   CONST PT_16BIT    =    0;
+   CONST PT_32BIT    =    1;
+
+   PROCEDURE DosQueryProcType(hmod           : HMODULE
+                             ;ordinal        : ULONG
+                             ;szName         : PCHAR
+                             ;VAR ulproctype : ULONG
+                             ): APIRET;
+
+#endif (* INCL_DOSMODULEMGR *)
+
+#if (defined(INCL_DOSRESOURCES) || !defined(INCL_NOCOMMON))
+   (*** Resource support *)
+
+   (* Predefined resource types *)
+
+   CONST RT_POINTER     = 1;   (* mouse pointer shape *)
+   CONST RT_BITMAP      = 2;   (* bitmap *)
+   CONST RT_MENU        = 3;   (* menu template *)
+   CONST RT_DIALOG      = 4;   (* dialog template *)
+   CONST RT_STRING      = 5;   (* string tables *)
+   CONST RT_FONTDIR     = 6;   (* font directory *)
+   CONST RT_FONT        = 7;   (* font *)
+   CONST RT_ACCELTABLE  = 8;   (* accelerator tables *)
+   CONST RT_RCDATA      = 9;   (* binary data *)
+   CONST RT_MESSAGE     = 10;  (* error msg     tables *)
+   CONST RT_DLGINCLUDE  = 11;  (* dialog include file name *)
+   CONST RT_VKEYTBL     = 12;  (* key to vkey tables *)
+   CONST RT_KEYTBL      = 13;  (* key to UGL tables *)
+   CONST RT_CHARTBL     = 14;  (* glyph to character tables *)
+   CONST RT_DISPLAYINFO = 15;  (* screen display information *)
+
+   CONST RT_FKASHORT    = 16;  (* function key area short form *)
+   CONST RT_FKALONG     = 17;  (* function key area long form *)
+
+   CONST RT_HELPTABLE   = 18;  (* Help table for Cary Help manager *)
+   CONST RT_HELPSUBTABLE= 19;  (* Help subtable for Cary Help manager *)
+
+   CONST RT_FDDIR       = 20;  (* DBCS uniq/font driver directory *)
+   CONST RT_FD          = 21;  (* DBCS uniq/font driver *)
+
+   CONST RT_MAX         = 22;  (* 1st unused Resource Type *)
+
+
+   CONST RF_ORDINALID   = 080000000H;     (* ordinal id flag in resource table *)
+
+#endif (* common INCL_DOSRESOURCES *)
+
+#ifdef INCL_DOSRESOURCES
+
+   PROCEDURE DosGetResource(hmod   : HMODULE
+                           ;idType : ULONG
+                           ;idName : ULONG
+                           ;VAR pb : PVOID
+                           ): APIRET;
+   CONST DosGetResource2 = DosGetResource;
+
+   PROCEDURE DosFreeResource(pb : PVOID): APIRET;
+
+   PROCEDURE DosQueryResourceSize(hmod       : HMODULE
+                                 ;idt        : ULONG
+                                 ;idn        : ULONG
+                                 ;VAR ulsize : ULONG
+                                 ): APIRET;
+
+#endif (* INCL_DOSRESOURCES *)
+
+(*** NLS Support *)
+
+#ifdef INCL_DOSNLS
+
+   TYPE COUNTRYCODE = RECORD  (* ctryc *)
+      country:    ULONG       ;
+      codepage:   ULONG       ;
+   END;
+   TYPE PCOUNTRYCODE = POINTER TO COUNTRYCODE;
+
+   TYPE COUNTRYINFO = RECORD  (* ctryi *)
+      country:              ULONG       ;
+      codepage:             ULONG       ;
+      fsDateFmt:            ULONG       ;
+      szCurrency:           ARRAY [0..4] OF CHAR;
+      szThousandsSeparator: ARRAY [0..1] OF CHAR;
+      szDecimal:            ARRAY [0..1] OF CHAR;
+      szDateSeparator:      ARRAY [0..1] OF CHAR;
+      szTimeSeparator:      ARRAY [0..1] OF CHAR;
+      fsCurrencyFmt:        UCHAR       ;
+      cDecimalPlace:        UCHAR       ;
+      fsTimeFmt:            UCHAR       ;
+      abReserved1:          ARRAY [0..1] OF USHORT;
+      szDataSeparator:      ARRAY [0..1] OF CHAR;
+      abReserved2:          ARRAY [0..4] OF USHORT;
+   END;
+   TYPE PCOUNTRYINFO = POINTER TO COUNTRYINFO;
+
+
+   PROCEDURE DosQueryCtryInfo(cb           : ULONG
+                             ;VAR cc       : COUNTRYCODE
+                             ;VAR ci       : COUNTRYINFO
+                             ;VAR cbActual : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosQueryDBCSEnv(cb      : ULONG
+                            ;VAR cc  : COUNTRYCODE
+                            ;VAR Buf : ARRAY OF CHAR
+                            ): APIRET;
+
+   PROCEDURE DosMapCase(cb     : ULONG
+                       ;VAR cc : COUNTRYCODE
+                       ;VAR ch : ARRAY OF CHAR
+                       ): APIRET;
+
+   PROCEDURE DosQueryCollate(cb      : ULONG
+                            ;VAR cc  : COUNTRYCODE
+                            ;VAR ch  : ARRAY OF CHAR
+                            ;VAR cch : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosQueryCp(cb       : ULONG
+                       ;VAR arCP : ARRAY OF ULONG
+                       ;VAR cCP  : ULONG
+                       ): APIRET;
+
+   PROCEDURE DosSetProcessCp(cp : ULONG): APIRET;
+
+   CONST DosGetCtryInfo = DosQueryCtryInfo;
+   CONST DosGetDBCSEv   = DosQueryDBCSEnv;
+   CONST DosCaseMap     = DosMapCase;
+   CONST DosGetCollate  = DosQueryCollate;
+   CONST DosGetCp       = DosQueryCp;
+   CONST DosSetProcCp   = DosSetProcessCp;
+
+#endif (* INCL_DOSNLS *)
+
+(*** Signal support *)
+
+#ifdef INCL_DOSEXCEPTIONS
+
+   (* DosSetSigExceptionFocus codes *)
+
+   CONST SIG_UNSETFOCUS = FALSE;  (* Was 0 *)
+   CONST SIG_SETFOCUS   = TRUE;   (* Was 1 *)
+
+   #include <bsexcpt.hm>
+
+   PROCEDURE DosSetExceptionHandler(VAR ERegRec : EXCEPTIONREGISTRATIONRECORD): APIRET;
+
+   PROCEDURE DosUnsetExceptionHandler(VAR ERegRec : EXCEPTIONREGISTRATIONRECORD): APIRET;
+
+   PROCEDURE DosRaiseException(VAR except : EXCEPTIONREPORTRECORD): APIRET;
+
+   PROCEDURE DosSendSignalException(pid       : PID
+                                   ;exception : ULONG
+                                   ): APIRET;
+
+   PROCEDURE DosUnwindException(phandler           : PEXCEPTIONREGISTRATIONRECORD
+                               ;pTargetIP          : PVOID
+                               ;VAR [NIL] ERepRec  : EXCEPTIONREPORTRECORD
+                               ): APIRET;
+
+   PROCEDURE DosSetSignalExceptionFocus(flag        : BOOL32
+                                       ;VAR ulTimes : ULONG
+                                       ): APIRET;
+
+   PROCEDURE DosEnterMustComplete(VAR ulNesting : ULONG): APIRET;
+
+   PROCEDURE DosExitMustComplete(VAR ulNesting : ULONG): APIRET;
+
+   PROCEDURE DosAcknowledgeSignalException(ulSignalNum : ULONG): APIRET;
+
+#endif (* INCL_DOSEXCEPTIONS *)
+
+(*** Pipe and queue support *)
+
+#ifdef INCL_DOSQUEUES
+   #if (defined(INCL_DOSFILEMGR) || !defined(INCL_NOCOMMON))
+
+      TYPE HQUEUE  = LHANDLE;  (* hq *)
+      TYPE PHQUEUE = POINTER TO HQUEUE;
+      TYPE REQUESTDATA = RECORD    (* reqqdata *)
+         pid:          PID         ;
+         ulData:       ULONG       ;
+      END;
+      TYPE PREQUESTDATA = POINTER TO REQUESTDATA;
+
+      CONST QUE_FIFO             = 0H;
+      CONST QUE_LIFO             = 1H;
+      CONST QUE_PRIORITY         = 2H;
+      CONST QUE_NOCONVERT_ADDRESS= 0H;
+      CONST QUE_CONVERT_ADDRESS  = 4H;
+
+
+      PROCEDURE DosCreatePipe(VAR hfRead  : HFILE
+                             ;VAR hfWrite : HFILE
+                             ;cb          : ULONG
+                             ): APIRET;
+
+      PROCEDURE DosCloseQueue(hq : HQUEUE): APIRET;
+
+      PROCEDURE DosCreateQueue(VAR hq   : HQUEUE
+                              ;priority : ULONG
+                              ;szName   : ARRAY OF CHAR
+                              ): APIRET;
+
+      PROCEDURE DosOpenQueue(VAR pid : PID
+                            ;VAR hq  : HQUEUE
+                            ;szName  : ARRAY OF CHAR
+                            ): APIRET;
+
+      PROCEDURE DosPeekQueue(hq           : HQUEUE
+                            ;VAR Request  : REQUESTDATA
+                            ;VAR cbData   : ULONG
+                            ;VAR pbuf     : PVOID
+                            ;VAR element  : ULONG
+                            ;nowait       : BOOL32
+                            ;VAR priority : BYTE
+                            ;hsem         : HEV
+                            ): APIRET;
+
+      PROCEDURE DosPurgeQueue(hq : HQUEUE): APIRET;
+
+      PROCEDURE DosQueryQueue(hq            : HQUEUE
+                             ;VAR cbEntries : ULONG
+                             ): APIRET;
+
+      PROCEDURE DosReadQueue(hq           : HQUEUE
+                            ;VAR Request  : REQUESTDATA
+                            ;VAR cbData   : ULONG
+                            ;VAR pbuf     : PVOID
+                            ;element      : ULONG
+                            ;wait         : BOOL32
+                            ;VAR priority : BYTE
+                            ;hsem         : HEV
+                            ): APIRET;
+
+      PROCEDURE DosWriteQueue(hq       : HQUEUE
+                             ;request  : ULONG
+                             ;cbData   : ULONG
+                             ;pbData   : PVOID
+                             ;priority : ULONG
+                             ): APIRET;
+
+   #else (* INCL_DOSFILEMGR || !INCL_NOCOMMON *)
+      #error PHFILE not defined - define INCL_DOSFILEMGR or undefine INCL_NOCOMMON
+   #endif (* INCL_DOSFILEMGR || !INCL_NOCOMMON *)
+#endif (* INCL_DOSQUEUES *)
+
+
+#ifdef INCL_DOSMISC
+
+   (* definitions for DosSearchPath control word *)
+   CONST DSP_IMPLIEDCUR         = 1; (* current dir will be searched first *)
+   CONST DSP_PATHREF            = 2; (* from env.variable *)
+   CONST DSP_IGNORENETERR       = 4; (* ignore net errs & continue search *)
+
+   (* indices for DosQuerySysInfo *)
+   CONST QSV_MAX_PATH_LENGTH    = 1;
+   CONST Q_MAX_PATH_LENGTH      = QSV_MAX_PATH_LENGTH;
+   CONST QSV_MAX_TEXT_SESSIONS  = 2;
+   CONST QSV_MAX_PM_SESSIONS    = 3;
+   CONST QSV_MAX_VDM_SESSIONS   = 4;
+   CONST QSV_BOOT_DRIVE         = 5;       (* 1=A; 2=B; etc. *)
+   CONST QSV_DYN_PRI_VARIATION  = 6;       (* 0=Absolute; 1=Dynamic *)
+   CONST QSV_MAX_WAIT           = 7;       (* seconds *)
+   CONST QSV_MIN_SLICE          = 8;       (* milli seconds *)
+   CONST QSV_MAX_SLICE          = 9;       (* milli seconds *)
+   CONST QSV_PAGE_SIZE          = 10;
+   CONST QSV_VERSION_MAJOR      = 11;
+   CONST QSV_VERSION_MINOR      = 12;
+   CONST QSV_VERSION_REVISION   = 13;      (* Revision letter *)
+   CONST QSV_MS_COUNT           = 14;      (* Free running millisecond counter *)
+   CONST QSV_TIME_LOW           = 15;      (* Low dword of time in seconds *)
+   CONST QSV_TIME_HIGH          = 16;      (* High dword of time in seconds *)
+   CONST QSV_TOTPHYSMEM         = 17;      (* Physical memory on system *)
+   CONST QSV_TOTRESMEM          = 18;      (* Resident memory on system *)
+   CONST QSV_TOTAVAILMEM        = 19;      (* Available memory for all processes *)
+   CONST QSV_MAXPRMEM           = 20;      (* Avail private mem for calling proc *)
+   CONST QSV_MAXSHMEM           = 21;      (* Avail shared mem for calling proc *)
+   CONST QSV_TIMER_INTERVAL     = 22;      (* Timer interval in tenths of ms *)
+   CONST QSV_MAX_COMP_LENGTH    = 23;      (* max len of one component in a name *)
+   CONST QSV_MAX                = QSV_MAX_COMP_LENGTH;
+
+   (* definitions for DosError - combine with | *)
+   CONST FERR_DISABLEHARDERR    = 000000000H;    (* disable hard error popups *)
+   CONST FERR_ENABLEHARDERR     = 000000001H;    (* enable hard error popups *)
+   CONST FERR_ENABLEEXCEPTION   = 000000000H;    (* enable exception popups *)
+   CONST FERR_DISABLEEXCEPTION  = 000000002H;    (* disable exception popups *)
+
+   (* definitions for DosQueryRASInfo Index *)
+   CONST SIS_MMIOADDR           = 0;
+   CONST SIS_MEC_TABLE          = 1;
+   CONST SIS_SYS_LOG            = 2;
+
+
+   PROCEDURE DosError(error : ULONG): APIRET;
+
+   PROCEDURE DosGetMessage(VAR [NIL] Table  : ARRAY OF PCHAR (* !!! Not sure about NIL *)
+                          ;cTable           : ULONG
+                          ;VAR Buf          : ARRAY OF CHAR
+                          ;cbBuf            : ULONG
+                          ;msgnumber        : ULONG
+                          ;VAR [NIL] szFile : ARRAY OF CHAR (* !!! Not sure about NIL *)
+                          ;VAR cbMsg        : ULONG
+                          ): APIRET;
+
+   PROCEDURE DosErrClass(code       : ULONG
+                        ;VAR Class  : ULONG
+                        ;VAR Action : ULONG
+                        ;VAR Locus  : ULONG
+                        ): APIRET;
+
+   PROCEDURE DosInsertMessage(VAR [NIL] Table : ARRAY OF PCHAR (* !!! Not sure about NIL *)
+                             ;cTable          : ULONG
+                             ;szMsg           : ARRAY OF CHAR
+                             ;cbMsg           : ULONG
+                             ;VAR Buf         : ARRAY OF CHAR
+                             ;cbBuf           : ULONG
+                             ;VAR cbMsg       : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosPutMessage(hfile : HFILE
+                          ;cbMsg : ULONG
+                          ;Buf   : ARRAY OF CHAR
+                          ): APIRET;
+
+   PROCEDURE DosQuerySysInfo(iStart : ULONG
+                            ;iLast  : ULONG
+                            ;pBuf   : PVOID
+                            ;cbBuf  : ULONG
+                            ): APIRET;
+
+   PROCEDURE DosScanEnv(szName       : ARRAY OF CHAR
+                       ;VAR pszValue : PCSZ
+                       ): APIRET;
+
+   PROCEDURE DosSearchPath(flag         : ULONG
+                          ;szPathOrName : ARRAY OF CHAR
+                          ;szFilename   : ARRAY OF CHAR
+                          ;VAR Buf      : ARRAY OF CHAR
+                          ;cbBuf        : ULONG
+                          ): APIRET;
+
+   PROCEDURE DosQueryMessageCP(VAR b      : ARRAY OF CHAR
+                              ;cb         : ULONG
+                              ;szFilename : ARRAY OF CHAR (* !!! m.b. NIL? *)
+                              ;VAR cbBuf  : ULONG
+                              ): APIRET;
+
+   PROCEDURE DosQueryRASInfo(Index : ULONG            (* !!! Not described *)
+                            ;Addr  : PPVOID
+                            ): APIRET;
+
+   CONST DosInsMessage  = DosInsertMessage;
+   CONST DosQSysInfo    = DosQuerySysInfo;
+
+#endif (* INCL_DOSMISC *)
+
+
+(*** Session manager support *)
+
+#ifdef INCL_DOSSESMGR
+
+   TYPE STARTDATA = RECORD    (* stdata *)
+      Length:           USHORT  ;
+      Related:          USHORT  ;
+      FgBg:             USHORT  ;
+      TraceOpt:         USHORT  ;
+      PgmTitle:         PSZ     ;
+      PgmName:          PSZ     ;
+      PgmInputs:        PSZ     ;
+      TermQ:            PSZ     ;
+      Environment:      PSZ     ;
+      InheritOpt:       USHORT  ;
+      SessionType:      USHORT  ;
+      IconFile:         PSZ     ;
+      PgmHandle:        ULONG   ;
+      PgmControl:       USHORT  ;
+      InitXPos:         USHORT  ;
+      InitYPos:         USHORT  ;
+      InitXSize:        USHORT  ;
+      InitYSize:        USHORT  ;
+      Reserved:         USHORT  ;
+      ObjectBuffer:     PSZ     ;
+      ObjectBuffLen:    ULONG   ;
+   END;
+   TYPE PSTARTDATA = POINTER TO STARTDATA;
+
+   CONST SSF_RELATED_INDEPENDENT =0;
+   CONST SSF_RELATED_CHILD       =1;
+
+   CONST SSF_FGBG_FORE           =0;
+   CONST SSF_FGBG_BACK           =1;
+
+   CONST SSF_TRACEOPT_NONE       =0;
+   CONST SSF_TRACEOPT_TRACE      =1;
+   CONST SSF_TRACEOPT_TRACEALL   =2;
+
+   CONST SSF_INHERTOPT_SHELL     =0;
+   CONST SSF_INHERTOPT_PARENT    =1;
+
+   (* note that these types are identical to those in pmshl.h for PROG_* *)
+   CONST SSF_TYPE_DEFAULT        =0;
+   CONST SSF_TYPE_FULLSCREEN     =1;
+   CONST SSF_TYPE_WINDOWABLEVIO  =2;
+   CONST SSF_TYPE_PM             =3;
+   CONST SSF_TYPE_VDM            =4;
+   CONST SSF_TYPE_GROUP          =5;
+   CONST SSF_TYPE_DLL            =6;
+   CONST SSF_TYPE_WINDOWEDVDM    =7;
+   CONST SSF_TYPE_PDD            =8;
+   CONST SSF_TYPE_VDD            =9;
+
+   (* note that these flags are identical to those in pmshl.h for SHE_* *)
+   CONST SSF_CONTROL_VISIBLE     =00000H;
+   CONST SSF_CONTROL_INVISIBLE   =00001H;
+   CONST SSF_CONTROL_MAXIMIZE    =00002H;
+   CONST SSF_CONTROL_MINIMIZE    =00004H;
+   CONST SSF_CONTROL_NOAUTOCLOSE =00008H;
+   CONST SSF_CONTROL_SETPOS      =08000H;
+
+   TYPE STATUSDATA = RECORD  (* stsdata *)
+      Length:    USHORT ;
+      SelectInd: USHORT ;
+      BondInd:   USHORT ;
+   END;
+   TYPE PSTATUSDATA = POINTER TO STATUSDATA;
+
+   (* SelectInd and BondInd paramater values for DosSetSession *)
+   CONST SET_SESSION_UNCHANGED     = 0;
+   CONST SET_SESSION_SELECTABLE    = 1;
+   CONST SET_SESSION_NON_SELECTABLE= 2;
+   CONST SET_SESSION_BOND          = 1;
+   CONST SET_SESSION_NO_BOND       = 2;
+
+   (* TargetOption (scope) parameter values for DosStopSession *)
+   CONST STOP_SESSION_SPECIFIED    = 0;
+   CONST STOP_SESSION_ALL          = 1;
+
+
+
+
+   PROCEDURE DosStartSession(VAR sd        : STARTDATA
+                            ;VAR idSession : ULONG
+                            ;VAR pid       : PID
+                            ): APIRET;
+
+   PROCEDURE DosSetSession(idSession : ULONG
+                          ;VAR sd    : STATUSDATA
+                          ): APIRET;
+
+   PROCEDURE DosSelectSession(idSession : ULONG): APIRET;
+
+   PROCEDURE DosStopSession(scope     : ULONG
+                           ;idSession : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosQueryAppType(szName    : ARRAY OF CHAR
+                            ;VAR Flags : ULONG
+                            ): APIRET;
+
+   CONST DosQAppType   =  DosQueryAppType;
+
+#endif (* INCL_DOSSESMGR *)
+
+
+
+#if (defined(INCL_DOSSESMGR) || defined(INCL_DOSFILEMGR))
+
+   (* AppType returned in by DosQueryAppType in pFlags as follows          *)
+   CONST FAPPTYP_NOTSPEC        = 00000H;
+   CONST FAPPTYP_NOTWINDOWCOMPAT= 00001H;
+   CONST FAPPTYP_WINDOWCOMPAT   = 00002H;
+   CONST FAPPTYP_WINDOWAPI      = 00003H;
+   CONST FAPPTYP_BOUND          = 00008H;
+   CONST FAPPTYP_DLL            = 00010H;
+   CONST FAPPTYP_DOS            = 00020H;
+   CONST FAPPTYP_PHYSDRV        = 00040H;  (* physical device driver       *)
+   CONST FAPPTYP_VIRTDRV        = 00080H;  (* virtual device driver        *)
+   CONST FAPPTYP_PROTDLL        = 00100H;  (* 'protected memory' dll       *)
+   CONST FAPPTYP_WINDOWSREAL    = 00200H;  (* Windows real mode app        *)
+   CONST FAPPTYP_WINDOWSPROT    = 00400H;  (* Windows protect mode app     *)
+   CONST FAPPTYP_WINDOWSPROT31  = 01000H;  (* Windows 3.1 protect mode app *)
+   CONST FAPPTYP_32BIT          = 04000H;
+   CONST FAPPTYP_EXETYPE        = FAPPTYP_WINDOWAPI;
+   CONST FAPPTYP_RESERVED       = 0FFFFFFFFH-041FBH;
+
+   #ifdef INCL_DOSFILEMGR
+
+      CONST EAT_APPTYP_PMAPI    =    000H;            (* Uses PM API *)
+      CONST EAT_APPTYP_DOS      =    001H;            (* DOS APP *)
+      CONST EAT_APPTYP_PMW      =    002H;            (* Window compatible *)
+      CONST EAT_APPTYP_NOPMW    =    003H;            (* Not Window compatible *)
+      CONST EAT_APPTYP_EXETYPE  =    003H;            (* EXE type mask *)
+      CONST EAT_APPTYP_RESERVED =    0FFFFFFFFH-03H;
+
+   #endif (* INCL_DOSFILEMGR *)
+
+#endif (* INCL_DOSSESMGR || INCL_DOSFILEMGR *)
+
+
+
+
+(*** Device support *)
+
+#ifdef INCL_DOSDEVICES
+
+
+   PROCEDURE DosDevConfig(pdevinfo : PVOID
+                         ;item     : ULONG
+                         ): APIRET;
+
+   CONST DEVINFO_PRINTER       =  0;       (* Number of printers attached *)
+   CONST DEVINFO_RS232         =  1;       (* Number of RS232 ports *)
+   CONST DEVINFO_FLOPPY        =  2;       (* Number of diskette drives *)
+   CONST DEVINFO_COPROCESSOR   =  3;       (* Presence of math coprocessor *)
+   CONST DEVINFO_SUBMODEL      =  4;       (* PC Submodel Type *)
+   CONST DEVINFO_MODEL         =  5;       (* PC Model Type *)
+   CONST DEVINFO_ADAPTER       =  6;       (* Primary display adapter type *)
+
+   PROCEDURE DosDevIOCtl(hDevice       : HFILE
+                        ;category      : ULONG
+                        ;function      : ULONG
+                        ;pParams       : PVOID
+                        ;cbParmLenMax  : ULONG
+                        ;VAR cbParmLen : ULONG
+                        ;pData         : PVOID
+                        ;cbDataLenMax  : ULONG
+                        ;VAR cbDataLen : ULONG
+                        ): APIRET;
+
+
+   CONST DosDevIOCtl2   =  DosDevIOCtl;
+
+   PROCEDURE DosPhysicalDisk(function : ULONG
+                            ;pBuf     : PVOID
+                            ;cbBuf    : ULONG
+                            ;pParams  : PVOID
+                            ;cbParams : ULONG
+                            ): APIRET;
+
+   CONST INFO_COUNT_PARTITIONABLE_DISKS = 1;       (* # of partitionable disks *)
+   CONST INFO_GETIOCTLHANDLE            = 2;       (* Obtain handle            *)
+   CONST INFO_FREEIOCTLHANDLE           = 3;       (* Release handle           *)
+
+#endif (* INCL_DOSDEVICES *)
+
+
+(*** DosNamedPipes API Support *)
+
+#ifdef INCL_DOSNMPIPES
+
+   (*** Data structures used with named pipes ***)
+
+   TYPE HPIPE  = LHANDLE;     (* hp *)
+   TYPE PHPIPE = POINTER TO HPIPE;
+
+   TYPE AVAILDATA = RECORD             (* AVAILDATA *)
+      cbpipe:     USHORT;         (* bytes left in the pipe *)
+      cbmessage:  USHORT;         (* bytes left in the current message *)
+   END;
+   TYPE PAVAILDATA = POINTER TO AVAILDATA;
+
+   TYPE PIPEINFO = RECORD              (* nmpinf *)
+      cbOut:      USHORT;     (* length of outgoing I/O buffer *)
+      cbIn:       USHORT;     (* length of incoming I/O buffer *)
+      cbMaxInst:  BYTE;       (* maximum number of instances   *)
+      cbCurInst:  BYTE;       (* current number of instances   *)
+      cbName:     BYTE;       (* length of pipe name           *)
+      szName:     ARRAY [0..0] OF CHAR;  (* start of name      *)
+   END;
+   TYPE PPIPEINFO = POINTER TO PIPEINFO;
+
+   TYPE PIPESEMSTATE = RECORD   (* nmpsmst *)
+      fStatus:  BYTE;           (* type of record; 0 = EOI; 1 = read ok; *)
+                                (* 2 = write ok; 3 = pipe closed         *)
+      fFlag:    BYTE;           (* additional info; 01 = waiting thread  *)
+      usKey:    USHORT;         (* user's key value                      *)
+      usAvail:  USHORT;         (* available data/space if status = 1/2  *)
+   END;
+   TYPE PPIPESEMSTATE = POINTER TO PIPESEMSTATE;
+
+   CONST NP_INDEFINITE_WAIT    =  0FFFFFFFFH;
+   CONST NP_DEFAULT_WAIT       =  0;
+
+   (* DosPeekNmPipe() pipe states *)
+
+   CONST NP_STATE_DISCONNECTED  = 00001H;
+   CONST NP_STATE_LISTENING     = 00002H;
+   CONST NP_STATE_CONNECTED     = 00003H;
+   CONST NP_STATE_CLOSING       = 00004H;
+
+   (* DosCreateNPipe open modes *)
+
+   CONST NP_ACCESS_INBOUND      = 00000H;
+   CONST NP_ACCESS_OUTBOUND     = 00001H;
+   CONST NP_ACCESS_DUPLEX       = 00002H;
+   CONST NP_INHERIT             = 00000H;
+   CONST NP_NOINHERIT           = 00080H;
+   CONST NP_WRITEBEHIND         = 00000H;
+   CONST NP_NOWRITEBEHIND       = 04000H;
+
+   (* DosCreateNPipe and DosQueryNPHState state *)
+
+   CONST NP_READMODE_BYTE       = 00000H;
+   CONST NP_READMODE_MESSAGE    = 00100H;
+   CONST NP_TYPE_BYTE           = 00000H;
+   CONST NP_TYPE_MESSAGE        = 00400H;
+   CONST NP_END_CLIENT          = 00000H;
+   CONST NP_END_SERVER          = 04000H;
+   CONST NP_WAIT                = 00000H;
+   CONST NP_NOWAIT              = 08000H;
+   CONST NP_UNLIMITED_INSTANCES = 000FFH;
+
+
+   PROCEDURE DosCallNPipe(szName       : ARRAY OF CHAR
+                         ;pInbuf       : PVOID
+                         ;cbIn         : ULONG
+                         ;pOutbuf      : PVOID
+                         ;cbOut        : ULONG
+                         ;VAR cbActual : ULONG
+                         ;msec         : ULONG
+                         ): APIRET;
+
+   PROCEDURE DosConnectNPipe(hpipe : HPIPE): APIRET;
+
+   PROCEDURE DosDisConnectNPipe(hpipe : HPIPE): APIRET;
+
+   PROCEDURE DosCreateNPipe(szName    : ARRAY OF CHAR
+                           ;VAR Hpipe : HPIPE
+                           ;openmode  : ULONG
+                           ;pipemode  : ULONG
+                           ;cbInbuf   : ULONG
+                           ;cbOutbuf  : ULONG
+                           ;msec      : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosPeekNPipe(hpipe        : HPIPE
+                         ;pBuf         : PVOID
+                         ;cbBuf        : ULONG
+                         ;VAR cbActual : ULONG
+                         ;VAR Avail    : AVAILDATA
+                         ;VAR State    : ULONG
+                         ): APIRET;
+
+   PROCEDURE DosQueryNPHState(hpipe     : HPIPE
+                             ;VAR State : PULONG
+                             ): APIRET;
+
+   PROCEDURE DosQueryNPipeInfo(hpipe     : HPIPE
+                              ;infolevel : ULONG
+                              ;pBuf      : PVOID
+                              ;cbBuf     : ULONG
+                              ): APIRET;
+
+   PROCEDURE DosQueryNPipeSemState(hsem     : HSEM
+                                  ;VAR npss : ARRAY OF PIPESEMSTATE
+                                  ;cbBuf    : ULONG
+                                  ): APIRET;
+
+   PROCEDURE DosRawReadNPipe(szName  : ARRAY OF CHAR            (* !!! Not described *)
+                            ;cb      : ULONG
+                            ;VAR Len : ULONG
+                            ;pBuf    : PVOID
+                            ): APIRET;
+
+   PROCEDURE DosRawWriteNPipe(szName : ARRAY OF CHAR            (* !!! Not described *)
+                             ;cb     : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosSetNPHState(hpipe : HPIPE
+                           ;state : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosSetNPipeSem(hpipe : HPIPE
+                           ;hsem  : HSEM
+                           ;key   : ULONG
+                           ): APIRET;
+
+   PROCEDURE DosTransactNPipe(hpipe      : HPIPE
+                             ;pOutbuf    : PVOID
+                             ;cbOut      : ULONG
+                             ;pInbuf     : PVOID
+                             ;cbIn       : ULONG
+                             ;VAR cbRead : ULONG
+                             ): APIRET;
+
+   PROCEDURE DosWaitNPipe(szName : ARRAY OF CHAR
+                         ;msec    : ULONG
+                         ): APIRET;
+
+   (* values in fStatus *)
+   CONST NPSS_EOI                  = 0;     (* End Of Information    *)
+   CONST NPSS_RDATA                = 1;     (* read data available   *)
+   CONST NPSS_WSPACE               = 2;     (* write space available *)
+   CONST NPSS_CLOSE                = 3;     (* pipe in CLOSING state *)
+
+   (* values in npss_flag *)
+   CONST NPSS_WAIT                 = 001H;  (* waiting thread on end of pipe *)
+
+   (* defined bits in pipe mode *)
+   CONST NP_NBLK                   = 08000H; (* non-blocking read/write *)
+   CONST NP_SERVER                 = 04000H; (* set if server end       *)
+   CONST NP_WMESG                  = 00400H; (* write messages          *)
+   CONST NP_RMESG                  = 00100H; (* read as messages        *)
+   CONST NP_ICOUNT                 = 000FFH; (* instance count field    *)
+
+
+   (*Named pipes may be in one of several states depending on the actions
+   * that have been taken on it by the server end and client end.  The
+   * following state/action table summarizes the valid state transitions:
+   *
+   * Current state           Action                  Next state
+   *
+   *  <none>             server DosMakeNmPipe        DISCONNECTED
+   *  DISCONNECTED       server connect              LISTENING
+   *  LISTENING          client open                 CONNECTED
+   *  CONNECTED          server disconn              DISCONNECTED
+   *  CONNECTED          client close                CLOSING
+   *  CLOSING            server disconn              DISCONNECTED
+   *  CONNECTED          server close                CLOSING
+   *  <any other>        server close                <pipe deallocated>
+   *
+   * If a server disconnects his end of the pipe; the client end will enter a
+   * special state in which any future operations (except close) on the file
+   * descriptor associated with the pipe will return an error.
+   *)
+
+   (*
+   *      Values for named pipe state
+   *)
+
+   CONST NP_DISCONNECTED      = 1;         (* after pipe creation or Disconnect *)
+   CONST NP_LISTENING         = 2;         (* after DosNmPipeConnect            *)
+   CONST NP_CONNECTED         = 3;         (* after Client open                 *)
+   CONST NP_CLOSING           = 4;         (* after Client or Server close      *)
+
+
+#endif (* INCL_DOSNMPIPES *)
+
+
+
+(*** DosProfile API support *)
+
+ #ifdef INCL_DOSPROFILE
+
+   (*** Perfview API support *)
+
+   PROCEDURE DosTmrQueryFreq(VAR ulTmrFreq : ULONG): APIRET;
+
+   PROCEDURE DosTmrQueryTime(VAR qwTmrTime : QWORD): APIRET;
+
+   PROCEDURE DosRegisterPerfCtrs(pbDataBlk : PBYTE  (* !!! Not described *)
+                                ;pbTextBlk : PBYTE
+                                ;flFlags   : ULONG
+                                ): APIRET;
+
+   (* DosProfile ordinal number *)
+
+   CONST PROF_ORDINAL       = 133;
+
+   (* DosProfile usType *)
+
+   CONST PROF_SYSTEM          = 0;
+   CONST PROF_USER            = 1;
+   CONST PROF_USEDD           = 2;
+   CONST PROF_KERNEL          = 4;
+   CONST PROF_VERBOSE         = 8;
+   CONST PROF_ENABLE          =16;
+
+   (* DosProfile usFunc *)
+
+   CONST PROF_ALLOC           = 0;
+   CONST PROF_CLEAR           = 1;
+   CONST PROF_ON              = 2;
+   CONST PROF_OFF             = 3;
+   CONST PROF_DUMP            = 4;
+   CONST PROF_FREE            = 5;
+
+   (* DosProfile tic count granularity (DWORD) *)
+
+   CONST PROF_SHIFT           = 2;
+
+   (* DosProfile module name string length *)
+
+   CONST PROF_MOD_NAME_SIZE   =10;
+
+   (* DosProfile error code for end of data *)
+
+   CONST PROF_END_OF_DATA     =13;
+
+#endif (* INCL_DOSPROFILE *)
+
+
+
+(* Virtual DOS Machine API support *)
+#ifdef INCL_DOSMVDM
+
+   TYPE HVDD  = LHANDLE;     (* hvdd *)
+   TYPE PHVDD = POINTER TO HVDD;    (* phvdd *)
+
+   PROCEDURE DosOpenVDD(szVDD    : ARRAY OF CHAR
+                       ;VAR hvdd : HVDD
+                       ): APIRET;
+
+   PROCEDURE DosRequestVDD(hvdd     : HVDD
+                          ;sgid     : SGID
+                          ;cmd      : ULONG
+                          ;cbInput  : ULONG
+                          ;pInput   : PVOID
+                          ;cbOutput : ULONG
+                          ;pOutput  : PVOID
+                          ): APIRET;
+
+   PROCEDURE DosCloseVDD(hvdd : HVDD): APIRET;
+
+   PROCEDURE DosQueryDOSProperty(sgid    : SGID      (* !!! Not described *)
+                                ;pszName : PCSZ
+                                ;cb      : ULONG
+                                ;pch     : PCSZ
+                                ): APIRET;
+
+   PROCEDURE DosSetDOSProperty(sgid    : SGID        (* !!! Not described *)
+                              ;pszName : PCSZ
+                              ;cb      : ULONG
+                              ;pch     : PCSZ
+                              ): APIRET;
+#endif (* INCL_DOSMVDM *)
+
+
+#ifdef INCL_BDCALLS
+
+#include <bdcalls.hm>
+
+#endif (*INCL_BDCALLS *)
+
+(**************************** end of file **********************************)

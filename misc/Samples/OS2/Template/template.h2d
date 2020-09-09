@@ -1,0 +1,11 @@
+-GENMACRO-
+-BACKEND=Common
+-DEFPFX=""
+-PROGRESS-
+-MERGEALL-
+-GENLONGNAMES-
+-GENROVARS-
+
+#module "mainres.h"
+#module "dlgres.h"
+#module "helpres.h"

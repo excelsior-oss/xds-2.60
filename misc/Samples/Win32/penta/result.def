@@ -1,0 +1,9 @@
+DEFINITION MODULE result;
+FROM pat IMPORT SOLUTION;
+
+VAR nresults : INTEGER;
+
+PROCEDURE add_solution (VAR res : SOLUTION) : BOOLEAN;
+PROCEDURE get_solution (i : INTEGER; VAR ers : SOLUTION);
+
+END result.

@@ -1,0 +1,111 @@
+\section{System Menu}
+\public{M\_FRAME\_SYSMENU}
+\public{M\_CHILD\_SYSMENU}
+\nominitoc
+
+\ifenglish
+The system menu contains commands which you use to control the size
+and position of a window, to close it, or to switch to another window:
+\else
+Системное меню содержит команды, используемые для управления размером 
+и местоположением окна, и команды, позволяющие закрывать его или переключаться 
+на другое:
+\fi
+\ref[Restore]{SC\_RESTORE}
+\ifenglish
+ - Restore window size
+ \else
+ - Восстановить размер окна
+ \fi
+\ref[Move]{SC\_MOVE}
+\ifenglish
+  - Move window using keyboard
+  \else
+  - Переместить окно с помощью клавиатуры
+  \fi
+\ref[Size]{SC\_SIZE}
+\ifenglish
+  - Resize window using keyboard
+  \else
+  - Изменить размер окна с помощью клавиатуры
+  \fi
+\ref[Minimize]{SC\_MINIMIZE}
+\ifenglish
+  - Minimize window
+  \else
+  - Минимизировать окно
+  \fi
+\ref[Maximize]{SC\_MAXIMIZE}
+\ifenglish
+  - Maximize window
+  \else
+  - Максимизировать окно
+  \fi
+\ref[Close]{SC\_CLOSE}
+\ifenglish
+  - Close the window
+  \else
+  - Закрыть окно
+  \fi
+\subsection{System Menu: Restore}
+\public{SC\_RESTORE}
+
+\ifenglish
+Use the {\bf Restore} command to restore the original size of a window
+which has been minimized or maximized.
+\else
+Используйте команду {\bf Restore}, чтобы востанавливать исходный размер 
+окна, которое было максимизировано или минимизировано.
+\fi
+\subsection{System Menu: Move}
+\public{SC\_MOVE}
+
+\ifenglish
+Use the {\bf Move} command to change position of a window using the 
+arrow keys.
+\else
+Используйте команду {\bf Move}, чтобы менять положение окна с 
+помощью клавиш курсора.
+\fi
+\subsection{System Menu: Size}
+\public{SC\_SIZE}
+
+\ifenglish
+Use the {\bf Size} command to change size of a window using the 
+arrow keys.
+\else
+Используйте команду {\bf Size}, чтобы менять размер окна 
+с помощью клавиш курсора.
+\fi
+\subsection{System Menu: Minimize}
+\public{SC\_MINIMIZE}
+
+\ifenglish
+Use the {\bf Minimize} command to minimize a window to an icon.
+\else
+Используйте команду {\bf Minimize}, чтобы минимизировать окно до 
+размеров иконки.
+\fi
+\subsection{System Menu: Maximize}
+\public{SC\_MAXIMIZE}
+
+\ifenglish
+Use the {\bf Maximize} command to maximize the main window to desktop size
+or a child window - to client area size.
+\else
+Используйте команду {\bf Maximize}, чтобы максимизировать главное окно до
+размеров рабочего стола, или дочернее окно -- до размеров клиентной области.
+\fi
+\subsection{System Menu: Close}
+\public{SC\_CLOSE}
+
+\ifenglish
+Use the {\bf Close} command to close a window. The main window will be 
+closed with all its child windows and the Environment will terminate.
+You will be prompted to save changed files, if any.
+\else
+Используйте команду {\bf Close}, чтобы закрыть окно. Главное окно будет 
+закрыто вместе со всеми его дочерними окнами, и работа оболочки будет 
+завершена. Будет выведен запрос на сохранение измененных файлов, если такие 
+имелись.
+\fi

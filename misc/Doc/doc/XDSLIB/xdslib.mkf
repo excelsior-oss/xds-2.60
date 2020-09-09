@@ -1,0 +1,7 @@
+SOURCE = xdslib.tex iso.tex pim.tex util.tex oakwood.tex ansic.tex
+
+TARGET = xdslib
+
+!include ..\$(FORMAT).inc
+
+

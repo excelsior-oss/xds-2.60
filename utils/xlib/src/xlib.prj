@@ -1,0 +1,76 @@
+% Project file for XDS Librarian.
+%
+% Valid modes are: work,enduser
+%       The differences are: debug settings, lookup paths
+
+!if not defined mode then
+  !new mode = work
+!end
+
+ -gendebug+
+ -lineno+
+ -genhistory+
+ -assert+
+ -checkindex-
+ -checkdindex-
+ -checkrange-
+ -checkset-
+ -checknil-
+ -checkproc-
+ -ioverflow-
+ -coverflow-
+ -foverflow-
+
+ -debug:-
+
+% ======================================================
+% Files lookup settings
+% ======================================================
+-changesym+
+
+% Output lookup settings
++makedirs
+
+!if mode="enduser" then
+  -lookup = *.lnk = enduser/tmp
+  -lookup = *.obj = enduser/tmp
+  -lookup = *.o   = enduser/tmp
+  -lookup = *.sym = enduser/tmp;enduser/xds/sym/x86
+  -lookup = *.exe = enduser/xds/bin
+  -lookup = *.lib = enduser/xds/lib/x86
+  -lookup = *.a   = enduser/xds/lib/x86
+!elsif mode="work" then
+  -lookup = *.lnk = ch
+  -lookup = *.obj = ch
+  -lookup = *.sym = sym
+  -lookup = *.lib = .
+!end
+
+% Source lookup settings
+-lookup = *.ob2=$!
+-lookup = *.def=$!
+-lookup = *.mod=$!
+
+
+!if env_target="x86nt" then
+  %-template=$!/../m/xc.tem
+  -link="xlink @%s",mkfname#mkfext
+!end
+
+
+-o2extensions+
+-o2isopragma+
+
+-makefile+
+-mkfext=lnk
+!if mode="work" then
+  -mkfname=xlib
+!elsif mode="demo" then
+  -mkfname=demo/tmp/xlib
+!else
+  -mkfname=enduser/tmp/xlib
+!end
+
+-heaplimit = 50000000
+
+!module xlib

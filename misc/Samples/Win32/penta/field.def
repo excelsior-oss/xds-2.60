@@ -1,0 +1,22 @@
+DEFINITION MODULE field;
+
+CONST XFIELD = 40;
+      YFIELD = 20;
+
+TYPE PICTURE = ARRAY [0..YFIELD-1], [0..XFIELD-1] OF BOOLEAN;
+
+VAR picture : PICTURE;
+    squares_left : INTEGER;
+
+VAR fig_count : ARRAY [0..YFIELD-1], [0..XFIELD-1] OF INTEGER;
+
+PROCEDURE Clear_fig_count;
+PROCEDURE Update_fig_count (fig, pat : INTEGER; x, y : INTEGER; inc : INTEGER);
+
+PROCEDURE Clear;
+PROCEDURE Put_fig (fig, pat, x, y : INTEGER);
+PROCEDURE Find_upper_left_point (VAR xmin, ymin : INTEGER);
+PROCEDURE Read () : BOOLEAN;
+PROCEDURE Write;
+
+END field.

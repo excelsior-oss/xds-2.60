@@ -1,0 +1,41 @@
+(* Copyright (c) Excelsior 2003.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] select;
+
+IMPORT SYSTEM, time;
+
+<* IF __GEN_C__ THEN *> <*- GENTYPEDEF *> <* END *>
+
+TYPE
+  __fd_mask = SYSTEM.INT32;
+
+<* IF __GEN_C__ THEN *>
+VAR
+  __NFDBITS       -: INTEGER;
+  __FD_SETSIZE    -: INTEGER;
+<* ELSE *>
+CONST
+
+<* IF (env_target="x86linux") OR (env_target = "linux") THEN *>
+  __NFDBITS = 8 * SIZE(__fd_mask);
+  __FD_SETSIZE = 1024;              -- Linux-specific
+<* ELSE *>
+  -- none yet
+<* END *>
+
+<* END *>
+
+TYPE
+  fd_set = RECORD
+    fds_bits : ARRAY[0..((__FD_SETSIZE DIV __NFDBITS) - 1)] OF __fd_mask;
+  END;
+
+  fd_set_ptr = POINTER TO fd_set;
+
+PROCEDURE select (nfda : SYSTEM.INT32; readfds, writefds, exceptfds: fd_set_ptr; timeout : time.timeval_ptr): SYSTEM.INT32;
+
+END select.

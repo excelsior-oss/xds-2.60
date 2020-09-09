@@ -1,0 +1,1 @@
+#define EXPIRE_DATE 20000621

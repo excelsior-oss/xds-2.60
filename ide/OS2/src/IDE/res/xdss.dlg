@@ -1,0 +1,1743 @@
+BITMAP  9500            saveall.bmp
+BITMAP  9501            prompt.bmp
+BITMAP  9502            nosave.bmp
+BITMAP  9506            flash_ok.bmp
+BITMAP  9507            about.bmp
+
+
+
+
+DLGTEMPLATE IDD_FILEDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Advanced file dialog",
+           IDD_FILEDLG, 46, 21, 307, 203,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Editors",
+                IDD_PBFILEEDITORS, 2, 9, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_VISIBLE
+        CONTROL "Source files list",
+                IDD_PBFILESRCLIST, 40, 9, 54, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_VISIBLE
+        CONTROL "",
+                IDD_LBFILESLOADED, 2, 20, 148, 176, WC_LISTBOX,
+                LS_OWNERDRAW | LS_NOADJUSTPOS | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "10.System VIO"
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00FFFFFFL
+        CONTROL "",
+                IDD_CBPATH, 174, 66, 106, 131, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_LBDIRFILES, 153, 20, 148, 158, WC_LISTBOX,
+                LS_OWNERDRAW | LS_NOADJUSTPOS | WS_TABSTOP | WS_VISIBLE | WS_CLIPCHILDREN
+                PRESPARAMS PP_FONTNAMESIZE, "12.System VIO"
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FFFFFFL
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x000080L
+        CONTROL "Ok",
+                DID_OK, 153, 2, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 209, 2, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 261, 2, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_STPATHNAME, 153, 179, 148, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Path:",
+                0, 153, 188, 17, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Go",
+                IDD_PBPATHGO, 282, 188, 20, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_FASTLOADDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Load file",
+           IDD_FASTLOADDLG, 90, 146, 208, 64,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Path:",
+                0, 3, 52, 29, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "File:",
+                0, 3, 41, 29, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Window:",
+                0, 3, 30, 29, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_EFFILEPATH, 34, 53, 129, 7, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | ES_READONLY | WS_GROUP |
+                WS_VISIBLE
+                CTLDATA 8, 200, 0, 0
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00C9C9C9L
+        CONTROL "",
+                IDD_CBFILELOAD, 33, 0, 172, 50, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_CBWINLOAD, 33, 0, 172, 39, WC_COMBOBOX,
+                CBS_DROPDOWNLIST | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Browse...",
+                IDD_PBBROWSE, 3, 16, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Advanced...",
+                IDD_PBADVLOAD, 50, 16, 156, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 50, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 167, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Reset path",
+                IDD_PBRESETPATH, 167, 51, 38, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_SAVEASDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "SaveAs",
+           IDD_SAVEASDLG, 73, 152, 235, 40,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_EFSAVEAS, 4, 20, 227, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 255, 0, 0
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 47, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Browse...",
+                IDD_PBBROWSE, 91, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Reset path",
+                IDD_PBRESETPATH, 135, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 192, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Save as:",
+                IDD_STSAVEAS, 3, 29, 181, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_SAVCHDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Save changes",
+           IDD_SAVCHDLG, 136, 100, 161, 98,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+    {
+        CONTROL "Some of your texts were changed but not saved.",
+                0, 3, 73, 141, 18, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | DT_WORDBREAK |
+                WS_GROUP | WS_VISIBLE
+        CONTROL "#9500",
+                IDD_PBSAVEALL, 3, 53, 25, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE | BS_BITMAP | BS_DEFAULT
+        CONTROL "#9501",
+                IDD_PBPROMPT, 3, 38, 25, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE | BS_BITMAP
+        CONTROL "#9502",
+                IDD_PBDONTSAVE, 3, 23, 25, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE | BS_BITMAP
+        CONTROL "~Help",
+                IDD_PBHELP, 56, 3, 40, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Cancel",
+                DID_CANCEL, 3, 3, 48, 14, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Save ~all",
+                0, 30, 53, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "~Prompt for each changed text",
+                0, 30, 38, 130, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "~Don't save and continue",
+                0, 30, 23, 108, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_ENTRYFDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "",
+           IDD_ENTRYFDLG, 51, 147, 252, 38,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_STLINE, 3, 28, 246, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_EFEF, 4, 18, 243, 8, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 208, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_SELDIRDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Select directory",
+           IDD_SELDIRDLG, 90, 44, 191, 158,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Directory is...",
+                0, 3, 147, 76, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_EFSELDIR, 4, 138, 178, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 260, 0, 0
+        CONTROL "Directories",
+                0, 3, 124, 75, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Text",
+                IDD_LBSELDIR, 3, 21, 182, 102, WC_LISTBOX,
+                LS_HORZSCROLL | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Set",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 54, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 146, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_WPLISTDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Workplace list",
+           IDD_WPLISTDLG, 66, 94, 212, 136,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_LBWPLIST, 3, 72, 204, 52, WC_LISTBOX,
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Workplace:",
+                0, 3, 126, 68, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_MLEWPCOMMENT, 3, 17, 204, 42, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "Comment:",
+                0, 3, 61, 54, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "~Open",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Remove",
+                IDD_PBWPREMOVE, 48, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Close",
+                DID_CANCEL, 123, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 168, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_WPTPLDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Workplace templates",
+           IDD_WPTPLDLG, 113, 56, 232, 143,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Apply template",
+                0, 3, 57, 226, 84, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Create new template",
+                0, 3, 17, 226, 38, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Available templates:",
+                0, 9, 126, 64, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Comment:",
+                0, 100, 126, 36, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Enter the new template name:",
+                0, 9, 37, 96, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | DT_WORDBREAK |
+                WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_LBWPTPLS, 9, 77, 85, 47, WC_LISTBOX,
+                WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_MLEWPTPL, 100, 62, 122, 62, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | MLS_READONLY |
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Apply...",
+                IDD_PBWPTPLAPPLY, 9, 62, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Remove",
+                IDD_PBWPTPLREM, 53, 62, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Save",
+                IDD_PBWPTPLSAVE, 178, 36, 45, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "A~dvanced...",
+                IDD_PBWPTPLADV, 178, 22, 45, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFWPTPLNAME, 10, 24, 158, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "~Close",
+                DID_CANCEL, 3, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Help",
+                IDD_PBHELP, 49, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_WPTPLADVDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Workplace template: advanced settings",
+           IDD_WPTPLADVDLG, 90, 27, 260, 189,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "REXX script to be executed during new workplace creation process:",
+                0, 3, 178, 255, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_MLEWPADV, 3, 29, 253, 147, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 4, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 47, 4, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 216, 4, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "WARNING! Errors in this script may crash IDE or cause its improper functioning! ",
+                0, 3, 17, 253, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | DT_WORDBREAK |
+                WS_GROUP | WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00CB0000L
+    }
+}
+
+
+
+DLGTEMPLATE IDD_APPWPDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Apply workplace template",
+           IDD_APPWPDLG, 110, 96, 242, 94,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "  ",
+                0, 164, 21, 72, 46, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Template name:",
+                0, 3, 83, 53, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Comment:",
+                0, 3, 65, 40, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Apply associations",
+                IDD_CBAWPASS, 169, 73, 69, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Apply toolset",
+                IDD_CBAWPTOOLS, 169, 59, 52, 9, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Extend current",
+                IDD_RBAWPTOOLSADD, 169, 46, 59, 9, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Replace current",
+                IDD_RBAWPTOOLSREM, 169, 33, 62, 9, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFAWPNAME, 4, 75, 148, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | ES_READONLY | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 100, 0, 0
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00CCCCCCL
+        CONTROL "",
+                IDD_MLEAWPCOMMENT, 3, 21, 153, 43, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | MLS_READONLY |
+                WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00CCCCCCL
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 196, 3, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_WPPROPDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Properties",
+           IDD_WPPROPDLG, 91, 59, 183, 150,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Workplace name:",
+                0, 3, 137, 58, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Comment :",
+                0, 3, 117, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Directory",
+                0, 3, 47, 176, 22, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Mirror",
+                0, 3, 21, 176, 22, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "???",
+                IDD_STWPPDIR, 9, 52, 123, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "",
+                IDD_EFWPPNAME, 4, 128, 173, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "",
+                IDD_MLEWPPCOMMENT, 3, 73, 176, 42, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "~Change...",
+                IDD_PBWPPCHDIR, 136, 51, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Use mirror file:",
+                IDD_CBWPPMIRROR, 9, 26, 54, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFWPPMIRROR, 68, 27, 55, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "Browse...",
+                IDD_PBWPPMIRRBROWSE, 136, 25, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 50, 3, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 142, 3, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_NEWWPDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "New workplace",
+           IDD_NEWWPDLG, 125, 37, 186, 156,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "  ",
+                0, 4, 20, 177, 22, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "  ",
+                0, 4, 47, 177, 105, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "File:",
+                0, 10, 26, 16, 6, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Template:",
+                0, 9, 135, 40, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Comment:",
+                0, 83, 135, 40, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "New workplace name:",
+                0, 9, 83, 69, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Directory:",
+                0, 9, 63, 33, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Use workplace template",
+                IDD_RBNWPTPL, 9, 145, 85, 8, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Extract from a mirror file",
+                IDD_RBNWPMIRROR, 10, 36, 81, 8, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_VISIBLE
+        CONTROL "Text",
+                IDD_LBNWPTPL, 9, 93, 68, 40, WC_LISTBOX,
+                WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_MLENWPCOMMENT, 83, 67, 92, 66, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | MLS_READONLY |
+                WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00CCCCCCL
+        CONTROL "",
+                IDD_EFNWPNAME, 10, 74, 65, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "",
+                IDD_EFNWPDIR, 10, 54, 124, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | ES_READONLY | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 250, 0, 0
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00CCCCCCL
+        CONTROL "Change...",
+                IDD_PBNWPCHDIR, 141, 52, 35, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFNWPMIRROR, 30, 26, 104, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "Browse...",
+                IDD_PBNWPBROWSE, 141, 24, 35, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 4, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 49, 4, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 141, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_ASSOPTDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Options",
+           IDD_ASSOPTDLG, 101, 40, 290, 187,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Associate with files:",
+                IDD_STASSDESCRIPTION, 3, 138, 129, 45, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Miscellaneous",
+                0, 3, 17, 129, 68, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Highlight mode",
+                0, 3, 89, 129, 45, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Color",
+                0, 138, 74, 148, 109, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Font",
+                0, 137, 17, 148, 54, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Tab width:",
+                0, 9, 66, 48, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                0, 144, 38, 136, 23, WC_STATIC,
+                SS_FGNDFRAME | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                0, 144, 123, 136, 50, WC_STATIC,
+                SS_FGNDFRAME | WS_GROUP | WS_VISIBLE
+        CONTROL "Selected colors:",
+                0, 217, 107, 52, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Courier",
+                IDD_STFONTSHOW, 145, 39, 134, 21, WC_STATIC,
+                SS_TEXT | DT_CENTER | DT_VCENTER | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Courier"
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "",
+                IDD_CBASSWITH, 9, 140, 117, 34, WC_COMBOBOX,
+                CBS_DROPDOWNLIST | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Global list",
+                IDD_RBGLOBASS, 9, 153, 45, 10, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Local list",
+                IDD_RBLOCASS, 9, 143, 40, 10, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit list...",
+                IDD_PBEDASSLIST, 81, 151, 45, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_CBHILITEMODE, 9, 91, 117, 33, WC_COMBOBOX,
+                CBS_DROPDOWNLIST | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_SPBTABWIDTH, 60, 64, 35, 12, WC_SPINBUTTON,
+                SPBS_NUMERICONLY | SPBS_MASTER | SPBS_JUSTLEFT |
+                SPBS_FASTSPIN | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Smart tabs",
+                IDD_CBSMARTTABS, 9, 52, 115, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Autoident mode",
+                IDD_CBAUTOIDENT, 9, 42, 115, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Paste replaces selection",
+                IDD_CBPASTEREPSEL, 9, 32, 115, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Use 'TAB' characters",
+                IDD_CBUSETABCHARS, 9, 22, 115, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | BS_NOPOINTERFOCUS | WS_TABSTOP |
+                WS_DISABLED       // ----- | WS_VISIBLE
+        CONTROL "Highlight syntax",
+                IDD_CBHLTSYNTAX, 144, 107, 60, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Highlight current line",
+                IDD_CBHLTLINE, 144, 97, 71, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Apply to all",
+                IDD_CBCLRTOALL, 144, 82, 64, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Change all...",
+                IDD_PBCHFONT2ALL, 227, 22, 53, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Change...",
+                IDD_PBCHFONT, 144, 22, 53, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 245, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLRSEL, 246, 88, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR0, 156, 153, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR1, 186, 153, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR2, 216, 153, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR3, 246, 153, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR4, 156, 130, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR5, 186, 130, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR6, 216, 130, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL BMP_COLORS,
+                IDD_BMCLR7, 246, 130, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_EDITCLRDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Edit colors",
+           IDD_EDITCLRDLG, 77, 73, 325, 147,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Text element:",
+                0, 3, 67, 62, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_VISIBLE
+        CONTROL "Sample text:",
+                0, 3, 137, 73, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                0, 3, 76, 144, 61, WC_STATIC,
+                SS_FGNDRECT | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_STCLREXAMPLE, 4, 77, 142, 59, WC_STATIC,
+                SS_BKGNDRECT | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_LBCLRITEMS, 3, 20, 143, 45, WC_LISTBOX,
+                WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_VSCOLORS, 154, 20, 167, 123, WC_VALUESET,
+                VS_RGB | VS_ITEMBORDER | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 0, 8, 8
+        CONTROL "Underline",
+                IDD_CBCLRUNDERLINE, 218, 7, 42, 6, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 55, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 106, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_MAKECLRDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Color",
+           IDD_MAKECLRDLG, 96, 80, 197, 140,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                0, 174, 4, 20, 132, WC_STATIC,
+                SS_FGNDFRAME | WS_VISIBLE
+        CONTROL "R :",
+                0, 5, 22, 21, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "G :",
+                0, 63, 22, 23, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_VISIBLE
+        CONTROL "B :",
+                0, 121, 22, 23, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_VISIBLE
+        CONTROL BMP_COLORS, // Can't use large true-color bitmap here, we'll place it manual
+                IDD_STCLRMATRIX, 89, 85, 20, 16, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_SPBRVAL, 16, 22, 34, 8, WC_SPINBUTTON,
+                SPBS_READONLY | SPBS_MASTER | SPBS_JUSTLEFT |
+                SPBS_FASTSPIN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_SPBGVAL, 74, 22, 34, 8, WC_SPINBUTTON,
+                SPBS_READONLY | SPBS_MASTER | SPBS_JUSTLEFT |
+                SPBS_FASTSPIN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_SPBBVAL, 132, 22, 34, 8, WC_SPINBUTTON,
+                SPBS_READONLY | SPBS_MASTER | SPBS_JUSTLEFT |
+                SPBS_FASTSPIN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 5, 4, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 50, 4, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 126, 4, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_STCLRSCALE, 175, 5, 18, 130, WC_BUTTON,
+                BS_USERBUTTON | BS_NOPOINTERFOCUS | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_EDASSLISTDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Edit associations lists",
+           IDD_EDASSLISTDLG, 82, 84, 288, 110,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Local list:",
+                0, 5, 96, 38, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Global list:",
+                0, 169, 96, 36, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_LBLASSLIST, 15, 32, 103, 62, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBLASSMVUP, 5, 63, 10, 31, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_PBLASSMVDOWN, 5, 32, 10, 31, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "New",
+                IDD_PBLASSNEW, 5, 20, 21, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit...",
+                IDD_PBLASSEDIT, 26, 20, 25, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBLASSDUP, 51, 20, 36, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBLASSREM, 87, 20, 32, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "",
+                IDD_LBGASSLIST, 179, 32, 103, 62, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBGASSMVUP, 169, 63, 10, 31, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_PBGASSMVDOWN, 169, 32, 10, 31, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "New",
+                IDD_PBGASSNEW, 169, 20, 21, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit...",
+                IDD_PBGASSEDIT, 190, 20, 25, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBGASSDUP, 215, 20, 36, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBGASSREM, 251, 20, 32, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED |WS_VISIBLE
+        CONTROL "Variable list...",
+                IDD_PBVARS, 5, 3, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL ">> Copy",
+                IDD_PBASSCPYLG, 123, 83, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "<< Copy",
+                IDD_PBASSCPYGL, 123, 66, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL ">> Move",
+                IDD_PBASSMVLG, 123, 49, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "<< Move",
+                IDD_PBASSMVGL, 123, 32, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 158, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 201, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 243, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_FINDDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Find",
+           IDD_FINDDLG, 234, 160, 188, 69,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Find:",
+                0, 3, 57, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Change to:",
+                0, 3, 42, 39, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "",
+                IDD_CBFIND, 45, 1, 141, 65, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_CBCHANGETO, 45, 1, 141, 50, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Case ~sensitive",
+                IDD_CBCASESENSITIVE, 45, 32, 62, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Find ~whole word",
+                IDD_CBWHOLEWORD, 106, 32, 62, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Find",
+                IDD_PBFIND, 3, 16, 50, 12, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Find ~global",
+                IDD_PBFINDGLOBAL, 54, 16, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Find ~backward",
+                IDD_PBFINDBACK, 95, 16, 50, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Help",
+                IDD_PBHELP, 146, 16, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "~Change",
+                IDD_PBCHANGE, 3, 2, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Change, ~then find",
+                IDD_PBCHFIND, 44, 2, 60, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Change ~all",
+                IDD_PBCHALL, 105, 2, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+        CONTROL "Close",
+                DID_CANCEL, 146, 2, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    }
+}
+
+
+
+DLGTEMPLATE IDD_FILEFINDDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "File find",
+           IDD_FILEFINDDLG, 120, 50, 177, 168,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Files found:",
+                0, 3, 156, 42, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_LBFFOUND, 3, 63, 168, 91, WC_LISTBOX,
+                LS_HORZSCROLL | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Containing:",
+                0, 3, 50, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_CBFFIND, 42, 1, 129, 58, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Case sensitive",
+                IDD_CBFFCASE, 3, 40, 75, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Find ~whole words",
+                IDD_CBFFWHOLE, 3, 30, 75, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Find in ~selected files",
+                IDD_CBFFSELFILES, 3, 20, 72, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Find",
+                DID_OK, 3, 6, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 6, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 132, 6, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_EDVARDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Variables",
+           IDD_EDVARDLG, 87, 84, 149, 118,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_LBVARS, 4, 30, 141, 83, WC_LISTBOX,
+                LS_HORZSCROLL | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~New",
+                IDD_PBVARNEW, 4, 18, 24, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Edit name...",
+                IDD_PBVAREDNAME, 28, 18, 41, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Edit ~value...",
+                IDD_PBVAREDVALUE, 69, 18, 41, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "~Remove",
+                IDD_PBVARREM, 110, 18, 36, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "~Ok",
+                DID_OK, 4, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Cancel",
+                DID_CANCEL, 55, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Help",
+                IDD_PBHELP, 107, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+
+
+DLGTEMPLATE IDD_TOOLCFGDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Configure tools",
+           IDD_TOOLCFGDLG, 58, 26, 278, 195,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Tool category ",
+                0, 3, 125, 271, 66, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Tools in the category ",
+                0, 3, 17, 271, 104, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Button:",
+                0, 219, 148, 50, 36, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Enable rules",
+                0, 97, 80, 172, 34, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Menu item:",
+                0, 97, 172, 35, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Hot-key:",
+                0, 97, 160, 30, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Comment:",
+                0, 97, 148, 34, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Filename required:",
+                0, 103, 84, 61, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Tool script :",
+                0, 97, 69, 36, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_STBTNSHOW, 225, 162, 38, 15, WC_STATIC,
+                SS_FGNDFRAME | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_STEFTCATHOTKEY, 131, 161, 83, 9, WC_STATIC,
+                SS_BKGNDRECT | WS_GROUP
+        CONTROL "Text",
+                IDD_LBTCATS, 16, 130, 74, 51, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMVTCATUP, 7, 155, 9, 26, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMVTCATDOWN, 7, 130, 9, 26, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_EFTCATMENU, 133, 174, 79, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_DISABLED |
+                WS_VISIBLE
+                CTLDATA 8, 49, 0, 0
+        CONTROL "",
+                IDD_EFTCATCOMMENT, 133, 150, 79, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_DISABLED |
+                WS_VISIBLE
+                CTLDATA 8, 49, 0, 0
+        CONTROL "Add...",
+                IDD_PBTCATADD, 97, 130, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Rename...",
+                IDD_PBTCATREN, 141, 130, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBTCATDUP, 185, 130, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBTCATREM, 229, 130, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Change...",
+                IDD_PBBTNCHANGE, 224, 150, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Text",
+                IDD_LBTOOLS, 16, 60, 74, 51, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMVTOOLUP, 7, 85, 9, 26, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMVTOOLDOWN, 7, 60, 9, 26, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Add...",
+                IDD_PBTOOLADD, 7, 46, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Rename...",
+                IDD_PBTOOLREN, 51, 46, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBTOOLDUP, 7, 34, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBTOOLREM, 51, 34, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Wizard...",
+                IDD_PBTOOLWIZ, 7, 22, 84, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Project required",
+                IDD_CBTOOLPRJRQ, 103, 96, 158, 8, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "",
+                IDD_EFTOOLFNAMERQ, 170, 86, 90, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_DISABLED |
+                WS_VISIBLE
+                CTLDATA 8, 49, 0, 0
+        CONTROL "",
+                IDD_MLETOOLSCRIPT, 97, 22, 172, 46, WC_MLE,
+                MLS_BORDER | MLS_VSCROLL | MLS_HSCROLL | MLS_IGNORETAB |
+                WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "10.System VIO"
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 47, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 236, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_TOOLWIZDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Tool wizard",
+           IDD_TOOLWIZDLG, 147, 60, 134, 124,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Tool:",
+                0, 3, 110, 22, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "???",
+                IDD_STWTOOLNAME, 25, 110, 107, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "Execute:",
+                0, 3, 95, 28, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_CBWEXECUTE, 3, 48, 128, 45, WC_COMBOBOX,
+                CBS_DROPDOWN | WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Browse...",
+                IDD_PBWBROWSE, 91, 95, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "  ",
+                0, 3, 18, 128, 34, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "  ",
+                0, 3, 58, 128, 23, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "Run in separate session",
+                IDD_RBWSEPARATE, 9, 74, 87, 8, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Run in popup window",
+                IDD_RBWPOPUP, 9, 44, 77, 10, WC_BUTTON,
+                BS_AUTORADIOBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Keep session after run",
+                IDD_CBWKEEPSESSION, 12, 62, 84, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFWTITLE, 29, 35, 95, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "Use output filter",
+                IDD_CBWUSEFILTER, 9, 24, 75, 10, WC_BUTTON,
+                BS_AUTOCHECKBOX | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit filter...",
+                IDD_PBWEDFILTER, 86, 21, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 47, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 91, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+DLGTEMPLATE IDD_TOOLCHBTNDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Set tool button",
+           IDD_TOOLCHBTNDLG, 101, 116, 152, 86,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Click the button you want to place to the toolbar for this tool.",
+                IDD_STBTNSIGN, 3, 68, 130, 15, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | DT_WORDBREAK |
+                WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_STBTNSHOW, 3, 22, 145, 43, WC_STATIC,
+                WS_TABSTOP | WS_VISIBLE
+        CONTROL "Place ~NO button",
+                IDD_PBNOBTN, 3, 4, 55, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 62, 4, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 108, 4, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_FILTERDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Filter",
+           IDD_FILTERDLG, 164, 67, 252, 118,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_MLEFILTER, 3, 18, 245, 97, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | MLS_HSCROLL | WS_TABSTOP |
+                WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "11.System VIO"
+        CONTROL "~Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Insert sample",
+                IDD_PBINSFILTER, 93, 3, 55, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 209, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_POPUPDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Making project",
+           IDD_POPUPDLG, 52, 20, 347, 205,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                0, 3, 191, 339, 14, WC_STATIC,
+                SS_GROUPBOX | WS_VISIBLE
+        CONTROL "Caption: <none>",
+                IDD_TXTCAPTION, 19, 193, 317, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "",
+                0, 3, 166, 339, 25, WC_STATIC,
+                SS_GROUPBOX | WS_VISIBLE
+        CONTROL "Line 0",
+                IDD_TXTPROGRESS, 9, 178, 152, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "Comment: <none>",
+                IDD_TXTCOMMENT, 9, 169, 325, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "",
+                0, 3, 152, 339, 14, WC_STATIC,
+                SS_GROUPBOX | WS_VISIBLE
+        CONTROL "Errors: 0",
+                IDD_TXTERRORS, 9, 154, 132, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "Warnings: 0",
+                IDD_TXTWARNINGS, 165, 154, 149, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x00000000L
+        CONTROL "",
+                IDD_MLEOUTPUT, 3, 22, 340, 126, WC_MLE,
+                MLS_BORDER | MLS_VSCROLL | MLS_HSCROLL | MLS_READONLY |
+                MLS_DISABLEUNDO | WS_TABSTOP | WS_VISIBLE
+                PRESPARAMS PP_FONTNAMESIZE, "5.System VIO"
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00FFFFFFL
+        CONTROL "~Stop",
+                IDD_PBSTOP, 68, 3, 54, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Close",
+                IDD_PBCLOSE, 3, 3, 54, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Message list",
+                IDD_PBMSGLIST, 133, 3, 76, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "~Help",
+                IDD_PBHELP, 303, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_STPROGRESS, 165, 178, 173, 7, WC_STATIC,
+                SS_BKGNDRECT | WS_GROUP | WS_VISIBLE
+        CONTROL 9506,
+                IDD_STFLASH, 9, 194, 7, 5, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_NEWPRJDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "New project",
+           IDD_NEWPRJDLG, 97, 133, 184, 46,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Project file name:",
+                0, 3, 32, 54, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Use template:",
+                0, 3, 18, 49, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_EFNEWPRJNAME, 63, 33, 76, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 32, 0, 0
+        CONTROL "~Browse...",
+                IDD_PBNEWPRJBROWSE, 145, 31, 36, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_CBNEWPRJTPLS, 62, -40, 118, 67, WC_COMBOBOX,
+                CBS_DROPDOWNLIST | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Create",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 49, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 95, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+DLGTEMPLATE IDD_PRJMODDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Modify project",
+           IDD_PRJMODDLG, 71, 24, 333, 195,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                0, 137, 3, 191, 14, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_STPRJMODDISP, 138, 17, 191, 178, WC_STATIC,
+                SS_GROUPBOX | WS_GROUP | WS_VISIBLE
+        CONTROL "",
+                IDD_STPRJMODCOMMENT, 140, 5, 185, 7, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_LBPRJMOD, 3, 47, 128, 145, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_GROUP | WS_TABSTOP | WS_VISIBLE | LS_OWNERDRAW
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00FFFFFFL
+        CONTROL "~User options...",
+                IDD_PBUSROPT, 3, 31, 63, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "User ~equations...",
+                IDD_PBUSREQ, 69, 31, 63, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Modules...",
+                IDD_PBMODULES, 3, 17, 63, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Lookups...",
+                IDD_PBLOOKUPS, 69, 17, 63, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 48, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 93, 3, 39, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+DLGTEMPLATE IDD_USROPTDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "",
+           IDD_USROPTDLG, 110, 63, 157, 135,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "",
+                IDD_LBUSROPTS, 3, 33, 150, 97, WC_LISTBOX,
+                LS_HORZSCROLL | WS_TABSTOP | WS_VISIBLE
+        CONTROL "New...",
+                IDD_PBUSROPTNEW, 3, 18, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBUSROPTREM, 54, 18, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Edit value...",
+                IDD_PBUSROPTED, 105, 18, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_DISABLED | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 54, 3, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 105, 3, 48, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_ABOUT LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Product information",
+           IDD_ABOUT, 139, 64, 214, 140,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+    {
+        CONTROL "xTech Development System",
+                0, 1, 65, 213, 8, WC_STATIC,
+                SS_TEXT | DT_CENTER | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x000000FFL
+        CONTROL "Version 2.31",
+                0, 1, 50, 213, 8, WC_STATIC,
+                SS_TEXT | DT_CENTER | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+                PRESPARAMS PP_FOREGROUNDCOLOR, 0x000000FFL
+        CONTROL "Copyright 1996-1998 XDS Ltd.",
+                0, 1, 35, 213, 8, WC_STATIC,
+                SS_TEXT | DT_CENTER | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "~Ok",
+                DID_OK, 87, 10, 40, 14, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "#9507", // Win. position must be set
+                IDD_ABOUTBMP, 107, 108, 1, 1, WC_STATIC,
+                SS_BITMAP | WS_GROUP | WS_VISIBLE
+    }
+}
+
+
+
+
+DLGTEMPLATE IDD_MACROMONDLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Macro recording monitor",
+           IDD_MACROMONDLG, 49, 54, 296, 67,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Comment:",
+                0, 3, 55, 42, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Key:",
+                0, 3, 35, 42, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Required file:",
+                0, 3, 15, 42, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_MLEMMONSCRIPT, 144, 5, 148, 58, WC_MLE,
+                MLS_BORDER | MLS_VSCROLL | MLS_HSCROLL | MLS_READONLY |
+                WS_GROUP | WS_VISIBLE
+                PRESPARAMS PP_BACKGROUNDCOLOR, 0x00CCCCCCL
+        CONTROL "",
+                IDD_EFMMONCOMMENT, 4, 46, 88, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 100, 0, 0
+        CONTROL "",
+                IDD_EFMMONFILE, 4, 6, 88, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 50, 0, 0
+        CONTROL "Done",
+                DID_OK, 99, 51, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 99, 35, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "~Details >>",
+                IDD_PBMMONDETAILS, 99, 20, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 99, 5, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_STMMONKEY, 3, 25, 90, 9, WC_STATIC,
+                SS_BKGNDRECT | WS_GROUP | WS_VISIBLE
+    }
+}
+
+
+DLGTEMPLATE IDD_MACRODLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Macros",
+           IDD_MACRODLG, 43, 72, 347, 124,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Global list :",
+                0, 3, 114, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Local list :",
+                0, 153, 114, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_LBMACGLOB, 3, 29, 135, 84, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_PBMACGLOBUP, 138, 71, 10, 42, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMACGLOBDOWN, 138, 29, 10, 42, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Copy to local",
+                IDD_PBMACCP2LOC, 3, 16, 53, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit...",
+                IDD_PBMACGLOBED, 60, 16, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "New...",
+                IDD_PBMACGLOBNEW, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBMACGLOBDUP, 46, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBMACGLOBREM, 89, 3, 40, 12, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_LBMACLOC, 153, 29, 135, 84, WC_LISTBOX,
+                LS_NOADJUSTPOS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMACLOCUP, 288, 71, 10, 42, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_PBMACLOCDOWN, 288, 29, 10, 42, WC_BUTTON,
+                BS_PUSHBUTTON | BS_NOPOINTERFOCUS | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Move to global",
+                IDD_PBMACMV2GLOB, 153, 16, 53, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Edit...",
+                IDD_PBMACLOCED, 209, 16, 37, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "New...",
+                IDD_PBMACLOCNEW, 153, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Duplicate",
+                IDD_PBMACLOCDUP, 196, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Remove",
+                IDD_PBMACLOCREM, 239, 3, 40, 10, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 304, 102, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 304, 87, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 304, 65, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+
+
+DLGTEMPLATE IDD_EDMACRODLG LOADONCALL MOVEABLE DISCARDABLE
+{
+    DIALOG "Edit macro",
+           IDD_EDMACRODLG, 93, 49, 246, 147,
+           FS_NOBYTEALIGN | FS_DLGBORDER | FS_SCREENALIGN | NOT WS_VISIBLE |
+           WS_CLIPSIBLINGS | NOT WS_SAVEBITS,
+           FCF_TITLEBAR | FCF_SYSMENU | FCF_NOBYTEALIGN
+           PRESPARAMS PP_FONTNAMESIZE, "8.Helv"
+    {
+        CONTROL "Comment:",
+                0, 3, 135, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Key:",
+                0, 3, 123, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "Required file:",
+                0, 120, 123, 40, 8, WC_STATIC,
+                SS_TEXT | DT_LEFT | DT_TOP | DT_MNEMONIC | WS_GROUP |
+                WS_VISIBLE
+        CONTROL "",
+                IDD_EFEDMCOMMENT, 48, 136, 192, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_GROUP | WS_TABSTOP |
+                WS_VISIBLE
+                CTLDATA 8, 100, 0, 0
+        CONTROL "",
+                IDD_STEDMKEY, 47, 123, 52, 8, WC_STATIC,
+                SS_BKGNDRECT | WS_VISIBLE
+        CONTROL "...",
+                IDD_PBEDMKEY, 102, 123, 13, 9, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "",
+                IDD_EFEDMFILE, 165, 124, 75, 6, WC_ENTRYFIELD,
+                ES_MARGIN | ES_AUTOSCROLL | WS_TABSTOP | WS_VISIBLE
+                CTLDATA 8, 50, 0, 0
+        CONTROL "",
+                IDD_MLEEDMSCRIPT, 3, 17, 238, 101, WC_MLE,
+                MLS_WORDWRAP | MLS_BORDER | MLS_VSCROLL | WS_TABSTOP |
+                WS_VISIBLE
+        CONTROL "Ok",
+                DID_OK, 3, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Cancel",
+                DID_CANCEL, 50, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+        CONTROL "Help",
+                IDD_PBHELP, 202, 3, 40, 11, WC_BUTTON,
+                BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+    }
+}
+
+

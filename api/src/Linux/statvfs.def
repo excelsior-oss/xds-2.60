@@ -1,0 +1,39 @@
+(* Copyright (c) Excelsior 2007.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE ["C"] statvfs; (* Jek *)
+
+FROM xmRTS IMPORT X2C_pCHAR;
+
+CONST 
+  ST_RDONLY = 1;
+  ST_NOSUID = 2;
+
+TYPE
+  statvfs_t = RECORD
+    f_bsize   :CARDINAL;
+    f_frsize  :CARDINAL;
+    f_blocks  :CARDINAL;
+    f_bfree   :CARDINAL;
+    f_bavail  :CARDINAL;
+    f_files   :CARDINAL;
+    f_ffree   :CARDINAL;
+    f_favail  :CARDINAL;
+    f_fsid    :CARDINAL;
+
+    f_unused  :INTEGER;
+
+    f_flag    :CARDINAL;
+    f_namemax :CARDINAL;
+
+    f_spare   :ARRAY[0..5] OF INTEGER;
+  END;
+
+
+PROCEDURE statvfs (file :X2C_pCHAR; VAR buf :statvfs_t): INTEGER;
+PROCEDURE fstatvfs (fd :INTEGER; VAR buf :statvfs_t): INTEGER;
+
+END statvfs.

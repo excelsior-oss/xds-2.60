@@ -1,0 +1,4304 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMWIN.H
+*
+* OS/2 Presentation Manager Window Manager include file.
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1993
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+* If INCL_WIN is defined; all subcomponents are included.
+*
+* Subcomponents marked with "+" are partially included by default:
+*
+*   CONST:                To include:
+*
+* + INCL_WINWINDOWMGR       General window management
+* + INCL_WINMESSAGEMGR      Message management
+* + INCL_WININPUT           Mouse and keyboard input
+* + INCL_WINDIALOGS         Dialog boxes
+* + INCL_WINSTATICS         Static controls
+* + INCL_WINBUTTONS         Button controls
+* + INCL_WINENTRYFIELDS     Entry Fields
+*   INCL_WINMLE             Multiple Line Entry Fields
+* + INCL_WINLISTBOXES       List box controls
+* + INCL_WINMENUS           Menu controls
+* + INCL_WINSCROLLBARS      Scroll bar controls
+* + INCL_WINFRAMEMGR        Frame manager
+*   INCL_WINFRAMECTLS       Frame controls (title bars & size border)
+*   INCL_WINRECTANGLES      Rectangle routines
+*   INCL_WINSYS             System values (and colors)
+*   INCL_WINTIMER           Timer routines
+* + INCL_WINACCELERATORS    Keyboard accelerators
+*   INCL_WINTRACKRECT       WinTrackRect() function
+*   INCL_WINCLIPBOARD       Clipboard manager
+* + INCL_WINCURSORS         Text cursors
+* + INCL_WINPOINTERS        Mouse pointers
+*   INCL_WINHOOKS           Hook manager
+* + INCL_WINSWITCHLIST      Shell Switch List API
+*   INCL_WINPROGRAMLIST     Shell Program List API
+*   INCL_WINSHELLDATA       Shell Data (?)
+*   INCL_WINCOUNTRY         Country support
+*   INCL_WINHEAP            Heap Manager
+*   INCL_WINATOM            Atom Manager
+*   INCL_WINERRORS          Error code definitions
+*   INCL_NLS                DBCS window manager definition
+* + INCL_WINHELP            Help Manager definitions
+*   INCL_WINSEI             Set Error Info API
+*   INCL_WINLOAD            Load/Delete Library/Procedure
+*   INCL_WINTYPES           Definitions for Datatypes
+*   INCL_WINTHUNKAPI        Thunk Procedure API
+*   INCL_WINDESKTOP         Desktop API
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+#define WIN_INCLUDED
+
+(*** include everything if requested ***************************************)
+#if defined(INCL_WIN)
+   #define INCL_WINWINDOWMGR
+   #define INCL_WINMESSAGEMGR
+   #define INCL_WININPUT
+   #define INCL_WINDIALOGS
+   #define INCL_WINSTATICS
+   #define INCL_WINBUTTONS
+   #define INCL_WINENTRYFIELDS
+   #define INCL_WINMLE
+   #define INCL_WINLISTBOXES
+   #define INCL_WINMENUS
+   #define INCL_WINSCROLLBARS
+   #define INCL_WINFRAMEMGR
+   #define INCL_WINFRAMECTLS
+   #define INCL_WINRECTANGLES
+   #define INCL_WINSYS
+   #define INCL_WINTIMER
+   #define INCL_WINACCELERATORS
+   #define INCL_WINTRACKRECT
+   #define INCL_WINCLIPBOARD
+   #define INCL_WINCURSORS
+   #define INCL_WINPOINTERS
+   #define INCL_WINHOOKS
+   #define INCL_WINSWITCHLIST
+   #define INCL_WINPROGRAMLIST
+   #define INCL_WINSHELLDATA
+   #define INCL_WINCOUNTRY
+   #define INCL_WINHEAP
+   #define INCL_WINATOM
+   #define INCL_WINERRORS
+   #define INCL_WINDDE
+   #define INCL_WINHELP
+   #define INCL_WINSEI
+   #define INCL_WINLOAD
+   #define INCL_WINTYPES
+   #define INCL_WINDESKTOP
+   #define INCL_WINPALETTE
+   #define INCL_WINTHUNKAPI
+   #define INCL_WINSTDDLGS
+#else  (* INCL_WIN *)
+   (*** include resource compiler required sections ************************)
+   #if defined(RC_INVOKED)
+      #define INCL_WININPUT
+      #define INCL_WINDIALOGS
+      #define INCL_WINSTATICS
+      #define INCL_WINBUTTONS
+      #define INCL_WINENTRYFIELDS
+      #define INCL_WINLISTBOXES
+      #define INCL_WINMENUS
+      #define INCL_WINSCROLLBARS
+      #define INCL_WINFRAMEMGR
+      #define INCL_WINFRAMECTLS
+      #define INCL_WINACCELERATORS
+      #define INCL_WINPOINTERS
+      #define INCL_WINMESSAGEMGR
+      #define INCL_WINMLE
+      #define INCL_WINHELP
+      #define INCL_WINSTDDLGS
+      #define INCL_WINSYS
+   #endif (* RC_INVOKED *)
+#endif (* INCL_WIN *)
+
+(*** ensure standard entry field defintions if MLE is defined **************)
+#if defined(INCL_WINMLE)
+   #if ! defined(INCL_WINENTRYFIELDS)
+      #define INCL_WINENTRYFIELDS
+   #endif (* INCL_WINENTRYFIELDS *)
+#endif (* INCL_WINMLE *)
+
+(*** INCL_WINCOMMON compatability ******************************************)
+#if defined(INCL_WINCOMMON)
+   #define INCL_WINWINDOWMGR
+#endif (* INCL_WINCOMMON *)
+
+(*** include PMWIN errors if all errors requested **************************)
+#if defined(INCL_ERRORS)
+   #define INCL_WINERRORS
+#endif  (* INCL_ERRORS *)
+
+(***************************************************************************)
+(***        General Window Management types; constants and macros        ***)
+(***************************************************************************)
+
+TYPE MPARAM   = SYSTEM.ADDRESS;      (* mp    *)
+TYPE PMPARAM  = POINTER TO MPARAM;   (* pmp   *)
+TYPE MRESULT  = SYSTEM.ADDRESS;      (* mres  *)
+TYPE PMRESULT = POINTER TO MRESULT;  (* pmres *)
+
+(*** Macros to make an MPARAM from standard types. *************************)
+
+CONST MPVOID = NIL;
+PROCEDURE MPFROMHWND   (hwnd : HWND)                 : MPARAM;
+PROCEDURE MPFROMCHAR   (ch : CHAR)                   : MPARAM;
+PROCEDURE MPFROMSHORT  (s : SHORT)                   : MPARAM;
+PROCEDURE MPFROM2SHORT (s1, s2 : SHORT)              : MPARAM;
+PROCEDURE MPFROMSH2CH  (s: SHORT; uch1, uch2 : CHAR) : MPARAM;
+PROCEDURE MPFROMLONG   (l : LONG)                    : MPARAM;
+
+PROCEDURE / MPFROMUSHORT (us : USHORT)                 : MPARAM;
+PROCEDURE / MPFROM2USHORT(us1, us2 : USHORT)           : MPARAM;
+PROCEDURE / MPFROMULONG  (ul : ULONG)                  : MPARAM;
+
+(*** Macros to extract standard types from an MPARAM ***********************)
+
+--#define PVOIDFROMMP(mp)            ((VOID *)(mp))
+PROCEDURE HWNDFROMMP   (mp : MPARAM) : HWND;
+PROCEDURE CHAR1FROMMP  (mp : MPARAM) : CHAR;
+PROCEDURE CHAR2FROMMP  (mp : MPARAM) : CHAR;
+PROCEDURE CHAR3FROMMP  (mp : MPARAM) : CHAR;
+PROCEDURE CHAR4FROMMP  (mp : MPARAM) : CHAR;
+PROCEDURE SHORT1FROMMP (mp : MPARAM) : SHORT;
+PROCEDURE SHORT2FROMMP (mp : MPARAM) : SHORT;
+PROCEDURE LONGFROMMP   (mp : MPARAM) : LONG;
+
+PROCEDURE / USHORT1FROMMP(mp : MPARAM) : USHORT;
+PROCEDURE / USHORT2FROMMP(mp : MPARAM) : USHORT;
+PROCEDURE / ULONGFROMMP  (mp : MPARAM) : ULONG;
+
+(*** Macros to make an MRESULT from standard types. ************************)
+
+--#define MRFROMP(p)                 ((MRESULT)(VOID *)(p))
+PROCEDURE MRFROMSHORT (s : SHORT)        : MRESULT;
+PROCEDURE MRFROM2SHORT(us1, us2 : SHORT) : MRESULT;
+PROCEDURE MRFROMLONG  (l : LONG)         : MRESULT;
+
+PROCEDURE / MRFROMUSHORT (us : USHORT)       : MRESULT;
+PROCEDURE / MRFROM2USHORT(us1, us2 : USHORT) : MRESULT;
+PROCEDURE / MRFROMULONG  (ul : ULONG)        : MRESULT;
+
+(*** Macros to extract standard types from an MRESULT **********************)
+
+--#define PVOIDFROMMR(mr)            ((VOID *)(mr))
+PROCEDURE SHORT1FROMMR (mr : MRESULT) : SHORT;
+PROCEDURE SHORT2FROMMR (mr : MRESULT) : SHORT;
+PROCEDURE LONGFROMMR   (mr : MRESULT) : LONG;
+
+PROCEDURE / USHORT1FROMMR(mr : MRESULT) : USHORT;
+PROCEDURE / USHORT2FROMMR(mr : MRESULT) : USHORT;
+PROCEDURE / ULONGFROMMR  (mr : MRESULT) : ULONG;
+
+(****************************************************************************
+* This is the standard function definition for window procedures.
+* Typically they are names like "XxxxxxxxWndProc"; where the prefix
+* "Xxxxxxxxx" is replaced by some name descriptive of the window procedure
+* being declared.  Window procedures must be EXPORTED in the definitions
+* file used by the linker.
+*
+* PROCEDURE [EXPENTRY] MyclassWndProc(HWND hwnd    * window handle        *
+*                                    ;ULONG msg    * message number       *
+*                                    ;MPARAM mp1   * 1st (packed) parms   *
+*                                    ;MPARAM mp2   * 2nd (packed) parms   *
+*                                    ): MRESULT;
+*
+****************************************************************************)
+
+(*** Pointer to a window procedure function ********************************)
+TYPE PFNWP  = PROCEDURE [EXPENTRY] (HWND, ULONG, MPARAM, MPARAM): MRESULT;
+
+(*** Predefined window handles *********************************************)
+#if ! defined(INCL_SAADEFS)
+   CONST HWND_DESKTOP             =  HWND(1);
+   CONST HWND_OBJECT              =  HWND(2);
+#endif (* !INCL_SAADEFS *)
+
+CONST HWND_TOP                    =  HWND(3);
+CONST HWND_BOTTOM                 =  HWND(4);
+
+#if ! defined(INCL_SAADEFS)
+   CONST HWND_THREADCAPTURE       =  HWND(5);
+#endif (* !INCL_SAADEFS *)
+
+
+(*** Standard Window Classes ***********************************************)
+
+CONST WC_FRAME            = PSZ(0ffff0001H);
+CONST WC_COMBOBOX         = PSZ(0ffff0002H);
+CONST WC_BUTTON           = PSZ(0ffff0003H);
+CONST WC_MENU             = PSZ(0ffff0004H);
+CONST WC_STATIC           = PSZ(0ffff0005H);
+CONST WC_ENTRYFIELD       = PSZ(0ffff0006H);
+CONST WC_LISTBOX          = PSZ(0ffff0007H);
+CONST WC_SCROLLBAR        = PSZ(0ffff0008H);
+CONST WC_TITLEBAR         = PSZ(0ffff0009H);
+CONST WC_MLE              = PSZ(0ffff000AH);
+(* 000B to 000F reserved *)
+CONST WC_APPSTAT          = PSZ(0ffff0010H);
+CONST WC_KBDSTAT          = PSZ(0ffff0011H);
+CONST WC_PECIC            = PSZ(0ffff0012H);
+CONST WC_DBE_KKPOPUP      = PSZ(0ffff0013H);
+(* 0014 to 001F reserved *)
+CONST WC_SPINBUTTON       = PSZ(0ffff0020H);
+(* 0021 to 0024 reserved *)
+CONST WC_CONTAINER        = PSZ(0ffff0025H);
+CONST WC_SLIDER           = PSZ(0ffff0026H);
+CONST WC_VALUESET         = PSZ(0ffff0027H);
+CONST WC_NOTEBOOK         = PSZ(0ffff0028H);
+(* 0029 to 002C used by PEN *)
+CONST WC_PENFIRST         = PSZ(0ffff0029H);
+CONST WC_PENLAST          = PSZ(0ffff002CH);
+(* 002D to 0030 reserved *)
+(* 0030 to 003F reserved *)
+CONST WC_MMPMFIRST        = PSZ(0ffff0040H);
+CONST WC_MMPMLAST         = PSZ(0ffff004fH);
+
+(*** Standard Window Styles ************************************************)
+
+CONST WS_VISIBLE                 = 080000000H;
+CONST WS_DISABLED                = 040000000H;
+CONST WS_CLIPCHILDREN            = 020000000H;
+CONST WS_CLIPSIBLINGS            = 010000000H;
+CONST WS_PARENTCLIP              = 008000000H;
+CONST WS_SAVEBITS                = 004000000H;
+CONST WS_SYNCPAINT               = 002000000H;
+CONST WS_MINIMIZED               = 001000000H;
+CONST WS_MAXIMIZED               = 000800000H;
+CONST WS_ANIMATE                 = 000400000H;
+
+(*** Dialog manager styles *************************************************)
+
+CONST WS_GROUP                   = 000010000H;
+CONST WS_TABSTOP                 = 000020000H;
+CONST WS_MULTISELECT             = 000040000H;
+
+(*** Class styles *********************************************************)
+
+CONST CS_MOVENOTIFY              = 000000001H;
+CONST CS_SIZEREDRAW              = 000000004H;
+CONST CS_HITTEST                 = 000000008H;
+CONST CS_PUBLIC                  = 000000010H;
+CONST CS_FRAME                   = 000000020H;
+CONST CS_CLIPCHILDREN            = 020000000H;
+CONST CS_CLIPSIBLINGS            = 010000000H;
+CONST CS_PARENTCLIP              = 008000000H;
+CONST CS_SAVEBITS                = 004000000H;
+CONST CS_SYNCPAINT               = 002000000H;
+
+(***************************************************************************)
+(*** Window Manager Subsection part 1 **************************************)
+(***************************************************************************)
+
+#if ( defined(INCL_WINWINDOWMGR) || ! defined(INCL_NOCOMMON))
+
+   PROCEDURE WinRegisterClass(hab          : HAB
+                             ;szClassName  : ARRAY OF CHAR
+                             ;pfnWndProc   : PFNWP
+                             ;flStyle      : ULONG
+                             ;cbWindowData : ULONG
+                             ): BOOL;
+
+   PROCEDURE WinDefWindowProc(hwnd : HWND
+                             ;msg  : ULONG
+                             ;mp1  : MPARAM
+                             ;mp2  : MPARAM
+                             ): MRESULT;
+
+   PROCEDURE WinDestroyWindow(hwnd : HWND): BOOL;
+
+   PROCEDURE WinShowWindow(hwnd  : HWND
+                          ;fShow : BOOL
+                          ): BOOL;
+
+   PROCEDURE WinQueryWindowRect(hwnd        : HWND
+                               ;VAR rclDest : RECTL
+                               ): BOOL;
+
+   PROCEDURE WinGetPS(hwnd : HWND): HPS;
+
+   PROCEDURE WinReleasePS(hps : HPS): BOOL;
+
+   PROCEDURE WinEndPaint(hps : HPS): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+
+     PROCEDURE WinGetClipPS(hwnd     : HWND
+                           ;hwndClip : HWND
+                           ;fl       : ULONG
+                           ): HPS;
+
+     PROCEDURE WinIsWindowShowing(hwnd : HWND): BOOL;
+
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinBeginPaint(hwnd               : HWND
+                          ;hps                : HPS
+                          ;VAR [NIL] rclPaint : RECTL
+                          ): HPS;
+
+   PROCEDURE WinOpenWindowDC(hwnd : HWND): HDC;
+
+   PROCEDURE WinScrollWindow(hwnd                : HWND
+                            ;dx                  : LONG
+                            ;dy                  : LONG
+                            ;VAR [NIL] rclScroll : RECTL
+                            ;VAR [NIL] rclClip   : RECTL
+                            ;hrgnUpdate          : HRGN
+                            ;VAR [NIL] rclUpdate : RECTL
+                            ;rgfsw               : ULONG
+                            ): LONG;
+
+   (*** WinGetClipPS() flags ***********************************************)
+
+   #if ! defined(INCL_SAADEFS)
+      CONST PSF_LOCKWINDOWUPDATE       = 00001H;
+      CONST PSF_CLIPUPWARDS            = 00002H;
+      CONST PSF_CLIPDOWNWARDS          = 00004H;
+      CONST PSF_CLIPSIBLINGS           = 00008H;
+      CONST PSF_CLIPCHILDREN           = 00010H;
+      CONST PSF_PARENTCLIP             = 00020H;
+   #endif (* !INCL_SAADEFS *)
+
+   (*** WinScrollWindow() flags ********************************************)
+
+   CONST SW_SCROLLCHILDREN          = 00001H;
+   CONST SW_INVALIDATERGN           = 00002H;
+
+   PROCEDURE WinFillRect(hps     : HPS
+                        ;VAR rcl : RECTL
+                        ;lColor  : LONG
+                        ): BOOL;
+
+   (*** WinInitialize/WinTerminate Interface declarations ******************)
+
+   TYPE QVERSDATA = RECORD   (* qver *)
+      environment:  USHORT;
+      version:      USHORT;
+   END;
+   TYPE PQVERSDATA = POINTER TO QVERSDATA;
+
+   CONST QV_OS2                     = 00000H;
+   CONST QV_CMS                     = 00001H;
+   CONST QV_TSO                     = 00002H;
+   CONST QV_TSOBATCH                = 00003H;
+   CONST QV_OS400                   = 00004H;
+
+
+   PROCEDURE WinQueryVersion(hab : HAB): ULONG;
+
+   PROCEDURE WinInitialize(flOptions : ULONG): HAB;
+
+   PROCEDURE WinTerminate(hab : HAB): BOOL;
+
+   PROCEDURE WinQueryAnchorBlock(hwnd : HWND): HAB;
+
+#endif (* INCL_WINWINDOWMGR | !INCL_NOCOMMON *)
+
+(***************************************************************************)
+(***  End of Window Manager COMMON section *********************************)
+(***************************************************************************)
+
+
+PROCEDURE WinCreateWindow(hwndParent       : HWND
+                         ;pszClass         : PCSZ   (* !!! Polymorfmism *)
+                         ;pszName          : PCSZ   (* !!! NIL *)
+                         ;flStyle          : ULONG
+                         ;x                : LONG
+                         ;y                : LONG
+                         ;cx               : LONG
+                         ;cy               : LONG
+                         ;hwndOwner        : HWND
+                         ;hwndInsertBehind : HWND
+                         ;id               : ULONG
+                         ;pCtlData         : PVOID
+                         ;pPresParams      : PVOID
+                         ): HWND;
+
+PROCEDURE WinEnableWindow(hwnd    : HWND
+                         ;fEnable : BOOL
+                         ): BOOL;
+
+PROCEDURE WinIsWindowEnabled(hwnd : HWND): BOOL;
+
+PROCEDURE WinEnableWindowUpdate(hwnd    : HWND
+                               ;fEnable : BOOL
+                               ): BOOL;
+
+PROCEDURE WinIsWindowVisible(hwnd : HWND): BOOL;
+
+PROCEDURE WinQueryWindowText(hwnd         : HWND
+                            ;cchBufferMax : LONG
+                            ;VAR chBuffer : ARRAY OF CHAR
+                            ): LONG;
+
+PROCEDURE WinSetWindowText(hwnd   : HWND
+                          ;szText : ARRAY OF CHAR
+                          ): BOOL;
+
+PROCEDURE WinQueryWindowTextLength(hwnd : HWND): LONG;
+
+PROCEDURE WinWindowFromID(hwndParent : HWND
+                         ;id         : ULONG
+                         ): HWND;
+
+PROCEDURE WinIsWindow(hab  : HAB
+                     ;hwnd : HWND
+                     ): BOOL;
+
+PROCEDURE WinQueryWindow(hwnd : HWND
+                        ;cmd  : LONG
+                        ): HWND;
+
+PROCEDURE WinMultWindowFromIDs(hwndParent : HWND
+                              ;VAR rghwnd : ARRAY OF HWND
+                              ;idFirst    : ULONG
+                              ;idLast     : ULONG
+                              ): LONG;
+
+(*** WinQueryWindow() codes ************************************************)
+
+CONST QW_NEXT        = 0;
+CONST QW_PREV        = 1;
+CONST QW_TOP         = 2;
+CONST QW_BOTTOM      = 3;
+CONST QW_OWNER       = 4;
+CONST QW_PARENT      = 5;
+CONST QW_NEXTTOP     = 6;
+CONST QW_PREVTOP     = 7;
+CONST QW_FRAMEOWNER  = 8;
+
+PROCEDURE WinSetParent(hwnd          : HWND
+                      ;hwndNewParent : HWND
+                      ;fRedraw       : BOOL
+                      ): BOOL;
+
+PROCEDURE WinIsChild(hwnd       : HWND
+                    ;hwndParent : HWND
+                    ): BOOL;
+
+PROCEDURE WinSetOwner(hwnd         : HWND
+                     ;hwndNewOwner : HWND
+                     ): BOOL;
+#if ! defined(INCL_SAADEFS)
+   PROCEDURE WinQueryWindowProcess(hwnd    : HWND
+                                  ;VAR pid : PID
+                                  ;VAR tid : TID
+                                  ): BOOL;
+#endif (* !INCL_SAADEFS *)
+
+PROCEDURE WinQueryObjectWindow(hwndDesktop : HWND): HWND;
+
+PROCEDURE WinQueryDesktopWindow(hab : HAB
+                               ;hdc : HDC
+                               ): HWND;
+
+(*** Window positioning functions *)
+
+(* WinSetMultWindowPos() structure *)
+
+TYPE SWP = RECORD   (* swp *)
+   fl:          ULONG;
+   cy:          LONG;
+   cx:          LONG;
+   y:           LONG;
+   x:           LONG;
+   hwndInsertBehind:  HWND;
+   hwnd:        HWND;
+   ulReserved1: ULONG;
+   ulReserved2: ULONG;
+END;
+TYPE PSWP = POINTER TO SWP;
+
+PROCEDURE WinSetWindowPos(hwnd             : HWND
+                         ;hwndInsertBehind : HWND
+                         ;x                : LONG
+                         ;y                : LONG
+                         ;cx               : LONG
+                         ;cy               : LONG
+                         ;fl               : ULONG
+                         ): BOOL;
+
+PROCEDURE WinSetMultWindowPos(hab  : HAB
+                             ;swp  : ARRAY OF SWP
+                             ;cswp : ULONG
+                             ): BOOL;
+
+PROCEDURE WinQueryWindowPos(hwnd    : HWND
+                           ;VAR swp : SWP
+                           ): BOOL;
+
+(* Values returned from WM_ADJUSTWINDOWPOS and passed to WM_WINDOWPOSCHANGED *)
+
+CONST AWP_MINIMIZED              = 000010000H;
+CONST AWP_MAXIMIZED              = 000020000H;
+CONST AWP_RESTORED               = 000040000H;
+CONST AWP_ACTIVATE               = 000080000H;
+CONST AWP_DEACTIVATE             = 000100000H;
+
+(* WinSetWindowPos() flags *)
+
+CONST SWP_SIZE                   = 00001H;
+CONST SWP_MOVE                   = 00002H;
+CONST SWP_ZORDER                 = 00004H;
+CONST SWP_SHOW                   = 00008H;
+CONST SWP_HIDE                   = 00010H;
+CONST SWP_NOREDRAW               = 00020H;
+CONST SWP_NOADJUST               = 00040H;
+CONST SWP_ACTIVATE               = 00080H;
+CONST SWP_DEACTIVATE             = 00100H;
+CONST SWP_EXTSTATECHANGE         = 00200H;
+CONST SWP_MINIMIZE               = 00400H;
+CONST SWP_MAXIMIZE               = 00800H;
+CONST SWP_RESTORE                = 01000H;
+CONST SWP_FOCUSACTIVATE          = 02000H;
+CONST SWP_FOCUSDEACTIVATE        = 04000H;
+CONST SWP_NOAUTOCLOSE            = 08000H;  (* Valid in PROGDETAILS struct only *)
+
+(* Window painting *)
+
+PROCEDURE WinUpdateWindow(hwnd : HWND): BOOL;
+
+PROCEDURE WinInvalidateRect(hwnd             : HWND
+                           ;VAR [NIL] wrc    : RECTL
+                           ;fIncludeChildren : BOOL
+                           ): BOOL;
+
+PROCEDURE WinInvalidateRegion(hwnd             : HWND
+                             ;hrgn             : HRGN
+                             ;fIncludeChildren : BOOL
+                             ): BOOL;
+
+(* Drawing helpers *)
+
+PROCEDURE WinInvertRect(hps     : HPS
+                       ;VAR rcl : RECTL
+                       ): BOOL;
+
+PROCEDURE WinDrawBitmap(hpsDst           : HPS
+                       ;hbm              : HBITMAP
+                       ;VAR [NIL] wrcSrc : RECTL
+                       ;VAR ptlDst       : POINTL
+                       ;clrFore          : LONG
+                       ;clrBack          : LONG
+                       ;fl               : ULONG
+                       ): BOOL;
+
+(* WinDrawBitmap() flags *)
+
+CONST DBM_NORMAL                 = 00000H;
+CONST DBM_INVERT                 = 00001H;
+CONST DBM_HALFTONE               = 00002H;
+CONST DBM_STRETCH                = 00004H;
+CONST DBM_IMAGEATTRS             = 00008H;
+
+PROCEDURE WinDrawText(hps      : HPS
+                     ;cchText  : LONG
+                     ;chText   : ARRAY OF CHAR
+                     ;VAR rcl  : RECTL
+                     ;clrFore  : LONG
+                     ;clrBack  : LONG
+                     ;flCmd    : ULONG
+                     ): LONG;
+
+
+(*
+* WinDrawText() codes:
+* From DT_LEFT to DT_EXTERNALLEADING; the codes are designed to be ||'ed with
+* SS_TEXT to create variations of the basic text static item.
+*)
+CONST DT_LEFT                    = 00000H;
+CONST DT_QUERYEXTENT             = 00002H;
+CONST DT_UNDERSCORE              = 00010H;
+CONST DT_STRIKEOUT               = 00020H;
+CONST DT_TEXTATTRS               = 00040H;
+CONST DT_EXTERNALLEADING         = 00080H;
+CONST DT_CENTER                  = 00100H;
+CONST DT_RIGHT                   = 00200H;
+CONST DT_TOP                     = 00000H;
+CONST DT_VCENTER                 = 00400H;
+CONST DT_BOTTOM                  = 00800H;
+CONST DT_HALFTONE                = 01000H;
+CONST DT_MNEMONIC                = 02000H;
+CONST DT_WORDBREAK               = 04000H;
+CONST DT_ERASERECT               = 08000H;
+
+
+
+PROCEDURE WinDrawBorder(hps     : HPS
+                       ;VAR rcl : RECTL
+                       ;cx      : LONG
+                       ;cy      : LONG
+                       ;clrFore : LONG
+                       ;clrBack : LONG
+                       ;flCmd   : ULONG
+                       ): BOOL;
+
+
+(* WinDrawBorder() flags *)
+
+CONST DB_PATCOPY                 = 00000H;
+CONST DB_PATINVERT               = 00001H;
+CONST DB_DESTINVERT              = 00002H;
+CONST DB_AREAMIXMODE             = 00003H;
+
+CONST DB_ROP                     = 00007H;
+CONST DB_INTERIOR                = 00008H;
+CONST DB_AREAATTRS               = 00010H;
+CONST DB_STANDARD                = 00100H;
+CONST DB_DLGBORDER               = 00200H;
+
+
+
+(** Resource loading functions *)
+
+PROCEDURE WinLoadString(hab          : HAB
+                       ;hmod         : HMODULE
+                       ;id           : ULONG
+                       ;cchMax       : LONG
+                       ;VAR chBuffer : ARRAY OF CHAR
+                       ): LONG;
+
+#if ! defined(INCL_SAADEFS)
+   PROCEDURE WinLoadMessage(hab          : HAB
+                           ;hmod         : HMODULE
+                           ;id           : ULONG
+                           ;cchMax       : LONG
+                           ;VAR chBuffer : ARRAY OF CHAR
+                           ): LONG;
+#endif (* !INCL_SAADEFS *)
+
+(***************************************************************************)
+(****                 Window Manager Subsection part 2                  ****)
+#if  defined(INCL_WINWINDOWMGR) || ! defined(INCL_NOCOMMON)
+
+   PROCEDURE WinSetActiveWindow(hwndDesktop : HWND
+                               ;hwnd        : HWND
+                               ): BOOL;
+
+#endif (* Window Manager COMMON subsection *)
+
+#if defined(INCL_WINWINDOWMGR)
+   (* WM_CREATE structure *)
+
+   TYPE CREATESTRUCT = RECORD   (* crst *)
+      pPresParams:      PVOID;
+      pCtlData:         PVOID;
+      id:               ULONG;
+      hwndInsertBehind: HWND;
+      hwndOwner:        HWND;
+      cy:               LONG;
+      cx:               LONG;
+      y:                LONG;
+      x:                LONG;
+      flStyle:          ULONG;
+      pszText:          PSZ;
+      pszClass:         PSZ;
+      hwndParent:       HWND;
+   END;
+   TYPE PCREATESTRUCT = POINTER TO CREATESTRUCT;
+
+   (* WinQueryClassInfo() structure *)
+
+   TYPE CLASSINFO = RECORD   (* clsi *)
+      flClassStyle:  ULONG;
+      pfnWindowProc: PFNWP;
+      cbWindowData:  ULONG;
+   END;
+   TYPE PCLASSINFO = POINTER TO CLASSINFO;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSubclassWindow(hwnd  : HWND
+                                 ;pfnwp : PFNWP
+                                 ): PFNWP;
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinQueryClassName(hwnd   : HWND
+                              ;cchMax : LONG
+                              ;VAR ch : ARRAY OF CHAR
+                              ): LONG;
+
+   PROCEDURE WinQueryClassInfo(hab           : HAB
+                              ;pszClassName  : PCSZ     (* !!! *)
+                              ;VAR ClassInfo : CLASSINFO
+                              ): BOOL;
+
+   PROCEDURE WinQueryActiveWindow(hwndDesktop : HWND): HWND;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinIsThreadActive(hab : HAB): BOOL;
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinQuerySysModalWindow(hwndDesktop : HWND): HWND;
+
+   PROCEDURE WinSetSysModalWindow(hwndDesktop : HWND
+                                 ;hwnd        : HWND
+                                 ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinQueryWindowUShort(hwnd  : HWND
+                                    ;index : LONG
+                                    ): USHORT;
+
+      PROCEDURE WinSetWindowUShort(hwnd  : HWND
+                                  ;index : LONG
+                                  ;us    : USHORT
+                                  ): BOOL;
+
+      PROCEDURE WinQueryWindowULong(hwnd  : HWND
+                                   ;index : LONG
+                                   ): ULONG;
+
+      PROCEDURE WinSetWindowULong(hwnd  : HWND
+                                 ;index : LONG
+                                 ;ul    : ULONG
+                                 ): BOOL;
+
+      PROCEDURE WinQueryWindowPtr(hwnd  : HWND
+                                 ;index : LONG
+                                 ): PVOID;
+
+      PROCEDURE WinSetWindowPtr(hwnd  : HWND
+                               ;index : LONG
+                               ;p     : PVOID
+                               ): BOOL;
+
+      PROCEDURE WinSetWindowBits(hwnd   : HWND
+                                ;index  : LONG
+                                ;flData : ULONG
+                                ;flMask : ULONG
+                                ): BOOL;
+
+      (*** Standard WinQueryWindowUShort/ULong() indices *******************)
+      CONST QWS_USER                  =  0;
+      CONST QWS_ID                    = -1;
+      CONST QWS_MIN                   = -1;
+
+      CONST QWL_USER                  =  0;
+      CONST QWL_STYLE                 = -2;
+      CONST QWP_PFNWP                 = -3;
+      CONST QWL_HMQ                   = -4;
+      CONST QWL_RESERVED              = -5;
+
+      CONST QWL_PENDATA               = -7;
+      CONST QWL_MIN                   = -7;
+
+      (*** WC_FRAME WinQueryWindowUShort/ULong() indices *******************)
+      CONST QWL_HHEAP                  = 00004H;
+      CONST QWL_HWNDFOCUSSAVE          = 00018H;
+      CONST QWL_DEFBUTTON              = 00040H;
+      CONST QWL_PSSCBLK                = 00048H;
+      CONST QWL_PFEPBLK                = 0004cH;
+      CONST QWL_PSTATBLK               = 00050H;
+
+      CONST QWS_FLAGS                  = 00008H;
+      CONST QWS_RESULT                 = 0000aH;
+      CONST QWS_XRESTORE               = 0000cH;
+      CONST QWS_YRESTORE               = 0000eH;
+      CONST QWS_CXRESTORE              = 00010H;
+      CONST QWS_CYRESTORE              = 00012H;
+      CONST QWS_XMINIMIZE              = 00014H;
+      CONST QWS_YMINIMIZE              = 00016H;
+
+
+      (*** Window enumeration **********************************************)
+      TYPE HENUM = LHANDLE;  (* henum *)
+
+      PROCEDURE WinBeginEnumWindows(hwnd : HWND): HENUM;
+      PROCEDURE WinGetNextWindow(henum : HENUM): HWND;
+      PROCEDURE WinEndEnumWindows(henum : HENUM): BOOL;
+
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinWindowFromPoint(hwnd      : HWND
+                               ;VAR ptl   : POINTL
+                               ;fChildren : BOOL
+                               ): HWND;
+
+   PROCEDURE WinMapWindowPoints(hwndFrom  : HWND
+                               ;hwndTo    : HWND
+                               ;VAR rgptl : ARRAY OF POINTL
+                               ;cwpt      : LONG
+                               ): BOOL;
+
+
+   (* More window painting functions *)
+
+   PROCEDURE WinValidateRect(hwnd             : HWND
+                            ;VAR rcl          : RECTL
+                            ;fIncludeChildren : BOOL
+                            ): BOOL;
+
+   PROCEDURE WinValidateRegion(hwnd             : HWND
+                              ;hrgn             : HRGN
+                              ;fIncludeChildren : BOOL
+                              ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinWindowFromDC(hdc : HDC): HWND;
+
+      PROCEDURE WinQueryWindowDC(hwnd : HWND): HDC;
+
+      PROCEDURE WinGetScreenPS(hwndDesktop : HWND): HPS;
+
+      PROCEDURE WinLockWindowUpdate(hwndDesktop    : HWND
+                                   ;hwndLockUpdate : HWND
+                                   ): BOOL;
+
+      PROCEDURE WinLockVisRegions(hwndDesktop : HWND
+                                 ;fLock       : BOOL
+                                 ): BOOL;
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinQueryUpdateRect(hwnd    : HWND
+                               ;VAR rcl : RECTL
+                               ): BOOL;
+
+   PROCEDURE WinQueryUpdateRegion(hwnd : HWND
+                                 ;hrgn : HRGN
+                                 ): LONG;
+
+   PROCEDURE WinExcludeUpdateRegion(hps  : HPS
+                                   ;hwnd : HWND
+                                   ): LONG;
+
+#endif (* INCL_WINWINDOWMGR *)
+
+#if  defined(INCL_WINMESSAGEMGR) || ! defined(INCL_NOCOMMON)
+
+   (* QMSG structure *)
+   TYPE QMSG = RECORD   (* qmsg *)
+      hwnd:     HWND;
+      msg:      ULONG;
+      mp1:      MPARAM;
+      mp2:      MPARAM;
+      time:     ULONG;
+      ptl:      POINTL;
+      reserved: ULONG;
+   END;
+   TYPE PQMSG = POINTER TO QMSG;
+
+   (*** Standard Window Messages *******************************************)
+   CONST WM_NULL                    = 00000H;
+   CONST WM_CREATE                  = 00001H;
+   CONST WM_DESTROY                 = 00002H;
+
+
+   CONST WM_ENABLE                  = 00004H;
+   CONST WM_SHOW                    = 00005H;
+   CONST WM_MOVE                    = 00006H;
+   CONST WM_SIZE                    = 00007H;
+   CONST WM_ADJUSTWINDOWPOS         = 00008H;
+
+   CONST WM_CALCVALIDRECTS          = 00009H;
+
+   CONST WM_SETWINDOWPARAMS         = 0000aH;
+   CONST WM_QUERYWINDOWPARAMS       = 0000bH;
+   CONST WM_HITTEST                 = 0000cH;
+   CONST WM_ACTIVATE                = 0000dH;
+   CONST WM_SETFOCUS                = 0000fH;
+   CONST WM_SETSELECTION            = 00010H;
+
+   (* language support Winproc *)
+   CONST WM_PPAINT                  = 00011H;
+   CONST WM_PSETFOCUS               = 00012H;
+   CONST WM_PSYSCOLORCHANGE         = 00013H;
+   CONST WM_PSIZE                   = 00014H;
+   CONST WM_PACTIVATE               = 00015H;
+   CONST WM_PCONTROL                = 00016H;
+
+   CONST WM_COMMAND                 = 00020H;
+   CONST WM_SYSCOMMAND              = 00021H;
+   CONST WM_HELP                    = 00022H;
+   CONST WM_PAINT                   = 00023H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST WM_TIMER                = 00024H;
+      CONST WM_SEM1                 = 00025H;
+      CONST WM_SEM2                 = 00026H;
+      CONST WM_SEM3                 = 00027H;
+      CONST WM_SEM4                 = 00028H;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST WM_CLOSE                   = 00029H;
+   CONST WM_QUIT                    = 0002aH;
+   CONST WM_SYSCOLORCHANGE          = 0002bH;
+   CONST WM_SYSVALUECHANGED         = 0002dH;
+   CONST WM_APPTERMINATENOTIFY      = 0002eH;
+   CONST WM_PRESPARAMCHANGED        = 0002fH;
+
+   (* Control notification messages *)
+   CONST WM_CONTROL                 = 00030H;
+   CONST WM_VSCROLL                 = 00031H;
+   CONST WM_HSCROLL                 = 00032H;
+   CONST WM_INITMENU                = 00033H;
+   CONST WM_MENUSELECT              = 00034H;
+   CONST WM_MENUEND                 = 00035H;
+   CONST WM_DRAWITEM                = 00036H;
+   CONST WM_MEASUREITEM             = 00037H;
+   CONST WM_CONTROLPOINTER          = 00038H;
+   CONST WM_QUERYDLGCODE            = 0003aH;
+   CONST WM_INITDLG                 = 0003bH;
+   CONST WM_SUBSTITUTESTRING        = 0003cH;
+   CONST WM_MATCHMNEMONIC           = 0003dH;
+   CONST WM_SAVEAPPLICATION         = 0003eH;
+
+
+   (*************************************************************************
+   * Reserve a range of messages for help manager.  This range includes
+   * public messages; defined below; and private ones; which need to be
+   * reserved here to prevent clashing with application messages
+   *************************************************************************)
+
+   CONST WM_HELPBASE                = 00F00H; (* Start of msgs for help manager   *)
+   CONST WM_HELPTOP                 = 00FFFH; (* End of msgs for help manager     *)
+
+   CONST WM_USER                    = 01000H;
+
+   (*** WM_COMMAND msg source codes ****************************************)
+   CONST CMDSRC_PUSHBUTTON     = 1;
+   CONST CMDSRC_MENU           = 2;
+   CONST CMDSRC_ACCELERATOR    = 3;
+   CONST CMDSRC_FONTDLG        = 4;
+   CONST CMDSRC_FILEDLG        = 5;
+   CONST CMDSRC_PRINTDLG       = 6;
+   CONST CMDSRC_COLORDLG       = 7;
+   CONST CMDSRC_OTHER          = 0;
+
+   <* ALIGNMENT = "1" *> (* force structure alignment packing *)
+
+   (*
+   * The following structure and macro are used to access the
+   * WM_COMMAND; WM_HELP; and WM_SYSCOMMAND message parameters:
+   *)
+   TYPE CMDMSG = RECORD    (* commandmsg *)
+      cmd:     USHORT;           (* mp1 *)
+      unused:  USHORT;
+      source:  USHORT;           (* mp2 *)
+      fMouse:  USHORT;
+   END;
+   TYPE PCMDMSG = POINTER TO CMDMSG;
+
+   --CONST COMMANDMSG(pmsg) \
+   --((PCMDMSG)((PBYTE)pmsg + sizeof(MPARAM)))
+
+   <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   (*** The following structure is used by the WinQueryQueueInfo() routine *)
+   TYPE MQINFO = RECORD   (* mqi *)
+      cb:         ULONG;
+      pid:        PID;
+      tid:        TID;
+      cmsgs:      ULONG;
+      pReserved:  PVOID;
+   END;
+   TYPE PMQINFO = POINTER TO MQINFO;
+
+   PROCEDURE WinSendMsg(hwnd : HWND
+                       ;msg  : ULONG
+                       ;mp1  : MPARAM
+                       ;mp2  : MPARAM
+                       ): MRESULT;
+
+   PROCEDURE WinCreateMsgQueue(hab  : HAB
+                              ;cmsg : LONG
+                              ): HMQ;
+
+   PROCEDURE WinDestroyMsgQueue(hmq : HMQ): BOOL;
+
+   PROCEDURE WinQueryQueueInfo(hmq     : HMQ
+                              ;VAR mqi : MQINFO
+                              ;cbCopy  : ULONG
+                              ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinCancelShutdown(hmq           : HMQ
+                                 ;fCancelAlways : BOOL
+                                 ): BOOL;
+   #endif (* INCL_SAADEFS *)
+
+   PROCEDURE WinGetMsg(hab            : HAB
+                      ;VAR qmsg       : QMSG
+                      ;hwndFilter     : HWND
+                      ;msgFilterFirst : ULONG
+                      ;msgFilterLast  : ULONG
+                      ): BOOL;
+
+   PROCEDURE WinPeekMsg(hab            : HAB
+                       ;VAR qmsg       : QMSG
+                       ;hwndFilter     : HWND
+                       ;msgFilterFirst : ULONG
+                       ;msgFilterLast  : ULONG
+                       ;fl             : ULONG
+                       ): BOOL;
+
+   PROCEDURE WinDispatchMsg(hab      : HAB
+                           ;VAR qmsg : QMSG
+                           ): MRESULT;
+
+   PROCEDURE WinPostMsg(hwnd : HWND
+                       ;msg  : ULONG
+                       ;mp1  : MPARAM
+                       ;mp2  : MPARAM
+                       ): BOOL;
+
+   PROCEDURE WinRegisterUserMsg(hab       : HAB
+                               ;msgid     : ULONG
+                               ;datatype1 : LONG
+                               ;dir1      : LONG
+                               ;datatype2 : LONG
+                               ;dir2      : LONG
+                               ;datatyper : LONG
+                               ): BOOL;
+
+   PROCEDURE WinRegisterUserDatatype(hab      : HAB
+                                    ;datatype : LONG
+                                    ;count    : LONG
+                                    ;types    : ARRAY OF LONG
+                                    ): BOOL;
+
+   PROCEDURE WinSetMsgMode(hab       : HAB
+                          ;classname : ARRAY OF CHAR
+                          ;control   : LONG
+                          ): BOOL;
+
+   PROCEDURE WinSetSynchroMode(hab  : HAB
+                              ;mode : LONG
+                              ): BOOL;
+
+   (*** WinPeekMsg() constants *********************************************)
+   CONST PM_REMOVE                  = 00001H;
+   CONST PM_NOREMOVE                = 00000H;
+
+   (*** WinRegisterUserDatatype datatypes defined in separate file *********)
+   #if defined(INCL_WINTYPES)
+     #include <pmtypes.hm>
+   #endif (*INCL_WINTYPES*)
+
+   (*** WinRegisterUserMsg direction codes *********************************)
+   CONST RUM_IN                    = 1;
+   CONST RUM_OUT                   = 2;
+   CONST RUM_INOUT                 = 3;
+
+   (*** WinSetMsgMode constants *******************************************)
+   CONST SMD_DELAYED                = 00001H;
+   CONST SMD_IMMEDIATE              = 00002H;
+
+   (*** WinSetSynchroMode constants ***************************************)
+   CONST SSM_SYNCHRONOUS            = 00001H;
+   CONST SSM_ASYNCHRONOUS           = 00002H;
+   CONST SSM_MIXED                  = 00003H;
+
+#endif (* WINMESSAGEMGR || !INCL_NOCOMMON       *)
+
+#if defined(INCL_WINMESSAGEMGR)
+
+   (*** WM_CALCVALIDRECTS return flags *************************************)
+   CONST CVR_ALIGNLEFT               = 00001H;
+   CONST CVR_ALIGNBOTTOM             = 00002H;
+   CONST CVR_ALIGNRIGHT              = 00004H;
+   CONST CVR_ALIGNTOP                = 00008H;
+   CONST CVR_REDRAW                  = 00010H;
+
+   (*** WM_HITTEST return codes ********************************************)
+   CONST HT_NORMAL                  = 0;
+   CONST HT_TRANSPARENT             = 0FFFFFFFFH;
+   CONST HT_DISCARD                 = 0FFFFFFFEH;
+   CONST HT_ERROR                   = 0FFFFFFFDH;
+
+   (*** WM_SET/QUERYWINDOWPARAMS structures and flags **********************)
+   TYPE WNDPARAMS = RECORD   (* wprm *)
+      fsStatus:      ULONG;
+      cchText:       ULONG;
+      pszText:       PSZ;
+      cbPresParams:  ULONG;
+      pPresParams:   PVOID;
+      cbCtlData:     ULONG;
+      pCtlData:      PVOID;
+   END;
+   TYPE PWNDPARAMS = POINTER TO WNDPARAMS;
+
+   CONST WPM_TEXT                   = 00001H;
+   CONST WPM_CTLDATA                = 00002H;
+   CONST WPM_PRESPARAMS             = 00004H;
+   CONST WPM_CCHTEXT                = 00008H;
+   CONST WPM_CBCTLDATA              = 00010H;
+   CONST WPM_CBPRESPARAMS           = 00020H;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinInSendMsg(hab : HAB): BOOL;
+   #endif (* INCL_SAADEFS *)
+
+   PROCEDURE WinBroadcastMsg(hwnd : HWND
+                            ;msg  : ULONG
+                            ;mp1  : MPARAM
+                            ;mp2  : MPARAM
+                            ;rgf  : ULONG
+                            ): BOOL;
+
+   (*** WinBroadcastMsg codes **********************************************)
+   CONST BMSG_POST                  = 00000H;
+   CONST BMSG_SEND                  = 00001H;
+   CONST BMSG_POSTQUEUE             = 00002H;
+   CONST BMSG_DESCENDANTS           = 00004H;
+   CONST BMSG_FRAMEONLY             = 00008H;
+
+   PROCEDURE WinWaitMsg(hab      : HAB
+                       ;msgFirst : ULONG
+                       ;msgLast  : ULONG
+                       ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinQueryQueueStatus(hwndDesktop : HWND): ULONG;
+
+      (*** WinQueryQueueStatus() constants *********************************)
+      CONST QS_KEY                     = 00001H;
+      CONST QS_MOUSEBUTTON             = 00002H;
+      CONST QS_MOUSEMOVE               = 00004H;
+      CONST QS_MOUSE                   = 00006H;   (* QS_MOUSEMOVE|QS_MOUSEBUTTON *)
+      CONST QS_TIMER                   = 00008H;
+      CONST QS_PAINT                   = 00010H;
+      CONST QS_POSTMSG                 = 00020H;
+      CONST QS_SEM1                    = 00040H;
+      CONST QS_SEM2                    = 00080H;
+      CONST QS_SEM3                    = 00100H;
+      CONST QS_SEM4                    = 00200H;
+      CONST QS_SENDMSG                 = 00400H;
+      CONST QS_MSGINPUT                = 00800H;
+
+      PROCEDURE WinQueryMsgPos(hab     : HAB
+                              ;VAR ptl : POINTL
+                              ): BOOL;
+
+      PROCEDURE WinQueryMsgTime(hab : HAB): ULONG;
+
+      #if ! defined(INCL_DOSSEMAPHORES)
+         #if ! defined(__HEV__)
+            #define __HEV__
+            TYPE HEV = ULONG;    (* hev *)
+         #endif
+         TYPE HMTX = ULONG;   (* hmtx *)
+         TYPE HMUX = ULONG;   (* hmux *)
+      #endif
+
+      PROCEDURE WinWaitEventSem(hev       : HEV
+                               ;ulTimeout : ULONG
+                               ): APIRET;
+
+      PROCEDURE WinRequestMutexSem(hmtx      : HMTX
+                                  ;ulTimeout : ULONG
+                                  ): APIRET;
+
+      PROCEDURE WinWaitMuxWaitSem(hmux       : HMUX
+                                 ;ulTimeout  : ULONG
+                                 ;VAR ulUser : ULONG
+                                 ): APIRET;
+
+
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinPostQueueMsg(hmq : HMQ
+                            ;msg : ULONG
+                            ;mp1 : MPARAM
+                            ;mp2 : MPARAM
+                            ): BOOL;
+
+   (*** WinSetMsgInterest()/WinSetClassMsgInterest() constants *************)
+   CONST SMIM_ALL                   = 00EFFH;
+   CONST SMI_NOINTEREST             = 00001H;
+   CONST SMI_INTEREST               = 00002H;
+   CONST SMI_RESET                  = 00004H;
+   CONST SMI_AUTODISPATCH           = 00008H;
+
+   PROCEDURE WinSetMsgInterest(hwnd      : HWND
+                              ;msg_class : ULONG
+                              ;control   : LONG
+                              ): BOOL;
+
+   PROCEDURE WinSetClassMsgInterest(hab          : HAB
+                                   ;pszClassName : PCSZ     (* !!! *)
+                                   ;msg_class    : ULONG
+                                   ;control      : LONG
+                                   ): BOOL;
+
+#endif (* INCL_WINMESSAGEMGR *)
+
+(*** Keyboard and mouse ****************************************************)
+
+#if  defined(INCL_WININPUT) || ! defined(INCL_NOCOMMON)
+
+   (*** Keyboard and mouse input COMMON subsection *************************)
+   PROCEDURE WinSetFocus(hwndDesktop  : HWND
+                        ;hwndSetFocus : HWND
+                        ): BOOL;
+
+   PROCEDURE WinFocusChange(hwndDesktop   : HWND
+                           ;hwndSetFocus  : HWND
+                           ;flFocusChange : ULONG
+                           ): BOOL;
+
+   PROCEDURE [EXPENTRY] WinLockupSystem(hab : HAB): BOOL;
+
+   PROCEDURE [EXPENTRY] WinUnlockSystem(hab        : HAB
+                                       ;szPassword : ARRAY OF CHAR
+                                       ): BOOL;
+
+   CONST FC_NOSETFOCUS              = 00001H;
+   CONST FC_NOBRINGTOTOP           = FC_NOSETFOCUS;
+   CONST FC_NOLOSEFOCUS             = 00002H;
+   CONST FC_NOBRINGTOPFIRSTWINDOW  = FC_NOLOSEFOCUS;
+   CONST FC_NOSETACTIVE             = 00004H;
+   CONST FC_NOLOSEACTIVE            = 00008H;
+   CONST FC_NOSETSELECTION          = 00010H;
+   CONST FC_NOLOSESELECTION         = 00020H;
+
+   CONST QFC_NEXTINCHAIN            = 00001H;
+   CONST QFC_ACTIVE                 = 00002H;
+   CONST QFC_FRAME                  = 00003H;
+   CONST QFC_SELECTACTIVE           = 00004H;
+   CONST QFC_PARTOFCHAIN            = 00005H;
+
+#endif  (* Keyboard and mouse input COMMON subsection *)
+
+#if defined(INCL_WININPUT)
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSetCapture(hwndDesktop : HWND
+                             ;hwnd        : HWND
+                             ): BOOL;
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinQueryCapture(hwndDesktop : HWND): HWND;
+
+   PROCEDURE WinCheckInput(hab : HAB): BOOL;
+
+   (*** Mouse input messages ***********************************************)
+   #if ! defined(INCL_SAADEFS)
+      CONST WM_MOUSEFIRST           = 00070H;
+      CONST WM_MOUSELAST            = 00079H;
+      CONST WM_BUTTONCLICKFIRST     = 00071H;
+      CONST WM_BUTTONCLICKLAST      = 00079H;
+   #endif (* !INCL_SAADEFS *)
+   CONST WM_MOUSEMOVE               = 00070H;
+
+   CONST WM_BUTTON1DOWN             = 00071H;
+
+   CONST WM_BUTTON1UP               = 00072H;
+   CONST WM_BUTTON1DBLCLK           = 00073H;
+   CONST WM_BUTTON2DOWN             = 00074H;
+   CONST WM_BUTTON2UP               = 00075H;
+   CONST WM_BUTTON2DBLCLK           = 00076H;
+   #if ! defined(INCL_SAADEFS)
+      CONST WM_BUTTON3DOWN          = 00077H;
+      CONST WM_BUTTON3UP            = 00078H;
+      CONST WM_BUTTON3DBLCLK        = 00079H;
+
+      CONST WM_MOUSEMAP             = 0007DH;
+
+      CONST WM_EXTMOUSEFIRST        = 00410H;
+      CONST WM_EXTMOUSELAST         = 00419H;
+
+      CONST WM_CHORD                = 00410H;
+      CONST WM_BUTTON1MOTIONSTART   = 00411H;
+      CONST WM_BUTTON1MOTIONEND     = 00412H;
+      CONST WM_BUTTON1CLICK         = 00413H;
+      CONST WM_BUTTON2MOTIONSTART   = 00414H;
+      CONST WM_BUTTON2MOTIONEND     = 00415H;
+      CONST WM_BUTTON2CLICK         = 00416H;
+      CONST WM_BUTTON3MOTIONSTART   = 00417H;
+      CONST WM_BUTTON3MOTIONEND     = 00418H;
+      CONST WM_BUTTON3CLICK         = 00419H;
+
+      (* Messages = 0041A - = 0041F are reserved *)
+
+      CONST WM_MOUSETRANSLATEFIRST  = 00420H;
+      CONST WM_MOUSETRANSLATELAST   = 00428H;
+
+      CONST WM_BEGINDRAG            = 00420H;
+      CONST WM_ENDDRAG              = 00421H;
+      CONST WM_SINGLESELECT         = 00422H;
+      CONST WM_OPEN                 = 00423H;
+      CONST WM_CONTEXTMENU          = 00424H;
+      CONST WM_CONTEXTHELP          = 00425H;
+      CONST WM_TEXTEDIT             = 00426H;
+      CONST WM_BEGINSELECT          = 00427H;
+      CONST WM_ENDSELECT            = 00428H;
+
+      CONST WM_PENFIRST             = 004C0H;
+      CONST WM_PENLAST              = 004FFH;
+      CONST WM_MMPMFIRST            = 00500H;
+      CONST WM_MMPMLAST             = 005FFH;
+
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinQueryFocus(hwndDesktop : HWND): HWND;
+
+
+   (*** Key/Character input messages ***************************************)
+   CONST WM_CHAR                    = 0007aH;
+   CONST WM_VIOCHAR                 = 0007bH;
+
+   (* WM_CHAR fs field bits *)
+   CONST KC_NONE                    = 00000H;     (* Reserved *)
+   CONST KC_CHAR                    = 00001H;
+   CONST KC_VIRTUALKEY              = 00002H;
+   CONST KC_SCANCODE                = 00004H;
+
+   CONST KC_SHIFT                   = 00008H;
+   CONST KC_CTRL                    = 00010H;
+   CONST KC_ALT                     = 00020H;
+   CONST KC_KEYUP                   = 00040H;
+   CONST KC_PREVDOWN                = 00080H;
+   CONST KC_LONEKEY                 = 00100H;
+   CONST KC_DEADKEY                 = 00200H;
+   CONST KC_COMPOSITE               = 00400H;
+   CONST KC_INVALIDCOMP             = 00800H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST KC_TOGGLE               = 01000H;
+      CONST KC_INVALIDCHAR          = 02000H;
+      CONST KC_DBCSRSRVD1           = 04000H;
+      CONST KC_DBCSRSRVD2           = 08000H;
+   #endif (* !INCL_SAADEFS *)
+
+   <* ALIGNMENT = "1" *> (* force structure alignment packing *)
+
+   (*
+   * The following structure and macro are used to access the
+   * WM_MOUSEMOVE; and WM_BUTTON message parameters
+   *)
+   TYPE MSEMSG = RECORD   (* mousemsg *)
+      x:           SHORT;     (* mp1      *)
+      y:           SHORT;
+      codeHitTest: USHORT;    (* mp2      *)
+      fsInp:       USHORT;    (* input flags *)
+   END;
+   TYPE PMSEMSG = POINTER TO MSEMSG;
+
+   --CONST MOUSEMSG(pmsg) \
+   --((PMSEMSG)((PBYTE)pmsg + sizeof(MPARAM)))
+
+   TYPE CHRMSG = RECORD   (* charmsg *)
+      fs:        USHORT;                 (* mp1     *)
+      cRepeat:   UCHAR;
+      scancode:  UCHAR;
+      chr:       USHORT;                (* mp2     *)
+      vkey:      USHORT;
+   END;
+   TYPE PCHRMSG = POINTER TO CHRMSG;
+
+   --CONST CHARMSG(pmsg) \
+   --((PCHRMSG)((PBYTE)pmsg + sizeof(MPARAM)))
+
+   <* ALIGNMENT = "4" *>   (* restore packing to default *)
+
+   CONST INP_NONE                   = 00000H;
+   CONST INP_KBD                    = 00001H;
+   CONST INP_MULT                   = 00002H;
+   CONST INP_RES2                   = 00004H;
+   CONST INP_SHIFT                  = 00008H;
+   CONST INP_CTRL                   = 00010H;
+   CONST INP_ALT                    = 00020H;
+   CONST INP_RES3                   = 00040H;
+   CONST INP_RES4                   = 00080H;
+   CONST INP_IGNORE                 = 0FFFFH;
+
+   (*** Virtual key values *************************************************)
+   CONST VK_BUTTON1                 = 001H;
+   CONST VK_BUTTON2                 = 002H;
+   CONST VK_BUTTON3                 = 003H;
+   CONST VK_BREAK                   = 004H;
+   CONST VK_BACKSPACE               = 005H;
+   CONST VK_TAB                     = 006H;
+   CONST VK_BACKTAB                 = 007H;
+   CONST VK_NEWLINE                 = 008H;
+   CONST VK_SHIFT                   = 009H;
+   CONST VK_CTRL                    = 00AH;
+   CONST VK_ALT                     = 00BH;
+   CONST VK_ALTGRAF                 = 00CH;
+   CONST VK_PAUSE                   = 00DH;
+   CONST VK_CAPSLOCK                = 00EH;
+   CONST VK_ESC                     = 00FH;
+   CONST VK_SPACE                   = 010H;
+   CONST VK_PAGEUP                  = 011H;
+   CONST VK_PAGEDOWN                = 012H;
+   CONST VK_END                     = 013H;
+   CONST VK_HOME                    = 014H;
+   CONST VK_LEFT                    = 015H;
+   CONST VK_UP                      = 016H;
+   CONST VK_RIGHT                   = 017H;
+   CONST VK_DOWN                    = 018H;
+   CONST VK_PRINTSCRN               = 019H;
+   CONST VK_INSERT                  = 01AH;
+   CONST VK_DELETE                  = 01BH;
+   CONST VK_SCRLLOCK                = 01CH;
+   CONST VK_NUMLOCK                 = 01DH;
+   CONST VK_ENTER                   = 01EH;
+   CONST VK_SYSRQ                   = 01FH;
+   CONST VK_F1                      = 020H;
+   CONST VK_F2                      = 021H;
+   CONST VK_F3                      = 022H;
+   CONST VK_F4                      = 023H;
+   CONST VK_F5                      = 024H;
+   CONST VK_F6                      = 025H;
+   CONST VK_F7                      = 026H;
+   CONST VK_F8                      = 027H;
+   CONST VK_F9                      = 028H;
+   CONST VK_F10                     = 029H;
+   CONST VK_F11                     = 02AH;
+   CONST VK_F12                     = 02BH;
+   CONST VK_F13                     = 02CH;
+   CONST VK_F14                     = 02DH;
+   CONST VK_F15                     = 02EH;
+   CONST VK_F16                     = 02FH;
+   CONST VK_F17                     = 030H;
+   CONST VK_F18                     = 031H;
+   CONST VK_F19                     = 032H;
+   CONST VK_F20                     = 033H;
+   CONST VK_F21                     = 034H;
+   CONST VK_F22                     = 035H;
+   CONST VK_F23                     = 036H;
+   CONST VK_F24                     = 037H;
+   CONST VK_ENDDRAG                 = 038H;
+   CONST VK_CLEAR                   = 039H;
+   CONST VK_EREOF                   = 03AH;
+   CONST VK_PA1                     = 03BH;
+
+
+   CONST VK_MENU                  =  VK_F10;
+   #if defined(INCL_NLS)
+      CONST VK_DBCSFIRST            = 00080H;
+      CONST VK_DBCSLAST             = 000ffH;
+   #endif (* INCL_NLS *)
+
+   CONST VK_USERFIRST               = 00100H;
+   CONST VK_USERLAST                = 001ffH;
+
+   #if ! defined(INCL_SAADEFS)
+
+      PROCEDURE WinGetKeyState(hwndDesktop : HWND
+                              ;vkey        : LONG
+                              ): LONG;
+
+      PROCEDURE WinGetPhysKeyState(hwndDesktop : HWND
+                                  ;sc          : LONG
+                                  ): LONG;
+
+      PROCEDURE WinEnablePhysInput(hwndDesktop : HWND
+                                  ;fEnable     : BOOL
+                                  ): BOOL;
+
+      PROCEDURE WinIsPhysInputEnabled(hwndDesktop : HWND): BOOL;
+
+      PROCEDURE WinSetKeyboardStateTable(hwndDesktop   : HWND
+                                        ;KeyStateTable : ARRAY OF BYTE
+                                        ;fSet          : BOOL
+                                        ): BOOL;
+
+      (* Journal Notification messages  *)
+      CONST WM_JOURNALNOTIFY           = 0007cH;
+
+      (*** Define the valid commands (lParm1) for journal notify message *)
+      CONST JRN_QUEUESTATUS            = 000000001H;
+      CONST JRN_PHYSKEYSTATE           = 000000002H;
+
+   #endif (* !INCL_SAADEFS *)
+#endif (* INCL_WININPUT *)
+
+
+(**** Dialog Manager *)
+
+#if  defined(INCL_WINDIALOGS) || ! defined(INCL_NOCOMMON)
+   (**** Dialog Manager COMMON subsection *)
+
+   PROCEDURE WinGetDlgMsg(hwndDlg  : HWND
+                         ;VAR qmsg : QMSG
+                         ): BOOL;
+
+   PROCEDURE WinLoadDlg(hwndParent    : HWND
+                       ;hwndOwner     : HWND
+                       ;pfnDlgProc    : PFNWP
+                       ;hmod          : HMODULE
+                       ;idDlg         : ULONG
+                       ;pCreateParams : PVOID
+                       ): HWND;
+
+   PROCEDURE WinDlgBox(hwndParent    : HWND
+                      ;hwndOwner     : HWND
+                      ;pfnDlgProc    : PFNWP
+                      ;hmod          : HMODULE
+                      ;idDlg         : ULONG
+                      ;pCreateParams : PVOID
+                      ): ULONG;
+
+   PROCEDURE WinDismissDlg(hwndDlg  : HWND
+                          ;usResult : ULONG
+                          ): BOOL;
+
+   PROCEDURE WinQueryDlgItemShort(hwndDlg    : HWND
+                                 ;idItem     : ULONG
+                                 ;VAR Result : SHORT
+                                 ;fSigned    : BOOL
+                                 ): BOOL;
+
+   PROCEDURE WinSetDlgItemShort(hwndDlg : HWND
+                               ;idItem  : ULONG
+                               ;usValue : USHORT
+                               ;fSigned : BOOL
+                               ): BOOL;
+
+   PROCEDURE WinSetDlgItemText(hwndDlg : HWND
+                              ;idItem  : ULONG
+                              ;szText  : ARRAY OF CHAR
+                              ): BOOL;
+
+   PROCEDURE WinQueryDlgItemText(hwndDlg      : HWND
+                                ;idItem       : ULONG
+                                ;cchBufferMax : LONG
+                                ;VAR chBuffer : ARRAY OF CHAR
+                                ): ULONG;
+
+   PROCEDURE WinQueryDlgItemTextLength(hwndDlg : HWND
+                                      ;idItem  : ULONG
+                                      ): LONG;
+
+   PROCEDURE WinDefDlgProc(hwndDlg : HWND
+                          ;msg     : ULONG
+                          ;mp1     : MPARAM
+                          ;mp2     : MPARAM
+                          ): MRESULT;
+
+   (* Special item IDs *)
+
+   #if ! defined(INCL_SAADEFS)
+      CONST DID_OK     = 1;
+      CONST DID_CANCEL = 2;
+      CONST DID_ERROR   = 0ffffH;
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinAlarm(hwndDesktop : HWND
+                     ;rgfType     : ULONG
+                     ): BOOL;
+
+   (* WinAlarm Codes *)
+
+   CONST WA_WARNING             =    0;
+   CONST WA_NOTE                =    1;
+   CONST WA_ERROR               =    2;
+   CONST WA_CWINALARMS          =   13;     (* count of valid alarms     53304*)
+
+   PROCEDURE WinMessageBox(hwndParent : HWND
+                          ;hwndOwner  : HWND
+                          ;szText     : ARRAY OF CHAR
+                          ;pszCaption : PCSZ   (* !!! NIL *)
+                          ;idWindow   : ULONG
+                          ;flStyle    : ULONG
+                          ): ULONG;
+
+   (* Message box types *)
+
+   CONST MB_OK                      = 00000H;
+   CONST MB_OKCANCEL                = 00001H;
+   CONST MB_RETRYCANCEL             = 00002H;
+   CONST MB_ABORTRETRYIGNORE        = 00003H;
+   CONST MB_YESNO                   = 00004H;
+   CONST MB_YESNOCANCEL             = 00005H;
+   CONST MB_CANCEL                  = 00006H;
+   CONST MB_ENTER                   = 00007H;
+   CONST MB_ENTERCANCEL             = 00008H;
+
+   CONST MB_NOICON                  = 00000H;
+   CONST MB_CUANOTIFICATION         = 00000H;
+   CONST MB_ICONQUESTION            = 00010H;
+   CONST MB_ICONEXCLAMATION         = 00020H;
+   CONST MB_CUAWARNING              = 00020H;
+   CONST MB_ICONASTERISK            = 00030H;
+   CONST MB_ICONHAND                = 00040H;
+   CONST MB_CUACRITICAL             = 00040H;
+   CONST MB_QUERY                  = MB_ICONQUESTION;
+   CONST MB_WARNING                = MB_CUAWARNING;
+   CONST MB_INFORMATION            = MB_ICONASTERISK;
+   CONST MB_CRITICAL               = MB_CUACRITICAL;
+   CONST MB_ERROR                  = MB_CRITICAL;
+
+   CONST MB_DEFBUTTON1              = 00000H;
+   CONST MB_DEFBUTTON2              = 00100H;
+   CONST MB_DEFBUTTON3              = 00200H;
+
+   CONST MB_APPLMODAL               = 00000H;
+   CONST MB_SYSTEMMODAL             = 01000H;
+   CONST MB_HELP                    = 02000H;
+   CONST MB_MOVEABLE                = 04000H;
+
+
+   (* Message box return codes *)
+
+   CONST MBID_OK                   = 1;
+   CONST MBID_CANCEL               = 2;
+   CONST MBID_ABORT                = 3;
+   CONST MBID_RETRY                = 4;
+   CONST MBID_IGNORE               = 5;
+   CONST MBID_YES                  = 6;
+   CONST MBID_NO                   = 7;
+   CONST MBID_HELP                 = 8;
+   CONST MBID_ENTER                = 9;
+   CONST MBID_ERROR                 = 0ffffH;
+
+
+   (* Useful macros *)
+
+   (***************************************************************************
+   * ULONG/USHORT WinCheckButton(HWND hwndDlg; USHORT id; USHORT checkState)
+   *    sets the check state of button #id.
+   *    returns the previous check state.
+   ***************************************************************************)
+   --CONST WinCheckButton(hwndDlg; id; usCheckState) \
+   --((ULONG)WinSendDlgItemMsg(hwndDlg; id; BM_SETCHECK; \
+   --MPFROMSHORT(usCheckState); (MPARAM)NULL))
+
+   (***************************************************************************
+   * ULONG/USHORT WinQueryButtonCheckstate(HWND hwndDlg; USHORT id)
+   *    returns the check state of buttin #id.
+   *
+   ***************************************************************************)
+   --CONST WinQueryButtonCheckstate(hwndDlg; id) \
+   --((ULONG)WinSendDlgItemMsg(hwndDlg; id; BM_QUERYCHECK; \
+   --(MPARAM)NULL; (MPARAM)NULL))
+
+   (***************************************************************************
+   * BOOL WinEnableControl(HWND hwndDlg; USHORT id; BOOL fEnable)
+   *    sets the enable state of button #id.
+   *    returns fSuccess.
+   ***************************************************************************)
+   --CONST WinEnableControl(hwndDlg; id; fEnable) \
+   --WinEnableWindow(WinWindowFromID(hwndDlg; id); fEnable)
+
+   (***************************************************************************
+   * BOOL WinIsControlEnabled(HWND hwndDlg; ULONG id)
+   *    returns the enable state of control #id.
+   *
+   ***************************************************************************)
+   --CONST WinIsControlEnabled(hwndDlg; id) \
+   --((BOOL)WinIsWindowEnabled(WinWindowFromID(hwndDlg; id)))
+
+#endif (* Dialog Manager COMMON subsection *)
+
+
+#if defined(INCL_WINDIALOGS)
+
+   (* Dialog codes: returned by WM_QUERYDLGCODE msg     *)
+
+   CONST DLGC_ENTRYFIELD    = 00001H;  (* Entry field item understands EM_SETSEL) *)
+   CONST DLGC_BUTTON        = 00002H;  (* Button item                             *)
+   CONST DLGC_RADIOBUTTON   = 00004H;  (* Radio button                            *)
+   CONST DLGC_STATIC        = 00008H;  (* Static item                             *)
+   CONST DLGC_DEFAULT       = 00010H;  (* Default push button                     *)
+   CONST DLGC_PUSHBUTTON    = 00020H;  (* Normal (Non-default) push button        *)
+   CONST DLGC_CHECKBOX      = 00040H;  (* Check box button control                *)
+   CONST DLGC_SCROLLBAR     = 00080H;  (* Scroll bar                              *)
+   CONST DLGC_MENU          = 00100H;  (* Menu                                    *)
+   CONST DLGC_TABONCLICK    = 00200H;
+   CONST DLGC_MLE           = 00400H;  (* Multiple Line Entry                     *)
+
+
+   PROCEDURE WinProcessDlg(hwndDlg : HWND): ULONG;
+
+   PROCEDURE WinSendDlgItemMsg(hwndDlg : HWND
+                              ;idItem  : ULONG
+                              ;msg     : ULONG
+                              ;mp1     : MPARAM
+                              ;mp2     : MPARAM
+                              ): MRESULT;
+
+   PROCEDURE WinMapDlgPoints(hwndDlg           : HWND
+                            ;rgwptl            : ARRAY OF POINTL
+                            ;cwpt              : ULONG
+                            ;fCalcWindowCoords : BOOL
+                            ): BOOL;
+
+   PROCEDURE WinEnumDlgItem(hwndDlg : HWND
+                           ;hwnd    : HWND
+                           ;code    : ULONG
+                           ): HWND;
+
+   PROCEDURE WinSubstituteStrings(hwnd      : HWND
+                                 ;szSrc     : ARRAY OF CHAR
+                                 ;cchDstMax : LONG
+                                 ;VAR szDst : ARRAY OF CHAR
+                                 ): LONG;
+
+   (* WinEnumDlgItem() constants *)
+
+   CONST EDI_FIRSTTABITEM          = 0H;
+   CONST EDI_LASTTABITEM           = 1H;
+   CONST EDI_NEXTTABITEM           = 2H;
+   CONST EDI_PREVTABITEM           = 3H;
+   CONST EDI_FIRSTGROUPITEM        = 4H;
+   CONST EDI_LASTGROUPITEM         = 5H;
+   CONST EDI_NEXTGROUPITEM         = 6H;
+   CONST EDI_PREVGROUPITEM         = 7H;
+
+   (*** Dialog template definitions *)
+
+   (*** Variable-sized dialog template items: ******************************)
+
+   <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+   (*************************************************************************
+   *
+   *  We pack the structures _DLGTITEM and _DLGTEMPLATE so that the
+   *  structures are identical in the 32-bit and 16-bit worlds. We have
+   *  to do this because is has been documented that one can pass a
+   *  pointer to 'the binary resource format' when calling WinCreateDlg.
+   *
+   *************************************************************************)
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE DLGTITEM = RECORD   (* dlgti *)
+      fsItemStatus: USHORT;
+      cChildren:    USHORT;
+      cchClassName: USHORT;
+      offClassName: USHORT;
+      cchText:      USHORT;
+      offText:      USHORT;
+      flStyle:      ULONG;
+      x:            SHORT;
+      y:            SHORT;
+      cx:           SHORT;
+      cy:           SHORT;
+      id:           USHORT;
+      offPresParams: USHORT;
+      offCtlData:    USHORT;
+   END;
+   TYPE PDLGTITEM = POINTER TO DLGTITEM;
+
+   (*** Dialog Template structure ******************************************)
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE DLGTEMPLATE = RECORD   (* dlgt *)
+      cbTemplate:     USHORT;
+      type:           USHORT;
+      codepage:       USHORT;
+      offadlgti:      USHORT;
+      fsTemplateStatus: USHORT;
+      iItemFocus:     USHORT;
+      coffPresParams: USHORT;
+      adlgti:         ARRAY [0..0] OF DLGTITEM;
+   END;
+   TYPE PDLGTEMPLATE = POINTER TO DLGTEMPLATE;
+
+   <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   PROCEDURE WinCreateDlg(hwndParent    : HWND
+                         ;hwndOwner     : HWND
+                         ;pfnDlgProc    : PFNWP
+                         ;VAR dlgt      : DLGTEMPLATE
+                         ;pCreateParams : PVOID
+                         ): HWND;
+
+
+#endif (* INCL_WINDIALOGS *)
+
+
+#if defined(INCL_WINSTATICS)
+
+   (*** Static Control Manager *)
+
+   (* Static control styles:
+   *
+   * NOTE: the top 9 bits of the LOWORD of the window flStyle are used for
+   * DT_* flags.  The lower 7 bits are for SS_* styles.  This gives us up
+   * to 128 distinct static control types (we currently use 11 of them).
+   *)
+   CONST SS_TEXT                    = 00001H;
+   CONST SS_GROUPBOX                = 00002H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST SS_ICON                    = 00003H;
+      CONST SS_BITMAP                  = 00004H;
+   #endif (* !INCL_SAADEFS *)
+   CONST SS_FGNDRECT                = 00005H;
+   #if ! defined(INCL_SAADEFS)
+      CONST SS_HALFTONERECT            = 00006H;
+   #endif (* !INCL_SAADEFS *)
+   CONST SS_BKGNDRECT               = 00007H;
+   CONST SS_FGNDFRAME               = 00008H;
+   #if ! defined(INCL_SAADEFS)
+      CONST SS_HALFTONEFRAME           = 00009H;
+   #endif (* !INCL_SAADEFS *)
+   CONST SS_BKGNDFRAME              = 0000aH;
+   CONST SS_SYSICON                 = 0000bH;
+   CONST SS_AUTOSIZE         = 00040H;
+
+
+   (* Static control messages *)
+
+   CONST SM_SETHANDLE               = 00100H;
+   CONST SM_QUERYHANDLE             = 00101H;
+
+#endif (* INCL_WINSTATICS *)
+
+
+#if defined(INCL_WINBUTTONS)
+   (**** Button Controls Subsection *)
+
+   (* Button control styles *)
+
+   CONST BS_PUSHBUTTON            =  0;
+   CONST BS_CHECKBOX              =  1;
+   CONST BS_AUTOCHECKBOX          =  2;
+   CONST BS_RADIOBUTTON           =  3;
+   CONST BS_AUTORADIOBUTTON       =  4;
+   CONST BS_3STATE                =  5;
+   CONST BS_AUTO3STATE            =  6;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST BS_USERBUTTON         =  7;
+   #endif (* !INCL_SAADEFS *)
+   CONST BS_PRIMARYSTYLES       = 0000fH;
+
+   CONST BS_BITMAP           = 00040H;
+   CONST BS_ICON             = 00080H;
+   CONST BS_HELP                    = 00100H;
+   CONST BS_SYSCOMMAND              = 00200H;
+   CONST BS_DEFAULT                 = 00400H;
+   CONST BS_NOPOINTERFOCUS          = 00800H;
+   CONST BS_NOBORDER                = 01000H;
+   CONST BS_NOCURSORSELECT          = 02000H;
+   CONST BS_AUTOSIZE             = 04000H;
+
+
+
+   #if ! defined(INCL_SAADEFS)
+      <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+      (* Binary resources may be bound into application executables or *)
+      (* passed as a parameter when creating a window or dialog        *)
+      (* Currently they must be the same for both 16-bit and 32-bit    *)
+      (* so we pack the structures.                                    *)
+      TYPE BTNCDATA = RECORD   (* btncd *)
+         cb:            USHORT;
+         fsCheckState:  USHORT;
+         fsHiliteState: USHORT;
+         hImage:        LHANDLE;
+      END;
+      TYPE PBTNCDATA = POINTER TO BTNCDATA;
+
+      <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   #endif (* !INCL_SAADEFS *)
+
+   (*** User button structure (passed in WM_CONTROL msg) *******************)
+
+   #if ! defined(INCL_SAADEFS)
+      TYPE USERBUTTON = RECORD   (* ubtn *)
+         hwnd:       HWND;
+         hps:        HPS;
+         fsState:    ULONG;
+         fsStateOld: ULONG;
+      END;
+      TYPE PUSERBUTTON = POINTER TO USERBUTTON;
+   #endif (* !INCL_SAADEFS *)
+
+   (* Button control messages *)
+
+   CONST BM_CLICK                   = 00120H;
+   CONST BM_QUERYCHECKINDEX         = 00121H;
+   CONST BM_QUERYHILITE             = 00122H;
+   CONST BM_SETHILITE               = 00123H;
+   CONST BM_QUERYCHECK              = 00124H;
+   CONST BM_SETCHECK                = 00125H;
+   CONST BM_SETDEFAULT              = 00126H;
+
+   (* Button notification codes *)
+
+   CONST BN_CLICKED                = 1;
+   CONST BN_DBLCLICKED             = 2;
+   CONST BN_PAINT                  = 3;
+
+   (* BN_PAINT button draw state codes (must be in high byte) *)
+
+   #if ! defined(INCL_SAADEFS)
+      CONST BDS_HILITED                = 00100H;
+      CONST BDS_DISABLED               = 00200H;
+      CONST BDS_DEFAULT                = 00400H;
+
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINBUTTONS *)
+
+
+#if defined(INCL_WINENTRYFIELDS)
+   (**** Entryfield controls Subsection *)
+
+   (* Entry field  styles *)
+
+   CONST ES_LEFT                    = 000000000H;
+   CONST ES_CENTER                  = 000000001H;
+   CONST ES_RIGHT                   = 000000002H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST ES_AUTOSCROLL              = 000000004H;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST ES_MARGIN                  = 000000008H;
+   CONST ES_AUTOTAB                 = 000000010H;
+   CONST ES_READONLY                = 000000020H;
+   CONST ES_COMMAND                 = 000000040H;
+   CONST ES_UNREADABLE              = 000000080H;
+   CONST ES_AUTOSIZE                = 000000200H;
+
+   #if defined(INCL_NLS)
+      CONST ES_ANY                     = 000000000H;
+      CONST ES_SBCS                    = 000001000H;
+      CONST ES_DBCS                    = 000002000H;
+      CONST ES_MIXED                   = 000003000H;
+   #endif (* INCL_NLS *)
+
+
+   (*
+   * combo box styles
+   *)
+   CONST CBS_SIMPLE                 = 00001H;
+   CONST CBS_DROPDOWN               = 00002H;
+   CONST CBS_DROPDOWNLIST           = 00004H;
+
+   (*
+   * Use this bit for drop down combo boxes that do not want to
+   * receive a CBN_ENTER on a single click in their list boxes.
+   * This is for compatibility with releases prior to OS/2 2.0 which
+   * did not send this message
+   *)
+   CONST CBS_COMPATIBLE             = 00008H;
+
+   (*
+   * The following edit and listbox styles may be used in conjunction
+   * with CBS_ styles
+   * ES_AUTOTAB ES_ANY ES_SBCS ES_DBCS ES_MIXED LS_HORZSCROLL
+   *)
+
+   (*
+   * IDs of combobox entry field and listbox.
+   *)
+   CONST CBID_LIST                  = 0029AH;
+   CONST CBID_EDIT                  = 0029BH;
+
+   CONST CBM_SHOWLIST               = 00170H;
+   CONST CBM_HILITE                 = 00171H;
+   CONST CBM_ISLISTSHOWING          = 00172H;
+
+   CONST CBN_EFCHANGE              = 1;
+   CONST CBN_EFSCROLL              = 2;
+   CONST CBN_MEMERROR              = 3;
+   CONST CBN_LBSELECT              = 4;
+   CONST CBN_LBSCROLL              = 5;
+   CONST CBN_SHOWLIST              = 6;
+   CONST CBN_ENTER                 = 7;
+
+
+   #if ! defined(INCL_SAADEFS)
+      <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+      (* Binary resources may be bound into application executables or *)
+      (* passed as a parameter when creating a window or dialog        *)
+      (* Currently they must be the same for both 16-bit and 32-bit    *)
+      (* so we pack the structures.                                    *)
+      TYPE ENTRYFDATA = RECORD   (* efd *)
+         cb:            USHORT;
+         cchEditLimit:  USHORT;
+         ichMinSel:     USHORT;
+         ichMaxSel:     USHORT;
+         pHWXCtlData:   PVOID;    (* reserved for Pen CtlData (penpm.h)  *)
+      END;
+      TYPE PENTRYFDATA = POINTER TO ENTRYFDATA;
+
+      <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   #endif (* !INCL_SAADEFS *)
+
+   (* Entry Field  messages *)
+
+   CONST EM_QUERYCHANGED            = 00140H;
+   CONST EM_QUERYSEL                = 00141H;
+   CONST EM_SETSEL                  = 00142H;
+   CONST EM_SETTEXTLIMIT            = 00143H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST EM_CUT                     = 00144H;
+      CONST EM_COPY                    = 00145H;
+   #endif (* !INCL_SAADEFS *)
+   CONST EM_CLEAR                   = 00146H;
+   #if ! defined(INCL_SAADEFS)
+      CONST EM_PASTE                   = 00147H;
+   #endif (* !INCL_SAADEFS *)
+   CONST EM_QUERYFIRSTCHAR          = 00148H;
+   CONST EM_SETFIRSTCHAR            = 00149H;
+   #if ! defined(INCL_SAADEFS)
+      CONST EM_QUERYREADONLY           = 0014aH;
+      CONST EM_SETREADONLY             = 0014bH;
+      CONST EM_SETINSERTMODE           = 0014cH;
+   #endif (* !INCL_SAADEFS *)
+
+   (* Entry Field notification messages *)
+
+   CONST EN_SETFOCUS                = 00001H;
+   CONST EN_KILLFOCUS               = 00002H;
+   CONST EN_CHANGE                  = 00004H;
+   CONST EN_SCROLL                  = 00008H;
+   #if ! defined(INCL_SAADEFS)
+      CONST EN_MEMERROR                = 00010H;
+      CONST EN_OVERFLOW                = 00020H;
+      CONST EN_INSERTMODETOGGLE        = 00040H;
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINENTRYFIELDS *)
+
+
+(*  Multiple Line Entrys *)
+#if defined(INCL_WINMLE)
+  #if ! defined(MLE_INCLUDED)
+     #include <pmmle.hm>
+  #endif
+#endif (* !INCL_WINMLE *)
+#if defined(INCL_WINLISTBOXES)
+
+   (**** Listboxes *)
+
+   (* List box styles *)
+
+   CONST LS_MULTIPLESEL             = 000000001H;
+
+   #if !defined(INCL_SAADEFS)
+      CONST LS_OWNERDRAW               = 000000002H;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST LS_NOADJUSTPOS             = 000000004H;
+   CONST LS_HORZSCROLL              = 000000008H;
+
+   CONST LS_EXTENDEDSEL             = 000000010H;
+
+
+   (* List box notification messages *)
+
+   CONST LN_SELECT                = 1;
+   CONST LN_SETFOCUS              = 2;
+   CONST LN_KILLFOCUS             = 3;
+   CONST LN_SCROLL                = 4;
+   CONST LN_ENTER                 = 5;
+
+   (* List box messages *)
+
+   CONST LM_QUERYITEMCOUNT          = 00160H;
+   CONST LM_INSERTITEM              = 00161H;
+   CONST LM_SETTOPINDEX             = 00162H;
+   CONST LM_DELETEITEM              = 00163H;
+   CONST LM_SELECTITEM              = 00164H;
+   CONST LM_QUERYSELECTION          = 00165H;
+   CONST LM_SETITEMTEXT             = 00166H;
+   CONST LM_QUERYITEMTEXTLENGTH     = 00167H;
+   CONST LM_QUERYITEMTEXT           = 00168H;
+
+   CONST LM_SETITEMHANDLE           = 00169H;
+   CONST LM_QUERYITEMHANDLE         = 0016aH;
+   CONST LM_SEARCHSTRING            = 0016bH;
+   CONST LM_SETITEMHEIGHT           = 0016cH;
+   CONST LM_QUERYTOPINDEX           = 0016dH;
+   CONST LM_DELETEALL               = 0016eH;
+
+   (* List box constants *)
+
+   CONST LIT_CURSOR              =   -4;
+   CONST LIT_ERROR               =   -3;
+   CONST LIT_MEMERROR            =   -2;
+   CONST LIT_NONE                =   -1;
+   CONST LIT_FIRST               =   -1;
+
+   (* For LM_INSERTITEM msg *)
+
+   CONST LIT_END                 =   -1;
+   CONST LIT_SORTASCENDING       =   -2;
+   CONST LIT_SORTDESCENDING      =   -3;
+
+   (* For LM_SEARCHSTRING msg *)
+
+   CONST LSS_SUBSTRING              = 00001H;
+   CONST LSS_PREFIX                 = 00002H;
+   CONST LSS_CASESENSITIVE          = 00004H;
+
+
+   (* Useful macros *)
+
+   (***************************************************************************
+   * LONG/SHORT WinDeleteLboxItem(HWND hwndLbox; LONG/SHORT index)
+   *    deletes item index from the listbox.
+   *    returns the number of items left.
+   ***************************************************************************)
+   --CONST WinDeleteLboxItem(hwndLbox; index) \
+   --((LONG)WinSendMsg(hwndLbox; LM_DELETEITEM; MPFROMLONG(index); \
+   --(MPARAM)NULL))
+
+   (***************************************************************************
+   * LONG/SHORT WinInsertLboxItem(HWND hwndLbox; LONG/SHORT index; PSZ psz)
+   *    inserts psz into a listbox at index.  Index may be an LIT_ constant.
+   *    returns the actual index where it was inserted.
+   ***************************************************************************)
+   --CONST WinInsertLboxItem(hwndLbox; index; psz) \
+   --((LONG)WinSendMsg(hwndLbox; LM_INSERTITEM; MPFROMLONG(index); \
+   --MPFROMP(psz)))
+
+   (***************************************************************************
+   * LONG/SHORT WinQueryLboxCount(HWND hwndLbox)
+   *    returns the number of items in the listbox.
+   *
+   ***************************************************************************)
+   --CONST WinQueryLboxCount(hwndLbox) \
+   --((LONG)WinSendMsg(hwndLbox; LM_QUERYITEMCOUNT; (MPARAM)NULL; \
+   --(MPARAM)NULL))
+
+   (***************************************************************************
+   * LONG/SHORT WinQueryLboxItemText(HWND hwndLbox; LONG/SHORT index; PSZ psz; SHORT cchMax)
+   *    fills psz with the text if item index.
+   *    returns the text length copied.
+   ***************************************************************************)
+   --CONST WinQueryLboxItemText(hwndLbox; index; psz; cchMax) \
+   --((LONG)WinSendMsg(hwndLbox; LM_QUERYITEMTEXT; \
+   --MPFROM2SHORT((index); (cchMax)); MPFROMP(psz)))
+
+   (***************************************************************************
+   * LONG/SHORT WinQueryLboxItemTextLength(HWND hwndLbox; LONG/SHORT index)
+   *    returns the length of item index.
+   *
+   ***************************************************************************)
+   --CONST WinQueryLboxItemTextLength(hwndLbox; index)         \
+   --((SHORT)WinSendMsg(hwndLbox; LM_QUERYITEMTEXTLENGTH;    \
+   --MPFROMSHORT(index); (MPARAM)NULL))
+
+   (***************************************************************************
+   * BOOL WinSetLboxItemText(HWND hwndLbox; LONG/SHORT index; PSZ psz)
+   *    sets the text of item index to psz.
+   *    returns fSuccess.
+   ***************************************************************************)
+   --CONST WinSetLboxItemText(hwndLbox; index; psz) \
+   --((BOOL)WinSendMsg(hwndLbox; LM_SETITEMTEXT; \
+   --MPFROMLONG(index); MPFROMP(psz)))
+
+   (***************************************************************************
+   * LONG/SHORT WinQueryLboxSelectedItem(HWND hwndLbox)
+   *    returns the item index selected. (for single selection only)
+   *
+   ***************************************************************************)
+   --CONST WinQueryLboxSelectedItem(hwndLbox) \
+   --((LONG)WinSendMsg(hwndLbox; LM_QUERYSELECTION; MPFROMLONG(LIT_FIRST); \
+   --(MPARAM)NULL))
+
+#endif (* INCL_WINLISTBOXES *)
+
+
+#if defined(INCL_WINMENUS)
+
+   (**** Menu Manager Subsection *)
+
+   (* Menu control styles *)
+
+   CONST MS_ACTIONBAR               = 000000001H;
+   CONST MS_TITLEBUTTON             = 000000002H;
+   CONST MS_VERTICALFLIP            = 000000004H;
+
+   CONST MS_CONDITIONALCASCADE      = 000000040H;
+
+   PROCEDURE WinLoadMenu(hwndFrame : HWND
+                        ;hmod      : HMODULE
+                        ;idMenu    : ULONG
+                        ): HWND;
+
+
+   (* Menu control messages *)
+
+   CONST MM_INSERTITEM              = 00180H;
+   CONST MM_DELETEITEM              = 00181H;
+   CONST MM_QUERYITEM               = 00182H;
+   CONST MM_SETITEM                 = 00183H;
+   CONST MM_QUERYITEMCOUNT          = 00184H;
+   CONST MM_STARTMENUMODE           = 00185H;
+   CONST MM_ENDMENUMODE             = 00186H;
+   CONST MM_REMOVEITEM              = 00188H;
+   CONST MM_SELECTITEM              = 00189H;
+   CONST MM_QUERYSELITEMID          = 0018aH;
+   CONST MM_QUERYITEMTEXT           = 0018bH;
+   CONST MM_QUERYITEMTEXTLENGTH     = 0018cH;
+   CONST MM_SETITEMHANDLE           = 0018dH;
+   CONST MM_SETITEMTEXT             = 0018eH;
+   CONST MM_ITEMPOSITIONFROMID      = 0018fH;
+   CONST MM_ITEMIDFROMPOSITION      = 00190H;
+   CONST MM_QUERYITEMATTR           = 00191H;
+   CONST MM_SETITEMATTR             = 00192H;
+   CONST MM_ISITEMVALID             = 00193H;
+   CONST MM_QUERYITEMRECT           = 00194H;
+
+   CONST MM_QUERYDEFAULTITEMID      = 00431H;
+   CONST MM_SETDEFAULTITEMID        = 00432H;
+
+   #if ! defined(MTI_INCLUDED)
+      #define MTI_INCLUDED
+
+      TYPE MTI = RECORD     (* mti *)
+         afStyle: USHORT;      (* Style Flags      *)
+         pad:     USHORT;      (* pad for template *)
+         idItem:  USHORT;      (* Item ID          *)
+         c:       ARRAY [0..1] OF CHAR;
+      END;
+
+      TYPE MT = RECORD      (* mt *)
+         len:        ULONG;                  (* Length of template in bytes *)
+         codepage:   USHORT;                 (* Codepage                    *)
+         reserved:   USHORT;                 (* Reserved.                   *)
+         cMti:       USHORT;                 (* Count of template items.    *)
+         rgMti:      ARRAY [0..0] OF MTI;    (* Array of template items.    *)
+      END;
+      TYPE LPMT = POINTER TO MT;
+
+   #endif
+
+   PROCEDURE WinCreateMenu(hwndParent : HWND
+                          ;lpmt       : PVOID
+                          ): HWND;
+
+   (* Owner Item Structure (Also used for listboxes) *)
+
+   #if ! defined(INCL_SAADEFS)
+      TYPE OWNERITEM = RECORD   (* oi *)
+         hwnd:          HWND;
+         hps:           HPS;
+         fsState:       ULONG;
+         fsAttribute:   ULONG;
+         fsStateOld:    ULONG;
+         fsAttributeOld: ULONG;
+         rclItem:       RECTL;
+         idItem:        LONG; (* This field contains idItem for menus; iItem for lb. *)
+         hItem:         ULONG;
+      END;
+      TYPE POWNERITEM = POINTER TO OWNERITEM;
+   #endif (* !INCL_SAADEFS *)
+
+   (* Menu item *)
+
+   <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE MENUITEM = RECORD   (* mi *)
+      iPosition:    SHORT;
+      afStyle:      USHORT;
+      afAttribute:  USHORT;
+      id:           USHORT;
+      hwndSubMenu:  HWND;
+      hItem:        ULONG;
+   END;
+   TYPE PMENUITEM = POINTER TO MENUITEM;
+
+   <* ALIGNMENT = "4" *> (* restore packing to default *)
+
+   CONST MIT_END                   = -1;
+   CONST MIT_NONE                  = -1;
+   CONST MIT_MEMERROR              = -1;
+   CONST MIT_ERROR                 = -1;
+   CONST MIT_FIRST                 = -2;
+   CONST MIT_LAST                  = -3;
+   CONST MID_NONE                  = MIT_NONE;
+   CONST MID_ERROR                 = -1;
+
+   (* Menu item styles & attributes *)
+
+   CONST MIS_TEXT                   = 00001H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST MIS_BITMAP                 = 00002H;
+   #endif (* !INCL_SAADEFS *)
+   CONST MIS_SEPARATOR              = 00004H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST MIS_OWNERDRAW              = 00008H;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST MIS_SUBMENU                = 00010H;
+   CONST MIS_MULTMENU               = 00020H;      (* multiple choice submenu     *)
+   CONST MIS_SYSCOMMAND             = 00040H;
+   CONST MIS_HELP                   = 00080H;
+   CONST MIS_STATIC                 = 00100H;
+   CONST MIS_BUTTONSEPARATOR        = 00200H;
+   CONST MIS_BREAK                  = 00400H;
+   CONST MIS_BREAKSEPARATOR         = 00800H;
+   CONST MIS_GROUP                  = 01000H;      (* multiple choice group start *)
+   (* In multiple choice submenus a style of 'single' denotes the item is a
+   ** radiobutton.  Absence of this style defaults the item to a checkbox.       *)
+   CONST MIS_SINGLE                 = 02000H;
+
+   CONST MIA_NODISMISS              = 00020H;
+   CONST MIA_FRAMED                 = 01000H;
+   CONST MIA_CHECKED                = 02000H;
+   CONST MIA_DISABLED               = 04000H;
+   CONST MIA_HILITED                = 08000H;
+
+
+   PROCEDURE WinPopupMenu(hwndParent : HWND
+                         ;hwndOwner  : HWND
+                         ;hwndMenu   : HWND
+                         ;x          : LONG
+                         ;y          : LONG
+                         ;idItem     : LONG
+                         ;fs         : ULONG
+                         ): BOOL;
+
+   (* Values of fs in WinPopupMenu call *)
+
+   CONST PU_POSITIONONITEM          = 00001H; (* Need idItem parameter *)
+
+   CONST PU_HCONSTRAIN              = 00002H; (* Keep menu on left and right edge *)
+   CONST PU_VCONSTRAIN              = 00004H; (* Keep menu on top and bottom edge *)
+
+   CONST PU_NONE                    = 00000H; (* If invoked by keyboard *)
+   CONST PU_MOUSEBUTTON1DOWN        = 00008H; (* If invoked by button 1 *)
+   CONST PU_MOUSEBUTTON2DOWN        = 00010H; (* If invoked by button 2 *)
+   CONST PU_MOUSEBUTTON3DOWN        = 00018H; (* If invoked by button 3 *)
+
+   CONST PU_SELECTITEM              = 00020H; (* Set selected item (use with kbd) *)
+
+   CONST PU_MOUSEBUTTON1            = 00040H; (* If button1 use allowed *)
+   CONST PU_MOUSEBUTTON2            = 00080H; (* If button2 use allowed *)
+   CONST PU_MOUSEBUTTON3            = 00100H; (* If button3 use allowed *)
+   CONST PU_KEYBOARD                = 00200H; (* If keyboard use allowed *)
+
+
+   (* Useful macros *)
+
+   (***************************************************************************
+   * BOOL WinCheckMenuItem(HWND hwndMenu; ULONG/USHORT id; BOOL fcheck)
+   *    Sets the check state of menuitem #id to fcheck.
+   *    returns fSuccess.
+   ***************************************************************************)
+   --CONST WinCheckMenuItem(hwndMenu; id; fcheck) \
+   --((BOOL)WinSendMsg(hwndMenu; MM_SETITEMATTR; \
+   --MPFROM2SHORT(id; TRUE); \
+   --MPFROM2SHORT(MIA_CHECKED; (USHORT)(fcheck) ? MIA_CHECKED : 0)))
+
+   (***************************************************************************
+   * BOOL WinIsMenuItemChecked(HWND hwndMenu; USHORT/ULONG id)
+   *    returns the check state of menuitem #id.
+   *
+   ***************************************************************************)
+   --CONST WinIsMenuItemChecked(hwndMenu; id) \
+   --((BOOL)WinSendMsg(hwndMenu; MM_QUERYITEMATTR; \
+   --MPFROM2SHORT(id; TRUE); \
+   --MPFROMLONG(MIA_CHECKED)))
+
+   (***************************************************************************
+   * BOOL WinEnableMenuItem(HWND hwndMenu; ULONG/USHORT id; BOOL fenable)
+   *    sets the enable state of menuitem #id to fenable.
+   *    returns fSuccess.
+   ***************************************************************************)
+   --CONST WinEnableMenuItem(hwndMenu; id; fEnable) \
+   --((BOOL)WinSendMsg(hwndMenu; MM_SETITEMATTR; \
+   --MPFROM2SHORT(id; TRUE); \
+   --MPFROM2SHORT(MIA_DISABLED; (USHORT)(fEnable) ? 0 : MIA_DISABLED)))
+
+   (***************************************************************************
+   * BOOL WinIsMenuItemEnabled(HWND hwndMenu; USHORT/ULONG id)
+   *    returns the enable state of menuitem #id.
+   *
+   ***************************************************************************)
+   --CONST WinIsMenuItemEnabled(hwndMenu; id)  \
+   --(!(BOOL)WinSendMsg(hwndMenu; MM_QUERYITEMATTR; \
+   --MPFROM2SHORT(id; TRUE); \
+   --MPFROMLONG(MIA_DISABLED)))
+
+   (***************************************************************************
+   * BOOL WinSetMenuItemText(HWND hwndMenu; ULONG/USHORT id; PSZ psz)
+   *    sets the text of menuitem #id.
+   *    returns fSuccess.
+   ***************************************************************************)
+   --CONST WinSetMenuItemText(hwndMenu; id; psz) \
+   --((BOOL)WinSendMsg(hwndMenu; MM_SETITEMTEXT; \
+   --MPFROMLONG(id); MPFROMP(psz)))
+
+   (***************************************************************************
+   * BOOL WinIsMenuItemValid(HWND hwndMenu; ULONG/USHORT id)
+   *    Returns TRUE if the specified item is a valid choice.
+   ***************************************************************************)
+   --CONST WinIsMenuItemValid(hwndMenu; id) \
+   --((BOOL)WinSendMsg(hwndMenu; MM_ISITEMVALID; \
+   --MPFROM2SHORT(id; TRUE); MPFROMLONG(FALSE)))
+
+#endif (* INCL_WINMENUS *)
+
+
+#if defined(INCL_WINSCROLLBARS)
+
+   (*** Scroll Bar controls Subsection *)
+
+   (* Scroll Bar styles *)
+
+   CONST SBS_HORZ                 =  0;
+   CONST SBS_VERT                 =  1;
+   CONST SBS_THUMBSIZE            =  2;
+   CONST SBS_AUTOTRACK            =  4;
+   CONST SBS_AUTOSIZE        = 02000H;
+
+
+
+   (* Scroll Bar messages *)
+
+   CONST SBM_SETSCROLLBAR           = 001a0H;
+   CONST SBM_SETPOS                 = 001a1H;
+   CONST SBM_QUERYPOS               = 001a2H;
+   CONST SBM_QUERYRANGE             = 001a3H;
+   CONST SBM_SETTHUMBSIZE           = 001a6H;
+
+   (* Scroll Bar Commands *)
+
+   CONST SB_LINEUP                =  1;
+   CONST SB_LINEDOWN              =  2;
+   CONST SB_LINELEFT              =  1;
+   CONST SB_LINERIGHT             =  2;
+   CONST SB_PAGEUP                =  3;
+   CONST SB_PAGEDOWN              =  4;
+   CONST SB_PAGELEFT              =  3;
+   CONST SB_PAGERIGHT             =  4;
+   CONST SB_SLIDERTRACK           =  5;
+   CONST SB_SLIDERPOSITION        =  6;
+   CONST SB_ENDSCROLL             =  7;
+
+
+   #if ! defined(INCL_SAADEFS)
+      <* ALIGNMENT = "2" *>  (* force structure alignment packing *)
+
+      (* Binary resources may be bound into application executables or *)
+      (* passed as a parameter when creating a window or dialog        *)
+      (* Currently they must be the same for both 16-bit and 32-bit    *)
+      (* so we pack the structures.                                    *)
+      TYPE SBCDATA = RECORD   (* sbcd *)
+         cb:            USHORT;
+         sHilite:       USHORT; (* reserved; should be set to zero *)
+         posFirst:      SHORT;
+         posLast:       SHORT;
+         posThumb:      SHORT;
+         cVisible:      SHORT;
+         cTotal:        SHORT;
+      END;
+      TYPE PSBCDATA = POINTER TO SBCDATA;
+
+      <* ALIGNMENT = "4" *>   (* restore packing to default *)
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINSCROLLBARS *)
+
+
+#if  defined(INCL_WINFRAMEMGR) || ! defined(INCL_NOCOMMON)
+   (*** Frame Manager Common subsection *)
+
+   <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE FRAMECDATA = RECORD   (* fcdata *)
+      cb:               USHORT;
+      flCreateFlags:    ULONG;
+      hmodResources:    USHORT;
+      idResources:      USHORT;
+   END;
+   TYPE PFRAMECDATA = POINTER TO FRAMECDATA;
+
+   <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   (* Frame window styles *)
+   (* All unused FCF_xxx bits are reserved *)
+   CONST FCF_TITLEBAR               = 000000001H;
+   CONST FCF_SYSMENU                = 000000002H;
+   CONST FCF_MENU                   = 000000004H;
+   CONST FCF_SIZEBORDER             = 000000008H;
+   CONST FCF_MINBUTTON              = 000000010H;
+   CONST FCF_MAXBUTTON              = 000000020H;
+   CONST FCF_MINMAX                 = 000000030H;(* minmax means BOTH buttons *)
+   CONST FCF_VERTSCROLL             = 000000040H;
+   CONST FCF_HORZSCROLL             = 000000080H;
+   CONST FCF_DLGBORDER              = 000000100H;
+   CONST FCF_BORDER                 = 000000200H;
+   CONST FCF_SHELLPOSITION          = 000000400H;
+   CONST FCF_TASKLIST               = 000000800H;
+   CONST FCF_NOBYTEALIGN            = 000001000H;
+   CONST FCF_NOMOVEWITHOWNER        = 000002000H;
+   CONST FCF_ICON                   = 000004000H;
+   CONST FCF_ACCELTABLE             = 000008000H;
+   CONST FCF_SYSMODAL               = 000010000H;
+   CONST FCF_SCREENALIGN            = 000020000H;
+   CONST FCF_MOUSEALIGN             = 000040000H;
+   CONST FCF_HIDEBUTTON             = 001000000H;
+   CONST FCF_HIDEMAX                = 001000020H;(* hidemax means BOTH buttons *)
+   #if defined(INCL_NLS)
+      CONST FCF_DBE_APPSTAT         = 080000000H;
+   #endif (* INCL_NLS *)
+   CONST FCF_AUTOICON               = 040000000H;
+
+   (* FCF_TITLEBAR | FCF_SYSMENU | FCF_MENU | FCF_SIZEBORDER | FCF_MINMAX |
+   FCF_ICON | FCF_ACCELTABLE | FCF_SHELLPOSITION | FCF_TASKLIST *)
+   CONST FCF_STANDARD            = 00000CC3FH;
+
+
+   CONST FS_ICON                    = 000000001H;
+   CONST FS_ACCELTABLE              = 000000002H;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST FS_SHELLPOSITION        = 000000004H;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST FS_TASKLIST                = 000000008H;
+   CONST FS_NOBYTEALIGN             = 000000010H;
+   CONST FS_NOMOVEWITHOWNER         = 000000020H;
+   CONST FS_SYSMODAL                = 000000040H;
+   CONST FS_DLGBORDER               = 000000080H;
+   CONST FS_BORDER                  = 000000100H;
+   CONST FS_SCREENALIGN             = 000000200H;
+   CONST FS_MOUSEALIGN              = 000000400H;
+   CONST FS_SIZEBORDER              = 000000800H;
+   CONST FS_AUTOICON                = 000001000H;
+   #if defined(INCL_NLS)
+      CONST FS_DBE_APPSTAT          = 000008000H;
+   #endif (* INCL_NLS *)
+
+   (* FS_ICON | FS_ACCELTABLE | FS_SHELLPOSITION | FS_TASKLIST *)
+   CONST FS_STANDARD                = 00000000FH;
+
+
+   (* Frame Window Flags accessed via WinSet/QueryWindowUShort(QWS_FLAGS) *)
+
+   #if ! defined(INCL_SAADEFS)
+      CONST FF_FLASHWINDOW             = 00001H;
+      CONST FF_ACTIVE                  = 00002H;
+      CONST FF_FLASHHILITE             = 00004H;
+      CONST FF_OWNERHIDDEN             = 00008H;
+      CONST FF_DLGDISMISSED            = 00010H;
+      CONST FF_OWNERDISABLED           = 00020H;
+      CONST FF_SELECTED                = 00040H;
+      CONST FF_NOACTIVATESWP           = 00080H;
+
+   #endif (* !INCL_SAADEFS *)
+
+
+   PROCEDURE WinCreateStdWindow(hwndParent           : HWND
+                               ;flStyle              : ULONG
+                               ;VAR flCreateFlags    : ULONG
+                               ;pszClientClass       : PCSZ     (* !!! NIL *)
+                               ;szTitle              : PCSZ     (* !!! NIL *)
+                               ;styleClient          : ULONG
+                               ;hmod                 : HMODULE
+                               ;idResources          : ULONG
+                               ;VAR [NIL] hwndClient : HWND
+                               ): HWND;
+
+#endif (* Frame Manager Common subsection *)
+
+
+#if defined(INCL_WINFRAMEMGR)
+
+   PROCEDURE WinFlashWindow(hwndFrame : HWND
+                           ;fFlash    : BOOL
+                           ): BOOL;
+
+   (* Frame window related messages *)
+
+   CONST WM_FLASHWINDOW             = 00040H;
+   CONST WM_FORMATFRAME             = 00041H;
+   CONST WM_UPDATEFRAME             = 00042H;
+   CONST WM_FOCUSCHANGE             = 00043H;
+
+   CONST WM_SETBORDERSIZE           = 00044H;
+   CONST WM_TRACKFRAME              = 00045H;
+   CONST WM_MINMAXFRAME             = 00046H;
+   CONST WM_SETICON                 = 00047H;
+   CONST WM_QUERYICON               = 00048H;
+   CONST WM_SETACCELTABLE           = 00049H;
+   CONST WM_QUERYACCELTABLE         = 0004aH;
+   CONST WM_TRANSLATEACCEL          = 0004bH;
+   CONST WM_QUERYTRACKINFO          = 0004cH;
+   CONST WM_QUERYBORDERSIZE         = 0004dH;
+   CONST WM_NEXTMENU                = 0004eH;
+   CONST WM_ERASEBACKGROUND         = 0004fH;
+   CONST WM_QUERYFRAMEINFO          = 00050H;
+   CONST WM_QUERYFOCUSCHAIN         = 00051H;
+   CONST WM_OWNERPOSCHANGE          = 00052H;
+   CONST WM_CALCFRAMERECT           = 00053H;
+   (* Note = 00054 is reserved *)
+   CONST WM_WINDOWPOSCHANGED        = 00055H;
+   CONST WM_ADJUSTFRAMEPOS          = 00056H;
+   CONST WM_QUERYFRAMECTLCOUNT      = 00059H;
+   #if !defined(INCL_SAADEFS)
+      (* Note = 0005A is reserved *)
+      CONST WM_QUERYHELPINFO        = 0005BH;
+      CONST WM_SETHELPINFO          = 0005CH;
+      CONST WM_ERROR                = 0005DH;
+      CONST WM_REALIZEPALETTE       = 0005EH;
+
+
+      (* WM_QUERYFRAMEINFO constants *)
+
+      CONST FI_FRAME                = 000000001H;
+      CONST FI_OWNERHIDE            = 000000002H;
+      CONST FI_ACTIVATEOK           = 000000004H;
+      CONST FI_NOMOVEWITHOWNER      = 000000008H;
+
+
+   #endif (* !INCL_SAADEFS *)
+
+
+   PROCEDURE WinCreateFrameControls(hwndFrame  : HWND
+                                   ;VAR fcdata : FRAMECDATA
+                                   ;szTitle    : ARRAY OF CHAR
+                                   ): BOOL;
+
+   PROCEDURE WinCalcFrameRect(hwndFrame : HWND
+                             ;VAR rcl   : RECTL
+                             ;fClient   : BOOL
+                             ): BOOL;
+
+   PROCEDURE WinGetMinPosition(hwnd          : HWND
+                              ;VAR swp       : SWP
+                              ;VAR [NIL] ptl : POINTL
+                              ): BOOL;
+
+   #if !defined(INCL_SAADEFS)
+      PROCEDURE WinGetMaxPosition(hwnd    : HWND
+                                 ;VAR swp : PSWP
+                                 ): BOOL;
+   #endif (* !INCL_SAADEFS *)
+
+   TYPE HSAVEWP = LHANDLE;      (* hsvwp *)
+
+   PROCEDURE WinSaveWindowPos(hsvwp : HSAVEWP
+                             ;swp   : ARRAY OF SWP
+                             ;cswp  : ULONG
+                             ): BOOL;
+
+   (* Frame control IDs    *)
+
+   CONST FID_SYSMENU                = 08002H;
+   CONST FID_TITLEBAR               = 08003H;
+   CONST FID_MINMAX                 = 08004H;
+   CONST FID_MENU                   = 08005H;
+   CONST FID_VERTSCROLL             = 08006H;
+   CONST FID_HORZSCROLL             = 08007H;
+   CONST FID_CLIENT                 = 08008H;
+   (* Note = 08009 is reserved *)
+
+   CONST FID_DBE_APPSTAT            = 08010H;
+   CONST FID_DBE_KBDSTAT            = 08011H;
+   CONST FID_DBE_PECIC              = 08012H;
+   CONST FID_DBE_KKPOPUP            = 08013H;
+
+   (* Standard WM_SYSCOMMAND command values *)
+
+   CONST SC_SIZE                    = 08000H;
+   CONST SC_MOVE                    = 08001H;
+   CONST SC_MINIMIZE                = 08002H;
+   CONST SC_MAXIMIZE                = 08003H;
+   CONST SC_CLOSE                   = 08004H;
+   CONST SC_NEXT                    = 08005H;
+   CONST SC_APPMENU                 = 08006H;
+   CONST SC_SYSMENU                 = 08007H;
+   CONST SC_RESTORE                 = 08008H;
+   CONST SC_NEXTFRAME               = 08009H;
+   CONST SC_NEXTWINDOW              = 08010H;
+   #if !defined(INCL_SAADEFS)
+      CONST SC_TASKMANAGER             = 08011H;
+      CONST SC_HELPKEYS                = 08012H;
+      CONST SC_HELPINDEX               = 08013H;
+      CONST SC_HELPEXTENDED            = 08014H;
+      CONST SC_SWITCHPANELIDS          = 08015H;
+      CONST SC_DBE_FIRST               = 08018H;
+      CONST SC_DBE_LAST                = 0801FH;
+
+      CONST SC_BEGINDRAG               = 08020H;
+      CONST SC_ENDDRAG                 = 08021H;
+      CONST SC_SELECT                  = 08022H;
+      CONST SC_OPEN                    = 08023H;
+      CONST SC_CONTEXTMENU             = 08024H;
+      CONST SC_CONTEXTHELP             = 08025H;
+      CONST SC_TEXTEDIT                = 08026H;
+      CONST SC_BEGINSELECT             = 08027H;
+      CONST SC_ENDSELECT               = 08028H;
+      CONST SC_WINDOW                  = 08029H;
+      CONST SC_HIDE                    = 0802aH;
+
+
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINFRAMEMGR *)
+
+(*** Frame controls *)
+
+#if defined(INCL_WINFRAMECTLS)
+
+   (** Title bar controls *)
+
+
+   (* Title bar control messages *)
+
+   CONST TBM_SETHILITE              = 001e3H;
+   CONST TBM_QUERYHILITE            = 001e4H;
+
+
+#endif (* INCL_WINFRAMECTLS *)
+
+#if defined(INCL_WINRECTANGLES)
+   (*** Rectangle routines *)
+
+   PROCEDURE WinCopyRect(hab        : HAB
+                        ;VAR rclDst : RECTL
+                        ;VAR rclSrc : RECTL
+                        ): BOOL;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSetRect(hab     : HAB
+                          ;VAR rcl : RECTL
+                          ;xLeft   : LONG
+                          ;yBottom : LONG
+                          ;xRight  : LONG
+                          ;yTop    : LONG
+                          ): BOOL;
+
+      PROCEDURE WinIsRectEmpty(hab     : HAB
+                              ;VAR rcl : RECTL
+                              ): BOOL;
+
+      PROCEDURE WinEqualRect(hab      : HAB
+                            ;VAR rcl1 : RECTL
+                            ;VAR rcl2 : RECTL
+                            ): BOOL;
+
+      PROCEDURE WinSetRectEmpty(hab     : HAB
+                               ;VAR rcl : RECTL
+                               ): BOOL;
+
+      PROCEDURE WinOffsetRect(hab     : HAB
+                             ;VAR rcl : RECTL
+                             ;cx      : LONG
+                             ;cy      : LONG
+                             ): BOOL;
+
+      PROCEDURE WinInflateRect(hab     : HAB
+                              ;VAR rcl : RECTL
+                              ;cx      : LONG
+                              ;cy      : LONG
+                              ): BOOL;
+
+      PROCEDURE WinPtInRect(hab     : HAB
+                           ;VAR rcl : RECTL
+                           ;VAR ptl : POINTL
+                           ): BOOL;
+
+      PROCEDURE WinIntersectRect(hab         : HAB
+                                ;VAR rclDst  : RECTL
+                                ;VAR rclSrc1 : RECTL
+                                ;VAR rclSrc2 : RECTL
+                                ): BOOL;
+
+      PROCEDURE WinUnionRect(hab         : HAB
+                            ;VAR rclDst  : RECTL
+                            ;VAR rclSrc1 : RECTL
+                            ;VAR rclSrc2 : RECTL
+                            ): BOOL;
+
+      PROCEDURE WinSubtractRect(hab         : HAB
+                               ;VAR rclDst  : RECTL
+                               ;VAR rclSrc1 : RECTL
+                               ;VAR rclSrc2 : RECTL
+                               ): BOOL;
+
+      PROCEDURE WinMakeRect(hab  : HAB
+                           ;VAR wrc : RECTL
+                           ): BOOL;
+
+      PROCEDURE WinMakePoints(hab     : HAB
+                             ;VAR wpt : ARRAY OF POINTL
+                             ;cwpt    : ULONG
+                             ): BOOL;
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINRECTANGLES *)
+
+
+#if defined(INCL_WINSYS)
+
+   (*** System values *)
+
+   PROCEDURE WinQuerySysValue(hwndDesktop : HWND
+                             ;iSysValue   : LONG
+                             ): LONG;
+
+   PROCEDURE WinSetSysValue(hwndDesktop : HWND
+                           ;iSysValue   : LONG
+                           ;lValue      : LONG
+                           ): BOOL;
+
+   CONST SV_SWAPBUTTON            = 0;
+   CONST SV_DBLCLKTIME            = 1;
+   CONST SV_CXDBLCLK              = 2;
+   CONST SV_CYDBLCLK              = 3;
+   CONST SV_CXSIZEBORDER          = 4;
+   CONST SV_CYSIZEBORDER          = 5;
+   CONST SV_ALARM                 = 6;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST SV_RESERVEDFIRST1        = 7;
+      CONST SV_RESERVEDLAST1         = 8;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST SV_CURSORRATE            = 9;
+   CONST SV_FIRSTSCROLLRATE       = 10;
+   CONST SV_SCROLLRATE            = 11;
+   CONST SV_NUMBEREDLISTS         = 12;
+   CONST SV_WARNINGFREQ           = 13;
+   CONST SV_NOTEFREQ              = 14;
+   CONST SV_ERRORFREQ             = 15;
+   CONST SV_WARNINGDURATION       = 16;
+   CONST SV_NOTEDURATION          = 17;
+   CONST SV_ERRORDURATION         = 18;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST SV_RESERVEDFIRST         = 19;
+      CONST SV_RESERVEDLAST          = 19;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST SV_CXSCREEN              = 20;
+   CONST SV_CYSCREEN              = 21;
+   CONST SV_CXVSCROLL             = 22;
+   CONST SV_CYHSCROLL             = 23;
+   CONST SV_CYVSCROLLARROW        = 24;
+   CONST SV_CXHSCROLLARROW        = 25;
+   CONST SV_CXBORDER              = 26;
+   CONST SV_CYBORDER              = 27;
+   CONST SV_CXDLGFRAME            = 28;
+   CONST SV_CYDLGFRAME            = 29;
+   CONST SV_CYTITLEBAR            = 30;
+   CONST SV_CYVSLIDER             = 31;
+   CONST SV_CXHSLIDER             = 32;
+   CONST SV_CXMINMAXBUTTON        = 33;
+   CONST SV_CYMINMAXBUTTON        = 34;
+   CONST SV_CYMENU                = 35;
+   CONST SV_CXFULLSCREEN          = 36;
+   CONST SV_CYFULLSCREEN          = 37;
+   CONST SV_CXICON                = 38;
+   CONST SV_CYICON                = 39;
+   CONST SV_CXPOINTER             = 40;
+   CONST SV_CYPOINTER             = 41;
+
+   CONST SV_DEBUG                 = 42;
+   CONST SV_CMOUSEBUTTONS         = 43;
+   CONST SV_CPOINTERBUTTONS       = 43;
+   CONST SV_POINTERLEVEL          = 44;
+   CONST SV_CURSORLEVEL           = 45;
+   CONST SV_TRACKRECTLEVEL        = 46;
+
+   #if ! defined(INCL_SAADEFS)
+      CONST SV_CTIMERS               = 47;
+   #endif (* !INCL_SAADEFS *)
+
+   CONST SV_MOUSEPRESENT          = 48;
+
+   CONST SV_CXBYTEALIGN           = 49;
+   CONST SV_CXALIGN               = 49;
+   CONST SV_CYBYTEALIGN           = 50;
+   CONST SV_CYALIGN               = 50;
+
+   (* The following value enables any greater value to be set by WinSetSysVlaue. *)
+   (* Values of 51-55 are spare for extra non-settable system values             *)
+   (* This is to enable the setting of SV_EXTRAKEYBEEP by applications.          *)
+
+   CONST SV_NOTRESERVED           = 56;
+   CONST SV_EXTRAKEYBEEP          = 57;
+
+   (* The following system value controls whether PM controls the keyboard      *)
+   (* lights for light key keystrokes (else applications will)                  *)
+   CONST SV_SETLIGHTS             = 58;
+   CONST SV_INSERTMODE            = 59;
+
+
+   CONST SV_MENUROLLDOWNDELAY     = 64;
+   CONST SV_MENUROLLUPDELAY       = 65;
+   CONST SV_ALTMNEMONIC           = 66;
+   CONST SV_TASKLISTMOUSEACCESS   = 67;
+
+   CONST SV_CXICONTEXTWIDTH       = 68;
+   CONST SV_CICONTEXTLINES        = 69;
+
+   CONST SV_CHORDTIME             = 70;
+   CONST SV_CXCHORD               = 71;
+   CONST SV_CYCHORD               = 72;
+   CONST SV_CXMOTIONSTART         = 73;
+   CONST SV_CYMOTIONSTART         = 74;
+
+   CONST SV_BEGINDRAG             = 75;
+   CONST SV_ENDDRAG               = 76;
+   CONST SV_SINGLESELECT          = 77;
+   CONST SV_OPEN                  = 78;
+   CONST SV_CONTEXTMENU           = 79;
+   CONST SV_CONTEXTHELP           = 80;
+   CONST SV_TEXTEDIT              = 81;
+   CONST SV_BEGINSELECT           = 82;
+   CONST SV_ENDSELECT             = 83;
+
+   CONST SV_BEGINDRAGKB           = 84;
+   CONST SV_ENDDRAGKB             = 85;
+   CONST SV_SELECTKB              = 86;
+   CONST SV_OPENKB                = 87;
+   CONST SV_CONTEXTMENUKB         = 88;
+   CONST SV_CONTEXTHELPKB         = 89;
+   CONST SV_TEXTEDITKB            = 90;
+   CONST SV_BEGINSELECTKB         = 91;
+   CONST SV_ENDSELECTKB           = 92;
+
+   CONST SV_ANIMATION             = 93;
+   CONST SV_ANIMATIONSPEED        = 94;
+
+   CONST SV_MONOICONS             = 95;
+
+   CONST SV_KBDALTERED            = 96;
+
+   CONST SV_PRINTSCREEN           = 97;
+
+   CONST SV_CSYSVALUES            = 98;
+
+
+   (*
+   * Presentation parameter structures.
+   *)
+   TYPE PARAM = RECORD   (* param *)
+      id:        ULONG;
+      cb:        ULONG;
+      ab:        ARRAY [0..0] OF BYTE;
+   END;
+   TYPE NPPARAM = POINTER TO PARAM;
+   TYPE PPARAM  = POINTER TO PARAM;
+
+   TYPE PRESPARAMS = RECORD   (* pres *)
+      cb:      ULONG;
+      aparam:  ARRAY [0..0] OF PARAM;
+   END;
+   TYPE NPPRESPARAMS = POINTER TO PRESPARAMS;
+   TYPE PPRESPARAMS  = POINTER TO PRESPARAMS;
+
+   (*
+   * Presentation parameter APIs
+   *)
+   PROCEDURE WinSetPresParam(hwnd    : HWND
+                            ;id      : ULONG
+                            ;cbParam : ULONG
+                            ;pbParam : PVOID
+                            ): BOOL;
+
+   PROCEDURE WinQueryPresParam(hwnd     : HWND
+                              ;id1      : ULONG
+                              ;id2      : ULONG
+                              ;VAR ulId : ULONG
+                              ;cbBuf    : ULONG
+                              ;pbBuf    : PVOID
+                              ;fs       : ULONG
+                              ): ULONG;
+
+   PROCEDURE WinRemovePresParam(hwnd : HWND
+                               ;id   : ULONG
+                               ): BOOL;
+
+   (*
+   * Presentation parameter types.
+   *)
+
+   CONST PP_FOREGROUNDCOLOR                    = 1;
+   CONST PP_FOREGROUNDCOLORINDEX               = 2;
+   CONST PP_BACKGROUNDCOLOR                    = 3;
+   CONST PP_BACKGROUNDCOLORINDEX               = 4;
+   CONST PP_HILITEFOREGROUNDCOLOR              = 5;
+   CONST PP_HILITEFOREGROUNDCOLORINDEX         = 6;
+   CONST PP_HILITEBACKGROUNDCOLOR              = 7;
+   CONST PP_HILITEBACKGROUNDCOLORINDEX         = 8;
+   CONST PP_DISABLEDFOREGROUNDCOLOR            = 9;
+   CONST PP_DISABLEDFOREGROUNDCOLORINDEX       = 10;
+   CONST PP_DISABLEDBACKGROUNDCOLOR            = 11;
+   CONST PP_DISABLEDBACKGROUNDCOLORINDEX       = 12;
+   CONST PP_BORDERCOLOR                        = 13;
+   CONST PP_BORDERCOLORINDEX                   = 14;
+   CONST PP_FONTNAMESIZE                       = 15;
+   CONST PP_FONTHANDLE                         = 16;
+   CONST PP_RESERVED                           = 17;
+   CONST PP_ACTIVECOLOR                        = 18;
+   CONST PP_ACTIVECOLORINDEX                   = 19;
+   CONST PP_INACTIVECOLOR                      = 20;
+   CONST PP_INACTIVECOLORINDEX                 = 21;
+   CONST PP_ACTIVETEXTFGNDCOLOR                = 22;
+   CONST PP_ACTIVETEXTFGNDCOLORINDEX           = 23;
+   CONST PP_ACTIVETEXTBGNDCOLOR                = 24;
+   CONST PP_ACTIVETEXTBGNDCOLORINDEX           = 25;
+   CONST PP_INACTIVETEXTFGNDCOLOR              = 26;
+   CONST PP_INACTIVETEXTFGNDCOLORINDEX         = 27;
+   CONST PP_INACTIVETEXTBGNDCOLOR              = 28;
+   CONST PP_INACTIVETEXTBGNDCOLORINDEX         = 29;
+   CONST PP_SHADOW                             = 30;
+   CONST PP_MENUFOREGROUNDCOLOR                = 31;
+   CONST PP_MENUFOREGROUNDCOLORINDEX           = 32;
+   CONST PP_MENUBACKGROUNDCOLOR                = 33;
+   CONST PP_MENUBACKGROUNDCOLORINDEX           = 34;
+   CONST PP_MENUHILITEFGNDCOLOR                = 35;
+   CONST PP_MENUHILITEFGNDCOLORINDEX           = 36;
+   CONST PP_MENUHILITEBGNDCOLOR                = 37;
+   CONST PP_MENUHILITEBGNDCOLORINDEX           = 38;
+   CONST PP_MENUDISABLEDFGNDCOLOR              = 39;
+   CONST PP_MENUDISABLEDFGNDCOLORINDEX         = 40;
+   CONST PP_MENUDISABLEDBGNDCOLOR              = 41;
+   CONST PP_MENUDISABLEDBGNDCOLORINDEX         = 42;
+
+   CONST PP_USER                               = 08000H;
+
+   (*
+   * Flags for WinQueryPresParams()
+   *)
+   CONST QPF_NOINHERIT            = 00001H; (* Don't inherit                      *)
+   CONST QPF_ID1COLORINDEX        = 00002H; (* Convert id1 color index into RGB   *)
+   CONST QPF_ID2COLORINDEX        = 00004H; (* Convert id2 color index into RGB   *)
+   CONST QPF_PURERGBCOLOR         = 00008H; (* Return pure RGB colors             *)
+   CONST QPF_VALIDFLAGS           = 0000FH; (* Valid WinQueryPresParams() flags.  *)
+
+   (*** System color functions *)
+
+   PROCEDURE WinQuerySysColor(hwndDesktop : HWND
+                             ;clr         : LONG
+                             ;lReserved   : LONG
+                             ): LONG;
+
+   PROCEDURE WinSetSysColors(hwndDesktop : HWND
+                            ;flOptions   : ULONG
+                            ;flFormat    : ULONG
+                            ;clrFirst    : LONG
+                            ;cclr        : ULONG
+                            ;clr         : ARRAY OF LONG
+                            ): BOOL;
+
+   CONST SYSCLR_SHADOWHILITEBGND        = -50;
+   CONST SYSCLR_SHADOWHILITEFGND        = -49;
+   CONST SYSCLR_SHADOWTEXT              = -48;
+   CONST SYSCLR_ENTRYFIELD              = -47;
+   CONST SYSCLR_MENUDISABLEDTEXT        = -46;
+   CONST SYSCLR_MENUHILITE              = -45;
+   CONST SYSCLR_MENUHILITEBGND          = -44;
+   CONST SYSCLR_PAGEBACKGROUND          = -43;
+   CONST SYSCLR_FIELDBACKGROUND         = -42;
+   CONST SYSCLR_BUTTONLIGHT             = -41;
+   CONST SYSCLR_BUTTONMIDDLE            = -40;
+   CONST SYSCLR_BUTTONDARK              = -39;
+   CONST SYSCLR_BUTTONDEFAULT           = -38;
+   CONST SYSCLR_TITLEBOTTOM             = -37;
+   CONST SYSCLR_SHADOW                  = -36;
+   CONST SYSCLR_ICONTEXT                = -35;
+   CONST SYSCLR_DIALOGBACKGROUND        = -34;
+   CONST SYSCLR_HILITEFOREGROUND        = -33;
+   CONST SYSCLR_HILITEBACKGROUND        = -32;
+   CONST SYSCLR_INACTIVETITLETEXTBGND   = -31;
+   CONST SYSCLR_ACTIVETITLETEXTBGND     = -30;
+   CONST SYSCLR_INACTIVETITLETEXT       = -29;
+   CONST SYSCLR_ACTIVETITLETEXT         = -28;
+   CONST SYSCLR_OUTPUTTEXT              = -27;
+   CONST SYSCLR_WINDOWSTATICTEXT        = -26;
+   CONST SYSCLR_SCROLLBAR               = -25;
+   CONST SYSCLR_BACKGROUND              = -24;
+   CONST SYSCLR_ACTIVETITLE             = -23;
+   CONST SYSCLR_INACTIVETITLE           = -22;
+   CONST SYSCLR_MENU                    = -21;
+   CONST SYSCLR_WINDOW                  = -20;
+   CONST SYSCLR_WINDOWFRAME             = -19;
+   CONST SYSCLR_MENUTEXT                = -18;
+   CONST SYSCLR_WINDOWTEXT              = -17;
+   CONST SYSCLR_TITLETEXT               = -16;
+   CONST SYSCLR_ACTIVEBORDER            = -15;
+   CONST SYSCLR_INACTIVEBORDER          = -14;
+   CONST SYSCLR_APPWORKSPACE            = -13;
+   CONST SYSCLR_HELPBACKGROUND          = -12;
+   CONST SYSCLR_HELPTEXT                = -11;
+   CONST SYSCLR_HELPHILITE              = -10;
+
+   CONST SYSCLR_CSYSCOLORS              = 41;
+
+#endif (* INCL_WINSYS *)
+
+
+#if defined(INCL_WINTIMER)
+   (**** Timer manager *)
+
+   #if ! defined(INCL_SAADEFS)
+
+
+      PROCEDURE WinStartTimer(hab       : HAB
+                             ;hwnd      : HWND
+                             ;idTimer   : ULONG
+                             ;dtTimeout : ULONG
+                             ): ULONG;
+
+      PROCEDURE WinStopTimer(hab     : HAB
+                            ;hwnd    : HWND
+                            ;idTimer : ULONG
+                            ): BOOL;
+
+      PROCEDURE WinGetCurrentTime(hab : HAB): ULONG;
+
+      CONST TID_CURSOR          = 0ffffH;  (* Reserved cursor timer ID              *)
+      CONST TID_SCROLL          = 0fffeH;  (* Reserved scrolling timer ID           *)
+      CONST TID_FLASHWINDOW     = 0fffdH;  (* Reserved for window flashing timer ID *)
+      CONST TID_USERMAX         = 07fffH;  (* Maximum user timer ID                 *)
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINTIMER *)
+
+TYPE HACCEL = LHANDLE; (* haccel *)
+
+#if defined(INCL_WINACCELERATORS)
+   (**** Accelerator functions *)
+
+   (* ACCEL fs bits
+   *
+   * NOTE: the first six AF_ code bits have the same value
+   * as their KC_ counterparts
+   *)
+   #if ! defined(INCL_SAADEFS)
+      CONST AF_CHAR                    = 00001H;
+      CONST AF_VIRTUALKEY              = 00002H;
+      CONST AF_SCANCODE                = 00004H;
+      CONST AF_SHIFT                   = 00008H;
+      CONST AF_CONTROL                 = 00010H;
+      CONST AF_ALT                     = 00020H;
+      CONST AF_LONEKEY                 = 00040H;
+      CONST AF_SYSCOMMAND              = 00100H;
+      CONST AF_HELP                    = 00200H;
+   #endif (* !INCL_SAADEFS *)
+
+   <* ALIGNMENT = "2" *>  (* force structure alignment packing *)
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE ACCEL = RECORD   (* acc *)
+      fs:        USHORT;
+      key:       USHORT;
+      cmd:       USHORT;
+   END;
+   TYPE PACCEL = POINTER TO ACCEL;
+
+   (* Binary resources may be bound into application executables or *)
+   (* passed as a parameter when creating a window or dialog        *)
+   (* Currently they must be the same for both 16-bit and 32-bit    *)
+   (* so we pack the structures.                                    *)
+   TYPE ACCELTABLE = RECORD   (* acct  *)
+      cAccel:         USHORT;
+      codepage:       USHORT;
+      aaccel:         ARRAY [0..0] OF ACCEL;
+   END;
+   TYPE PACCELTABLE = POINTER TO ACCELTABLE;
+
+   <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   PROCEDURE WinLoadAccelTable(hab          : HAB
+                              ;hmod         : HMODULE
+                              ;idAccelTable : ULONG
+                              ): HACCEL;
+
+   PROCEDURE WinCopyAccelTable(haccel               : HACCEL
+                              ;VAR [NIL] AccelTable : ACCELTABLE
+                              ;cbCopyMax            : ULONG
+                              ): ULONG;
+
+   PROCEDURE WinCreateAccelTable(hab            : HAB
+                                ;VAR AccelTable : ACCELTABLE
+                                ): HACCEL;
+
+   PROCEDURE WinDestroyAccelTable(haccel : HACCEL): BOOL;
+
+   PROCEDURE WinTranslateAccel(hab      : HAB
+                              ;hwnd     : HWND
+                              ;haccel   : HACCEL
+                              ;VAR qmsg : QMSG
+                              ): BOOL;
+
+   PROCEDURE WinSetAccelTable(hab       : HAB
+                             ;haccel    : HACCEL
+                             ;hwndFrame : HWND
+                             ): BOOL;
+
+   PROCEDURE WinQueryAccelTable(hab       : HAB
+                               ;hwndFrame : HWND
+                               ): HACCEL;
+
+#endif (* INCL_WINACCELERATORS *)
+
+(**** Extended Attribute Flags (Association Table) *)
+
+CONST EAF_DEFAULTOWNER           = 00001H;
+CONST EAF_UNCHANGEABLE           = 00002H;
+CONST EAF_REUSEICON              = 00004H;
+
+(*** WinTrackRect() information *)
+
+#if defined(INCL_WINTRACKRECT)
+
+   (* WinTrackRect() tracking information structure *)
+
+   TYPE TRACKINFO = RECORD   (* ti *)
+      cxBorder:      LONG;
+      cyBorder:      LONG;
+      cxGrid:        LONG;
+      cyGrid:        LONG;
+      cxKeyboard:    LONG;
+      cyKeyboard:    LONG;
+      rclTrack:      RECTL;
+      rclBoundary:   RECTL;
+      ptlMinTrackSize:  POINTL;
+      ptlMaxTrackSize:  POINTL;
+      fs:            ULONG;
+   END;
+   TYPE PTRACKINFO = POINTER TO TRACKINFO;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinTrackRect(hwnd   : HWND
+                            ;hps    : HPS
+                            ;VAR ti : TRACKINFO
+                            ): BOOL;
+
+      PROCEDURE WinShowTrackRect(hwnd  : HWND
+                                ;fShow : BOOL
+                                ): BOOL;
+
+      (* WinTrackRect() flags *)
+
+      CONST TF_LEFT                    = 00001H;
+      CONST TF_TOP                     = 00002H;
+      CONST TF_RIGHT                   = 00004H;
+      CONST TF_BOTTOM                  = 00008H;
+      (* TF_MOVE = TF_LEFT | TF_TOP | TF_RIGHT | TF_BOTTOM *)
+      CONST TF_MOVE                    = 0000FH;
+
+      CONST TF_SETPOINTERPOS           = 00010H;
+      CONST TF_GRID                    = 00020H;
+      CONST TF_STANDARD                = 00040H;
+      CONST TF_ALLINBOUNDARY           = 00080H;
+      CONST TF_VALIDATETRACKRECT       = 00100H;
+      CONST TF_PARTINBOUNDARY          = 00200H;
+
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINTRACKRECT *)
+
+
+(**** Clipboard Manager *)
+
+#if  defined(INCL_WINCLIPBOARD) || defined(INCL_WINDDE)
+   #if ! defined(INCL_SAADEFS)
+
+      (* Clipboard messages *)
+
+      CONST WM_RENDERFMT               = 00060H;
+      CONST WM_RENDERALLFMTS           = 00061H;
+      CONST WM_DESTROYCLIPBOARD        = 00062H;
+      CONST WM_PAINTCLIPBOARD          = 00063H;
+      CONST WM_SIZECLIPBOARD           = 00064H;
+      CONST WM_HSCROLLCLIPBOARD        = 00065H;
+      CONST WM_VSCROLLCLIPBOARD        = 00066H;
+      CONST WM_DRAWCLIPBOARD           = 00067H;
+
+      (*
+      * Standard Clipboard formats
+      *)
+      CONST CF_TEXT                   = 1;
+      CONST CF_BITMAP                 = 2;
+      CONST CF_DSPTEXT                = 3;
+      CONST CF_DSPBITMAP              = 4;
+      CONST CF_METAFILE               = 5;
+      CONST CF_DSPMETAFILE            = 6;
+      CONST CF_PALETTE                = 9;
+      CONST CF_MMPMFIRST              =10;
+      CONST CF_MMPMLAST               =19;
+      (*
+      * standard DDE and clipboard format stings
+      *)
+      CONST SZFMT_TEXT                  = "#1";
+      CONST SZFMT_BITMAP                = "#2";
+      CONST SZFMT_DSPTEXT               = "#3";
+      CONST SZFMT_DSPBITMAP             = "#4";
+      CONST SZFMT_METAFILE              = "#5";
+      CONST SZFMT_DSPMETAFILE           = "#6";
+      CONST SZFMT_PALETTE               = "#9";
+      CONST SZFMT_SYLK                  = "Sylk";
+      CONST SZFMT_DIF                   = "Dif";
+      CONST SZFMT_TIFF                  = "Tiff";
+      CONST SZFMT_OEMTEXT               = "OemText";
+      CONST SZFMT_DIB                   = "Dib";
+      CONST SZFMT_OWNERDISPLAY          = "OwnerDisplay";
+      CONST SZFMT_LINK                  = "Link";
+      CONST SZFMT_METAFILEPICT          = "MetaFilePict";
+      CONST SZFMT_DSPMETAFILEPICT       = "DspMetaFilePict";
+      CONST SZFMT_CPTEXT                = "Codepage Text";
+      CONST SZDDEFMT_RTF                = "Rich Text Format";
+      CONST SZDDEFMT_PTRPICT            = "Printer_Picture";
+
+      <* ALIGNMENT = "2" *> (* force structure alignment packing *)
+
+      (* Metafiles are the same no matter whether they are used in     *)
+      (* 16-bit or 32-bit applications. While not strictly necessary   *)
+      (* because of inherent alignment we force packing on a 2 byte    *)
+      (* boundary to avoid any confusion.                              *)
+      TYPE MFP = RECORD   (* mfp *)
+         sizeBounds:   POINTL;         (* metafile notional grid size      *)
+         sizeMM:       POINTL;         (* metafile size high metric units  *)
+         cbLength:     ULONG;         (* length of metafile data          *)
+         mapMode:      USHORT;         (* a PM metaflie map mode           *)
+         reserved:     USHORT;
+         abData:       ARRAY [0..0] OF BYTE; (* metafile Data                    *)
+      END;
+      TYPE PMFP = POINTER TO MFP;
+
+      (* CPTEXT DDE data are the same no matter whether they are used  *)
+      (* in 16-bit or 32-bit applications. While not strictly necessary*)
+      (* because of inherent alignment we force packing on a 2 byte    *)
+      (* boundary to avoid any confusion.                              *)
+      TYPE CPTEXT = RECORD   (* cptxt *)
+         idCountry:   USHORT;
+         usCodepage:  USHORT;
+         usLangID:    USHORT;
+         usSubLangID: USHORT;
+         abText:      ARRAY [0..0] OF BYTE; (* text string starts here          *)
+      END;
+      TYPE PCPTEXT = POINTER TO CPTEXT;
+
+      <* ALIGNMENT = "4" *>  (* restore packing to default *)
+
+   #endif (* not INCL_SAADEFS *)
+#endif (* INCL_WINCLIPBOARD | INCL_WINDDE *)
+
+#if defined(INCL_WINCLIPBOARD)
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSetClipbrdOwner(hab  : HAB
+                                  ;hwnd : HWND
+                                  ): BOOL;
+
+      PROCEDURE WinSetClipbrdData(hab        : HAB
+                                 ;ulData     : ULONG
+                                 ;fmt        : ULONG
+                                 ;rgfFmtInfo : ULONG
+                                 ): BOOL;
+
+      PROCEDURE WinQueryClipbrdData(hab : HAB
+                                   ;fmt : ULONG
+                                   ): ULONG;
+
+      PROCEDURE WinQueryClipbrdFmtInfo(hab            : HAB
+                                      ;fmt            : ULONG
+                                      ;VAR rgfFmtInfo : ULONG
+                                      ): BOOL;
+
+      PROCEDURE WinSetClipbrdViewer(hab               : HAB
+                                   ;hwndNewClipViewer : HWND
+                                   ): BOOL;
+
+      (* WinSetClipbrdData() flags *)
+
+      CONST CFI_OWNERFREE              = 00001H;
+      CONST CFI_OWNERDISPLAY           = 00002H;
+      CONST CFI_POINTER                = 00400H;
+      CONST CFI_HANDLE                 = 00200H;
+
+   #endif (* !INCL_SAADEFS *)
+
+   PROCEDURE WinEnumClipbrdFmts(hab : HAB
+                               ;fmt : ULONG
+                               ): ULONG;
+   PROCEDURE WinEmptyClipbrd(hab : HAB): BOOL;
+   PROCEDURE WinOpenClipbrd(hab : HAB): BOOL;
+   PROCEDURE WinCloseClipbrd(hab : HAB): BOOL;
+
+   PROCEDURE WinQueryClipbrdOwner(hab : HAB): HWND;
+   PROCEDURE WinQueryClipbrdViewer(hab : HAB): HWND;
+
+#endif (* INCL_WINCLIPBOARD *)
+
+
+#if  defined(INCL_WINCURSORS) || ! defined(INCL_NOCOMMON)
+   (**** Cursor manager common subsection *)
+
+   PROCEDURE WinDestroyCursor(hwnd : HWND): BOOL;
+
+   PROCEDURE WinShowCursor(hwnd  : HWND
+                          ;fShow : BOOL
+                          ): BOOL;
+
+   PROCEDURE WinCreateCursor(hwnd        : HWND
+                            ;x           : LONG
+                            ;y           : LONG
+                            ;cx          : LONG
+                            ;cy          : LONG
+                            ;fs          : ULONG
+                            ;VAR rclClip : RECTL
+                            ): BOOL;
+
+   (* WinCreateCursor() flags *)
+
+   CONST CURSOR_SOLID               = 00000H;
+   CONST CURSOR_HALFTONE            = 00001H;
+   CONST CURSOR_FRAME               = 00002H;
+   CONST CURSOR_FLASH               = 00004H;
+   CONST CURSOR_SETPOS              = 08000H;
+
+
+#endif (* Cursor manager common subsection *)
+
+#if defined(INCL_WINCURSORS)
+
+   TYPE CURSORINFO = RECORD   (* csri *)
+      hwnd:  HWND;
+      x:     LONG;
+      y:     LONG;
+      cx:    LONG;
+      cy:    LONG;
+      fs:    ULONG;
+      rclClip:  RECTL;
+   END;
+   TYPE PCURSORINFO = POINTER TO CURSORINFO;
+
+   PROCEDURE WinQueryCursorInfo(hwndDesktop    : HWND
+                               ;VAR CursorInfo : CURSORINFO
+                               ): BOOL;
+
+#endif (* INCL_WINCURSORS *)
+
+TYPE HPOINTER = LHANDLE;
+
+#if defined(INCL_WINPOINTERS)
+   (**** Pointer manager *)
+
+   PROCEDURE WinSetPointer(hwndDesktop : HWND
+                          ;hptrNew     : HPOINTER
+                          ): BOOL;
+
+   PROCEDURE WinSetPointerOwner(hptr     : HPOINTER
+                               ;pid      : PID
+                               ;fDestroy : BOOL
+                               ): BOOL;
+
+   PROCEDURE WinShowPointer(hwndDesktop : HWND
+                           ;fShow       : BOOL
+                           ): BOOL;
+
+   PROCEDURE WinLockPointerUpdate(hwndDesktop    : HWND
+                                 ;hptrNew        : HPOINTER
+                                 ;ulTimeInterval : ULONG
+                                 ): BOOL;
+
+   PROCEDURE WinQuerySysPointer(hwndDesktop : HWND
+                               ;iptr        : LONG
+                               ;fLoad       : BOOL
+                               ): HPOINTER;
+
+   PROCEDURE WinQuerySysPointerData(hwndDesktop  : HWND
+                                   ;iptr         : ULONG
+                                   ;VAR IconInfo : ICONINFO
+                                   ): BOOL;
+
+   PROCEDURE WinSetSysPointerData(hwndDesktop  : HWND
+                                 ;iptr         : ULONG
+                                 ;VAR IconInfo : ICONINFO
+                                 ): BOOL;
+
+   (* System pointers (NOTE: these are 1-based) *)
+
+   CONST SPTR_ARROW               =  1;
+   CONST SPTR_TEXT                =  2;
+   CONST SPTR_WAIT                =  3;
+   CONST SPTR_SIZE                =  4;
+   CONST SPTR_MOVE                =  5;
+   CONST SPTR_SIZENWSE            =  6;
+   CONST SPTR_SIZENESW            =  7;
+   CONST SPTR_SIZEWE              =  8;
+   CONST SPTR_SIZENS              =  9;
+   CONST SPTR_APPICON             =  10;
+
+   CONST SPTR_ICONINFORMATION     =  11;
+   CONST SPTR_ICONQUESTION        =  12;
+   CONST SPTR_ICONERROR           =  13;
+   CONST SPTR_ICONWARNING         =  14;
+
+   CONST SPTR_ILLEGAL             =  18;
+   CONST SPTR_FILE                =  19;
+   CONST SPTR_FOLDER              =  20;
+   CONST SPTR_MULTFILE            =  21;
+   CONST SPTR_PROGRAM             =  22;
+   CONST SPTR_DISPLAY_PTRS        =  22;
+   CONST SPTR_PENFIRST            =  23;
+   CONST SPTR_PENLAST             =  39;
+   CONST SPTR_CPTR                =  39;  (* total # of system pointers *)
+
+   (* backward compatibility *)
+   CONST SPTR_HANDICON       =  SPTR_ICONERROR;
+   CONST SPTR_QUESICON       =  SPTR_ICONQUESTION;
+   CONST SPTR_BANGICON       =  SPTR_ICONWARNING;
+   CONST SPTR_NOTEICON       =  SPTR_ICONINFORMATION;
+
+
+   PROCEDURE WinLoadPointer(hwndDesktop : HWND
+                           ;hmod        : HMODULE
+                           ;idres       : ULONG
+                           ): HPOINTER;
+
+   PROCEDURE WinCreatePointer(hwndDesktop : HWND
+                             ;hbmPointer  : HBITMAP
+                             ;fPointer    : BOOL
+                             ;xHotspot    : LONG
+                             ;yHotspot    : LONG
+                             ): HPOINTER;
+
+   PROCEDURE WinSetPointerPos(hwndDesktop : HWND
+                             ;x           : LONG
+                             ;y           : LONG
+                             ): BOOL;
+
+   PROCEDURE WinDestroyPointer(hptr : HPOINTER): BOOL;
+
+   PROCEDURE WinQueryPointer(hwndDesktop : HWND): HPOINTER;
+
+   PROCEDURE WinQueryPointerPos(hwndDesktop : HWND
+                               ;VAR ptl     : POINTL
+                               ): BOOL;
+
+   TYPE POINTERINFO = RECORD   (* ptri *)
+      fPointer:        ULONG;
+      xHotspot:        LONG;
+      yHotspot:        LONG;
+      hbmPointer:      HBITMAP;
+      hbmColor:        HBITMAP;
+      hbmMiniPointer:  HBITMAP;
+      hbmMiniColor:    HBITMAP;
+   END;
+   TYPE PPOINTERINFO = POINTER TO POINTERINFO;
+
+   PROCEDURE WinCreatePointerIndirect(hwndDesktop : HWND
+                                     ;VAR ptri    : POINTERINFO
+                                     ): HPOINTER;
+
+   PROCEDURE WinQueryPointerInfo(hptr            : HPOINTER
+                                ;VAR PointerInfo : POINTERINFO
+                                ): BOOL;
+
+   PROCEDURE WinDrawPointer(hps  : HPS
+                           ;x    : LONG
+                           ;y    : LONG
+                           ;hptr : HPOINTER
+                           ;fs   : ULONG
+                           ): BOOL;
+
+   (* WinDrawPointer() constants *)
+
+   CONST DP_NORMAL                  = 00000H;
+   CONST DP_HALFTONED               = 00001H;
+   CONST DP_INVERTED                = 00002H;
+
+
+   PROCEDURE WinGetSysBitmap(hwndDesktop : HWND
+                            ;ibm         : ULONG
+                            ): HBITMAP;
+
+   (* System bitmaps (NOTE: these are 1-based) *)
+
+   CONST SBMP_OLD_SYSMENU         =  1;
+   CONST SBMP_OLD_SBUPARROW       =  2;
+   CONST SBMP_OLD_SBDNARROW       =  3;
+   CONST SBMP_OLD_SBRGARROW       =  4;
+   CONST SBMP_OLD_SBLFARROW       =  5;
+   CONST SBMP_MENUCHECK           =  6;
+   CONST SBMP_OLD_CHECKBOXES      =  7;
+   CONST SBMP_BTNCORNERS          =  8;
+   CONST SBMP_OLD_MINBUTTON       =  9;
+   CONST SBMP_OLD_MAXBUTTON       =  10;
+   CONST SBMP_OLD_RESTOREBUTTON   =  11;
+   CONST SBMP_OLD_CHILDSYSMENU    =  12;
+   CONST SBMP_DRIVE               =  15;
+   CONST SBMP_FILE                =  16;
+   CONST SBMP_FOLDER              =  17;
+   CONST SBMP_TREEPLUS            =  18;
+   CONST SBMP_TREEMINUS           =  19;
+   CONST SBMP_PROGRAM             =  22;
+   CONST SBMP_MENUATTACHED        =  23;
+   CONST SBMP_SIZEBOX             =  24;
+
+   CONST SBMP_SYSMENU             =  25;
+   CONST SBMP_MINBUTTON           =  26;
+   CONST SBMP_MAXBUTTON           =  27;
+   CONST SBMP_RESTOREBUTTON       =  28;
+   CONST SBMP_CHILDSYSMENU        =  29;
+   CONST SBMP_SYSMENUDEP          =  30;
+   CONST SBMP_MINBUTTONDEP        =  31;
+   CONST SBMP_MAXBUTTONDEP        =  32;
+   CONST SBMP_RESTOREBUTTONDEP    =  33;
+   CONST SBMP_CHILDSYSMENUDEP     =  34;
+   CONST SBMP_SBUPARROW           =  35;
+   CONST SBMP_SBDNARROW           =  36;
+   CONST SBMP_SBLFARROW           =  37;
+   CONST SBMP_SBRGARROW           =  38;
+   CONST SBMP_SBUPARROWDEP        =  39;
+   CONST SBMP_SBDNARROWDEP        =  40;
+   CONST SBMP_SBLFARROWDEP        =  41;
+   CONST SBMP_SBRGARROWDEP        =  42;
+   CONST SBMP_SBUPARROWDIS        =  43;
+   CONST SBMP_SBDNARROWDIS        =  44;
+   CONST SBMP_SBLFARROWDIS        =  45;
+   CONST SBMP_SBRGARROWDIS        =  46;
+   CONST SBMP_COMBODOWN           =  47;
+   CONST SBMP_CHECKBOXES       = 48;
+
+#endif (* INCL_WINPOINTERS *)
+
+
+(**** Hook manager *)
+
+#if defined(INCL_WINHOOKS)
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSetHook(hab     : HAB
+                          ;hmq     : HMQ
+                          ;iHook   : LONG
+                          ;pfnHook : PFN
+                          ;hmod    : HMODULE
+                          ): BOOL;
+
+      PROCEDURE WinReleaseHook(hab     : HAB
+                              ;hmq     : HMQ
+                              ;iHook   : LONG
+                              ;pfnHook : PFN
+                              ;hmod    : HMODULE
+                              ): BOOL;
+
+      PROCEDURE WinCallMsgFilter(hab      : HAB
+                                ;VAR qmsg : QMSG
+                                ;msgf     : ULONG
+                                ): BOOL;
+
+      (**********************************************************************
+      * Hook codes
+      *
+      * Whether the hook receives a (U)SHORT or (U)LONG parameter depends
+      * on the memory model that the hook executes in. 32-bit hook will
+      * receive long parameters
+      *
+      **********************************************************************)
+
+      CONST HK_SENDMSG              =   0;
+      (* VOID PROCEDURE [EXPENTRY] SendMsgHook(HAB hab;               ** installer's hab
+      *                            PSMHSTRUCT psmh;       ** p send msg struct
+      *                            BOOL fInterTask);      ** between threads *)
+
+      CONST HK_INPUT                =   1;
+      (* BOOL PROCEDURE [EXPENTRY] InputHook(HAB hab;                 ** installer's hab
+      *                          PQMSG pQmsg;             ** p qmsg
+      *                          ULONG/USHORT fs);        ** remove/noremove *)
+
+      CONST HK_MSGFILTER            =   2;
+      (* BOOL PROCEDURE [EXPENTRY] MsgFilterHook(HAB hab;             ** installer's hab
+      *                              PQMSG pQmsg;         ** p qmsg
+      *                              ULONG/USHORT msgf);  ** filter flag *)
+
+      CONST HK_JOURNALRECORD        =   3;
+      (* VOID PROCEDURE [EXPENTRY] JournalRecordHook(HAB hab;         ** installer's hab
+      *                                  PQMSG pQmsg);    ** p qmsg *)
+
+      CONST HK_JOURNALPLAYBACK      =   4;
+      (* ULONG PROCEDURE [EXPENTRY] JournalPlaybackHook(HAB hab;      **installer's hab
+      *                                     BOOL fSkip;   ** skip messages
+      *                                     PQMSG pQmsg); ** p qmsg *)
+
+      CONST HK_HELP                 =   5;
+      (* BOOL PROCEDURE [EXPENTRY] HelpHook(HAB hab;                  ** installer's hab
+      *                         ULONG/USHORT usMode;      ** mode
+      *                         ULONG/USHORT idTopic;     ** main topic
+      *                         ULONG/USHORT idSubTopic;  ** sub topic
+      *                         PRECTL prcPosition);      ** associated position *)
+
+      CONST HK_LOADER               =   6;
+      (* BOOL PROCEDURE [EXPENTRY] LoaderHook(HAB hab;                ** installer's hab
+      *                           LONG/USHORT idContext;  ** who called hook
+      *                           PSZ pszLibname;         ** lib name string
+      *                           PHLIB hlib;             ** p to lib handle
+      *                           PSZ pszProcname;        ** procedure name
+      *                           PFNWP wndProc);         ** window procedure *)
+
+      CONST HK_REGISTERUSERMSG      =   7;
+      (* BOOL PROCEDURE [EXPENTRY] RegisterUserHook(HAB hab;          ** installer's hab
+      *                                 ULONG cUshort;    ** entries in arRMP
+      *                                 PULONG/PUSHORT arRMP; ** RMP array
+      *                                 PBOOL fRegistered); ** msg parms already reg*)
+
+      CONST HK_MSGCONTROL           =   8;
+      (* BOOL PROCEDURE [EXPENTRY] MsgControlHook(HAB hab;            ** installer's hab
+      *                               LONG/SHORT idContext;** who called hook
+      *                               HWND hwnd;          ** SEI window handle
+      *                               PSZ pszClassname;   ** window class name
+      *                               ULONG/USHORT usMsgclass;** interested msg class **
+      *                               LONG/SHORT idControl;** SMI_*
+      *                               PBOOL fSuccess);    ** mode already set *)
+
+      CONST HK_PLIST_ENTRY          =   9;
+      (* BOOL PROCEDURE [EXPENTRY] ProgramListEntryHook(HAB hab;      ** installer's hab
+      *                                     PPRFHOOKPARMS pProfileHookParams;** data
+      *                                     PBOOL fNoExecute);  ** cease hook processing*)
+
+      CONST HK_PLIST_EXIT            =  10;
+      (* BOOL PROCEDURE [EXPENTRY] ProgramListExitHook(HAB hab;       ** installer's hab
+      *                                    PPRFHOOKPARMS pProfileHookParams);** data*)
+
+      CONST HK_FINDWORD              =  11;
+      (* BOOL PROCEDURE [EXPENTRY] FindWordHook(usCodepage;           ** code page to use
+      *                             PSZ pszText;          ** text to break
+      *                             ULONG cb;             ** maximum text size
+      *                             ULONG ich;            ** break 'near' here
+      *                             PULONG pichStart;     ** where break began
+      *                             PULONG pichEnd;       ** where break ended
+      *                             PULONG pichNext);     ** where next word begin*)
+
+      CONST HK_CODEPAGECHANGED       =  12;
+      (* VOID PROCEDURE [EXPENTRY] CodePageChangedHook(HMQ hmq;       ** msg q handle
+      *                                    ULONG/USHORT usOldCodepage; ** old code page
+      *                                    ULONG/USHORT usNewCodepage);** new code page*)
+
+      CONST HK_WINDOWDC              =  15;
+      (* BOOL PROCEDURE [EXPENTRY] WindowDCHook(HAB  hab;             ** installer's hab
+      *                             HDC  hdc;             ** current hdc
+      *                             HWND hwnd;            ** current hwnd
+      *                             BOOL);                ** association flag *)
+
+      CONST HK_DESTROYWINDOW         =  16;
+      (* BOOL PROCEDURE [EXPENTRY] DestroyWindowHook (HAB  hab;       ** installer's hab
+      *                                   HWND hwnd;      ** destroyed win hwnd
+      *                                   ULONG Reserved);** association flag  *)
+
+      CONST HK_CHECKMSGFILTER        =  20;
+      (* BOOL PROCEDURE [EXPENTRY] CheckMsgFilteHook (HAB  hab;       ** installer's hab
+      *                                   PQMSG pQmsg;    ** p qmsg
+      *                                   ULONG/USHORT usFirst;  ** first msg
+      *                                   ULONG/USHORT usLast;   ** last msg
+      *                                   ULONG/USHORT fOptions);** flags  *)
+
+      CONST HK_MSGINPUT              =  21;
+      (* BOOL PROCEDURE [EXPENTRY] MsgInputHook (HAB  hab;          ** installer's hab
+      *                              PQMSG pQmsg;       ** p qmsg
+      *                              BOOL fSkip;        ** skip msg
+      *                              PBOOL pfNoRecord); ** journal record event *)
+
+      CONST HK_LOCKUP                =  23;
+      (* BOOL PROCEDURE [EXPENTRY] LockupHook (HAB  hab;              ** installer's hab
+      *                           HWND hwndLockupFrame); ** hwnd     *)
+
+      CONST HK_FLUSHBUF              =  24;
+      (* BOOL PROCEDURE [EXPENTRY] FlushBufHook (HAB  hab);           ** installer's hab *)
+
+      (*** Current message queue constant **********************************)
+      CONST HMQ_CURRENT         = HMQ(1);
+
+      (*** WH_MSGFILTER context codes **************************************)
+      CONST MSGF_DIALOGBOX          =   1;
+      CONST MSGF_MESSAGEBOX         =   2;
+      CONST MSGF_TRACK              =   8;
+      CONST MSGF_DDEPOSTMSG         =   3;
+
+      (*** HK_HELP Help modes **********************************************)
+      CONST HLPM_FRAME              = 0FFFFFFFFH;
+      CONST HLPM_WINDOW             = 0FFFFFFFEH;
+      CONST HLPM_MENU               = 0FFFFFFFDH;
+
+      (*** HK_SENDMSG structure ********************************************)
+      CONST PM_MODEL_1X    =  0;
+      CONST PM_MODEL_2X    =  1;
+
+      TYPE SMHSTRUCT = RECORD     (* smhs *)
+         mp2:    MPARAM;
+         mp1:    MPARAM;
+         msg:    ULONG;
+         hwnd:   HWND;
+         model:  ULONG;
+      END;
+      TYPE PSMHSTRUCT = POINTER TO SMHSTRUCT;
+
+      (*HK_LOADER context codes *)
+
+      CONST LHK_DELETEPROC          =   1;
+      CONST LHK_DELETELIB           =   2;
+      CONST LHK_LOADPROC            =   3;
+      CONST LHK_LOADLIB             =   4;
+
+      (*HK_MSGCONTROL context codes *)
+
+      CONST MCHK_MSGINTEREST        =   1;
+      CONST MCHK_CLASSMSGINTEREST   =   2;
+      CONST MCHK_SYNCHRONISATION    =   3;
+      CONST MCHK_MSGMODE            =   4;
+
+      (*HK_REGISTERUSERMSG conext codes *)
+
+      CONST RUMHK_DATATYPE          =   1;
+      CONST RUMHK_MSG               =   2;
+
+   #endif (* INCL_SAADEFS *)
+
+#endif (* INCL_WINHOOKS *)
+
+
+#if defined(INCL_WINTHUNKAPI)
+
+   PROCEDURE WinSetClassThunkProc(pszClassname : PCSZ   (* !!! *)
+                                 ;pfnThunkProc : PFN
+                                 ): BOOL;
+
+   PROCEDURE WinQueryClassThunkProc(pszClassname : PCSZ): PFN; (* !!! *)
+
+   PROCEDURE WinSetWindowThunkProc(hwnd         : HWND
+                                  ;pfnThunkProc : PFN
+                                  ): BOOL;
+
+   PROCEDURE WinQueryWindowThunkProc(hwnd : HWND): PFN;
+
+   PROCEDURE WinQueryWindowModel(hwnd : HWND): LONG;
+
+#endif (* INCL_WINTHUNKAPI *)
+
+(*
+* Include Shell API
+*)
+#if ! defined(INCL_SAADEFS)
+   #include <pmshl.hm>      (* OS/2 Shell definitions *)
+#endif (* !INCL_SAADEFS *)
+
+#if defined(INCL_WINCOUNTRY)
+
+   PROCEDURE WinQueryCp(hmq : HMQ): ULONG;
+
+   #if ! defined(INCL_SAADEFS)
+      PROCEDURE WinSetCp(hmq        : HMQ
+                        ;idCodePage : ULONG
+                        ): BOOL;
+
+      PROCEDURE WinQueryCpList(hab      : HAB
+                              ;ccpMax   : ULONG
+                              ;VAR rgcp : ARRAY OF ULONG
+                              ): ULONG;
+
+      PROCEDURE WinCpTranslateString(hab        : HAB
+                                    ;cpSrc      : ULONG
+                                    ;szSrc      : ARRAY OF CHAR
+                                    ;cpDst      : ULONG
+                                    ;cchDestMax : ULONG
+                                    ;VAR chDest : ARRAY OF CHAR
+                                    ): BOOL;
+
+      PROCEDURE WinCpTranslateChar(hab   : HAB
+                                  ;cpSrc : ULONG
+                                  ;chSrc : UCHAR
+                                  ;cpDst : ULONG
+                                  ): UCHAR;
+
+      PROCEDURE WinUpper(hab    : HAB
+                        ;idcp   : ULONG
+                        ;idcc   : ULONG
+                        ;VAR sz : ARRAY OF CHAR
+                        ): ULONG;
+
+      PROCEDURE WinUpperChar(hab  : HAB
+                            ;idcp : ULONG
+                            ;idcc : ULONG
+                            ;c    : ULONG
+                            ): ULONG;
+
+      PROCEDURE WinNextChar(hab  : HAB
+                           ;idcp : ULONG
+                           ;idcc : ULONG
+                           ;psz  : PCSZ
+                           ): PCSZ;
+
+      PROCEDURE WinPrevChar(hab      : HAB
+                           ;idcp     : ULONG
+                           ;idcc     : ULONG
+                           ;pszStart : PCSZ
+                           ;psz      : PCSZ
+                           ): PCSZ;
+
+      PROCEDURE WinCompareStrings(hab      : HAB
+                                 ;idcp     : ULONG
+                                 ;idcc     : ULONG
+                                 ;sz1      : ARRAY OF CHAR
+                                 ;sz2      : ARRAY OF CHAR
+                                 ;reserved : ULONG
+                                 ): ULONG;
+
+      CONST WCS_ERROR               =   0;
+      CONST WCS_EQ                  =   1;
+      CONST WCS_LT                  =   2;
+      CONST WCS_GT                  =   3;
+
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINCOUNTRY *)
+
+
+
+(* Heap Manager Interface declarations *)
+
+#if defined(INCL_WINHEAP)
+
+
+#endif  (* INCL_WINHEAP *)
+
+
+(*** Atom Manager Interface declarations *)
+
+#if defined(INCL_WINATOM)
+
+   #if ! defined(INCL_SAADEFS)
+      TYPE HATOMTBL = LHANDLE;
+      TYPE ATOM     = ULONG;
+
+      PROCEDURE WinQuerySystemAtomTable(): HATOMTBL;
+
+      PROCEDURE WinCreateAtomTable(cbInitial : ULONG
+                                  ;cBuckets  : ULONG
+                                  ): HATOMTBL;
+
+      PROCEDURE WinDestroyAtomTable(hAtomTbl : HATOMTBL): HATOMTBL;
+
+      PROCEDURE WinAddAtom(hAtomTbl    : HATOMTBL
+                          ;pszAtomName : PCSZ
+                          ): ATOM;
+
+      PROCEDURE WinFindAtom(hAtomTbl    : HATOMTBL
+                           ;pszAtomName : PCSZ
+                           ): ATOM;
+
+      PROCEDURE WinDeleteAtom(hAtomTbl : HATOMTBL
+                             ;atom     : ATOM
+                             ): ATOM;
+
+      PROCEDURE WinQueryAtomUsage(hAtomTbl : HATOMTBL
+                                 ;atom     : ATOM
+                                 ): ULONG;
+
+      PROCEDURE WinQueryAtomLength(hAtomTbl : HATOMTBL
+                                  ;atom     : ATOM
+                                  ): ULONG;
+
+      PROCEDURE WinQueryAtomName(hAtomTbl     : HATOMTBL
+                                ;atom         : ATOM
+                                ;pchBuffer    : PCSZ
+                                ;cchBufferMax : ULONG
+                                ): ULONG;
+
+      --CONST MAKEINTATOM(a)  ((PCH)MAKEULONG(a; = 0ffff))
+   #endif (* !INCL_SAADEFS *)
+
+#endif (* INCL_WINATOM *)
+
+
+#if defined(INCL_WINERRORS)
+      #include <pmerr.hm>
+
+   (* Error codes for debugging support                                       *)
+   (* = 01001 - = 01021; = 01034; = 01036 - = 01050 are reserved                   *)
+
+   CONST WINDBG_HWND_NOT_DESTROYED           = 01022H;
+   CONST WINDBG_HPTR_NOT_DESTROYED           = 01023H;
+   CONST WINDBG_HACCEL_NOT_DESTROYED         = 01024H;
+   CONST WINDBG_HENUM_NOT_DESTROYED          = 01025H;
+   CONST WINDBG_VISRGN_SEM_BUSY              = 01026H;
+   CONST WINDBG_USER_SEM_BUSY                = 01027H;
+   CONST WINDBG_DC_CACHE_BUSY                = 01028H;
+   CONST WINDBG_HOOK_STILL_INSTALLED         = 01029H;
+   CONST WINDBG_WINDOW_STILL_LOCKED          = 0102aH;
+   CONST WINDBG_UPDATEPS_ASSERTION_FAIL      = 0102bH;
+   CONST WINDBG_SENDMSG_WITHIN_USER_SEM      = 0102cH;
+   CONST WINDBG_USER_SEM_NOT_ENTERED         = 0102dH;
+   CONST WINDBG_PROC_NOT_EXPORTED            = 0102eH;
+   CONST WINDBG_BAD_SENDMSG_HWND             = 0102fH;
+   CONST WINDBG_ABNORMAL_EXIT                = 01030H;
+   CONST WINDBG_INTERNAL_REVISION            = 01031H;
+   CONST WINDBG_INITSYSTEM_FAILED            = 01032H;
+   CONST WINDBG_HATOMTBL_NOT_DESTROYED       = 01033H;
+   CONST WINDBG_WINDOW_UNLOCK_WAIT           = 01035H;
+
+   (* Get/Set Error Information Interface declarations *)
+
+   TYPE ERRINFO = RECORD   (* erri *)
+      cbFixedErrInfo: ULONG;
+      idError:        ERRORID;
+      cDetailLevel:   ULONG;
+      offaoffszMsg:   ULONG;
+      offBinaryData:  ULONG;
+   END;
+   TYPE PERRINFO = POINTER TO ERRINFO;
+
+   PROCEDURE WinGetLastError(hab : HAB): ERRORID;
+   PROCEDURE WinGetErrorInfo(hab : HAB): PERRINFO;
+   PROCEDURE WinFreeErrorInfo(perrinfo : PERRINFO): BOOL;
+
+#endif  (* INCL_WINERRORS *)
+
+#if ! defined(INCL_SAADEFS)
+   (* include WinSetErrorInfo *)
+   #if defined(INCL_WINSEI)
+      #if ! defined(SEI_PMWINP)
+         #define SEI_PMWIN
+         #include <pmsei.hm>
+      #endif
+   #endif
+#endif
+
+#if ! defined(INCL_SAADEFS)
+   #if  defined(INCL_WINDDE)
+
+      (*
+      * DDE standard system topic and item strings
+      *)
+      CONST SZDDESYS_TOPIC                =  "System";
+      CONST SZDDESYS_ITEM_TOPICS          =  "Topics";
+      CONST SZDDESYS_ITEM_SYSITEMS        =  "SysItems";
+      CONST SZDDESYS_ITEM_RTNMSG          =  "ReturnMessage";
+      CONST SZDDESYS_ITEM_STATUS          =  "Status";
+      CONST SZDDESYS_ITEM_FORMATS         =  "Formats";
+      CONST SZDDESYS_ITEM_SECURITY        =  "Security";
+      CONST SZDDESYS_ITEM_ITEMFORMATS     =  "ItemFormats";
+      CONST SZDDESYS_ITEM_HELP            =  "Help";
+      CONST SZDDESYS_ITEM_PROTOCOLS       =  "Protocols";
+      CONST SZDDESYS_ITEM_RESTART         =  "Restart";
+
+      (*
+      * Dynamic Data Exchange (DDE) Structure Declarations
+      *)
+      TYPE CONVCONTEXT = RECORD   (* cctxt *)
+         cb:          ULONG;      (* sizeof(CONVCONTEXT) *)
+         fsContext:   ULONG;
+         idCountry:   ULONG;
+         usCodepage:  ULONG;
+         usLangID:    ULONG;
+         usSubLangID: ULONG;
+      END;
+      TYPE PCONVCONTEXT = POINTER TO CONVCONTEXT;
+
+      CONST DDECTXT_CASESENSITIVE    = 00001H;
+
+      TYPE DDEINIT = RECORD   (* ddei *)
+         cb:              ULONG;  (* sizeof(DDEINIT) *)
+         pszAppName:      PSZ;
+         pszTopic:        PSZ;
+         offConvContext:  ULONG;
+      END;
+      TYPE PDDEINIT = POINTER TO DDEINIT;
+
+      TYPE DDESTRUCT = RECORD   (* dde *)
+         cbData:        ULONG;
+         fsStatus:      USHORT;
+         usFormat:      USHORT;
+         offszItemName: USHORT;
+         offabData:     USHORT;
+      END;
+      TYPE PDDESTRUCT = POINTER TO DDESTRUCT;
+
+      (* DDE constants for wStatus field *)
+      CONST DDE_FACK                   = 00001H;
+      CONST DDE_FBUSY                  = 00002H;
+      CONST DDE_FNODATA                = 00004H;
+      CONST DDE_FACKREQ                = 00008H;
+      CONST DDE_FRESPONSE              = 00010H;
+      CONST DDE_NOTPROCESSED           = 00020H;
+      CONST DDE_FRESERVED              = 000C0H;
+      CONST DDE_FAPPSTATUS             = 0FF00H;
+
+      (* old DDE public formats - new ones are CF_ constants *)
+
+      CONST DDEFMT_TEXT                = 00001H;
+
+      (* Dynamic Data Exchange (DDE) Routines *)
+
+      PROCEDURE WinDdeInitiate(hwndClient  : HWND
+                              ;szAppName   : ARRAY OF CHAR
+                              ;szTopicName : ARRAY OF CHAR
+                              ;VAR cctxt   : CONVCONTEXT
+                              ): BOOL;
+
+      PROCEDURE WinDdeRespond(hwndClient  : HWND
+                             ;hwndServer  : HWND
+                             ;szAppName   : ARRAY OF CHAR
+                             ;szTopicName : ARRAY OF CHAR
+                             ;VAR cctxt   : CONVCONTEXT
+                             ): MRESULT;
+
+      PROCEDURE WinDdePostMsg(hwndTo    : HWND
+                             ;hwndFrom  : HWND
+                             ;wm        : ULONG
+                             ;VAR ddest : DDESTRUCT
+                             ;flOptions : ULONG
+                             ): BOOL;
+
+      CONST DDEPM_RETRY     = 000000001H;
+      CONST DDEPM_NOFREE    = 000000002H;
+
+      (* Dynamic Data Exchange (DDE) Messages *)
+
+      CONST WM_DDE_FIRST               = 000A0H;
+      CONST WM_DDE_INITIATE            = 000A0H;
+      CONST WM_DDE_REQUEST             = 000A1H;
+      CONST WM_DDE_ACK                 = 000A2H;
+      CONST WM_DDE_DATA                = 000A3H;
+      CONST WM_DDE_ADVISE              = 000A4H;
+      CONST WM_DDE_UNADVISE            = 000A5H;
+      CONST WM_DDE_POKE                = 000A6H;
+      CONST WM_DDE_EXECUTE             = 000A7H;
+      CONST WM_DDE_TERMINATE           = 000A8H;
+      CONST WM_DDE_INITIATEACK         = 000A9H;
+      CONST WM_DDE_LAST                = 000AFH;
+
+      (* DDE helper macros *)
+
+      --CONST DDES_PSZITEMNAME(pddes) \
+      --(((PSZ)pddes) + ((PDDESTRUCT)pddes)->offszItemName)
+
+      --CONST DDES_PABDATA(pddes)       \
+      --(((PBYTE)pddes) + ((PDDESTRUCT)pddes)->offabData)
+
+      --CONST DDEI_PCONVCONTEXT(pddei)        \
+      --((PCONVCONTEXT)((PBYTE)pddei + pddei->offConvContext))
+
+
+   #endif (* INCL_WINDDE *)
+#endif (* !INCL_SAADEFS *)
+
+#if defined(INCL_WINWINDOWMGR)
+   CONST WM_QUERYCONVERTPOS         = 000b0H;   (* WM_DBCSFIRST *)
+
+   (* Return values for WM_QUERYCONVERTPOS *)
+   CONST QCP_CONVERT                = 00001H;
+   CONST QCP_NOCONVERT              = 00000H;
+
+#endif  (* INCL_WINWINDOWMGR *)
+
+#if defined(INCL_WINHELP)
+   #if ! defined(PMHELP_INCLUDED)
+      #include <pmhelp.hm>
+   #endif
+#endif (* INCL_WINHELP *)
+
+(*Load/Delete Library/Procedure *)
+
+TYPE HLIB  = HMODULE;
+TYPE PHLIB = PHMODULE;
+
+#if defined(INCL_WINLOAD)
+   PROCEDURE WinDeleteProcedure(hab     : HAB
+                               ;wndproc : PFNWP
+                               ): BOOL;
+
+   PROCEDURE WinDeleteLibrary(hab       : HAB
+                             ;libhandle : HLIB
+                             ): BOOL;
+
+   PROCEDURE WinLoadProcedure(hab       : HAB
+                             ;libhandle : HLIB
+                             ;procname  : ARRAY OF CHAR
+                             ): PFNWP;
+
+   PROCEDURE WinLoadLibrary(hab     : HAB
+                           ;libname : ARRAY OF CHAR
+                           ): HLIB;
+#endif (* INCL_WINLOAD *)
+
+#if ! defined(INCL_SAADEFS)
+   #if defined(INCL_WINDESKTOP)
+
+      (*** Desktop API definitions ***)
+
+      TYPE DESKTOP = RECORD         (* dsk *)
+         cbSize:     ULONG;
+         hbm:        HBITMAP;
+         x:          LONG;
+         y:          LONG;
+         fl:         ULONG;
+         lTileCount: LONG;
+         szFile:     ARRAY [0..259] OF CHAR;
+      END;
+      TYPE PDESKTOP = POINTER TO DESKTOP;  (* pdsk *)
+
+      PROCEDURE WinSetDesktopBkgnd(hwndDesktop : HWND
+                                  ;VAR dskNew  : DESKTOP
+                                  ): HBITMAP;
+
+      PROCEDURE WinQueryDesktopBkgnd(hwndDesktop : HWND
+                                    ;VAR dsk     : DESKTOP
+                                    ): BOOL;
+
+      CONST SDT_DESTROY         = 00001H;
+      CONST SDT_NOBKGND         = 00002H;
+      CONST SDT_TILE            = 00004H;
+      CONST SDT_SCALE           = 00008H;
+      CONST SDT_PATTERN         = 00010H;
+      CONST SDT_CENTER          = 00020H;
+      CONST SDT_RETAIN          = 00040H;
+      CONST SDT_LOADFILE        = 00080H;
+
+   #endif  (* INCL_WINDESKTOP *)
+#endif
+
+#if ! defined(INCL_SAADEFS)
+   #if defined(INCL_WINPALETTE)
+
+      (*** Palette Manager API definitions ***)
+
+      PROCEDURE WinRealizePalette(hwnd     : HWND
+                                 ;hps      : HPS
+                                 ;VAR cclr : ULONG
+                                 ): LONG;
+
+   #endif  (* INCL_WINPALETTE *)
+#endif
+
+#if defined(INCL_REMAPDLL)
+   CONST STR_DLLNAME = "keyremap";
+#endif (*INCL_REMAPDLL*)
+
+#if defined(INCL_NLS)
+   CONST WM_DBCSFIRST               = 000b0H;
+   CONST WM_DBCSLAST                = 000cfH;
+
+   #include <os2nls.hm>
+#endif (* INCL_NLS *)
+
+
+(**************************** end of file **********************************)

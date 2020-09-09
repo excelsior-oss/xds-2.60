@@ -1,0 +1,63 @@
+(* Copyright (c) Excelsior LLC, 2002.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] spawn;
+
+IMPORT SYSTEM;
+
+FROM SYSTEM IMPORT ADDRESS, CARD16;
+FROM types IMPORT pid_t;
+FROM xmRTS IMPORT X2C_pCHAR;
+
+
+CONST
+  _SIGSET_NWORDS = (1024 DIV (8 * 4));
+  
+TYPE
+  sigset_t = ARRAY[0.._SIGSET_NWORDS-1] OF CARDINAL;
+
+  sched_param = RECORD
+    __sched_priority : INTEGER;
+  END;
+
+  (* Data structure to contain attributes for thread creation. *)
+  posix_spawnattr_t = RECORD
+    __flags : CARD16;
+    __pgrp : pid_t;
+    __sd : sigset_t;
+    __ss : sigset_t;
+    __sp : sched_param;
+    __policy : INTEGER;
+    __pad : ARRAY[0..15] OF INTEGER;
+  END;
+
+  (* Data structure to contain information about the actions to be
+     performed in the new process with respect to file descriptors. *)
+  posix_spawn_file_actions_t = RECORD
+    __allocated : INTEGER;
+    __used : INTEGER;
+    __actions : ADDRESS;
+    __pad : ARRAY[0..15] OF INTEGER;
+  END;
+  
+  p_posix_spawn_file_actions_t = POINTER TO posix_spawn_file_actions_t;
+  p_posix_spawnattr_t = POINTER TO posix_spawnattr_t;
+  X2C_ppCHAR = POINTER TO X2C_pCHAR;
+
+
+(* Spawn a new process executing PATH with the attributes describes in *ATTRP.
+   Before running the process perform the actions described in FILE-ACTIONS. *)
+PROCEDURE posix_spawn (VAR pid : pid_t;
+                       path : X2C_pCHAR;
+                       file_actions : p_posix_spawn_file_actions_t;
+                       attrp : p_posix_spawnattr_t;
+                       argv, envp : X2C_ppCHAR) : INTEGER;
+
+(* Initialize data structure with attributes for `spawn' to default values. *)
+PROCEDURE posix_spawnattr_init (VAR attr : posix_spawnattr_t) : INTEGER;
+
+
+END spawn.

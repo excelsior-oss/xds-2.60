@@ -1,0 +1,249 @@
+\ifenglish
+\section{Message Filters}
+\else
+\section{Фильтры сообщений}
+\fi
+\public{MessageFilters}
+
+\ifenglish
+When IDE calls external tools, it must receive error and
+warning messages with their position information (file name, line and column)
+to display messages in a user-friendly form and be able to navigate among
+them.
+
+XDS IDE has built-in interface for tools to transmit error messages. This
+interface is based on writing of special character sequences in tool's
+standard output. This interface provides tools with enhanced capabilities such
+as displaying the progress indicator. Most tools that are shipped with XDS
+use this interface. Programmers writing external tools for XDS are encouraged
+to use this interface that is available through {\bf xShell} module.
+
+\else
+Когда IDE вызывает внешние утилиты, она должна получать сообщения об ошибках
+и предупреждениях и информацию об их расположении (имя файла, строку и столбец),
+чтобы отображать сообщения в дружественной пользователю форме и быть в 
+состоянии переключаться между ними.
+
+В XDS IDE есть встроенный интерфейс позволяющий утилитам передавать сообщения об
+ошибках. Этот интерфейс основан на записи последовательностей специальных 
+символов в стандартный вывод утилиты. Этот интерфейс обеспечивает утилиты 
+расширенными возможностями, такими как отображение индикаторов хода работы.
+Большинство утилит, поставляемых с XDS, используют этот интерфейс. Программисты,
+пишушие для XDS внешние утилиты, могут использовать этот интерфейс с помощью
+модуля {\bf xShell}.	  
+\fi
+\ifenglish
+However, if the tool you intend to use comes from third-party vendor the
+only way to get error messages is to parse its output looking for lines
+of specific format. This format depends on the tool used. For example MASM's
+output looks like this:
+\else
+Однако, если утилита которую вы намереваетесь использовать происходит из 
+третьей фирмы, то единственный способ получить сообщения об ошибках -- это
+проанализировать ее вывод, отыскивая строки специального формата. Этот
+формат зависит от используемой утилиты. К примеру, вывод MASM может выглядеть
+так:  
+\fi
+
+\begin{verbatim}test.asm(10): error A2009: Symbol not defined: jopa \end{verbatim}
+
+\ifenglish
+while TopSpeed's output looks like this:
+\else
+В то же время, вывод TopSpeed выглядит так:
+\fi
+\verb'(TEST.C 5,3) Error: Variable "x" not declared'
+
+\ifenglish
+It happens that different tools share same message format.
+For example, {\bf MASM} format was once very popular.
+So instead of defining the format for each tool, XDS uses
+{\bf message filters schemes} also called just {\bf message filters}.
+
+Each filter is stored in the separate file. By default when you create a filter
+the IDE assigns to it a file with the same name as the filter's and with
+extension "{\bf.fil}", residing in the directory XDS INI file was read from.
+
+Each filter consists of several patterns. Each pattern consists of restricted form
+or \ref[regular expression]{MessageFiltersRegExp} and the \ref[message class]{MessageClasses}.
+When external tool is called,
+each line of its standard output is matched against all the patterns in a filter,
+If the line matches some pattern it is considered a message of a class assigned to
+the pattern and is transferred to the message window.
+
+Note that a line can match to more than one pattern. Since the patterns are
+tried sequentially it is recommended to place most general patterns at the
+end of pattern list.
+\else
+Случается, что у разных утилит оказывается один и тот же формат сообщений.
+Например, когда-то был очень популярен формат {\bf MASM}.
+Так что, вместо того чтобы определять формат для каждой утилиты,
+XDS использует {\bf системы фильтров сообщений}, называемые также просто
+{\bf фильтрами сообщений}.
+
+Каждый фильтр хранится в отдельном файле. По умолчанию, когда вы создаете  
+фильтр, IDE приписывает его файлу с тем же именем, что и у фильтра, и с 
+расширением "{\bf.fil}", располагая его в той директории, откуда был прочитан 
+файл XDS INI.
+
+Каждый фильтр состоит из нескольких моделей. Каждая модель состоит из специальной
+формы или \ref[регулярного выражения]{MessageFiltersRegExp} и \ref[класса сообщений]{MessageClasses}.
+Когда вызывается внешняя утилита, каждая строка ее стандартного вывода сопоставляется
+со всеми моделями в фильтре. Если строка удовлетворяет некоторой модели, то она 
+считается сообщением приписанного модели класса и выводится в окно сообщений.
+
+Заметьте, что строка может удовлетворять более чем одной модели. Так так модели
+перебираются последовательно, рекомендуется помещать наиболее общие модели в 
+конце списка.
+\fi
+\ifenglish
+\subsection{Message Filters regular expressions}
+\else
+\subsection{регулярные выражения фильтров сообщений}
+\fi
+\public{MessageFiltersRegExp}
+
+\ifenglish
+The regular expressions used in message filters are the character strings
+where characters are matched literally to those of a line being tested
+except for following character sequences that have special meaning:
+\else
+Регулярные выражения, используемые в фильтрах сообщений, -- это символьные 
+строки, где символы в точности совпадают с содержимым проверяемой строки,
+за исключением следующих последовательностей, которые имеют особый смысл:
+\fi
+{\bf ?} \ifenglish
+        -- any character
+        \else
+        -- любой символ
+        \fi
+{\bf *} \ifenglish
+        -- any character sequence (possibly null)
+        \else
+        -- любая последовательность символов (возможно, пустая)
+        \fi
+{\bf \&file} 
+           \ifenglish
+           -- any non-null character sequence specifying file name
+           \else
+            -- любая непустая последовательность символов, задающая имя файла
+           \fi
+{\bf \&line} \ifenglish
+             -- sequence of digits specifying line number
+             \else
+             -- последовательность цифр, задающая номер строки
+             \fi
+{\bf \&col} \ifenglish
+            -- sequence of digits specifying column number
+            \else
+            -- последовательность цифр, задающая номер столбца
+            \fi
+{\bf \&line0} 
+            \ifenglish  
+            -- sequence of digits specifying zero-based line number
+            \else
+             -- последовательность цифр, задающая номер строки (нумерация 
+                 начинается с нуля)
+            \fi
+{\bf \&col0} \ifenglish
+             -- sequence of digits specifying zero-based column number
+             \else
+              -- последовательность цифр, задающая номер столбца  (нумерация
+                начинается с нуля)
+             \fi
+{\bf \&num} 
+            \ifenglish
+            -- sequence of digits
+            \else
+            -- последовательность цифр
+            \fi
+{\bf \&body} \ifenglish
+             -- any character sequence specifying message body
+             \else
+             -- любая последовательность символов, задающая тело сообщения 
+             \fi
+{\bf \bs{}?} \ifenglish
+             -- literal "?"
+             \else
+             -- литера "?"
+             \fi
+{\bf \bs{}*} \ifenglish
+             -- literal "*"
+             \else
+             -- литера "?"
+             \fi
+{\bf \bs\&} \ifenglish
+            -- literal "\bs\&"
+            \else
+            -- литера "\bs\&
+            \fi
+{\bf \bs\bs} \ifenglish
+             -- literal "\bs"
+             \else
+             -- литера "\bs"
+             \fi
+{\bf Examples:}
+
+\ifenglish
+One of TopSpeed message patterns looks like this:
+\else
+Так выглядит одна из моделей сообщений TopSpeed:
+\fi
+\verb'(&file &line,&column) Error:&body'
+
+\ifenglish
+MASM message pattern looks like this:
+\else
+Так выглядит модель сообщений MASM:
+\fi
+\verb'&file(&line): error*: &body'
+
+\ifenglish
+\subsection{Message Classes}
+\else
+\subsection{Классы сообщений}
+\fi
+\public{MessageClasses}
+
+\ifenglish
+Currently there are five message classes defined in XDS:
+
+{\bf Text} -- message that doesn't contain any position information, such as
+"Now compiling file ququ.mod". This message is inserted into message window
+but nothing happens if you click on it.
+
+{\bf Notice} -- message that contains position information but isn't considered
+neither warning nor error. For example, XDS History utility (his) uses this
+message to show run-time stack trace.
+
+{\bf Warning} -- a warning. Compile or make with warnings is considered successful
+but it is recommended to look at warnings because they often indicate some
+logical errors in a program. It is usually possible to turn off warnings.
+
+{\bf Error} -- a syntax error detected; compile or make is considered unsuccessful
+if there are any
+
+{\bf Severe Error} -- some fatal thing happened such as absence of vital components
+of program or tool itself, or exceeding of error limit etc. Usually there's only
+one severe error, and it is the last one.
+\else
+На настоящий момент в XDS определены пять классов сообщений:
+{\bf Text} -- сообщение, которое не содержит местоуказания, вроде
+"Now compiling file ququ.mod". Это сообщение помещается в окно сообщений,
+но когда вы щелкаете по нему, ничего не происходит. 
+
+{\bf Notice} -- сообщение, которое содержит местоуказание, но не связано ни с  
+предупреждением, ни с ошибкой. Например, утилита XDS History (his) использует
+это сообщение, чтобы отображать во время запуска содержимое стека.
+
+{\bf Warning} -- предупреждение. Компиляция или сборка с предупреждениями считается
+успешной, но на них рекомендуется взглянуть, потому что они часто указывают
+на логические ошибки в программе. Обычно есть возможность обойтись без предупреждений.
+
+{\bf Error} -- обнаружена синтаксическая ошибка; если такие есть, то компиляция или 
+сборка считаются неудачными.
+
+{\bf Severe Error} -- случилось нечто фатальное, такое, как отсутствие жизненно
+важных компонент программы или самой утилиты, или превышение лимита ошибок и т.д.
+Обычно имеется лишь одна такая ошибка, она же -- последняя.
+\fi

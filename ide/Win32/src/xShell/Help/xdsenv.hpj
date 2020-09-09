@@ -1,0 +1,29 @@
+; This file is maintained by HCW. Do not modify this file directly.
+
+[OPTIONS]
+HCW=0
+COMPRESS=12 Hall Zeck
+ERRORLOG=.\xdsenv.hlg
+LCID=0x409 0x0 0x0 ;U.S. English
+REPORT=Yes
+CONTENTS=title
+TITLE=XDS Environment Help
+COPYRIGHT=XDS on-line help is copyright © 1999-2011 Excelsior, LLC.
+CITATION=Copyright © 1999-2011 Excelsior, LLC.
+HLP=.\xdsenv.hlp
+
+[FILES]
+.\xdsenv.rtf
+
+[MAP]
+#define IDCANCEL 2
+#define IDHELP 9
+#define IDOK 1
+#include ..\src\reshelp.h
+#include ..\src\sc_cmd.h
+
+[WINDOWS]
+main="",(511,0,512,768),60416,,(r12632256)
+
+[CONFIG]
+BrowseButtons()

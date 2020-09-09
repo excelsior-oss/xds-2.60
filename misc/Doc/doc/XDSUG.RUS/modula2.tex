@@ -1,0 +1,2752 @@
+\chapter{\XDS{} Модула-2}\label{m2}\index{Модула-2}
+
+В этой главе описаны детали языка
+\mt{}, специфические для данной реализации. В стандартном режиме
+\footnote{Когда выключены опции \OERef{M2EXTENSIONS} и \OERef{M2ADDTYPES}} 
+\xds{} \mt{} соответствует Международному Стандарту ISO
+(см.в \ref{m2:ISO} декларацию совместимости и некоторые ограничения).
+Правила совместимости типов изложены в \ref{m2:ISO:comp}. 
+В разделе \ref{m2:ISO:features} описаны различия между 
+ISO \mt{} и языком, описанным в 4-м издании книги Н.Вирта
+"Программирование на Модуле-2" \cite{PIM}.
+Расширения языка описаны в \ref{m2:ext}.
+
+\section{Соответствие ISO стандарту}\label{m2:ISO}
+
+\xds{} \mt{} почти полностью соответствует требованиям стандарта
+ISO 10514. Несоответствия следующие:
+\begin{itemize}
+\item Текущая версия содержит не все библиотеки.
+\item В текущей версии есть некоторые ограничения при использовании
+новых языковых конструкций.
+\end{itemize}
+Подробно об этом в см. в главе \ref{limits}.
+
+\subsection{Порядок деклараций}\label{m2:dcl:order}
+
+\xds{} компилятор с языка \mt{} --- однопроходный.
+Это, в частности, означает, что все идентификаторы должны
+быть описаны перед использованием.
+Такой подход ({\em описание-перед-использованием}) вполне
+согласуется с Международным Стандартом.
+В многопроходных реализациях может быть использован
+альтернативный подход 
+({\em описание-перед-использованием-в-описаниях}).
+
+Для ссылок на процедуру, описание которой находится в тексте позже,
+необходимо использовать описание FORWARD.
+
+\Example
+\begin{verbatim}
+PROCEDURE a(x: INTEGER); FORWARD;
+(* FORWARD-описание *)
+
+PROCEDURE b(x: INTEGER);
+BEGIN
+  a(x-1);
+END b;
+
+PROCEDURE a(n: INTEGER);
+(* собственно описание процедуры *)
+BEGIN
+  b(n-1);
+END a;
+\end{verbatim}
+
+Чтобы однопроходные и многопроходные реализации были совместимы
+по текстам, стандарт требует, чтобы многопроходные реализации
+воспринимали и корректно обрабатывали директиву
+FORWARD.
+
+%\section{Черты, обусловленные реализацией}
+%
+% Значение пустой строки --- 0C.
+
+\section{Новые черты языка}\label{m2:ISO:features}
+
+Язык, описанный в Международном Стандарте, во многом отличается
+от языка, описанного в 4-м издании книги Н.Вирта
+"Программирование на Модуле-2" \cite{PIM}. Важнейшие 
+нововведения --- следующие:
+\begin{itemize}
+\item комплексные числа
+\item финализация модулей
+\item обработка исключений
+\item конструкторы массивов и записей
+\item четыре новых системных модуля
+\item стандартные библиотеки
+\end{itemize}
+
+{\bf Замечание:} Системные модули (кроме модуля {\tt SYSTEM})
+не включены в компилятор и обрабатываются как отдельные модули.
+
+\subsection{Лексика}
+
+В ISO \mt{} добавлены новые ключевые слова
+\ifonline\else (таблица \ref{table:m2:ISO:keywords},
+стр. \pageref{table:m2:ISO:keywords})\fi
+и предзаданные идентификаторы
+\ifonline\else (таблица \ref{table:m2:ISO:pervasive},
+стр. \pageref{table:m2:ISO:pervasive})\fi,
+а также альтернативные представления некоторых символов
+\ifonline\else(таблица \ref{table:m2:ISO:alt},
+стр. \pageref{table:m2:ISO:alt})\fi.
+Также зафиксирован синтаксис директив, включенных в текст (или прагм):
+\begin{verbatim}
+pragma = "<*" pragma_body "*>"
+\end{verbatim}
+Стандарт не фиксирует синтаксиса для \verb|pragma_body|.
+В \XDS{} прагмы используются для установки параметров компилятора
+и для контроля за исходным текстом (условная компиляция).
+Подробно см. в \ref{m2:pragmas:inline}.
+
+\begin{table}[bht]
+\footnotesize
+\begin{center}
+\begin{tabular}{p{3.4cm}p{3.4cm}p{3.4cm}}
+AND             & ARRAY                     &       BEGIN           \\
+BY              & CASE                      &       CONST           \\
+DEFINITION      & DIV                       &       DO              \\
+ELSE            & ELSIF                     &       END             \\
+EXIT            & EXCEPT (\ref{m2:ISO:exc}) &       EXPORT          \\
+FINALLY (\ref{m2:ISO:final}) & FOR          &       FORWARD (\ref{m2:dcl:order})  \\
+FROM            & IF                        &       IMPLEMENTATION  \\
+IMPORT          & IN                        &       LOOP            \\
+MOD             & MODULE                    &       NOT             \\
+OF              & OR                        &       PACKEDSET (\ref{m2:ISO:sets}) \\
+PROCEDURE       & QUALIFIED                 &       RECORD          \\
+REM (\ref{m2:ISO:rem})  & RETRY (\ref{m2:ISO:exc}) &       REPEAT          \\
+RETURN          & SET                       &       THEN            \\
+TO              & TYPE                      &       UNTIL           \\
+VAR             & WHILE                     &       WITH            \\
+\end{tabular}
+\end{center}
+\caption{Ключевые слова Модулы-2}\label{table:m2:ISO:keywords}
+\end{table}
+
+\begin{table}[hbtp] \tt
+\footnotesize
+\begin{center}
+\begin{tabular}{p{5.0cm}p{5.0cm}}
+ABS             & BITSET    \\
+BOOLEAN         & CARDINAL  \\
+CAP             & CHR             \\
+CHAR            & COMPLEX (\ref{m2:ISO:complex})  \\
+CMPLX (\ref{m2:ISO:complex})  &  DEC             \\
+DISPOSE         & EXCL            \\
+FALSE           & FLOAT     \\
+HALT            & HIGH      \\
+IM (\ref{m2:ISO:complex})       & INC             \\
+INCL            & INT (\ref{m2:ISO:conv})      \\
+INTERRUPTIBLE (\ref{m2:ISO:prot})  & INTEGER   \\
+LENGTH (\ref{m2:ISO:strings})   & LFLOAT (\ref{m2:ISO:conv})         \\
+LONGCOMPLEX (\ref{m2:ISO:complex})    & LONGREAL  \\
+MAX             & MIN             \\
+NEW             & NIL             \\
+ODD             & ORD             \\
+PROC            & PROTECTION (\ref{m2:ISO:prot})     \\
+RE (\ref{m2:ISO:complex})       & REAL            \\
+SIZE            & TRUE      \\
+TRUNC           & UNINTERRUPTIBLE (\ref{m2:ISO:prot}) \\
+VAL              \\
+\end{tabular}
+\end{center}
+\caption{Предзаданные идентификаторы Модулы-2}\label{table:m2:ISO:pervasive}
+\end{table}
+
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|c|l|c|}
+\hline
+\bf Символ  & \bf Значение   & \bf Альтернатива  \\ \hline
+  \verb+[+  & откр. квадратная скобка  & \verb+(!+        \\
+  \verb+]+  & закр. квадратная скобка  & \verb+!)+        \\
+  \verb+{+  & откр. фигурная скобка    & \verb+(:+        \\
+  \verb+}+  & закр. фигурная скобка    & \verb+:)+        \\
+  \verb+|+  & разделитель в CASE       & \verb+!+         \\
+  \verb+^+  & разыменование            & \verb+@+         \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Альтернативное написание символов в Модуле-2}\label{table:m2:ISO:alt}
+\end{table}
+
+\subsection{Комплексные типы}\label{m2:ISO:complex}
+\index{Модула-2!комплексные типы}
+\index{COMPLEX}\index{комплексные числа}
+
+Типы COMPLEX и LONGCOMPLEX используются для представления комплексных чисел.
+Они различаются областью значений и точностью.
+Тип COMPLEX определен как пара (REAL,REAL), а LONGCOMPLEX ---
+как пара значений типа LONGREAL.
+
+Специального обозначения для комплексных констант не вводится.
+Комплексное значение выдает стандартная функция
+{\tt CMPLX} с двумя вещественными аргументами.
+Если оба аргумента у {\tt CMPLX} --- вещественные константы, то
+результат --- комплексная константа.
+\begin{verbatim}
+CONST i = CMPLX(0.0,1.0);
+\end{verbatim}
+
+Если оба аргумента типа REAL, или один типа
+REAL, а другой --- вещественная константа, то результат
+имеет тип COMPLEX. 
+Если оба аргумента типа LONGREAL, или один типа
+LONGREAL, а другой --- вещественная константа, то результат имеет тип
+LONGCOMPLEX.
+Все допустимые типы аргументов и тип результата приведены в таблице:
+\begin{center}
+\small \tt
+\begin{tabular}{|l|lll|}\hline
+              & REAL     & LONGREAL    & вещ.константа    \\ \hline
+REAL          & REAL     & ошибка      & COMPLEX          \\
+LONGREAL      & ошибка   & LONGCOMPLEX & LONGCOMPLEX      \\
+вещ.константа & COMPLEX  & LONGCOMPLEX & компл.константа \\ \hline
+\end{tabular}
+\end{center}
+
+Стандартные функции {\tt RE} и {\tt IM} выдают вещественную и 
+мнимую часть значения комплексного типа. Обе функции имеют один
+аргумент. Если он типа COMPLEX, то функции возвращают результат типа
+REAL; если аргумент типа LONGCOMPLEX, то результат --- типа
+LONGREAL; если аргумент --- комплексная константа, то результат ---
+вещественная константа.
+\begin{verbatim}
+CONST one = IM(CMPLX(0.0,1.0));
+\end{verbatim}
+
+Имеется четыре арифметических операции с операндами комплексного типа:
+сложение (\verb|+|), вычитание (\verb|-|), умножение (\verb|*|) и 
+деление (\verb|/|). 
+Возможные комбинации типов операндов и тип результата 
+приведены в таблице:
+\begin{center}
+\small \tt
+\begin{tabular}{|l|lll|}\hline
+                 & COMPLEX  & LONGCOMPLEX & компл. константа \\ \hline
+COMPLEX          & COMPLEX  & ошибка      & COMPLEX          \\
+LONGCOMPLEX      & ошибка   & LONGCOMPLEX & LONGCOMPLEX      \\
+компл. константа & COMPLEX  & LONGCOMPLEX & компл. константа \\ \hline
+\end{tabular}
+\end{center}
+
+Имеется две унарных операции с операндом комплексного типа:
+сложение (\verb|+|) и вычитание (\verb|-|). Тип результата 
+совпадает с типом операнда.
+
+Для операндов комплексного типа имеется две операции сравнения:
+равенство и неравенство.
+
+\Example
+\begin{verbatim}
+PROCEDURE abs(z: COMPLEX): REAL;
+BEGIN
+  RETURN RealMath.sqrt(RE(z)*RE(z)+IM(z)*IM(z))
+END abs;
+\end{verbatim}
+
+\subsection{Множества и упакованные множества}\label{m2:ISO:sets}
+\index{Модула-2!PACKEDSET}
+
+Множество и упакованное множество (упакмножество) 
+\footnote{Тип "упакмножество" -- нововведение стандарта.} 
+это типы, множество значений которых есть множество всех
+подмножеств ассоциированного натурального типа, %??? ordinal
+называемого {\em базовым типом} типа множества.
+\begin{verbatim}
+SetType       = SET OF Type;
+PackedsetType = PACKEDSET OF Type;
+\end{verbatim}
+
+Международный Стандарт не оговаривает специального представления для
+типов множества. Обычно упакмножество представляется последовательностью 
+битов, зависящей от данной архитектуры. Стандартный тип 
+BITSET есть предопределенный тип упакмножества.
+
+В текущей реализации \xds{} не делает различий между типами
+множества и упакмножества. Базовый тип должен иметь не более
+256 элементов. 
+
+\Example
+\begin{verbatim}
+TYPE
+  CharSet = SET OF CHAR;
+  LongSet = PACKEDSET OF [-127..128];
+\end{verbatim}
+
+Все операции над множествами, такие, как объединение
+(\verb|+|), разность (\verb|-|),
+пересечение (\verb|*|) и симметрическая разность (\verb|/|),
+применимы к аргументам типов множества и упакмножества.
+
+\Example
+\begin{verbatim}
+   VAR letters, digits, alphanum: CharSet;
+   ...
+   letters  := CharSet{'a'..'z','A'..'Z'};
+   digits   := CharSet{'0'..'9'};
+   alphanum := letters + digits;
+\end{verbatim}
+
+\subsection{Строки}\label{m2:ISO:strings}
+\index{Модула-2!конкатенация строк}
+
+Для операндов --- константных 
+строк определена операция конкатенации,
+обозначаемая символом \verb|"+"|. 
+
+{\bf Замечание:} константный номер символа
+(напр. 15C) рассматривается как константная строка длины 1.
+Пустая строка совместима с типом
+CHAR и имеет значение, равное символу конца строки (0C).
+
+\Example
+\begin{verbatim}
+CONST
+  CR = 15C;
+  LF = 12C;
+  LineEnd = CR + LF;
+  Greeting = "hello " + "world" + LineEnd;
+\end{verbatim}
+
+Введена новая стандартная функция LENGTH, выдающая длину аргумента
+строкового типа.
+
+\begin{verbatim}
+PROCEDURE LENGTH(s: ARRAY OF CHAR): CARDINAL;
+\end{verbatim}
+
+\subsection{Конструкторы}\label{m2:ISO:aggregates}
+\index{Модула-2!конструкторы}
+\index{конструкторы}
+
+Конструктор --- это выражение, задающее значение типа массива,
+записи или множества. В конструкторах массивов и записей
+задается список значений, т.наз. {\em структурных компонент}, 
+определяющих значения всех элементов массива или всех полей записи.
+Конструктор множества задает список всех элементов этого множества.
+
+\begin{verbatim}
+ValueConstructor = ArrayValue
+                 | RecordValue
+                 | SetValue.
+ArrayValue = TypeIdentifier "{"
+             ArrayComponent { "," ArrayComponent }
+             "}".
+ArrayComponent = Component [ BY RepeatCount ].
+Component   = Expression.
+RepeatCount = ConstExpression.
+RecordValue = TypeIdentifier "{"
+             Component { "," Component }
+             "}".
+\end{verbatim}
+Конструкторы множеств описаны в PIM.
+
+Общее число компонент конструктора массива (с учетом повторений)
+должно быть равно количеству элементов массива. Каждая компонента
+должна быть совместима по присваиванию с базовым типом массива.
+
+Общее число компонент конструктора записи
+должно быть равно количеству полей записи. Каждая компонента
+должна быть совместима по присваиванию с типом соответствующего поля.
+
+Имеются дополнительные правила для конструктора вариантной записи.
+Если $n$-ое поле записи - это поле селектора варианта, %??? tag field
+то $n$-ая компонента конструктора должна быть константным выражением.
+Если у данного селектора нет вариантной части ELSE,
+то должен существовать вариант, ассоциированный со значением 
+этого выражения. Если варианта, ассоциированного со значением, 
+нет, то последовательность компонент должна содержать значения полей
+варианта ELSE.
+
+Компоненты конструктора сами могут содержать списки элементов.
+Такие вложенные конструкторы могут не содержать идентификатора типа.
+Это послабление необходимо для многомерных массивов, в которых
+типы внутренних компонент могут быть анонимными.
+
+\Examples
+\begin{verbatim}
+TYPE
+  String = ARRAY [0..15] OF CHAR;
+  Person = RECORD
+    name: String;
+    age : CARDINAL;
+  END;
+  Vector = ARRAY [0..2] OF INTEGER;
+  Matrix = ARRAY [0..2] OF Vector;
+
+VAR
+  string: String;
+  person: Person;
+  vector: Vector;
+  matrix: Matrix;
+....
+  string:=String{" " BY 16};
+  person:=Person{"Alex",32};
+  vector:=Vector{1,2,3};
+  matrix:=Matrix{vector,{4,5,6},Vector{7,8,9}};
+  matrix:=Matrix{vector BY 3};
+\end{verbatim}
+
+\subsection{Многомерные открытые массивы}
+\index{Модула-2!открытые массивы}
+
+В соответствии с Международным стандартом, параметром процедуры
+может быть многомерный открытый массив.
+
+\Example
+\begin{verbatim}
+PROCEDURE Foo(VAR matrix: ARRAY OF ARRAY OF REAL);
+  VAR i,j: CARDINAL;
+BEGIN
+  FOR i:=0 TO HIGH(matrix)
+    FOR j:=0 TO HIGH(matrix[i])
+      ... matrix[i,j] ...
+    END;
+  END;
+END Foo;
+
+VAR a: ARRAY [0..2],[0..2] OF REAL;
+
+BEGIN
+  Foo(a);
+END ...
+\end{verbatim}
+
+\subsection{Описания типов процедур}\label{m2:ISO:proc_dcl}
+
+Идентификатор типа процедуры можно использовать в его 
+собственном описании. Эта возможность используется в 
+Стандартных Библиотеках. Примеры можно найти в модулях
+{\tt ConvTypes} и {\tt WholeConv}.
+
+\Example
+\begin{verbatim}
+TYPE
+  Scan = PROCEDURE (CHAR; VAR Scan);
+  Func = PROCEDURE (INTEGER): Func;
+\end{verbatim}
+
+\subsection{Процедурные константы}\label{m2:ISO:proc_const}
+
+Константное выражение может содержать значения процедурных типов,
+или структурные значения с компонентами процедурных типов.
+Процедурные константы можно использовать как способ переименования 
+процедур. В определяющем модуле можно экспортировать переименованную
+версию импортируемой процедуры.
+
+\Examples
+\begin{verbatim}
+TYPE ProcTable = ARRAY [0..3] OF PROC;
+
+CONST
+  WS = STextIO.WriteString;
+  Table = ProcTable{Up,Down,Left,Right};
+\end{verbatim}
+
+\subsection{Целое деление}\label{m2:ISO:rem}
+
+В добавление к {\tt DIV} и {\tt MOD} Международный Стандарт
+включает еще два оператора целого деления:
+`\verb+/+' и {\tt REM}.
+
+Operators 
+Операции {\tt DIV} и {\tt MOD} определены только для положительного
+делителя, тогда как `\verb+/+' и {\tt REM} можно использовать и
+с положительным, и с отрицательным делителем.
+
+Исключение {\tt wholeDivException} (см. \ref{m2:ISO:exc})
+возбуждается, если:
+\begin{itemize}
+\item второй операнд равен 0 (для всех четырех операций
+\item второй операнд {\tt DIV} или {\tt MOD} отрицателен.
+\end{itemize}
+
+При данных значениях {\tt lval} и {\tt rval} и при
+\begin{verbatim}
+  quotient  := lval / rval;
+  remainder := lval REM rval;
+\end{verbatim}
+верны следующие утверждения (для всех ненулевых значений {\tt rval}):
+\begin{itemize}
+\item \verb'lval = rval * quotient + remainder'
+
+\item {\tt remainder} либо равен 0, либо имеет тот же знак, что
+{\tt lval} и абсолютное значение меньше, чем абсолютное значение 
+{\tt rval}.
+\end{itemize}
+
+При данных значениях {\tt lval} и {\tt rval} и при
+\begin{verbatim}
+  quotient := lval DIV rval;
+  modulus  := lval MOD rval;
+\end{verbatim}
+верны следующие утверждения (для всех положительных значений {\tt rval}):
+\begin{itemize}
+\item \verb'lval = rval * quotient + modulus'
+
+\item {\tt modulus} --- неотрицательное целое число, меньшее, чем {\tt rval}.
+\end{itemize}
+
+Примеры применения операций деления:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|} \hline
+{\em op} & 31 {\em op} 10 & 31 {\em op} (-10) & (-31) {\em op} 10 & (-31) {\em op} (-10) \\ \hline
+\verb+/+ &  3  & -3         &  -3  & 3          \\ \hline
+\tt REM  &  1  & 1          &  -1  & -1         \\ \hline
+\tt DIV  &  3  & exception  &  -4  & exception  \\ \hline
+\tt MOD  &  1  & exception  &   9  & exception  \\ \hline
+\end{tabular}
+\end{center}
+
+\subsection{Преобразования тиров}\label{m2:ISO:conv}
+
+В язык включены следующие функции преобразования типов:
+{\tt CHR}, {\tt FLOAT}, {\tt INT}, {\tt LFLOAT}, {\tt
+ORD}, {\tt TRUNC} и {\tt VAL}. Функции {\tt INT} и {\tt
+LFLOAT} не описаны в PIM.
+
+Все функции преобразования типов (кроме {\tt VAL}) 
+имеют один параметр и могут быть выражены через функцию {\tt VAL}.
+\begin{center}
+\begin{tabular}{|l|l|l|l|} \hline
+\bf Имя & \bf Параметр & \bf Результат & \bf Равносильно \\ \hline
+CHR      & целый           & CHAR       & VAL(CHAR,x)     \\
+FLOAT    & вещ. или целый  & REAL       & VAL(REAL,x)     \\
+INT      & вещ. или ординальный & INTEGER    & VAL(INTEGER,x)  \\
+LFLOAT   & вещ. или целый  & LONGREAL   & VAL(LONGREAL,x) \\
+ORD      & ординальный     & CARDINAL   & VAL(CARDINAL,x) \\
+TRUNC    & вещ.            & CARDINAL   & VAL(CARDINAL,x) \\ \hline
+\end{tabular}
+\end{center}
+
+Функция VAL выдает значение заданного скалярного типа для
+выражения некоторого (вообще говоря, другого) скалярного типа.
+Она имеет два параметра. Первый параметр должен быть обозначением
+скалярного типа. Если это тип отрезка, то VAL возвращает значение,
+имеющее базовый тип этого отрезка, иначе --- значение указанного типа.
+
+Второй параметр должен быть выражением некоторого скалярного типа.
+Должно выполняться какое-либо из следующих условий:
+\begin{itemize}
+\item тип результата и тип выражения совпадают;
+\item оба этих типа --- целые либо вещественные;
+\item один из этих типов --- целый.
+\end{itemize}
+
+В следующей таблице знаком $\surd$ отмечены разрешенные, а 
+знаком $\times$ --- запрещенные сочетания этих двух типов:
+\begin{center}
+\begin{tabular}{|lccccc|} \hline
+тип         & \multicolumn{5}{c}{тип, заданный первым параметром} \\
+выражения   & целый   & вещ.     & \tt CHAR   &\tt BOOLEAN  & перечисл. \\ \hline
+целый тип   & $\surd$ & $\surd$  & $\surd$  & $\surd$  & $\surd$  \\
+вещ. тип    & $\surd$ & $\surd$  & $\times$ & $\times$ & $\times$ \\
+\tt CHAR    & $\surd$ & $\times$ & $\surd$  & $\times$ & $\times$ \\
+\tt BOOLEAN & $\surd$ & $\times$ & $\times$ & $\surd$  & $\times$ \\
+перечисл.   & $\surd$ & $\times$ & $\times$ & $\times$ & $\surd$  \\
+\hline
+\end{tabular}
+\end{center}
+
+Если значение x лежит вне области значений типа
+T при вызове {\tt VAL(T,x)}, то возбуждается исключение. 
+Если {\tt x} вещественного типа, то вызовы
+{\tt VAL(INTEGER,x)} и {\tt VAL(CARDINAL,x)} обрезают 
+значение {\tt x} до целого.
+
+\subsection{NEW и DISPOSE}\label{m2:ISO:NEW}
+\index{Модула-2!NEW и DISPOSE}
+\index{NEW (M2)}\index{DISPOSE}
+\index{распределение памяти}
+
+Стандартные процедуры NEW и DISPOSE возвращены в язык.
+Вызовы NEW и DISPOSE заменяются на вызовы процедур
+{\tt ALLOCATE} и {\tt DEALLOCATE}, которые при этом должны быть
+видимыми в момент вызова. Компилятор проверяет соответствие 
+этих подставляемых процедур ожидаемым формальным типам:
+\begin{verbatim}
+PROCEDURE ALLOCATE(VAR a: ADDRESS; size: CARDINAL);
+PROCEDURE DEALLOCATE(VAR a: ADDRESS; size: CARDINAL);
+\end{verbatim}
+
+Как правило, используются процедуры {\tt ALLOCATE} и {\tt DEALLOCATE}
+из модуля {\tt Storage}. Чтобы они стали видимыми, необходимо
+включить их в список импорта:
+\begin{verbatim}
+FROM Storage IMPORT ALLOCATE, DEALLOCATE;
+\end{verbatim}
+
+Когда разрешено использование расширений языка, процедуры
+{\tt NEW} и {\tt DISPOSE} можно применять и к динамическим массивам. 
+Подробнее об этом в \ref{m2:ext:NEW}.
+
+\subsection{Финализация}\label{m2:ISO:final}
+\index{финализация}
+
+Специальный механизм, называемый {\em финализацией},
+служит для совершения некоторых действий при завершении работы программы.
+
+Описание модуля может содержать финализационную часть, которая 
+будет исполняться для статических модулей при завершении работы программы
+(см. \ref{m2:ISO:termination}), и для динамических - при их
+финализации.
+
+\begin{verbatim}
+ModuleBody = [ BEGIN BlockBody
+             [ FINALLY BlockBody ] ] END
+BlockBody  = NormalPart
+             [ EXCEPT ExceptionalPart ].
+NormalPart = StatementSequence.
+ExceptionalPart = StatementSequence.
+\end{verbatim}
+{\bf Замечание:} оператор RETURN можно использовать и в {\tt BlockBody}.
+
+\Example
+\begin{verbatim}
+MODULE Test;
+
+....
+
+VAR cid: StreamFile.ChanId;
+
+BEGIN
+  StreamFile.Open(cid,"tmp",flags,res);
+  Process(cid);
+FINALLY
+  StreamFile.Close(cid);
+END Test
+\end{verbatim}
+
+Если модуль {\tt Test} описан внутри процедуры, то
+его инициализационная часть будет исполняться при вызове процедуры,
+а финализационная --- после тела процедуры.
+
+Если {\tt Test} --- статический модуль, то его финализация будет
+исполнена при завершении работы программы.
+
+В любом случае, финализации исполняются в порядке, обратном
+инициализациям.
+
+В следующем примере финализация локального модуля используется
+для корректного восстановления контекста:
+\begin{verbatim}
+VAR state: State;
+
+PROCEDURE Foo;
+
+  MODULE AutoSave;
+    IMPORT state, State;
+    VAR save: State;
+  BEGIN
+    save:=state; (* save state *)
+    state:=fooState;
+  FINALLY
+    state:=save; (* restore state *)
+  END AutoSave;
+
+BEGIN
+  ... обработка ...
+END Foo;
+\end{verbatim}
+
+Инициализация модуля {\tt AutoSave} будет исполнена раньше, чем
+любое действие в теле процедуры
+{\tt Foo}, а финализация - непосредственно перед окончанием вызова
+{\tt Foo}.
+
+\subsection{Исключения}\label{m2:ISO:exc}
+\index{исключения}\index{Модула-2!исключения}
+
+Механизм обработки исключений теперь является частью языка.
+Обрабатываются как языковые, так и определенные пользователем
+исключения. Специального типа исключения не вводится; исключение
+задается парой из источника исключения и натурального числа
+(номера исключения). 
+В язык добавлены два новых ключевых слова: EXCEPT и RETRY.
+Основные средства для обработки исключений содержатся в
+двух модулях: {\tt EXCEPTIONS} и {\tt M2EXCEPTION}.
+
+Модуль {\tt EXCEPTIONS} содержит средства для возбуждения и
+идентификации исключений, определенных пользователем, для 
+их выявления и для запросов о режиме исполнения текущей
+сопрограммы.
+
+Модуль {\tt M2EXCEPTION} содержит средства для идентификации 
+возбужденных языковых исключений.
+
+Тело процедуры, инициализация или финализация модуля могут содержать
+раздел действий в режиме исключения ("исключительный раздел").
+\begin{verbatim}
+BlockBody  = NormalPart [ EXCEPT ExceptionalPart ].
+NormalPart = StatementSequence.
+ExceptionalPart = StatementSequence.
+\end{verbatim}
+
+\Example
+\begin{verbatim}
+PROCEDURE Div(a,b: INTEGER): INTEGER;
+BEGIN
+  RETURN a DIV b      (* попытка деления *)
+EXCEPT
+  RETURN MAX(INTEGER) (* обработка исключения *)
+END Fly;
+\end{verbatim}
+
+Когда исключение возбуждено (прямо или косвенно), управление 
+передается "ближайшей" (в стеке процедур) исключительной части.
+Каждая сопрограмма начинает свое исполнение в нормальном режиме.
+При возбуждении исключения режим переключается в режим исключения.
+Если исключительной части нет, то возбуждение исключения приводит 
+к завершению сопрограммы
+(см. \ref{m2:ISO:termination}).
+
+Процедура, имеющая исключительную часть, исполняется в нормальном 
+режиме. После исполнения блока восстанавливается прежний режим.
+Процедура без исключительной части исполняется в режиме вызвавшей ее.
+
+Если во время исключительного режима работы вновь возбуждается 
+исключение, оно передается в контекст вызова. В этом случае 
+финализации локальных модулей и восстановления защиты 
+(см. \ref{m2:ISO:prot}) не происходит.
+
+В исключительной части можно использовать дополнительный оператор
+RETRY. Исполнение оператора RETRY состоит в перевызове основной части 
+процедуры в нормальном режиме.
+
+При исполнении оператора RETURN в исключительной части также
+восстанавливается нормальный режим.
+
+Если в исключительной части ни RETURN, ни RETRY не исполнялись,
+то происходит исключительное завершение. При этом после финализации
+локальных модулей (если они есть) и восстановления защиты (если нужно)
+исключение вновь будет возбуждено.
+
+\Example
+\begin{verbatim}
+PROCEDURE Foo;
+BEGIN
+  TryFoo(...);
+EXCEPT
+  IF CanBeRepaired() THEN
+    Repair;
+    RETRY;  (* вновь исполнить нормальную часть *)
+  ELSIF CanBeProcessed() THEN
+    Process;
+    RETURN; (* исключение обработано *)
+  ELSE
+    (* исключение будет перевозбуждено *)
+  END;
+END Foo;
+\end{verbatim}
+
+\subsection{Системный модуль EXCEPTIONS}
+\index{EXCEPTIONS}
+\index{системные модули!EXCEPTIONS}
+\index{Модула-2!EXCEPTIONS}
+
+Модуль {\tt EXCEPTIONS} предоставляет средства для 
+возбуждения исключений и для запросов о текущем состоянии.
+
+Определенные пользователем исключения однозначно определяются 
+парой (источник исключения, номер). Когда источником определенного
+пользователем исключения служит отдельный модуль, это гарантирует,
+что определенные в модуле исключения нельзя напрямую возбудить
+помимо него. См. напр. модуль {\tt Storage}.
+
+\begin{verbatim}
+TYPE ExceptionSource;
+\end{verbatim}
+
+\index{ExceptionSource}
+\index{EXCEPTIONS!ExceptionSource}
+Для определения источника исключения служат значения
+скрытого типа {\tt ExceptionSource}; перед использованием
+они должны быть аллоцированы.
+
+\begin{verbatim}
+TYPE ExceptionNumber = CARDINAL;
+\end{verbatim}
+
+\index{ExceptionNumber}
+\index{EXCEPTIONS!ExceptionNumber}
+Значения типа {\tt ExceptionNumber} служат для различения разных
+исключений из одного источника.
+
+\begin{verbatim}
+PROCEDURE AllocateSource(VAR newSource: ExceptionSource);
+\end{verbatim}
+
+\index{AllocateSource}
+\index{EXCEPTIONS!AllocateSource}
+Эта процедура создает новое значение типа
+{\tt ExceptionSource}. Обычно она вызывается при инициализации модуля,
+и полученное значение используется затем во всех вызовах процедуры
+{\tt RAISE}. Если новое значение не удалось создать, то возбуждается
+языковое исключение {\tt exException} (см. \ref{m2:m2exception}).
+
+\begin{verbatim}
+PROCEDURE RAISE(source: ExceptionSource;
+                number: ExceptionNumber;
+               message: ARRAY OF CHAR);
+\end{verbatim}
+
+\index{RAISE}
+\index{EXCEPTIONS!RAISE}
+Процедура ассоциирует с текущим контекстом заданные значения 
+источника, номера и сообщения и возбуждает исключение.
+
+Функция {\tt CurrentNumber} выдает номер текущего исключения
+из данного источника.
+
+\begin{verbatim}
+PROCEDURE CurrentNumber
+   (source: ExceptionSource): ExceptionNumber;
+\end{verbatim}
+
+\index{CurrentNumber}
+\index{EXCEPTIONS!CurrentNumber}
+Если вызывающая сопрограмма находится в режиме исключения по 
+причине возбуждения исключения из источника
+{\tt source}, то процедура выдает его номер. В противном случае
+возбуждается исключение.
+
+Процедура {\tt GetMessage} выдает сообщение, переданное при
+возбуждении исключения. Обычно оно содержит дополнительную
+информацию об исключении.
+
+\begin{verbatim}
+PROCEDURE GetMessage(VAR text: ARRAY OF CHAR);
+\end{verbatim}
+
+\index{GetMessage}
+\index{EXCEPTIONS!GetMessage}
+Если вызывающая сопрограмма находится в режиме исключения, то процедура
+возвращает (возможно, обрезанную) строку сообщения, ассоциированную
+с текущим контекстом. Иначе, в нормальном режиме, она возвращает
+пустую строку.
+
+\begin{verbatim}
+PROCEDURE IsCurrentSource
+        (source: ExceptionSource): BOOLEAN;
+\end{verbatim}
+
+\index{IsCurrentSource}
+\index{EXCEPTIONS!IsCurrentSource}
+Если вызывающая сопрограмма находится в режиме исключения по 
+причине возбуждения исключения из источника
+{\tt source}, то процедура возвращает TRUE, иначе FALSE.
+
+\begin{verbatim}
+PROCEDURE IsExceptionalExecution (): BOOLEAN;
+\end{verbatim}
+
+\index{IsExceptionalExecution}
+\index{EXCEPTIONS!IsExceptionalExecution}
+Если вызывающая сопрограмма находится в режиме исключения по 
+причине возбуждения какого-либо исключения,
+то процедура возвращает TRUE, иначе FALSE.
+
+Следующий пример иллюстрирует рекомендуемую форму библиотечного модуля
+и использование процедур из модуля {\tt EXCEPTIONS}.
+\begin{verbatim}
+DEFINITION MODULE FooLib;
+
+PROCEDURE Foo;
+(* Может возбудить исключение Foo *)
+
+PROCEDURE IsFooException(): BOOLEAN;
+(* Возвращает TRUE, если вызвавшая процедура в
+   исключительном состоянии ввиду возбуждения исключения в
+   Foo, иначе FALSE.
+*)
+
+END FooLib.
+
+IMPLEMENTATION MODULE FooLib;
+
+IMPORT EXCEPTIONS;
+
+VAR source: EXCEPTIONS.ExceptionSource;
+
+PROCEDURE Foo;
+BEGIN
+  TryFoo(...);
+  IF NOT done THEN
+    EXCEPTIONS.RAISE(source,0,"Foo exception");
+  END;
+END Foo;
+
+PROCEDURE IsFooException(): BOOLEAN;
+BEGIN
+  RETURN EXCEPTIONS.IsCurrentSource(source)
+END IsLibException;
+
+BEGIN
+  EXCEPTIONS.AllocateSource(source)
+END FooLib.
+\end{verbatim}
+
+Если нужно различать несколько исключений, возбуждаемых в {\tt FooLib},
+то мы вводим перечислимый тип и дополнительную процедуру запроса
+в определяющий модуль {\tt FooLib}:
+\begin{verbatim}
+TYPE FooExceptions = (fault, problem);
+
+PROCEDURE FooException(): FooExceptions;
+\end{verbatim}
+Процедура {\tt FooException} может быть реализована так:
+\begin{verbatim}
+PROCEDURE FooException(): FooExceptions;
+BEGIN
+  RETURN VAL(FooExceptions,
+             EXCEPTIONS.CurrentNumber(source))
+END FooException;
+\end{verbatim}
+
+Следующий модуль {\tt Client} иллюстрирует использование этого
+библиотечного модуля:
+\begin{verbatim}
+MODULE Client;
+
+IMPORT  FooLib, EXCEPTIONS, STextIO;
+
+PROCEDURE ReportException;
+  VAR s: ARRAY [0..63] OF CHAR;
+BEGIN
+  EXCEPTIONS.GetMessage(s);
+  STextIO.WriteString(s);
+  STextIO.WriteLn;
+END ReportException;
+
+PROCEDURE TryFoo;
+BEGIN
+  FooLib.Foo;
+EXCEPT
+  IF FooLib.IsFooException() THEN
+    ReportException;
+    RETURN; (* исключение обработано *)
+  ELSE
+    (* исключение будет перевозбуждено *)
+  END
+END TryFoo;
+
+END Client.
+\end{verbatim}
+
+\subsection{Системный модуль M2EXCEPTION}\label{m2:m2exception}
+\index{M2EXCEPTION@{\bf M2EXCEPTION}}
+\index{системные модули!M2EXCEPTION}
+\index{Модула-2!M2EXCEPTION}
+
+Системный модуль {\tt M2EXCEPTION} предоставляет возможности для 
+работы с языковыми исключениями. Язык (в т.ч. системные модули)
+рассматривается как один источник исключений.
+
+Модуль экспортирует один перечислимый тип, в терминах которого 
+возбуждаются языковые исключения, и две процедуры-функции.
+
+\begin{verbatim}
+TYPE
+  M2Exceptions =
+    (indexException,      rangeException,
+     caseSelectException, invalidLocation,
+     functionException,   wholeValueException,
+     wholeDivException,   realValueException,
+     realDivException,    complexValueException,
+     complexDivException, protException,
+     sysException,        coException,
+     exException
+    );
+\end{verbatim}
+
+\begin{verbatim}
+PROCEDURE IsM2Exception(): BOOLEAN;
+\end{verbatim}
+
+\index{IsM2Exception}
+\index{M2EXCEPTION!IsM2Exception}
+Если текущая сопрограмма находится в режиме исключения по 
+причине возбуждения языкового исключения,
+то процедура возвращает TRUE, иначе FALSE.
+
+\begin{verbatim}
+PROCEDURE M2Exception(): M2Exceptions;
+\end{verbatim}
+
+\index{M2Exception}
+\index{M2EXCEPTION!M2Exception}
+Если текущая сопрограмма находится в режиме исключения по 
+причине возбуждения языкового исключения,
+то процедура выдает соответствующее значение перечислимого типа. 
+В противном случае возбуждается исключение.
+
+Ниже перечислены все языковые исключения (в алфавитном порядке)
+и указаны ситуации, в которых они возбуждаются.
+
+{\bf Замечание:} Возбуждение некоторых исключений можно
+контролировать опциями компилятора (см. Главу \ref{options}).
+
+Возбуждение некоторых исключений не обязательно, но 
+может происходить на некоторых платформах
+(см. Главу \ref{limits}).
+
+\begin{description}
+\item[caseSelectException] \mbox{}
+\index{caseSelectException}
+\index{M2EXCEPTION!caseSelectException}
+
+Не перечисленное значение селектора оператора CASE
+при отсутствии ELSE.
+
+\item[coException] \mbox{}
+\index{M2EXCEPTION!coException}
+
+Исключение системного модуля
+{\bf COROUTINES} (сопрограммы):
+        \begin{itemize}
+        \item RETURN из не головной сопрограммы
+        \item выделенное рабочее пространство меньше требуемого минимума
+(см. {\tt NEWCOROUTINE})
+        \item вызывающая сопрограмма не прикреплена к источнику прерываний
+(см. {\tt HANDLER})
+        \item переполнение рабочего пространства
+        \end{itemize}
+
+\item[complexDivException] \mbox{}
+\index{M2EXCEPTION!complexDivException}
+
+Деление на ноль в COMPLEX выражении.
+
+\item[complexValueException] \mbox{}
+\index{M2EXCEPTION!complexValueException}
+
+Переполнение типа COMPLEX.
+
+\item[exException] \mbox{}
+\index{M2EXCEPTION!exException}
+
+Исключение системных модулей {\bf EXCEPTIONS} и {\bf M2EXCEPTION}:
+        \begin{itemize}
+        \item запрос номера исключения при нормальном режиме
+              (см. {\tt CurrentNumber})
+        \item запрос номера исключения из неверного источника
+              (см. {\tt CurrentNumber})
+        \item невозможно аллоцировать новый источник исключений
+              (см. {\tt AllocateSource})
+
+        \end{itemize}
+
+\item[functionException] \mbox{}
+\index{M2EXCEPTION!functionException}
+
+Возвращение из функции без оператора RETURN.
+
+\item[indexException] \mbox{}
+\index{M2EXCEPTION!indexException}
+
+Выход за границы массива. См. опции
+\OERef{CHECKINDEX} и \OERef{CHECKDINDEX}.
+
+\item[invalidLocation] \mbox{}
+\index{M2EXCEPTION!invalidLocation}
+
+Попытка разыменования NIL или непроинициализированного указателя.
+См. опцию \OERef{CHECKNIL}.
+
+\item[protException] \mbox{}
+\index{M2EXCEPTION!protException}
+
+Требуемый уровень защиты менее ограничителен, чем текущий.
+%??? Given protection is less restrictive than the current protection.
+
+\item[rangeException] \mbox{}
+\index{M2EXCEPTION!rangeException}
+
+        Нарушение границ (см. опцию \OERef{CHECKRANGE}):
+        \begin{itemize}
+        \item присваиваемое значение выходит за границы типа
+        \item значение структурной компоненты выходит за границы
+        \item выражение не может быть конвертировано в данный тип
+        \item включаемое/исключаемое значение вне границ базового
+типа множества (см. также опцию  \OERef{CHECKSET})
+        \item возвращаемое процедурой значение вне границ типа
+        \item множество вне границ типа
+              (см. также опцию \OERef{CHECKSET})
+        \item значение тага выходит за границы (в вариантной записи)
+        \end{itemize}
+
+\item[realDivException] \mbox{}
+\index{M2EXCEPTION!realDivException}
+
+Деление на ноль в REAL выражении.
+
+\item[realValueException] \mbox{}
+\index{M2EXCEPTION!realValueException}
+
+Переполнение типа REAL.
+
+\item[sysException] \mbox{}
+\index{M2EXCEPTION!sysException}
+
+        Исключения системного модуля {\bf SYSTEM}.
+        {\bf Замечание:} все эти исключения не обязательны.
+        \begin{itemize}
+        \item неверное использование {\tt ADDADR}, {\tt SUBADR} или {\tt DIFADR}
+        \item результат {\tt MAKEADR} вне области адресов
+        \item проблема с выравниванием в {\tt CAST}
+        \item результат {\tt CAST} не является верным представлением 
+целевого типа
+        \end{itemize}
+
+\item[wholeDivException] \mbox{}
+\index{M2EXCEPTION!wholeDivException}
+
+Исключение целого деления:
+        \begin{itemize}
+        \item деление на ноль выражении целого типа
+        \item делитель в DIV или MOD отрицателен
+              (см. опцию \OERef{CHECKDIV})
+        \end{itemize}
+
+\item[wholeValueException] \mbox{}
+\index{M2EXCEPTION!wholeValueException}
+
+Целое переполнение.
+\end{description}
+
+\paragraph{Пример обработки языкового исключения}
+\begin{verbatim}
+PROCEDURE Div(a,b: INTEGER): INTEGER;
+BEGIN
+  RETURN a DIV b
+EXCEPT
+  IF IsM2Exception() THEN
+    IF M2Exception() = wholeDivException THEN
+      IF a < 0 THEN RETURN MIN(INTEGER)
+      ELSE          RETURN MAX(INTEGER)
+      END;
+    END;
+  END;
+END Div;
+\end{verbatim}
+
+\subsection{Завершение}\label{m2:ISO:termination}
+
+При завершении работы программы финализаторы всех инициализированных
+статических модулей вызываются в порядке, обратном порядку их
+инициализации (см. также \ref{m2:ISO:final}). 
+Статические модули --- это программный модуль, реализующие модули
+и локальные модули, описанные в этих модулях.
+
+Завершение программы инициируется одним из следующих событий:
+\begin{enumerate}
+\item конец тела головного модуля
+\item оператор RETURN в теле головного модуля
+\item вызов стандартной процедуры HALT
+\item возбуждено и не обработано исключение
+\end{enumerate}
+
+Системный модуль {\tt TERMINATION}
+\index{Модула-2!TERMINATION}
+\index{системные модули!TERMINATION}
+\index{TERMINATION@{\bf TERMINATION}}
+позволяет делать запросы о завершающих событиях.
+
+\begin{verbatim}
+PROCEDURE IsTerminating(): BOOLEAN;
+\end{verbatim}
+
+Возвращает TRUE, если какая-либо сопрограмма запустила
+завершение работы программы; иначе FALSE.
+
+\begin{verbatim}
+PROCEDURE HasHalted(): BOOLEAN;
+\end{verbatim}
+
+Возвращает TRUE, если вызвана процедура HALT; иначе FALSE.
+
+\subsection{Сопрограммы}\label{m2:ISO:coroutines}
+
+Системный модуль {\tt COROUTINES} предоставляет средства для
+создания сопрограмм, для явной передачи управления между ними и для
+обработки прерываний.
+\index{системные модули!COROUTINES}
+\index{Модула-2!COROUTINES}
+\index{COROUTINES@{\bf COROUTINES}}
+
+{\bf Замечание:} Некоторые описанные средства не реализованы 
+в настоящей версии.
+См. подробнее в Главе \ref{limits}.
+
+Значение типа {\tt COROUTINE} создается динамически, путем вызова
+процедуры {\tt NEWCOROUTINE}, и служит идентификатором сопрограммы
+во всех последующих операциях. Каждая сопрограмма идентифицируется 
+одним и тем же значением этого типа в течение всего времени жизни.
+
+\begin{verbatim}
+TYPE COROUTINE;
+\end{verbatim}
+В PIM, соответствующий тип назывался {\tt PROCESS}.
+Начиная с третьего издания PIM, для идентификации
+процессов использовался тип {\tt ADDRESS}.
+
+\begin{verbatim}
+PROCEDURE NEWCOROUTINE(
+                procBody: PROC;
+                workspace: SYSTEM.ADDRESS;
+                size: CARDINAL;
+                VAR cr: COROUTINE
+                [; initProtection: PROTECTION]);
+\end{verbatim}
+Создает новую сопрограмму на основе процедуры {\tt procBody}, 
+и возвращает ее идент в переменную {\tt cr}. 
+{\tt workspace} --- это указатель на рабочую область, аллоцированную
+для сопрограммы;
+{\tt size} указывает размер этой области в единицах SYSTEM.LOC. 
+{\tt initProtection} --- необязательный параметр, задающий начальный 
+уровень защиты сопрограммы.
+
+Исключение возбуждается (см. {\tt coException}), если значение 
+параметра {\tt size} меньше, чем минимальный размер рабочей области.
+
+Если параметр initProtection опущен, то начальный уровень защиты сопрограммы
+полагается равным уровню вызвавшей ее сопрограммы.
+
+Созданный сопрограмма инициализируется таким образом, чтобы
+при первой передаче управления на него процедура, заданная параметром
+{\tt procBody}, вызывалась в нормальном режиме. Исключение
+{\tt coException} возбуждается при попытке {\tt procBody}
+вернуть управление вызвавшей ее сопрограмме.
+%??? Since the caller has no... поскольку? если?
+Поскольку вызвавшая сопрограмма не имеет обработчика этого исключения,
+его возбуждение приводит к событию завершения.
+
+Для передачи управления между сопрограммами служит процедура {\tt TRANSFER}.
+
+\begin{verbatim}
+PROCEDURE TRANSFER (VAR from: COROUTINE; to: COROUTINE);
+\end{verbatim}
+Возвращает в переменную {\tt from} идент вызвавшей сопрограммы
+и передает управление сопрограмме {\tt to}.
+
+\begin{verbatim}
+PROCEDURE CURRENT (): COROUTINE;
+\end{verbatim}
+Возвращает идент вызвавшей сопрограммы.
+
+\subsubsection{Обработка прерываний}
+\index{обработка прерываний}
+
+Тип {\tt INTERRUPTSOURCE} служит для идентификации прерываний.
+\begin{verbatim}
+TYPE INTERRUPTSOURCE = INTEGER;
+\end{verbatim}
+Программы, использующие обработчик прерываний, могут оказаться
+непереносимыми, поскольку этот тип зависит от реализации.
+
+\begin{verbatim}
+PROCEDURE ATTACH(source: INTERRUPTSOURCE);
+\end{verbatim}
+Ассоциирует указанный источник прерываний с вызывающей сопрограммой.
+С одной и той же сопрограммой могут быть ассоциированы несколько 
+источников прерываний.
+
+\begin{verbatim}
+PROCEDURE DETACH(source: INTERRUPTSOURCE);
+\end{verbatim}
+Отвязывает указанный источник прерываний от вызывающей сопрограммы.
+Если сопрограмма не связана с указанным источником, то ничего не делает.
+
+\begin{verbatim}
+PROCEDURE IsATTACHED(source: INTERRUPTSOURCE): BOOLEAN;
+\end{verbatim}
+Возвращает TRUE, если указанный источник прерываний 
+в момент вызова связан с вызывающей сопрограммой; иначе
+возвращает FALSE.
+
+\begin{verbatim}
+PROCEDURE HANDLER(source: INTERRUPTSOURCE): COROUTINE;
+\end{verbatim}
+Возвращает идент сопрограммы, связанной с с указанным источником
+прерываний. Если такой сопрограммы нет, то результат неопределен.
+
+\begin{verbatim}
+PROCEDURE IOTRANSFER(VAR from: COROUTINE;
+                           to: COROUTINE);
+\end{verbatim}
+
+Записывает идент вызвавшей сопрограммы в переменную 
+{\tt from}
+и передает управление сопрограмме
+{\tt to}. При возникновении прерывания, связанного с вызвавшей сопрограммой,
+управление передается обратно ей, 
+и в переменную {\tt from} записывается идент прерванной сопрограммы.
+Если вызывающая сопрограмма не связана с источниками прерываний, то
+возбуждается исключение.
+
+\subsubsection{Защита}\label{m2:ISO:coroutines:prot}
+
+Описание типа PROTECTION см. в \ref{m2:ISO:prot}.
+
+\begin{verbatim}
+PROCEDURE LISTEN(prot: PROTECTION);
+\end{verbatim}
+
+Меняет защиту вызвавшей сопрограммы на {\tt prot},
+обычно понижая ее, чтобы позволить
+удовлетворение запроса на прерывание.
+
+\begin{verbatim}
+PROCEDURE PROT(): PROTECTION;
+\end{verbatim}
+Выдает защиту вызвавшей сопрограммы.
+
+\subsection{Защита}\label{m2:ISO:prot}
+
+Заголовок любого модуля (программного, реализующего или локального)
+может содержать защиту, %??? поле защиты
+указывающую на то, что исполнение операторов этого модуля защищено.
+
+\begin{verbatim}
+ModuleHeading = MODULE ident [ Protection ] ";".
+Protection    = [ ConstExpression ]. %??? "[" "]"
+\end{verbatim}
+
+Модуль с указанной в заголовке защитой называется явно защищенным
+модулем. Явно защищенная процедура --- это процедура,
+экспортируемая из явно защищенного модуля.
+
+Защита модуля обеспечивается тем, что доступные извне процедуры
+и тело модуля окружаются вызовами специальных процедур контроля
+доступа. Значение параметра защиты передается этим процедурам 
+как актуальный параметр.
+
+Выражение, задающее защиту, должно иметь тип PROTECTION. 
+PROTECTION --- это простой тип, имеющий как минимум два значения:
+{\tt INTERRUPTIBLE} и {\tt UNINTERRUPTIBLE}.
+
+Операторы \verb+<+, \verb+>+, \verb+<=+ и \verb+>=+ можно 
+использовать для сравнения значений типа 
+PROTECTION.
+Любое значение $x$ типа PROTECTION удовлетворяет следующему условию:
+\begin{center}
+        {\tt UNINTERRUPTIBLE} $\leq x\leq$ {\tt INTERRUPTIBLE}
+\end{center}
+
+\section{Стандартные процедуры}\label{m2:stdproc}
+\index{Модула-2!стандартные процедуры}
+\index{стандартные процедуры!Модула-2}
+
+\begin{table}[hbt]
+\begin{center}
+\begin{tabular}{|cl|p{6.5cm}|} \hline
+&\bf Процедура &\bf Действие \\ \hline
+$\surd$ & \tt ASSERT(x[,n]) & Завершает программу, если
+                  x$\neq$TRUE (см. \ref{m2:ext:ASSERT})       \\ \index{ASSERT}
+$\surd$ & \tt  COPY(x,v)     & Копирование строки: \verb|v := x|       \\ \index{COPY}
+&\tt DEC(v[,n])    & \verb|v := v - n|, по умолчанию n=1             \\ \index{DEC}
+&\tt DISPOSE(v)    & Деаллоцирует v\^{} (см. \ref{m2:ISO:NEW}) \\ \index{DISPOSE}
+&\tt EXCL(v,n)     & \verb|v := v - {n}| \\                    \index{EXCL}
+&\tt HALT          & Завершение работы программы
+                 (см. \ref{m2:ext:HALT}) \\                    \index{HALT}
+&\tt INC(v[,n])    & \verb|v := v + n|, по умолчанию n=1 \\         \index{INC}
+&\tt INCL(v,n)     & \verb|v := v + {n}| \\                    \index{INCL}
+&\tt NEW(v)        & Аллоцирует v\^{} (см. \ref{m2:ISO:NEW}) \\
+$\surd$ & \tt NEW(v,$x_0$...$x_n$) & Аллоцирует v\^{} длины
+        $x_0$...$x_n$  (см. \ref{m2:ext:NEW}) \\  % \ldots !!!
+\hline
+\end{tabular}
+\end{center}
+\caption{Стандартные процедуры Модулы-2}\label{table:m2:stdproc}
+\end{table}
+
+\begin{table}[htb]
+\begin{center}
+\begin{tabular}{|cl|p{7.5cm}|} \hline
+&\bf Функция  &\bf Действие \\ \hline
+&\tt ABS(x)   & Абсолютное значение $x$ \\              \index{ABS}
+$\surd$&\tt ASH(x,n) & Арифметический сдвиг \\              \index{ASH}
+&\tt CAP(x)   & Соответствующая прописная буква \\  \index{CAP}
+&\tt CHR(x)   & Символ с номером $x$ \\  \index{CHR}
+&\tt CMPLX(x,y) & Комплексное число с вещ. частью $x$
+                  и мнимой частью $y$           \\ \index{CMPLX}
+$\surd$&\tt ENTIER(x) & Наибольшее целое $\leq x$ \\ \index{ENTIER}
+&\tt FLOAT(x) &\tt  VAL(REAL,x) \\                     \index{FLOAT}
+&\tt HIGH(v)  & Верхняя граница индексов $v$  \\    \index{HIGH}
+&\tt IM(x)    & Мнимая часть комплексного $x$ \\         \index{IM}
+&\tt INT(x)   &\tt VAL(INTEGER,x)          \\         \index{INT}
+$\surd$&\tt LEN(v[,n]) & Длина массива
+           в $n$-й координате (по умолчанию в 0-й) \\    \index{LEN}
+&\tt LENGTH(x) & Длина строки \\         \index{LENGTH}
+&\tt LFLOAT(x) &\tt VAL(LONGREAL,x) \\                 \index{LFLOAT}
+&\tt MAX(T)   &  Максимальное значение типа $T$ \\         \index{MAX}
+&\tt MIN(T)   &  Минимальное значение типа $T$ \\         \index{MIN}
+&\tt ODD(x)   & $x$ MOD 2 = 1 \\                      \index{ODD}
+&\tt ORD(x)   &\tt VAL(CARDINAL,x)    \\               \index{ORD (M2)}
+&\tt RE(x)    & Вещ. часть комплексного $x$ \\         \index{RE}
+&\tt SIZE(T)  & Количество единиц памяти, занимаемых переменной
+                типа $T$  \\ \index{SIZE}
+&\tt TRUNC(x) & Обрезание до целой части      \\ \index{TRUNC}
+&\tt VAL(T,x) & Преобразование типа            \index{VAL (M2)}
+\\ \hline
+\end{tabular}
+\end{center}
+\caption{Модула-2 процедуры-функции}\label{table:m2:stdfunc}
+\end{table}
+
+В этой части дается краткое описание стандартных процедур и функций.
+Некоторые из этих процедур и функций не описаны в
+Международном Стандарте и доступны лишь при включенной опции
+\OERef{M2EXTENSIONS}.
+Процедура {\tt HALT} может иметь дополнительный параметр,
+если расширения языка разрешены.
+(см. \ref{m2:ext:HALT}).
+
+В таблицах \ref{table:m2:stdproc} и
+\ref{table:m2:stdfunc} использованы обозначения: $v$ для десигнатора,
+$x$, $y$ и $n$ для выражений, $T$ для типа.
+Нестандартные процедуры отмечены символом $\surd$.
+
+Процедура {\tt COPY} и функции {\tt ASH}, {\tt ENTIER} и
+{\tt LEN} описаны в {\em Сообщении об Обероне-2}.      % !!!
+
+\section{Совместимость}\label{m2:ISO:comp}
+
+В этом разделе описаны правила совместимости между объектами 
+различных типов. Есть три формы совместимости:
+\begin{itemize}
+\item совместимость в выражениях (определяет, какие типы можно
+совместно использовать в выражениях);
+\item совместимость по присваиванию (определяет, значения какого
+типа могут быть присвоены переменной);
+\item совместимость при передаче (определяет тип фактического параметра,
+который может быть передан в формальный параметр).
+Есть две формы совместимости при передаче: совместимость по значению
+и совместимость по VAR. %??? по имени?
+\end{itemize}
+Правила совместимости при передаче смягчены для формальных
+параметров типа системной памяти. 
+Такая вариация называется системной 
+совместимостью при передаче.
+
+В основном правила совместимости совпадают с описанными в
+PIM. Тем не менее, мы сформулируем здесь все правила в явном виде.
+
+\subsection{Совместимость в выражениях}\label{m2:ISO:comp:expr}
+
+Выражения $a$ и $b$ типов $T_a$ и $T_b$
+{\em совместимы в выражениях}, если выполняется одно из 
+следующих утверждений:
+\renewcommand{\theenumi}{\alph{enumi}}
+\begin{enumerate}
+\item Типы $T_a$ и $T_b$ идентичны.
+        {\bf Замечание:} Если тип является отрезком, то имеет 
+значение только его основной тип; типы разных отрезков одного
+и того же типа совместимы в выражениях друг с другом и с 
+основным типом.
+
+\item Тип одного из выражений комплексный, а другое выражение
+--- компл. константа.
+
+\item Тип одного из выражений вещественный, а другое выражение
+--- вещественная константа.
+
+\item Тип одного из выражений целый, а другое выражение
+--- целая константа.
+
+\item Тип одного из выражений символьный, а другое выражение
+--- строковый литерал длины 0 или 1.
+      См. также \ref{m2:ISO:strings}.
+
+\begin{verbatim}
+VAR
+  char: CHAR;
+  ...
+  WHILE (char # '') & (char # ".") DO
+  ...
+\end{verbatim}
+
+\end{enumerate}
+\renewcommand{\theenumi}{\arabic{enumi}}
+
+\subsection{Совместимость по присваиванию}\label{m2:ISO:comp:assign}
+
+Выражение $e$ типа $T_e$ {\em совместимо по присваиванию}
+с переменной $v$ типа $T_v$ если выполняется одно из 
+следующих\footnote{Для выражения типа отрезка имеет значение только
+его основной тип.}:
+
+\renewcommand{\theenumi}{\alph{enumi}}
+\begin{enumerate}
+\item   $T_v$ идентичен типу $T_e$, и при этом не является типом открытого
+массива.
+
+\item   $T_v$ --- отрезок типа $T_e$.
+
+\item   $T_v$ --- CARDINAL или отрезок типа CARDINAL,
+        а $T_e$ --- INTEGER, или $e$ есть целая константа.
+
+\item   $T_v$ --- INTEGER или отрезок типа  INTEGER,
+        а $T_e$ --- CARDINAL, или $e$ есть целая константа.
+
+\item   $T_v$ --- вещественный тип и $e$ --- вещественная константа.
+
+\item   $T_v$ --- комплексный тип и $e$ --- компл. константа.
+
+\item   $T_v$ --- тип указателя и $e$ есть NIL.
+
+\item   $T_v$ --- процедурный тип и $e$ десигнатор
+        процедуры, имеющей такую же структуру, как 
+        процедурный тип $T_v$ и декларированной на уровне 0.
+
+\item   $T_v$ --- символьный тип или отрезок символьного типа, а
+$e$ --- строковый литерал длины 0 или 1.
+
+\item   $T_v$ --- тип массива с компонентами символьного типа,
+$e$ --- строковый литерал длины, не превосходящей количества 
+элементов в массиве типа
+$T_v$\footnote{Строковый литерал не совместим по присваиванию с 
+массивом, компоненты которого имеют тип отрезка символьного типа.}.
+
+\item   $T_v$ --- тип адреса, а $T_e$ --- тип указателя; или
+        $T_e$ --- тип адреса, а $T_v$ --- тип указателя. 
+
+\end{enumerate}
+\renewcommand{\theenumi}{\arabic{enumi}}
+
+\subsection{Совместимость при передаче по значению}
+
+Формальный тип {\em совместим при передаче по значению}  
+с выражением, если выполняется одно из следующих:
+\renewcommand{\theenumi}{\alph{enumi}}
+\begin{enumerate}
+\item   Формальный тип образован из системного типа памяти
+и системно совместим с данным выражением.
+
+\item   Формальный параметр --- открытый массив, фактический
+%??? актуальный
+параметр имеет тип массива и тип элементов формального
+параметра совместим по значению с типом элементов фактического
+параметра.
+        \footnote{Формальный параметр типа массива элементов типа
+$T$ не совместим при передаче с фактическим параметром типа $T$.}.
+
+\item   Формальный тип совместим по присваиванию с фактическим параметром.
+\end{enumerate}
+\renewcommand{\theenumi}{\arabic{enumi}}
+
+\subsection{Совместимость при передаче по VAR}
+
+Формальный тип {\em совместим при передаче по VAR} 
+с фактической переменной, если выполняется одно из следующих:
+\renewcommand{\theenumi}{\alph{enumi}}
+\begin{enumerate}
+\item   Формальный тип образован из типа системной памяти
+и системно совместим с переменной.
+
+\item   Формальный параметр --- открытый массив, фактический параметр
+имеет тип массива и тип элемента формального параметра
+совместим при передаче по VAR с типом элемента фактического параметра.
+
+\item   Формальный тип совпадает с типом фактического параметра.
+\end{enumerate}
+\renewcommand{\theenumi}{\arabic{enumi}}
+
+\subsection{Системная совместимость при передаче}\label{m2:ISO:comp:system}
+
+Формальный тип {\em системно совместим} с фактическим параметром,
+если выполняется одно из следующих:
+\renewcommand{\theenumi}{\alph{enumi}}
+\begin{enumerate}
+\item   Формальный параметр имеет тип SYSTEM.LOC,
+а фактический параметр --- любого такого типа 
+$T$, что {\tt SIZE(T)=1}.
+
+\item   Формальный параметр --- типа
+\begin{verbatim}
+ARRAY [0..n-1] OF SYSTEM.LOC
+\end{verbatim}
+а фактический параметр --- любого такого типа 
+$T$, что {\tt SIZE(T)=n}.
+
+\item   Формальный параметр имеет тип открытого массива
+\begin{verbatim}
+ARRAY OF SYSTEM.LOC
+\end{verbatim}
+а фактический параметр - любой, кроме числовой константы.
+
+\item   Формальный параметр имеет тип многомерного открытого массива
+
+\begin{verbatim}
+ARRAY OF ARRAY [0..n-1] OF SYSTEM.LOC
+\end{verbatim}
+а фактический параметр --- любого такого типа 
+$T$, что {\tt SIZE(T)} делится на {\tt n}.
+
+\end{enumerate}
+\renewcommand{\theenumi}{\arabic{enumi}}
+
+\section{Модула-2 модуль SYSTEM}
+\label{m2:ISO:system}
+\index{Модула-2!SYSTEM}\index{SYSTEM@{\bf SYSTEM}}
+\index{системные модули!SYSTEM (M2)}
+
+Модуль SYSTEM предоставляет низкоуровневые средства для работы с 
+адресами и хранением переменных в памяти, для адресной арифметики
+и для манипулирования представлением значений. Программы,
+использующие эти средства, могут оказаться непереносимыми.
+
+Этот модуль не существует в том же смысле, что обычные библиотеки:
+он вшит в сам компилятор. Однако, чтобы получить доступ к его
+средствам, идентификаторы должны быть импортированы обычным образом.
+
+Некоторые процедуры модуля SYSTEM являются генерическими, и не могут
+быть обычным образом декларированы; например, они могут быть применимы 
+ко многим различным типам операндов или иметь несколько различных форм
+списка параметров. 
+
+Модуль  SYSTEM  --- единственный модуль, определенный в
+Международном Стандарте, который разрешается расширять при
+реализации языка.
+В \XDS{}, модуль SYSTEM содержит дополнительные 
+типы и процедуры.
+
+{\bf Замечание:} В Обероне-2 модуль SYSTEM другой.
+Подробно см. \ref{o2:system}.
+
+{\small
+\begin{verbatim}
+DEFINITION MODULE SYSTEM;
+
+CONST
+  BITSPERLOC  = 8;
+  LOCSPERWORD = 4;
+  LOCSPERBYTE = 1;
+
+TYPE
+  LOC;
+  ADDRESS = POINTER TO LOC;
+  WORD = ARRAY [0 .. LOCSPERWORD-1] OF LOC;
+  BYTE = LOC;
+
+PROCEDURE ADDADR(addr: ADDRESS; offset: CARDINAL): ADDRESS;
+PROCEDURE SUBADR(addr: ADDRESS; offset: CARDINAL): ADDRESS;
+PROCEDURE DIFADR(addr1, addr2: ADDRESS): INTEGER;
+
+PROCEDURE MAKEADR(val: <целый тип>): ADDRESS;
+
+PROCEDURE ADR(VAR v: <любой тип>): ADDRESS;
+
+PROCEDURE REF(VAR v: <любой тип>): POINTER TO <тип параметра>;
+
+PROCEDURE ROTATE(val: <тип упакмножества>;
+                 num: INTEGER): <тип первого параметра>;
+
+PROCEDURE SHIFT(val: <тип упакмножества>;
+                 num: INTEGER): <тип первого параметра>;
+
+PROCEDURE CAST(<целевой тип>;
+               val: <любой тип>): <целевой тип>;
+
+PROCEDURE TSIZE (<тип>; ... ): CARDINAL;
+
+(*------------------------------------------------------- *)
+(* --------------  нестандартная часть  ----------------- *)
+
+TYPE
+  INT8   = <целый 8-битовый тип>;
+  INT16  = <целый 16-битовый тип>;
+  INT32  = <целый 32-битовый тип>;
+  CARD8  = <натуральный 8-битовый тип>;
+  CARD16 = <натуральный 16-битовый тип>;
+  CARD32 = <натуральный 32-битовый тип>;
+  BOOL8  = <булевский 8-битовый тип>;
+  BOOL16 = <булевский 16-битовый тип>;
+  BOOL32 = <булевский 32-битовый тип>;
+  INDEX  = <тип индекса>
+  DIFADR_TYPE = <тип, возвращаемый функцией DIFADR>
+
+TYPE (* для Оберона-2 *)
+  INT  = <Модула-2 INTEGER тип>;
+  CARD = <Модула-2 CARDINAL тип>;
+
+TYPE (* для интерфейса с C *)
+  int      = <C int тип>;
+  unsigned = <C unsigned тип>;
+  size_t   = <C size_t тип>;
+  void     = <C void тип>;
+
+PROCEDURE MOVE(src,dest: ADDRESS; size: CARDINAL);
+PROCEDURE FILL(adr : ADDRESS; val : BYTE; size : CARDINAL;);
+
+PROCEDURE GET(adr: ADDRESS; VAR var: SimpleType);
+PROCEDURE PUT(adr: ADDRESS; var: SimpleType);
+
+PROCEDURE CC(n: CARDINAL): BOOLEAN;
+
+END SYSTEM.
+\end{verbatim}
+} % small
+
+\subsection{Системные типы}\label{m2:system:types}
+\index{системные типы}
+
+\begin{description}
+\item[LOC] \mbox{}  \index{LOC}
+
+Значение типа {\tt LOC} --- это никак не интерпретируемое содержимое
+наименьшей адресуемой единицы памяти. Поэтому значение
+{\tt TSIZE(LOC)} по определению равно 1.
+
+Тип {\tt LOC} был введен для разрешения проблем с типами
+{\tt  BYTE}  и  {\tt  WORD}.
+Его введение позволяет корректно использовать оба этих типа,
+и позволяет вводить другие типы, похожие на тип {\tt WORD}, напр.:
+\begin{verbatim}
+TYPE WORD16 = ARRAY [0..1] OF SYSTEM.LOC;
+\end{verbatim}
+
+Единственная операция, разрешенная с объектами типа {\tt LOC} 
+--- это присваивание.
+Специальные правила определяют совместимость при передаче параметров
+для системных типов памяти.
+См. подробнее в \ref{m2:ISO:comp:system}.
+
+\item[BYTE] \mbox{}  \index{BYTE}
+
+{\tt BYTE} определяется как {\tt LOC} и имеет такие же свойства, как тип
+{\tt LOC}.
+
+\item[WORD] \mbox{} \index{WORD}
+
+        Тип {\tt WORD} определяется так:
+\begin{verbatim}
+CONST LOCSPERWORD = 4;
+TYPE WORD = ARRAY [0..LOCSPERWORD-1] OF LOC;
+\end{verbatim}
+и значение {\tt TSIZE(WORD)} по определению равно {\tt LOCSPERWORD}.
+
+Единственная операция, разрешенная с объектами типа {\tt WORD} 
+--- это присваивание.
+Специальные правила определяют совместимость при передаче параметров
+для системных типов памяти.
+См. подробнее в \ref{m2:ISO:comp:system}.
+
+\item[ADDRESS] \mbox{} \index{ADDRESS}
+
+        Тип ADDRESS определяется как
+\begin{verbatim}
+  TYPE ADDRESS = POINTER TO LOC;
+\end{verbatim}
+
+Тип ADDRESS совместим по присваиванию со всеми типами указателей, и наоборот
+(см. \ref{m2:ISO:comp:assign}). Формальный VAR-параметр типа 
+%??? A formal variable parameter of
+ADDRESS совместим с фактическим параметром любого типа указателя.
+
+Переменные типа ADDRESS уже не совместимы в выражениях с типом
+CARDINAL (как это было в PIM) и не могут напрямую появляться
+в выражениях, содержащих арифметические операторы.
+Для адресной арифметики вводятся функции {\tt ADDADR}, 
+{\tt SUBADR} и {\tt DIFADR}.
+
+\item[Целые системные типы] \mbox{}   \index{типы фиксированного размера}
+
+        Типы {\tt INT8}, {\tt CARD8}, {\tt INT16}, {\tt CARD16},
+        {\tt  INT32},  {\tt  CARD32} имеют фиксированный размер 8,
+        16 и 32  бита соответственно.
+
+Эти типы введены для облегчения интерфейса с библиотеками
+на других языках (см. Главу \ref{multilang}).  
+Типы  {\tt  SHORTINT}, {\tt LONGINT},
+{\tt  SHORTCARD},  {\tt  LONGCARD} --- синонимы типов 
+{\tt INT8},   {\tt   INT32},   {\tt   CARD8},   {\tt   CARD32}
+соответственно (см.  также опцию  \OERef{M2ADDTYPES}).
+Типы {\tt  INTEGER}  и {\tt CARDINAL} --- синонимы типов
+{\tt   INT16}/{\tt  INT32},  {\tt  CARD16}/{\tt  CARD32},
+в зависимости от платформы.
+
+Эти типы не описаны в Международном Стандарте.
+
+\item[Булевы системные типы] \mbox{}
+
+Типы {\tt BOOL8}, {\tt BOOL16}, и {\tt BOOL32} 
+содержат 8,16 и 32 бита соответственно. По умолчанию, компилятор
+использует тип {\tt BOOL8} в качестве типа BOOLEAN.
+Однако в некоторых случаях
+(напр. в интерфейсе к OS/2 или Windows API) 
+следует использовать {\tt BOOL16} или {\tt BOOL32}.
+
+\item[Целые типы Модулы-2] \mbox{}
+
+Типы {\tt INT} и {\tt CARD} совпадают с \mt{} типами {\tt INTEGER}
+        и {\tt CARDINAL} соответственно. 
+Эти типы можно использовать в языке
+\ot{} для переносимого использования
+\mt{}-процедур.
+См. подробнее в \ref{multilang:m2o2}.
+
+\item[Интерфейс с C] \mbox{}
+
+Типы {\tt int},  {\tt unsigned}, \verb|size_t| и 
+{\tt void} введены для облегчения написания интерфейса к
+C-библиотекам. См. подробнее в \ref{multilang:C}.
+
+\end{description}
+
+\subsection{Системные функции}\label{addr:arithmetic}
+\index{Модула-2!системные функции}
+
+\index{адресная арифметика}
+
+\begin{verbatim}
+PROCEDURE ADDADR(addr: ADDRESS;
+                 offs: CARDINAL): ADDRESS;
+\end{verbatim}
+\index{SYSTEM!ADDADR}
+Возвращает адрес, полученный как {\tt (addr + offs)}.
+Последующее использование этого адреса может привести к возбуждению
+исключения.
+
+\begin{verbatim}
+PROCEDURE SUBADR(addr: ADDRESS;
+                 offs: CARDINAL): ADDRESS;
+\end{verbatim}
+\index{SYSTEM!SUBADR}
+Возвращает адрес, полученный как {\tt (addr - offs)}.
+Последующее использование этого адреса может привести к возбуждению
+исключения.
+
+\ifgenc
+Результат функций {\tt ADDADR} и {\tt SUBADR} будет осмысленным,
+если {\tt addr} указывает в какой-либо объект, и вычисленный адрес
+указывает либо в тот же объект, либо на следующий байт после объекта.
+\fi
+
+\begin{verbatim}
+PROCEDURE DIFADR(addr1,addr2: ADDRESS): INTEGER;
+\end{verbatim}
+\index{SYSTEM!DIFADR}
+Возвращает разность адресов {\tt (addr1 - addr2)}.
+
+\ifgenc
+Результат этой функции будет осмысленным, если
+\verb|addr1| и \verb|addr2| указывают в один и тот же объект
+или на следующий байт после этого объекта.
+\fi
+
+\begin{verbatim}
+PROCEDURE MAKEADR(val: <whole type>): ADDRESS;
+\end{verbatim}
+
+Эта функция конструирует значение типа ADDRESS 
+из значения целого типа \footnote{Международный Стандарт
+не специфицирует количество и типы параметров этой функции.
+Программы, использующие ее, могут оказаться непереносимыми.}.
+
+\begin{verbatim}
+PROCEDURE ADR(VAR v: <any type>): ADDRESS;
+\end{verbatim}
+
+\index{SYSTEM!ADR (M2)}
+Возвращает адрес переменной {\tt v}.
+
+\begin{verbatim}
+PROCEDURE REF(VAR v: <anytype>):
+              POINTER TO <type of the parameter>;
+\end{verbatim}
+
+\index{SYSTEM!REF (M2)}
+
+Возвращает указатель на переменную {\tt v}. См. также \ref{multilang:parmcomp}.
+
+\begin{verbatim}
+PROCEDURE CAST(<type>; x: <any type>): <type>;
+\end{verbatim}
+
+\index{SYSTEM!CAST}
+Функция {\tt CAST} (как функция преобразования типа)
+может быть использована для интерпретации значения любого типа
+(кроме числового литерала) как значение другого типа
+\footnote{Международный Стандарт запрещает использование
+преобразований типов в стиле PIM, как напр.
+{\tt CARDINAL(x)}.}.
+
+Результатом функции {\tt  CAST(Type,val)} является неконтролируемое
+преобразование {\tt val} к типу {\tt Type}.
+Если {\tt SIZE(val) = TSIZE(Type)}, то
+битовое представление результата совпадает с битовым представлением
+{\tt  val};
+иначе результат и значение {\tt val}
+будут иметь одинаковое битовое представление на размере, равном 
+меньшему из двух (в единицах памяти).
+
+Некоторые комбинации типов параметров могут оказаться запрещенными.
+
+{\bf Замечание:} В Oberon-2 модуле SYSTEM аналогичная процедура
+называется \verb'VAL'.
+
+\begin{verbatim}
+PROCEDURE TSIZE(Type; ... ): CARDINAL;
+\end{verbatim}
+\index{SYSTEM!TSIZE}
+Возвращает количество единиц памяти (LOC), используемое для
+хранения значения данного типа. Дополнительные параметры, если
+они есть, используются для выбора варианта в вариантной записи,
+и должны быть константными выражениями
+\footnote{В текущей версии эти константные выражения игнорируются.}.
+
+\Example
+\begin{verbatim}
+TYPE
+  R = RECORD
+    CASE i: INTEGER OF
+      |1: r: REAL;
+      |2: b: BOOLEAN;
+    END;
+  END;
+
+  ... TSIZE(R,1) ...
+
+\end{verbatim}
+
+Значение {\tt TSIZE(T)} равно {\tt SIZE(T)}.
+
+\subsubsection{Функции на упакмножествах}
+
+Значения типа PACKEDSET являются последовательностями битов
+\footnote{В текущей версии типы множеств и упакмножеств не различаются.}.
+Бит с номером 0 --- это наименьший значащий бит данной платформы.
+Выполняются следующие равенства 
+(где {\tt v} --- переменная типа {\tt CARDINAL}):
+\begin{verbatim}
+        CAST(CARDINAL,BITSET{0}) = VAL(CARDINAL,1)
+        SHIFT(CAST(BITSET,v),1)  = v * 2
+        SHIFT(CAST(BITSET,v),-1) = v DIV 2
+\end{verbatim}
+
+Функции {\tt ROTATE} и {\tt SHIFT} можно применять
+к множествам размера, не превосходящего размера типа
+{\tt BITSET}.
+
+\begin{verbatim}
+PROCEDURE ROTATE(x: T; n: integer): T;
+\end{verbatim}
+\index{SYSTEM!ROTATE}
+Возвращает значение \verb|x|, циклически сдвинутого на \verb|n| 
+бит влево (при положительном \verb|n|) 
+или вправо (при отрицательном \verb|n|).
+
+\begin{verbatim}
+PROCEDURE SHIFT(x: T; n: integer): T;
+\end{verbatim}
+\index{SYSTEM!SHIFT}
+Возвращает значение \verb|x|, логически сдвинутого на \verb|n| 
+бит влево (при положительном \verb|n|) 
+или вправо (при отрицательном \verb|n|).
+
+\subsubsection{Нестандартные функции}
+
+\begin{verbatim}
+PROCEDURE CC(n: whole constant): BOOLEAN;
+\end{verbatim}
+\index{SYSTEM!CC}
+
+\ifcomment
+Возвращает TRUE, если выставлен флаг соответствующего условия
+($0\leq n\leq 15$).
+См. подробнее таблицу \ref{table:cc}.
+\begin{center}
+\begin{table}
+\begin{flushleft}
+\begin{tabular}{|r|l|}\hline
+\bf Условие    &\bf Значение \\ \hline
+ 0 &   переполнение                    \\
+ 1 &   нет переполнения                \\
+ 2 &   перенос                         \\
+ 3 &   беззнаковое больше или равно    \\
+ 4 &   равно                           \\
+ 5 &   не равно                        \\
+ 6 &   беззнаковое меньше или равно    \\
+ 7 &   беззнаковое больше              \\
+ 8 &   знак                            \\
+ 9 &   минус знак                      \\
+10 &   четность                        \\
+11 &   нечетность                      \\
+12 &   знаковое меньше                 \\
+13 &   знаковое больше или равно       \\
+14 &   знаковое меньше или равно       \\
+15 &   знаковое больше                 \\
+\hline
+\end{tabular}
+\end{flushleft}
+\caption{Флаги условий}\label{table:cc}
+\end{table}
+\end{center}
+\else
+Возвращает TRUE, если выставлен флаг соответствующего условия.
+В текущей версии функция не реализована.
+\fi
+
+\begin{verbatim}
+PROCEDURE BIT(adr: T; bit: INTEGER): BOOLEAN;
+\end{verbatim}
+
+\index{SYSTEM!BIT}
+Возвращает значение бита \verb|n| в \verb|Mem[adr]|.
+\verb|T| --- либо ADDRESS, либо целый тип.
+
+\subsection{Системные процедуры}
+\index{Модула-2!Системные процедуры}
+
+{\bf Замечание:} все эти процедуры нестандартны.
+
+\begin{verbatim}
+PROCEDURE MOVE (src, dst: ADDRESS; size: CARDINAL);
+\end{verbatim}
+
+\index{SYSTEM!MOVE}
+Копирует \verb|size| байт из места в памяти по адресу
+\verb|src| в место по адресу \verb|dst|.
+
+\begin{verbatim}
+PROCEDURE FILL(adr : ADDRESS; val : BYTE; size : CARDINAL);
+\end{verbatim}
+Заполняет участок памяти размера \verb'size', начиная с адреса
+\verb'adr', значением \verb'val',
+\ifgencode
+используя очень эффективный код.
+\else
+используя библиотечную функцию \verb'memset' в C.
+\fi
+
+
+\begin{verbatim}
+PROCEDURE GET (adr: ADDRESS; VAR v: SimpleType);
+PROCEDURE PUT (adr: ADDRESS;     x: SimpleType);
+\end{verbatim}
+
+\index{SYSTEM!GET}\index{SYSTEM!PUT}
+Получает/кладет значение по адресу \verb|adr|.
+Второй параметр не может быть записью или массивом.
+
+\begin{verbatim}
+VAR i: INTEGER;
+
+  GET (128, i);   (* get system cell value *)
+  i := i+20;      (* change it             *)
+  PUT (128, i);   (* и put back          *)
+\end{verbatim}
+
+\begin{verbatim}
+PROCEDURE CODE(...);
+\end{verbatim}
+
+\index{SYSTEM!CODE}
+\ifgencode
+Процедура служит для вставки последовательности команд
+непосредственно в порожденный код. В настоящей версии
+не реализована.
+\fi
+\ifgenc
+Процедура CODE принимает в качестве параметра последовательность
+строк. Процедура вставляет конкатенацию этих строк в генерируемый
+C текст.
+
+\Example
+\begin{verbatim}
+PROCEDURE disable;      (* disable interrupts *)
+BEGIN
+  SYSTEM.CODE ("asm di;");
+END disable;
+\end{verbatim}
+будет выдавать
+\begin{verbatim}
+  asm di;
+\end{verbatim}
+\fi
+
+%----------------------------------------------------------------
+
+\section{Расширения языка}\label{m2:ext}
+
+{\bf ПРЕДУПРЕЖДЕНИЕ:} Использование расширений может привести к проблемам
+при переносе программы на другие компиляторы.
+
+По умолчанию, \xds{} \mt{} компилятор совместим со стандартом ISO
+(см. \ref{m2:ISO}). 
+Опции \OERef{M2EXTENSIONS} и \OERef{M2ADDTYPES} позволяют использовать
+некоторые расширения языка.
+
+Основные цели поддержания расширений языка таковы:
+\begin{itemize}
+\item улучшить интерфейс с другими языками
+      (см. Главу \ref{multilang})
+\item упростить переход с \mt{} на \ot{}
+\item реализовать некоторые важные средства, не включенные в ISO \mt{}
+\item обеспечить обратную совместимость с предыдущими версиями
+\end{itemize}
+
+\subsection{Лексические расширения}
+\index{Модула-2!лексические расширения}
+
+\subsubsection{Комментарии}
+
+\mextonly
+
+Наряду с \verb|(**)| вводится еще один формат для комментариев
+в тексте программы. Часть строки от
+``\verb|--|'' до конца строки рассматривается как комментарий.
+
+\Example
+\begin{verbatim}
+  VAR i: INTEGER; -- это комментарий
+--(*
+  i:=0; (* эта строка будет скомпилирована *)
+--*)
+\end{verbatim}
+
+\subsubsection{Числовые константы}
+
+\mextonly
+
+Разрешается использовать синтаксические правила обоих языков 
+\mt{} и \ot{} для представления числовых и литерных констант.
+
+\begin{verbatim}
+число      = ["+"|"-"]целое|вещ.
+целое      = цифра{цифра}
+            |octalЦифра{octalЦифра}"B"
+            |цифра{hexЦифра}"X".
+вещ        = цифра{цифра}"."{цифра}[МасштФактор].
+МасштФактор= ("E"|"D")["+"|"-"]цифра{цифра}.
+
+character   ='"'char'"'|"'"char"'"
+            |цифра{hexЦифра}"H"
+            |octalЦифра{octalЦифра}"C".
+\end{verbatim}
+
+\Examples
+\begin{verbatim}
+1991               1991 (decimal)
+0DH                13   (decimal)
+15B                13   (decimal)
+41X                "A"
+101C               "A"
+\end{verbatim}
+
+{\bf Замечание:} идентификатор D в МасштФакторе означает
+число типа LONGREAL.
+
+\subsection{Дополнительные числовые типы}\label{m2:ext:numeric}
+\index{Модула-2!числовые типы}
+
+\maddonly
+
+Опция компилятора \OERef{M2ADDTYPES} позволяет использовать 
+следующие дополнительные числовые типы:
+
+\ifonline
+\begin{flushleft}
+\begin{tabular}{lll}
+1. &\bf SHORTINT  & целые от $-128$ до $127$          \\
+2. &\bf LONGINT   & целые от $-2**31$ до $2**31-1$  \\
+3. &\bf SHORTCARD & беззнаковые целые от $0$ до $255$        \\
+4. &\bf LONGCARD  & беззнаковые целые от $0$ до $2**32-1$   \\
+\end{tabular}
+\end{flushleft}
+\else
+\begin{flushleft}
+\begin{tabular}{lll}
+1. &\bf SHORTINT  & целые от $-128$ до $127$          \\
+2. &\bf LONGINT   & целые от $-2^{31}$ до $2^{31}-1$  \\
+3. &\bf SHORTCARD & беззнаковые целые от $0$ до $255$        \\
+4. &\bf LONGCARD  & беззнаковые целые от $0$ до $2^{32}-1$   \\
+\end{tabular}
+\end{flushleft}
+\fi
+
+Мы будем использовать следующие термины для групп типов:
+\begin{flushleft}
+{\em Вещественные типы\/} для (REAL, LONGREAL)                    \\
+{\em Целочисленные типы\/} для (SHORTINT, INTEGER, LONGINT)        \\
+{\em Кардинальные типы\/} для (SHORTCARD, CARDINAL, LONGCARD)     \\
+{\em Целые типы\/} для {\em целочисленных\/} и {\em кардинальных типов} \\
+{\em Числовые типы\/} для {\em целых\/} и {\em вещественных типов}          \\
+\end{flushleft}
+
+Все целочисленные типы реализованы как отрезки одного 
+внутреннего для компилятора
+целочисленного типа. Поэтому, в соответствии с правилами
+совместимости (см. \ref{m2:ISO:comp}), в выражениях можно 
+смешивать значения различных целочисленных типов. То же самое верно
+и для кардинальных типов. Смешивание целочисленных и кардинальных
+типов  в выражениях запрещено.
+Как и в языке \ot{}, числовые типы образуют иерархию, и большие
+типы включают (т.е. могут принимать значения) меньших типов:
+$$
+\mbox{LONGREAL} \subseteq \mbox{REAL} \subset \mbox{\em целые типы}
+$$
+
+Совместимость типов  в выражениях расширена следующими правилами
+(см. \ref{m2:ISO:comp:expr}):
+\begin{itemize}
+\item   
+Тип результата арифметической операции %??? или отношения
+есть наименьший тип, включающий типы обоих операндов.
+
+\item   Перед исполнением операции оба операнда конвертируются к типу
+результата.
+\end{itemize}
+
+Например, если определены следующие переменные:
+\begin{verbatim}
+     s: SHORTCARD;
+     c: CARDINAL;
+     i: INTEGER;
+     l: LONGINT;
+     r: REAL;
+     lr: LONGREAL;
+\end{verbatim}
+то
+\begin{center}
+\begin{tabular}{|l|l|l|} \hline
+\bf Выражение &\bf Значение &\bf Тип результата \\ \hline
+\tt s + c        &\tt VAL(CARDINAL,s) + c       & CARDINAL \\
+\tt l * i        &\tt l * VAL(LONGINT,i)        & LONGINT \\
+\tt r + 1        &\tt r + VAL(REAL,1)           & REAL    \\
+\tt r = s        &\tt r = VAL(REAL,s)           & BOOLEAN \\
+\tt r + lr       &\tt VAL(LONGREAL,r) + lr      & LONGREAL \\
+\tt c + i        &\tt запрещено                 &           \\
+\hline
+\end{tabular}
+\end{center}
+
+Правила совместимости по присваиванию также расширены
+(см. \ref{m2:ISO:comp:assign}),  так что выражение $e$ типа $T_e$
+совместимо по присваиванию с переменной $v$ типа $T_v$ если $T_e$
+и $T_v$ числовых типов и $T_v$ включает $T_e$. 
+Кардинальные и целочисленные типы совместимы по присваиванию.
+При необходимости компилятор генерирует проверки границ.
+
+\paragraph{Примеры (см. декларации выше):}
+\begin{center}
+\begin{tabular}{|l|p{7cm}|} \hline
+\bf Действие &\bf Комментарий \\ \hline
+\tt i:=c;     & {\tt INTEGER} и {\tt CARDINAL} совместимы по присваиванию \\
+\tt i:=s;     & {\tt INTEGER} и {\tt SHORTCARD} совместимы по присваиванию \\
+\tt l:=i;     & {\tt LONGINT} и {\tt INTEGER} --- отрезки одного базового типа                                              \\
+\tt r:=i;     & {\tt REAL}$\subset$ {\tt INTEGER}                           \\
+\tt r:=c;     & {\tt REAL}$\subset$ {\tt CARDINAL}                          \\
+\tt lr:=r;    & {\tt LONGREAL}$\subseteq$ {\tt REAL}                          \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Приведение типов}
+
+\mextonly
+
+В ISO Модуле-2, второй параметр процедуры
+\verb'SYSTEM.CAST' не может быть числовым литералом.
+\XDS{} предоставляет такую возможность как расширение языка:
+
+\begin{verbatim}
+    VAR
+      c: CARDINAL;
+    BEGIN
+      (* Ok if M2EXTENSIONS is ON *)
+      c := SYSTEM.CAST(CARDINAL,-1); 
+\end{verbatim}
+
+\subsection{Совместимость по присваиванию с типом BYTE}
+
+\mextonly
+
+Выражения типов {\tt CHAR}, {\tt BOOLEAN}, {\tt SHORTINT},
+и {\tt SYSTEM.CARD8} можно присваивать переменным типа
+{\tt BYTE}  или передавать как фактические параметры в формальные
+параметры типа {\tt BYTE}.
+
+\subsection{Динамические массивы}\label{m2:ext:dynarrs}
+\index{Модула-2!динамические массивы}
+
+\mextonly
+
+\xds{} разрешает использовать динамические массивы в стиле
+\ot{}  по правилам языка \ot{}.
+
+Открытый массив --- это тип массива, в котором не заданы 
+верхняя и нижняя границы индекса, т.е.
+ARRAY OF Тип. 
+Открытые массивы можно использовать только в списках параметров
+процедуры, или как базовый тип указателя.
+\begin{verbatim}
+TYPE String = POINTER TO ARRAY OF CHAR;
+\end{verbatim}
+Ни переменные, ни поля записи не могут иметь тип открытого массива.
+
+Если формально тип некоторого обозначения --- открытый массив,
+то с ним разрешается делать только две операции: индексировать
+и передавать как параметр в процедуру.
+
+Расширенные версии стандартных процедур {\tt NEW} и
+{\tt DISPOSE} могут создавать и удалять динамические массивы
+(см. \ref{m2:ext:NEW}).
+
+
+
+\Example
+\begin{verbatim}
+TYPE
+  VECTOR = ARRAY OF REAL;
+    (* 1-мерный открытый массив *)
+  Vector = POINTER TO VECTOR;
+    (* указатель на открытый массив *)
+  MATRIX = ARRAY OF VECTOR;
+    (* 2-мерный открытый массив *)
+  Matrix = POINTER TO MATRIX;
+    (* указатель на него *)
+
+VAR
+   v: Vector;
+   m: Matrix;
+
+PROCEDURE ClearVector(VAR v: VECTOR);
+  VAR i: CARDINAL;
+BEGIN
+  FOR i := 0 TO HIGH (v) DO v[i] := 0 END;
+END ClearVector;
+
+PROCEDURE ClearMatrix(VAR m: Matrix);
+  VAR i: CARDINAL;
+BEGIN
+  FOR i := 0 TO HIGH (m) DO ClearVector(m[i]) END;
+END ClearMatrix;
+
+PROCEDURE Test;
+BEGIN
+  NEW(v, 10);
+  NEW(m, 10, 20);
+  ClearVector(v^);
+  ClearMatrix(m^);
+  v^[0] := 1;
+  m^[1][1] := 2;
+  m^[2,2] := 1000;
+  DISPOSE(v);
+  DISPOSE(m);
+END Test;
+\end{verbatim}
+
+\subsection{Конструкторы константных массивов}\label{m2:constarrays}
+\index{Модула-2!конструкторы массивов}
+\mextonly
+
+\xds{} разрешает декларацию константного массива в форме
+\begin{verbatim}
+        ARRAY OF QualIdent "{" ExprList "}".
+\end{verbatim}
+{\tt QualIdent} должен означать основной тип, отрезок или перечислимый
+тип, и все выражения в
+{\tt ExprList} должны быть этого типа.
+
+{\bf Замечание:} Структурные типы и неконстантные выражения запрещены.
+
+Типом такой константы будет \verb|ARRAY [0..n] OF QualIdent|,
+где \verb|n+1| есть количество выражений в ExprList.
+\Example
+\begin{verbatim}
+CONST table = ARRAY OF INTEGER {1, 2+3, 3};
+\end{verbatim}
+
+Константные массивы подчиняются тем же правилам, что и все константы,
+и могут рассматриваться как обычные массивы.
+
+В некоторых случаях конструкторы такого вида удобнее, чем стандартные
+конструкторы ISO (см. \ref{m2:ISO:aggregates}),
+поскольку не требуется описывать тип и подсчитывать количество
+выражений. Однако, чтобы Ваши программы были более переносимыми,
+мы советуем пользоваться стандартными средствами.
+
+\subsection{Дополнение множества}\index{Модула-2!дополнение множества}
+
+\mextonly
+
+Как в языке \ot{}, унарный минус в применении к множеству означает
+дополнение этого множества, т.е.
+$-x$ --- это множество всех значений, не входящих в множество $x$.
+
+\begin{verbatim}
+TYPE SmallSet = SET OF [0..5];
+VAR x, y: SmallSet;
+BEGIN
+  x := SmallSet{1,3,5};
+  y := -x;                  (* y = {0, 2, 4} *)
+  y := SmallSet{0..5} - x;  (* y = {0, 2, 4} *)
+END;
+\end{verbatim}
+
+\subsection{Параметры по чтению}\label{m2:ext:RO_param}
+\index{параметры по чтению}
+\index{Модула-2!параметры по чтению}
+
+\mextonly
+
+В секции формальных параметров разрешается ставить \verb|"-"| 
+после имени параметра по значению. Такой параметр называется
+{\em параметром по чтению}; его значение нельзя менять в теле
+процедуры. Параметры по чтению не требуется копировать перед активацией
+процедуры, что позволяет сделать более эффективными вызовы 
+процедур со структурными параметрами.
+
+У параметров по чтению типа ARRAY и RECORD элементы 
+массива и поля записи также защищены. Параметры по чтению нельзя 
+указывать в определяющем модуле.
+
+Мы рекомендуем использовать параметры по чтению с осторожностью.
+Компилятор не отслеживает их изменений через другой параметр
+или через глобальную переменную.
+
+\Example
+\begin{verbatim}
+PROCEDURE Foo(VAR dest: ARRAY OF CHAR;
+               source-: ARRAY OF CHAR);
+BEGIN
+  dest[0]:='a';
+  dest[1]:=source[0];
+END Foo;
+\end{verbatim}
+
+Вызов \verb|Foo(x,x)| приведет к неверному результату, поскольку
+первый оператор изменяет значение
+\verb|source[0]| (\verb|source| не копируется, и находится в том же месте
+в памяти, что и \verb|dest|).
+
+\subsection{Переменное число параметров}\label{m2:SEQ:param}
+\index{SEQ параметры}
+\index{Модула-2!SEQ параметры}
+
+\mextonly
+
+Последний формальный параметр процедуры может быть описан как
+``последовательность байтов'' (SEQ-параметр). В вызове процедуры
+вместо такого параметра может быть подставлена любая, в~т.ч. пустая,
+последовательность фактических параметров. Фактические параметры,
+соответствующие SEQ параметру, могут быть любых типов.
+
+Разрешается только описание
+\begin{verbatim}
+     SEQ name: SYSTEM.BYTE
+\end{verbatim}. 
+Процедура может иметь только один
+SEQ параметр, и он должен быть последним в списке формальных параметров.
+
+Внутри процедуры SEQ параметры очень похожи на обычные параметры типа
+ARRAY. Более точно:
+\begin{itemize}
+\item функция {\tt HIGH} может быть применена к такому параметру;
+\item фактический SEQ параметр может быть далее передан в другую процедуру;
+\item \verb|i|-й байт последовательности \verb|s|
+можно получить, написав \verb|s[i]|, как элемент массива.
+\end{itemize}
+
+Массив байтов, передаваемый в процедуру как
+SEQ-параметр, формируется по следующим правилам:
+\begin{itemize}
+\item
+  значения всех фактических параметров, образующих последовательность,
+представляются, как указано ниже, и собираются в один массив в их
+порядке в тексте
+\item целочисленные значения конвертируются в {\tt LONGINT}
+\item {\tt BOOLEAN}, {\tt CHAR}, кардинальные и перечислимые значения
+конвертируются в {\tt LONGCARD}
+\item значения типа отрезка конвертируются в соответствии с их базовыми типами
+\item вещественные значения конвертируются в {\tt LONGREAL}
+\item значения скрытых типов, указателей и
+процедурных типов конвертируются в {\tt ADDRESS}
+\item структурные значения (записи и массивы) рассматриваются как 
+массивы байтов и передаются как последовательность из:
+    \begin{itemize}
+    \item адреса структуры
+    \item нулевого слова (резервировано для последующих расширений)
+    \item размера структуры (в единицах LOC) минус один
+    \end{itemize}
+\end{itemize}
+
+\ifgencode
+  См. более подробно в \ref{lowlevel:seqrep}.
+\fi
+\ifgenc
+  См. более подробно в \ref{maptoc:procdcl:seqrep}.
+\fi
+
+\subsection{Экспорт по чтению}\label{RO:export}
+\index{Модула-2!экспорт по чтению}
+
+\mextonly
+
+Символ "-" экспорта по чтению (из языка \ot{}), после идентификатора 
+переменной или поля в определяющем модуле означает, что этот
+идентификатор экспортируется только по чтению. Лишь модуль, в 
+котором описан этот идентификатор, может изменять его значение.
+
+Компилятор не позволит ни явного (присваиванием), ни неявного
+(передачей как VAR параметр) изменения объекта, экспортируемого 
+по чтению.
+
+У переменной типа массива или записи, экспортируемой по чтению,
+все элементы массива или поля записи также экспортируются по чтению.
+
+\paragraph{Пример (выдержка из определяющего модуля):}
+\begin{verbatim}
+TYPE Rec = RECORD
+  n-: INTEGER;
+  m : INTEGER;
+END;
+
+VAR
+  in-: FILE;
+  x-: Rec;
+\end{verbatim}
+
+\subsection{Переименование импортируемых модулей}
+\index{Модула-2!переименование в импорте}
+\mextonly
+
+Импортируемый модуль может быть переименован в импортирующем его модуле.
+Настоящее имя модуля становится невидимым.
+\begin{verbatim}
+Import = IMPORT [ Ident ":=" ] Ident
+          { "," [ Ident ":=" ] ident } ";".
+\end{verbatim}
+
+\Example
+\begin{verbatim}
+MODULE test;
+IMPORT vw := VirtualWorkstation;
+
+VAR ws: vw.Station;
+
+BEGIN
+  ws := vw.open();
+END test.
+\end{verbatim}
+
+\subsection{NEW и DISPOSE для динамических массивов}\label{m2:ext:NEW}
+\index{Модула-2!NEW и DISPOSE}
+\index{NEW (M2)}\index{DISPOSE}
+\index{распределение памяти}
+\index{DYNALLOCATE}
+\index{DYNDEALLOCATE}
+
+Стандартные процедуры {\tt NEW} и {\tt DISPOSE} можно применять
+к переменным типа динамического массива (см. \ref{m2:ext:dynarrs}).
+При этом процедуры {\tt DYNALLOCATE} и {\tt DYNDEALLOCATE} должны быть
+видимы в контексте вызова:
+
+\begin{verbatim}
+PROCEDURE DYNALLOCATE(VAR a: ADDRESS;
+                       size: CARDINAL;
+                        len: ARRAY OF CARDINAL);
+\end{verbatim}
+
+Эта процедура должна аллоцировать динамический массив, где
+\verb|size| --- это размер базового типа (размер элемента массива),
+а \verb|len[i]| --- длина массива в  $i$-й размерности.
+
+\begin{verbatim}
+PROCEDURE DYNDEALLOCATE(VAR a: ADDRESS;
+                     size,dim: CARDINAL);
+\end{verbatim}
+
+Эта процедура должна деаллоцировать динамический массив, где
+\verb|size| --- размер элемента массива, и
+\verb|dim| --- размерность массива.
+
+{\bf Замечание:} В большинстве случаев можно использовать встроенную
+реализацию этих процедур.
+Опция \OERef{STORAGE} указывает,  использовать ли ее.
+
+Динамический массив представляется как указатель на так называемый
+дескриптор массива
+\ifgenc (см. \ref{maptoc:dynarr}). \fi
+\ifgencode (см. \ref{lowlevel:opendesc}). \fi
+
+\subsection{HALT}\label{m2:ext:HALT}
+\index{HALT}
+\mextonly
+
+У процедуры HALT допускается необязательный целочисленный параметр.
+\begin{verbatim}
+PROCEDURE HALT ([code: INTEGER]);
+\end{verbatim}
+\verb|HALT| прекращает выполнение программы, возможно, возвращая при
+этом код остановки. Подробности см. в документации к операционной
+системе или окружению.
+
+\subsection{ASSERT}\label{m2:ext:ASSERT}\index{ASSERT}
+\index{ASSERT}
+\mextonly
+
+Процедура ASSERT проверяет значение своего булевского параметра
+и прекращает выполнение программы, если он не равен
+TRUE. Второй, необязательный, параметр задает
+{\em код остановки задачи}. Если он опущен, подставляется стандартное
+значение.
+
+\begin{verbatim}
+PROCEDURE ASSERT(cond: BOOLEAN [; code: INTEGER]);
+\end{verbatim}
+
+Вызов \verb|ASSERT(expr,code)| эквивалентен
+\begin{verbatim}
+IF NOT expr THEN HALT(code) END;
+\end{verbatim}
+
+\section{Директивы в исходном тексте (прагмы)}\label{m2:pragmas}
+
+Директивы в исходном тексте (или прагмы) служат для установки опций 
+компилятора в исходном тексте и для выбора частей текста, которые нужно
+компилировать (условная компиляция).
+ISO \mt{} стандарт не описывает синтаксиса прагм.
+\XDS{} позволяет использовать прагмы в обоих языках,
+\mt{} и \ot{}. Используется синтаксис, описанный в
+{\em The Oakwood Guidelines for the \ot{} Compiler Developers}
+
+\subsection{Опции и параметры в тексте}\label{m2:pragmas:inline}
+\index{опции в тексте}
+\index{параметры в тексте}
+
+Некоторые опции и параметры удобнее устанавливать непосредственно в тексте.
+Такие опции компилятора, как
+\OERef{MAIN}, естественно помещать в исходный текст перед 
+заголовком модуля, а такие, как проверки во время исполнения ---
+между операторами.
+
+\xds{} позволяет устанавливать опции в исходном тексте с помощью
+стандартных
+ISO псевдо-комментариев \verb|<* ... *>|\footnote{Поддерживается также
+устаревший стиль прагм,
+\verb|(*\$..*)|, для обеспечения обратной совместимости,
+но компилятор выдает предупреждение "устаревший синтаксис".}.
+
+Некоторые опции разрешается помещать в тексте только до заголовка
+модуля (т.е. до ключевых слов IMPLEMENTATION, DEFINITION или MODULE).
+В любом другом месте текста такие опции игнорируются.
+См. подробнее в \ref{opt:bool:list}.
+
+Формат установки в тексте опций и параметров описывается следующим 
+синтаксисом:
+\begin{flushleft} \tt
+\begin{tabular}{l@{= }p{10cm}}
+Pragma      & \verb|<*| PragmaBody \verb|*>| \\
+PragmaBody  & PUSH $|$ POP $|$ NewStyle $|$ OldStyle \\
+NewStyle    & [ NEW ] name [ "+" $|$ "-" $|$ "=" string ] \\
+OldStyle    & ("+" $|$ "-") name \\
+\end{tabular}
+\end{flushleft}
+\index{<* *>@\verb'<* *>'}
+
+{\tt NewStyle} предлагается как Oakwood-стандарт для языка \ot{},
+{\tt OldStyle} --- это стиль, использовавшийся в прежних версиях
+\xds{}. В именах опций не различаются большие и малые буквы.
+Если используется {\tt OldStyle}, то не должно быть пробелов
+между \verb|<*| и \verb|+| или \verb|-|.
+{\tt OldStyle} не позволяет декларировать новые опции или параметры,
+и не позволяет менять значения параметров.
+
+Символ \verb|+| во всех случаях устанавливает соответствующую опцию
+ON, а символ \verb|-| устанавливает ее OFF.
+
+Ключевые слова {\tt PUSH} и {\tt POP} служат для сохранения 
+и восстановления значений всех опций и параметров.
+
+\Examples
+\begin{verbatim}
+PROCEDURE Length(VAR a: ARRAY OF CHAR): CARDINAL;
+  VAR i: CARDINAL;
+BEGIN
+  <* PUSH *>              (* save state *)
+  <* CHECKINDEX - *>      (* turn CHECKINDEX off *)
+  i := 0;
+  WHILE (i<=HIGH(a)) & (a[i]#0C) DO INC(i) END;
+  <* POP *>               (* restore state *)
+  RETURN i;
+END Length;
+\end{verbatim}
+\begin{verbatim}
+<* ALIGNMENT = "2" *>
+TYPE
+  R = RECORD      (* This record is 6 bytes long *)
+        f1: CHAR;
+        f2: CARDINAL;
+      END;
+\end{verbatim}
+
+\subsection{Условная компиляция}\label{m2:pragmas:cc}
+\index{условная компиляция}
+
+Команды условной компиляции и в Модуле-2, и в Обероне-2\footnote
+{только при выставленной опции {\bf O2ISOPRAGMA}}
+используют стандартную ISO нотацию для прагм: \verb|<* *>|.
+Операторы условной компиляции можно помещать в любом месте текста.
+Приведем синтаксис IF-оператора условной компиляции:
+\begin{verbatim}
+  IfStatement      = <* IF Expression THEN *>  text
+                   { <* ELSIF Expression THEN *> text }
+                   [ <* ELSE *> text ]
+                     <* END *>
+  Expression       = SimpleExpression
+                     [ ("=" | "#") SimpleExpression].
+  SimpleExpression = Term { "OR" Term}.
+  Term             = Factor { "&" Factor}.
+  Factor           = ident | string |
+                     "DEFINED" "(" ident ")" |
+                     "(" Expression ")" |
+                     "~" Factor | "NOT" Factor.
+  ident            = option | equation.
+\end{verbatim}
+
+Операндами в выражениях могут служить имена опций или параметров, 
+и константные строки. Опция имеет значение 
+TRUE, если она была выставлена в файле конфигурации, в проектном файле,
+в командной строке или в тексте. 
+Опция имеет значение FALSE, если она в явном виде была приравнена
+FALSE (т.е. выключена), или если она вообще не была определена.
+Если в операторе условной компиляции использованы недекларированные
+опция или параметр, то компилятор сообщит о предупреждении.
+
+См. также часть \ref{opt:COMPILER}.
+
+\Examples
+\begin{verbatim}
+  IMPORT lib :=
+        <* IF  __GEN_X86__ THEN *> MyX86Lib;
+        <* ELSIF __GEN_C__ THEN *> MyCLib;
+        <* ELSE *> *** Unknown ***
+        <* END *>
+\end{verbatim}
+
+\begin{verbatim}
+  CONST Win = <* IF Windows THEN *> TRUE
+              <* ELSE *> FALSE
+              <* END *>;
+\end{verbatim}
+
+\begin{verbatim}
+  <* IF DEFINED(Debug) & (DebugLevel = "2") THEN *>
+     PrintDebugInformation;
+  <* END *>;
+\end{verbatim}
+
+\begin{verbatim}
+  <* IF platform = "OS2" THEN *>
+    Strings.Capitalize(filename);
+    <* IF NOT HPFS THEN *>
+      TruncateFileName(filename);
+    <* END *>
+  <* END *>
+\end{verbatim}
+

@@ -1,0 +1,1043 @@
+\ifenglish
+\section{Find Text dialog}
+ \else
+\section{диалог Find Text}
+\fi
+\public{SEARCH\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog is invoked by \ref[Edit]{M\_EDIT}:\ref[Find]{IDM\_FIND} menu command
+or by pressing {\bf Ctrl+F} key.
+
+To search the current file for a certain string:
+ \else
+Этот диалог вызывается командой меню \ref[Edit]{M\_EDIT}:\ref[Find]{IDM\_FIND}
+или путем нажатия клавиши {\bf Ctrl+F}.
+
+Чтобы найти в текущем файле определенную строку:
+\fi
+\begin{enumerate}
+\item 
+      \ifenglish
+      Type it in the {\bf Text to find} field or select it from search history
+      by pressing down arrow button next to the entry field.
+       \else
+      Наберите ее в поле {\bf Text to find} или выберите из архива поиска путем
+      нажатия на кнопку со стрелкой рядом с полем ввода.
+      \fi
+\item 
+      \ifenglish
+      Select in {\bf Find text as} group which occurrences of the text you are interested in.
+      Following options are available:
+       \else
+      В группе {\bf Find text as} определите, какие вхождения вашей строки вас интересуют
+      \fi
+      
+      {\bf Any text} 
+      \ifenglish
+      -- any occurrence is acceptable
+      \else
+      -- любое вхождение приемлемо
+      \fi
+      {\bf Word prefix} 
+      \ifenglish
+      -- word break must precede the text
+      \else
+      -- перед текстом должно находиться начало слова
+      \fi
+      {\bf Word suffix} 
+      \ifenglish
+      -- word break must follow the text
+      \else
+      -- после текста должен следовать конец слова
+      \fi
+      {\bf Whole word}
+     \ifenglish 
+      -- text must be surrounded by word breaks
+      \else
+      -- текст должен быть ограничен промежутками между словами
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf Case sensitive} checkbox if you want only
+      case-matching occurrences of a string to be found
+      \else
+      Установите опцию {\bf Case sensitive}, если хотите чтобы отыскивались
+      вхождения вашей строки с точностью до регистра
+      \fi
+\item 
+      \ifenglish
+      Choose the {\bf Search Range} and direction. You may search either {\bf From cursor forward}
+      or {\bf From cursor backwards} or {\bf In whole text}.
+      \else
+      Выберите участок и направление поиска. Вы можете призводить поиск 
+      {\bf впереди позиции курсора}  или {\bf позади позиции курсора} или
+      {\bf во всем тексте}.
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf OK} pushbutton
+      \else
+      Нажмите кнопку {\bf OK}
+      \fi
+\end{enumerate}
+
+\ifenglish
+You may select {\bf insert current word} checkbox to allow automatic selection
+of current word in the editor as a search pattern.
+
+If the text is found, it will be selected as a block.
+After the first search you may use \ref[Edit]{M\_EDIT}:\ref[Find Next]{IDM\_FINDNEXT}
+menu command or press {\bf Ctrl+L}.
+
+There is also shortcut for searching for current word. You may press
+{\bf Ctrl+Up} or {\bf Ctrl+Down} to search for current word either up or down.
+\else
+Вы можете установить опцию {\bf insert current word}, чтобы позволить 
+автоматический выбор текущего слова в редакторе в качестве шаблона поиска.
+
+Если текст найден, он будет отмечен как блок.
+После первого поиска вы можете использовать команду меню \ref[Edit]{M\_EDIT}:\ref[Find Next]{IDM\_FINDNEXT}
+или нажать {\bf Ctrl+L}.
+
+Существует также сокращенный вариант команды поиска. Вы можете нажать
+{\bf Ctrl+Up} или {\bf Ctrl+Down}, чтобы прозвести поиск слова вверх или вниз.
+\fi
+ %-----------------------------------------------------------------------
+\begin{popup}
+\caption{Insert current word}
+\public{SEARCH\_INSERTCURRENT}
+
+\ifenglish
+When this checkbox is selected the search pattern field is automatically
+initialized with current word from the editor window.
+\else
+Когда эта опция установлена, поле шаблона поиска автоматически инициализируется
+текущим словом в окне редактирования.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Text to find}
+\public{SEARCH\_TEXT}
+
+\ifenglish
+Type the string you want to find - the {\em search string} in this
+entry field. All the strings you type are kept in history list. You may select
+one of previously searched patterns by pressing the down arrow button to the
+right of this field.
+\else
+Наберите строку, которую хотите отыскать - пункт {\em search string} в поле ввода.
+Все строки, которые вы вводите, сохраняются в архивном списке. Вы можете выбрать
+один из изпользованных прежде шаблонов посредством нажатия клавиши со стрелкой
+справа от этого поля.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Case sensitive}
+\public{SEARCH\_CASE}
+
+\ifenglish
+Select the {\bf Case sensitive} checkbox if you want to find only
+case-matching occurrences of a string. For instance, if you search for
+the string {\tt "Win32"}, the string {\tt "WIN32"} will be skipped.
+\else
+Установите опцию {\bf Case sensitive}, если хотите отыскать участки текста, 
+содержащие вашу строку с точностью до регистра. Например, если вы ищете 
+строку {\tt "Win32"}, строка {\tt "WIN32"} будет отброшена.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Any text}
+\public{SEARCH\_ANYTEXT}
+
+\ifenglish
+This option allows searching for all occurrences of a string, either
+as separate words, or within other words. For example, pattern {\tt "ear"} will
+be found in text {\tt "Search"}.
+\else
+Эта опция позволяет отыскивать все вхождения, где строка встречается
+как отдельное слово, или как часть других. К примеру, шаблон {\tt "ear"} 
+будет обнаружен в тексте {\tt "Search"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Word prefix}
+\public{SEARCH\_PREFIX}
+
+\ifenglish
+Allows the text to be found in the beginning but not in the middle of words
+(that means, requires word break to precede text occurrences). For example,
+pattern {\tt "Wind"} will be found in word {\tt"Windows"}.
+\else
+Позволяет отыскивать текст в начале, но не в середине слов (что означает
+необходимость наличия промежутка между словами перед обнаруженным текстом).
+Например, шаблон {\tt "Wind"} будет найден в слове {\tt"Windows"}. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Word suffix}
+\public{SEARCH\_SUFFIX}
+
+\ifenglish
+Allows the text to be found in the end but not in the middle of words
+(that means, requires word break to follow text occurrences). For example,
+pattern {\tt "fix"} will be found in word {\tt"suffix"}.
+\else
+Позволяет отыскать текст в конце, но не в середине слов (что означает
+требование к промежутку между словами находиться сразу за обнаруженным 
+текстом). Например, шаблон {\tt "fix"} будет найден в {\tt"suffix"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Whole word}
+\public{SEARCH\_WHOLEWORD}
+
+
+\ifenglish
+Select the {\bf Whole words} check box if you want occurrences of a search
+string within other words to be skipped during search.
+So neither pattern {\tt "hole"} nor {\tt "ole"} nor letter {\tt "h"}
+will be found in word {\tt "Whole"}.
+\else
+Установите опцию {\bf Whole words}, если хотите, чтобы поиск внутри 
+других слов не велся. Так, ни шаблон {\tt "hole"}, ни {\tt "ole"}, ни буква 
+{\tt "h"} не будут найдены в слове {\tt "Whole"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{From cursor forward}
+\public{SEARCH\_FORWARD}
+
+\ifenglish
+Select this radiobutton if you want search to be performed
+starting from the cursor position to the end of file.
+\else
+Включите этот переключатель, если хотите, чтобы поиск производился 
+от текущей позиции курсора до конца файла. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{From cursor backwards}
+\public{SEARCH\_BACK}
+
+\ifenglish
+Select this radiobutton if you want search to be performed
+starting from the cursor position to the beginning of the file.
+The last occurrence (the closest to the cursor) will be found.
+\else
+Включите эту кнопку, если хотите, чтобы поиск производился, начиная от текущей
+позиции курсора до конца файла. Будет обнаружено последнее (ближайшее к 
+курсору) вхождение искомой строки.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{In whole text}
+\public{SEARCH\_WHOLETEXT}
+
+\ifenglish
+Select this radiobutton if you want search to be started
+from the top of file.
+\else
+Включите эту кнопку, если хотите, чтобы поиск производился от начала файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{SEARCH\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to start search.
+\else
+Нажмите кнопку {\bf OK}, чтобы начать поиск.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{SEARCH\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton to dismiss the dialog not performing a
+search.
+\else
+Нажмите кнопку {\bf Cancel}, чтобы отказаться от поиска. 
+\fi
+\end{popup}
+
+%=======================================================================
+
+\ifenglish
+\section{Find and Replace text dialog}
+\else
+\section{диалог Find and Replace text}
+\fi
+\public{REPLACE\_DIALOG}
+
+\ifenglish
+This dialog is invoked by \ref[Edit]{M\_EDIT}:\ref[Replace]{IDM\_REPLACE} menu command
+or by pressing {\bf Ctrl+H} key.
+
+To search the current file for a certain string and replace it
+with another:
+\else
+Этот диалог вызывается командой меню \ref[Edit]{M\_EDIT}:\ref[Replace]{IDM\_REPLACE}
+или нажатием клавиши {\bf Ctrl+H}.
+
+Чтобы отыскать в текущем файле некоторую строку и заменить ее на другую:
+\fi
+\begin{enumerate}
+\item 
+      \ifenglish
+      Type a {\em search string} in the {\bf Text to find} field
+      \else
+      Введите искомую строку в поле {\bf Text to find}
+      \fi
+\item 
+      \ifenglish
+      Type a {\em replacement string} in the {\bf Text to replace with} field
+      \else
+      Введите строку замещения в поле {\bf Text to replace with}
+      \fi
+\item  
+      \ifenglish
+      Select the {\bf Case sensitive} checkbox if you want only
+      case-matching occurrences of a string to be replaced
+      \else
+      Установите опцию {\bf Case sensitive}, если вы хотите, чтобы 
+      заменились только вхождения, содержащие искомую строку с точностью до 
+      регистра
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf Whole words} checkbox if you want a string not to
+      be replaced if it occurs as a substring in a word
+      \else
+      Установите опцию {\bf Whole words}, если хотите чтобы ваша строка 
+      не заменялась, в случае если она часть некоторого слова.
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf Replace all} checkbox if you want all occurrences of
+      a search string in the search range to be replaced automatically
+      \else
+      Установите опцию {\bf Replace all}, если хотите, чтобы замена
+      всех вхождений, содержащих искомую строку, произошла автоматически.
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf Prompt user} checkbox if you want to manually
+      confirm each replace
+      \else
+      Установите опцию {\bf Prompt user}, если хотите подтвердить каждую замену 
+      сами.
+      \fi
+\item 
+       \ifenglish
+       Choose the search range by selecting one of the {\bf From cursor},
+      {\bf In whole text}, or {\bf In selection} pushbuttons
+       \else
+      Выберите участок поиска, нажав кнопки {\bf From cursor} 
+      или {\bf In whole text} или {\bf In selection}.
+        \fi
+\item 
+      \ifenglish
+      Select the {\bf OK} pushbutton
+      \else
+      Нажмите кнопку {\bf OK}
+      \fi
+\end{enumerate}
+
+\ifenglish
+You may select {\bf insert current word} checkbox to allow automatic selection
+of current word in the editor as a search pattern.
+
+If you don't specify {\bf Replace all}, replace will stop after first replacement.
+You may continue replacement from this point by selecting \ref[Replace Next]{IDM\_REPLACENEXT}
+from the \ref[Edit]{M\_EDIT} menu or by pressing {\bf Ctrl+R}.
+\else
+Вы можете установить опцию {\bf insert current word}, чтобы позволить 
+автоматический выбор текущего словав редакторе в качестве шаблона поиска.
+
+Если вы не зададите {\bf Replace all}, то произойдет только одно замещение. 
+Вы можете продолжить замещение с этого момента, выбрав \ref[Replace Next]{IDM\_REPLACENEXT} 
+из меню \ref[Edit]{M\_EDIT} или нажав {\bf Ctrl+R}.
+\fi
+%-----------------------------------------------------------------------
+\begin{popup}
+\caption{Insert current word}
+\public{REPLACE\_INSERTCURRENT}
+
+\ifenglish
+When this checkbox is selected the search string field is automatically
+initialized with current word from the editor window.
+\else
+Когда установлена эта опция, поле строки поиска автоматически инициализируется
+текущим словом в окне редактирования.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Text to find}
+\public{REPLACE\_TEXT}
+
+\ifenglish
+Type the string you want to find -- the {\em search string} in this
+entry field.
+\else
+Введите строку, которую вы хотите найти в этом поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Text to replace with}
+\public{REPLACE\_BY\_TEXT}
+
+\ifenglish
+Type the string with which you want a search string to be replaced --
+the {\em replacement string} in this entry field. Leave this field empty
+to delete occurrences of a search string.
+\else
+В этом поле ввода наберите строку, на которую вы хотите заменить строку 
+поиска -- {\em строку замещения}. Оставьте это поле пустым, если хотите
+удалить вхождения строки поиска.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Case sensitive}
+\public{REPLACE\_CASE}
+
+\ifenglish
+Select the {\bf Case sensitive} checkbox if you want to find only
+case-matching occurrences of a string. For instance, if you search for
+the string {\tt "Win32"}, the string {\tt "WIN32"} will be skipped.
+\else
+Установите опцию {\bf Case sensitive}, если хотите отыскать вхождения строки 
+с точностью до регистра. Например, если вы ищете строку {\tt "Win32"}, 
+строка {\tt "WIN32"} будет отброшена.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Whole words}
+\public{REPLACE\_WORDS}
+
+\ifenglish
+Select the {\bf Whole words} check box if you want occurrences of a search
+string within other words to be skipped during search. For instance,
+{\tt "place"} will not be found in {\tt "replace"}.
+\else
+Установите опцию {\bf Whole words}, если хотите чтобы поиск внутри слов не велся Например
+{\tt "place"} не будет найдена в {\tt "replace"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Replace all}
+\public{REPLACE\_ALL}
+
+\ifenglish
+Select the {\bf Replace all} checkbox if you want all occurrences of a search
+string within a search range to be replaced. If this checkbox isn't selected,
+the replacement stops after the first occurrence of a text.
+\else
+Установите опцию {\bf Replace all}, если хотите, чтобы все вхождения строки поиска
+подверглись замещению. Если эта опция не установлена, произойдет только 
+одно замещение.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Prompt user}
+\public{REPLACE\_PROMPT}
+
+\ifenglish
+Select the {\bf Prompt user} checkbox if you want to manually confirm each
+replace. For each occurrence of a text you will be asked if you wish to 
+replace it, to skip it or to cancel the operation.
+\else
+Установите опцию {\bf Prompt user}, если хотите подтверждать каждое замещение 
+вручную. Для каждого вхождения строки поиска вы должны будете подтвердить
+замену, пропустить ее либо отменить операцию.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{From cursor}
+\public{REPLACE\_FROMCURSOR}
+
+\ifenglish
+Select the {\bf From cursor} radiobutton if you want replacement to be performed
+starting from the cursor position to the bottom of file.
+\else
+Включите кнопку {\bf From cursor}, если хотите чтобы замещение происходило 
+начиная от текущей позиции курсора до конца файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{In whole text}
+\public{REPLACE\_WHOLETEXT}
+
+\ifenglish
+Select the {\bf In whole text} radiobutton if you want to replace the text in whole
+file.
+\else
+Включите кнопку {\bf In whole text}, если хотите заменить текст во всем файле.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{In selection}
+\public{REPLACE\_SELECTION}
+
+\ifenglish
+Select the {\bf In selection} radiobutton if you want search to be performed
+within the current selection. This option is disabled if there is no selection.
+\else
+Включите кнопку {\bf In selection}, если хотите чтобы поиск происходил в текущем 
+выделенном блоке. Эта опция не доступна, если выделения нет.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{REPLACE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to start replace.
+\else
+Нажмите кнопку {\bf OK}, чтобы начать замещение.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{REPLACE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to replace any text.
+\else
+Нажмите кнопку {\bf Cancel}, если вы решили не производить замещение.
+\fi
+\end{popup}
+
+%=======================================================================
+
+\ifenglish
+\section{Replace prompt dialog}
+\else
+\section{диалог Replace prompt}
+\fi
+\public{REPLACE\_PROMPT\_DIALOG}
+
+\ifenglish
+This dialog is displayed when a replace action is about to be performed
+and the {\bf Prompt user} mode is enabled. Select:
+\else
+Этот диалог появляется перед произведением замены в случае, если установлена
+опция. Нажмите: 
+\fi
+\begin{description}
+\item \ifenglish
+      [{\bf Yes}] to confirm replace of the selected search string
+      \else
+      [{\bf Yes}], чтобы подтвердить замену        
+      \fi
+\item \ifenglish
+     [{\bf No}] to skip replace
+     \else
+     [{\bf No}], чтобы пропустить замену
+     \fi
+\item \ifenglish
+      [{\bf Yes to All}] to replace the remaining occurrences of the
+   search string without prompting
+     \else
+     [{\bf Yes to All}], чтобы заменить все оставшиеся вхождения
+     строки поиска без запроса
+     \fi
+\item \ifenglish
+      [{\bf Cancel}] to terminate the replace action
+     \else
+     [{\bf Cancel}], чтобы завершить процесс замены
+     \fi
+\end{description}
+
+%-----------------------------------------------------------------------
+
+\begin{popup}
+\caption{Search text}
+\public{REPLACE\_PROMPT\_TEXT1}
+\ifenglish
+This is the string you search.
+\else
+Это строка, которую вы ищете.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Replace text}
+\public{REPLACE\_PROMPT\_TEXT2}
+
+\ifenglish
+This is the string you replace the search string with.
+\else
+Это строка, на которую вы заменяете строку поиска.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Yes}
+\public{REPLACE\_PROMPT\_OK}
+\ifenglish
+Confirm replacement of this occurrence.
+\else
+Подтвердить замещение данного вхождения.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{No}
+\public{REPLACE\_PROMPT\_NO}
+
+\ifenglish
+Skip this occurrence.
+\else
+Пропустить это вхождение.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Yes to All}
+\public{REPLACE\_PROMPT\_YESALL}
+
+\ifenglish
+Replace all remaining occurrences without asking.
+\else
+Заменить все оставшиеся вхождения без запроса.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{REPLACE\_PROMPT\_Cancel}
+\ifenglish
+Cancel replacement. Don't replace anything more.
+\else
+Отменить замену. Ничего больше не замещать.
+\fi
+\end{popup}
+
+%=======================================================================
+\section{Search in files}
+\public{MSEARCH\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog is invoked by \ref[Edit]{M\_EDIT}:\ref[Find in Files]{IDM\_FINDFILES} menu command
+or by pressing {\bf Ctrl+Shift+F} key.
+\else
+
+Этот диалог появляется при исполнении команды меню \ref[Edit]{M\_EDIT}:\ref[Find in Files]{IDM\_FINDFILES} 
+или при нажатии клавиши {\bf Ctrl+Shift+F}.
+\fi
+\ifenglish
+To search the group of files for a certain string:
+\else
+Чтобы найти определенную строку в группе файлов:
+\fi
+\begin{enumerate}
+\item 
+      \ifenglish
+      Type it in the {\bf Text to find} field or select it from search history
+      by pressing down arrow button next to the entry field.
+      You may also leave this field blank if you wish just build list of files
+      with names that match given pattern.
+      \else
+      Наберите ее в поле {\bf Text to find}, или выберите в архиве поиска посредством 
+      нажатия кнопки со стрелкой рядом с полем ввода. 
+      Вы также можете оставить это поле пустым, если вы лишь хотите получить
+      список файлов, имена которых соответствуют данному шаблону.
+      \fi
+\item 
+      \ifenglish
+      Specify where you wish to find. Following options are available:
+      \else
+      Определите, где вы хотите производить поиск. Возможны следующие варианты:
+      \fi
+      \begin{itemize}
+      \item \ifenglish
+            {\bf Open windows}
+            \else
+            {\bf открытые окна}
+            \fi
+      \item \ifenglish
+            {\bf Project files}
+            \else
+            {\bf файлы проекта}
+            \fi
+     \item 
+            \ifenglish
+            {\bf Disk files}.
+            \else
+            {\bf файлы на диске}
+            \fi
+    \end{itemize}
+
+       \ifenglish
+      In the last case you should also specify the directory to find in
+      and, if you wish, turn on searching subdirectories.
+      \else
+      В последнем случае вы должны также указать директорию поиска и, 
+      если пожелаете, включить поиск в поддиректориях.
+      \fi
+\item \ifenglish
+      Specify file name mask if you wish to find in some subset of files.
+      File name mask is a regular expression in the same format as one in
+      redirection file.
+      \else
+      Укажите шаблон имени файла, если хотите производить поиск в некотором
+      подмножестве файлов.
+      \fi
+\item \ifenglish
+      Select in {\bf Find text as} group which occurrences of the text you are interested in.
+      Following options are available:
+      \else
+      В меню {\bf Find text as} выберите, какие места, содержащие ваш текст, вас 
+      интересуют.
+      Возможны следующие варианты:
+      \fi
+      \begin{itemize}
+      \item {\bf Any text} 
+      \ifenglish 
+      -- any occurrence is acceptable
+      \else
+      -- любое вхождение приемлемо
+      \fi
+      \item {\bf Word prefix} 
+       \ifenglish
+       -- word break must precede the text
+       \else
+       -- перед текстом должен быть промежуток между словами
+       \fi
+      \item {\bf Word suffix} 
+       \ifenglish
+       -- word break must follow the text
+       \else
+       -- за текстом следует промежуток между словами
+       \fi
+      \item {\bf Whole word} 
+       \ifenglish
+       -- text must be surrounded by word breaks
+       \else
+       -- текст должен быть окружен промежутками между словами
+       \fi
+      \end{itemize}
+\item 
+      \ifenglish
+      Select the {\bf Case sensitive} checkbox if you want only
+      case-matching occurrences of a string to be found
+      \else
+      Установите опцию {\bf Case sensitive}, если хотите чтобы поиск велся 
+      с точностью до регистра
+      \fi
+\item 
+      \ifenglish
+      Select the {\bf OK} pushbutton
+      \else
+      Нажмите кнопку {\bf OK}
+      \fi
+\end{enumerate}
+
+\ifenglish
+When you press OK, the dialog appears with progress information and {\bf Cancel}
+button. You may cancel the operation by pressing it.
+
+After the search is done you get list of files in which the pattern is found.
+Several such lists may be opened at the same time. Select the {\bf Open new window}
+checkbox if you wish each new result to be opened in separate window. Otherwise
+existing window, if any, will be opened and filled with new file list.
+
+Selecting file from the list opens it in the IDE and finds first occurrence of
+a search string in the file. Press {\bf Ctrl+L} (Search Next) to see other occurrences.
+
+Note that if some files are opened in the IDE and modified, search will always
+work on those modified versions, even when the range is specified as Directory.
+\else
+Когда вы нажимаете OK, появляется диалог с информацией о ходе поиска и кнопкой
+{\bf Cancel}. Вы можете прекратить поиск, если нажмете на нее.
+
+После того, как поиск завершен, вы располагаете списком файлов, где встретился 
+ваш шаблон. Одновременно может быть открыто несколько таких списков. Установите 
+опцию {\bf Open new window}, если хотите, чтобы каждый новый результат отображался 
+в отдельном окне. Иначе список файлов попадет в уже существующее окно. 
+
+Выбор файла из списка открывает его в IDE и находит первое вхождение
+строки поиска. Чтобы перейти к следующему вхождению, нажмите {\bf Ctrl+L}.
+
+Заметьте, что если несколько файлов открыты и изменены в IDE, то поиск будет
+производиться в этих измененных вариантах, даже если область поиска определена 
+как Директория.
+\fi
+%-----------------------------------------------------------------------
+
+\begin{popup}
+\caption{OK}
+\public{MSEARCH\_OK}
+
+\ifenglish
+Start search operation. Dialog box will appear with {\bf Cancel} button
+that allows you to cancel the operation.
+\else
+Начать процедуру поиска. Появится диалоговое окно с кнопкой {\bf Cancel},
+что позволяет вам прекратить процедуру.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{MSEARCH\_CANCEL}
+
+\ifenglish
+Press {\bf Cancel} button if you decided not to perform file search.
+
+\else
+Нажмите кнопку {\bf Cancel}, если решили не производить поиск.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Any text}
+\public{MSEARCH\_ANYTEXT}
+
+\ifenglish
+This option allows searching for all occurrences of a string, either
+as separate words, or within other words. For example, pattern {\tt "ear"} will
+be found in text {\tt "Search"}.
+
+\else
+Эта опция позволяет отыскивать все вхождения, где строка содержится как отдельное
+слово или как часть других слов. Например, шаблон {\tt "ear"} будет
+найден в тексте {\tt "Search"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Word prefix}
+\public{MSEARCH\_PREFIX}
+
+\ifenglish
+Allows the text to be found in the beginning but not in the middle of words
+(that means, requires word break to precede text occurrences). For example,
+pattern {\tt "Wind"} will be found in word {\tt"Windows"}.
+\else
+Позволяет отыскивать текст в начале, а не в середине слов (что означает, что
+перед местом, где встретился текст должен быть промежуток между словами).
+Например, шаблон {\tt "Wind"} будет найден в слове {\tt"Windows"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Word suffix}
+\public{MSEARCH\_SUFFIX}
+
+\ifenglish
+Allows the text to be found in the end but not in the middle of words
+(that means, requires word break to follow text occurrences). For example,
+pattern {\tt "fix"} will be found in word {\tt"suffix"}.
+\else
+Позволяет отыскать текст в конце, но не в середине слов (что означает
+требование к промежутку между словами находиться сразу за обнаруженным 
+текстом). Например, шаблон {\tt "fix"} будет найден в {\tt"suffix"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Whole word}
+\public{MSEARCH\_WHOLEWORD}
+
+\ifenglish
+Select the {\bf Whole words} check box if you want occurrences of a search
+string within other words to be skipped during search.
+So neither pattern {\tt "hole"} nor {\tt "ole"} nor letter {\tt "h"}
+will be found in word {\tt "Whole"}.
+\else
+Установите опцию {\bf Whole words}, если хотите, чтобы вхождения строки поиска в 
+середине слов не рассматривались. Так ни {\tt "hole"}, ни {\tt "ole"}, ни буква 
+ {\tt "h"} не будут найдены в слове {\tt "Whole"}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Insert current word}
+\public{MSEARCH\_INSERTCURRENT}
+
+\ifenglish
+When this checkbox is selected the search string field is automatically
+initialized with current word from the editor window.
+\else
+Когда эта опция установлена, строка поиска автоматически инициализируется 
+текущим словом в окне редактирования.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Text to find}
+\public{MSEARCH\_TEXT}
+
+\ifenglish
+Type the string you want to find - the {\em search string} in this
+entry field. All the strings you type are kept in history list. You may select
+one of previously searched patterns by pressing the down arrow button to the
+right of this field.
+
+Leaving this field blank builds list of files in given search area that match
+specifies file name mask.
+\else
+Наберите строку, которую хотите отыскать в этом поле ввода. Все строки, 
+которые вы вводите, хранятся в архивном списке. Вы можете выбрать один из ранее 
+использованных шаблонов путем нажатия кпопки со стрелкой справа от этого поля.
+
+Если оставить это поле пустым, то будет построен список файлов, имена которых
+отвечают указанному шаблону имени файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Project files}
+\public{MSEARCH\_PROJFILES}
+
+\ifenglish
+Instructs the IDE to search in all project files. The project files list
+is built during project make.  Only files whose names
+matches the specified file mask are searched.
+\else
+Заставляет IDE производить поиск во всех проектных файлах. Список проектных 
+файлов строится во время компоновки проекта. Поиск прозводится только в 
+файлах, имена которых отвечают указанному шаблону имени файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Open windows}
+\public{MSEARCH\_OPEN}
+
+\ifenglish
+Instructs IDE to search in all open windows whose names match the specified
+file name mask.
+\else
+Заставляет IDE производить поиск во всех открытых окнах, названия которых
+отвечают указанному шаблону имени файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Directory}
+\public{MSEARCH\_DISK}
+
+\ifenglish
+Instructs IDE to search in disk files in given directory. Only files whose names
+matches the specified file mask are searched.
+\else
+Заставляет IDE производить поиск в файлах в данной директории. Поиск будет
+произведен только в файлах, имена которых отвечают заданному шаблону.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Case sensitive}
+\public{MSEARCH\_CASE}
+
+\ifenglish
+Select the {\bf Case sensitive} checkbox if you want to find only
+case-matching occurrences of a string. For instance, if you search for
+the string {\tt "Win32"}, the string {\tt "WIN32"} will be skipped.
+\else
+Установите опцию {\bf Case sensitive}, если хотите отыскать участки текста, 
+содержащие вашу строку с точностью до регистра. Например, если вы ищете строку
+{\tt "Win32"}, строка {\tt "WIN32"} будет отброшена.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Open new window}
+\public{MSEARCH\_NEWWINDOW}
+
+\ifenglish
+If you already have one search result window and this checkbox is checked
+a new window will be created after the search. Otherwise current window will
+be used.
+\else
+Если у вас уже имеется одно окно с результатами поиска, и эта опция установлена,
+то после очередного поиска будет создано новое окно. Иначе будет использовано
+текущее окно.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Directory}
+\public{MSEARCH\_DIR}
+
+\ifenglish
+If {\bf Directory} radio button is selected you set directory to find files in here.
+You may also check {\bf and subdirectories} check box to search in subdirectories of this
+directory.
+\else
+Если включена кнопка {\bf Directory}, то здесь вы указываете директорию, в которой 
+будет производиться поиск файлов. Вы также можете установить опцию, чтобы поиск 
+велся также и в поддиректориях данной директории.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{and subdirectories}
+\public{MSEARCH\_SUBDIR}
+
+\ifenglish
+Specify that you wish to search in subdirectories as well as in specified
+directory. The search will happen in whole directory subtree, without any
+depth limit.
+\else
+Указывает, что вы хотите производить поиск и в поддиректориях данной директории.
+Поиск произойдет во всем поддереве директорий без ограничения глубины.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{File name mask}
+\public{MSEARCH\_MASK}
+
+\ifenglish
+Specify in which files you wish to search the pattern. Any regular expression
+is allowed here. Leaving this field blank invokes searching in all files. Be careful!
+\else
+Укажите, в каких файлах вы хотите отыскать ваш шаблон. Здесь возможно любое
+регулярное выражение. Если оставить это поле пустым, то поиск будет произведен 
+во всех файлах. Будьте осторожны.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{MSEARCH\_BROWSE}
+
+\ifenglish
+Select directory where you wish to search using standard directory selection
+dialog.
+\else
+Выберите директорию, где вы хотите произвести поиск, используя стандартный диалог
+выбора директории.
+\fi
+\end{popup}
+

@@ -1,0 +1,134 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "c_lang"=.\c_lang.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "java_lang"=.\java_lang.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "m2_lang"=.\m2_lang.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "res_java"=.\res_java.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "res_mod"=.\res_mod.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "res_mod_edu"=.\res_mod_edu.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "res_vax"=.\res_vax.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "xds"=.\xds.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name c_lang
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name m2_lang
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name java_lang
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name res_java
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name res_mod
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name res_mod_edu
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name res_vax
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

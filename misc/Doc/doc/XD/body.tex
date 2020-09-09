@@ -1,0 +1,15 @@
+\newcommand{\KeyListBegin}[1]{\ifonline\begin{description}\else\begin{tabular}{lp{#1}}\hline\fi}
+\newcommand{\KeyListEnd}{\ifonline\end{description}\else\hline\end{tabular}\fi}
+\newcommand{\KeyDef}[2]{\ifonline\item[#1] #2\else\bf #1 & #2 \\ \fi}
+
+\newcommand{\Tip}{\marginpar{\drawing{tip}}}
+\input{intro.tex}
+\input{start.tex}
+\input{dialog.tex}
+\input{batch.tex}
+\input{expr.tex}
+\input{remote.tex}
+\input{keys.tex}
+\appendix
+\input{his.tex}
+\printindex

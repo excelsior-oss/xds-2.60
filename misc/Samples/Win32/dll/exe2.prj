@@ -1,0 +1,10 @@
+-implib-
+-usedll+
+
++gendebug
++genhistory
++lineno
+
+-lookup = *.mod = $!/exesrc
+
+!module exe2.mod

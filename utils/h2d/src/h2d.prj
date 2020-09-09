@@ -1,0 +1,129 @@
+% Project file for H2D
+% modes are: enduser, work
+
+!if not defined mode then
+  -mode := work
+!end
+
+!if not defined placement then
+  !if (mode="enduser") then
+    -placement := release
+  !else
+    -placement := current
+  !end
+!end
+
+% ======================================================
+% Files lookup settings
+% ======================================================
++makedirs
+
+% Output lookup settings
+!if placement="release" then
+  -mkfname  = enduser/tmp/h2d
+  !if backend = "X86" then
+    -lookup = *.sym  = enduser/tmp; enduser/xds/sym/x86
+    -lookup = *.lib|*.a = enduser/xds/lib/x86
+  !elsif backend = "C" then
+    -lookup = *.sym  = enduser/tmp; enduser/xds/sym/C
+    -lookup = *.lib|*.a = enduser/xds/lib/C
+  !end
+  -lookup = *.h    = enduser/tmp
+  -lookup = *.c    = enduser/tmp
+  -lookup = *.obj  = enduser/tmp
+  -lookup = *.o    = enduser/tmp
+  -lookup = *.exe  = enduser/xds/bin
+  -lookup = *.     = enduser/xds/bin
+  -lookup = h2d    = enduser/xds/bin
+  -xdsdir = enduser/xds
+!else
+  % port or work
+  -mkfname = h2d
+  -lookup = *.sym  = $!/../sym
+  -lookup = *.obj  = $!/../ch
+  -lookup = *.o    = $!/../ch
+  -lookup = *.exe  = $!/..
+  -lookup = *.     = $!/..
+  -lookup = *.dll  = $!/..
+  -lookup = *.lnk  = $!/../ch
+!end
+
+% Source lookup settings
+-lookup = *.def  = $!
+-lookup = *.mod  = $!
+-lookup = *.ob2  = $!
+
+!if not defined debug then
+  !if mode = "work" then
+    -debug:+
+  !else
+    -debug:-
+  !end
+!end
+
+!if debug then
+  -gendebug+
+  -genhistory+
+  -lineno+
+  -checkindex+
+  -checknil+
+  -checkdindex+
+  -checktype+
+  -checkrange+
+  -checkset+
+  -checkdiv+
+  -checkproc+
+  -assert+
+  -ioverflow+
+  -coverflow+
+  -foverflow+
+!else
+  -gendebug-
+  -genhistory-
+  -lineno-
+  -checkindex-
+  -checknil-
+  -checkdindex-
+  -checktype-
+  -checkrange-
+  -checkset-
+  -checkdiv-
+  -checkproc-
+  -assert-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+!end
+
+!if mode = "enduser" then
+  !if backend = "X86" then
+    -gendebug+
+    -lineno+
+    -genhistory+
+  !elsif backend = "C" then
+    -gendebug-
+    -lineno-
+  !end
+  -assert+
+  -checkindex-
+  -checkdindex-
+  -checkrange-
+  -checkset-
+  -checknil-
+  -checkproc-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+!end
+
+-decor=rt
+
++o2extensions
++m2extensions
+
+-makefile+
+
+-heaplimit = 16000000
+-gcthreshold = 8000000
+
+!module h2d.ob2

@@ -1,0 +1,266 @@
+
+\ifenglish
+\section{New Style Sheet dialog}
+\else
+\section{диалог New Style Sheet}
+\fi
+\public{SAVESTYLE\_DIALOG}
+
+\ifenglish
+To save the current project as a style sheet or create new style sheet:
+\else
+Чтобы сохранить текущий проект как таблицу стилей, или создать новый стиль:
+\fi
+\begin{enumerate}
+\item \ifenglish
+      Type a name for the style sheet in the corresponding entry field
+      or select it from the list below to overwrite one of the previously
+      defined style sheets
+      \else
+      Введите имя стиля в соответствующем поле ввода или выберите
+      его из расположенного ниже списка, чтобы переписать один из ранее
+      определенных стилей
+      \fi
+\item \ifenglish
+       Type a style sheet file name or select the {\bf Browse} button
+      to bring up a standard file dialog.
+      \else
+      Введите имя файла стиля или нажмите кнопку {\bf Browse},
+      чтобы вызвать стандартный файловый диалог.
+      \fi
+\item \ifenglish
+      Select the {\bf OK} pushbutton
+      \else
+      Нажмите кнопку {\bf OK}  
+      \fi
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Type a name for a style sheet}
+\else
+\caption{Введите имя нового стиля}
+\fi
+\public{SAVESTYLE\_NAMES}
+
+\ifenglish
+Type in this field a name for a new style sheet. This name will be displayed
+in a style sheet list. The name you type is automatically copied to
+the {\bf File name} field.
+\else
+Наберите в этом поле имя нового стиля. Это имя будет отображено в 
+списке стилей. Введенное вами имя будет автоматически скопировано
+в поле {\bf File name}.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Type a file name}
+\else
+\caption{Введите имя файла}
+\fi
+\public{SAVESTYLE\_FILE}
+
+\ifenglish
+Type a name for a file, in which you want the style sheet to be stored,
+in the entry field, or select the {\bf Browse} pushbutton to choose a name
+using a standard file dialog.
+\else
+Наберите имя файла, где вы хотите сохранить стиль, в поле ввода,
+или нажмите кнопку {\bf Browse}, чтобы выбрать имя, используя стандарный файловый 
+диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{SAVESTYLE\_BROWSE}
+
+\ifenglish
+Select name for a file in which you want the style sheet to be stored
+using a standard file dialog.
+
+\else
+Выберите имя файла, где вы хотите сохранить стиль, используя стандартный 
+файловый диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{SAVESTYLE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to save a style sheet.
+\else
+Нажмите кнопку {\bf OK}, чтобы сохранить таблицу стилей.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{SAVESTYLE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to make new style sheet.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не создавать новый стиль.
+\fi
+\end{popup}
+
+%=====================================================================
+
+\ifenglish
+\section{Apply style sheet dialog}
+\else
+\section{диалог Apply style sheet}
+\fi
+\public{STYLE\_DIALOG}
+
+\ifenglish
+To {\em apply} a style sheet to the current project, select it in the
+listbox and select the {\bf OK} pushbutton.
+
+The applying style sheet statements will be added to the current
+project or will replace the matching statements, if any.
+\else
+Для добавления стиля в текущий проект, выберите его в списке 
+и нажмите кнопку {\bf OK}.
+
+Установки применяемого стиля будут добавлены в текущий проект,
+или заменят уже существующие, если такие есть.
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\caption{Select style sheet}
+\public{STYLE\_LISTBOX}
+
+\ifenglish
+This listbox contains names of all style sheets known to the Environment.
+Select the style sheet and press {\bf OK} button. Double-clicking in this list
+also works.
+\else
+Этот список содержит имена всех стилей, известных Среде.
+Выберите таблицу стилей и нажмите {\bf OK}. Можно также дважды щелкнуть по 
+списку.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{STYLE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to apply the selected style sheet to
+the current project.
+\else
+Нажмите кнопку {\bf OK}, чтобы применить выбранную таблицу стилей к текущему
+проекту.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{STYLE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to apply a style
+sheet.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не применять таблицу стилей.
+\fi
+\end{popup}
+%=====================================================================
+
+\ifenglish
+\section{Delete style sheet dialog}
+\else
+\section{диалог Delete style sheet}
+\fi
+\public{DELETESTYLE\_DIALOG}
+
+\ifenglish
+To delete a style sheet, select it in the
+listbox and select the {\bf OK} pushbutton.
+
+The style sheet file will also be deleted.
+\else
+Чтобы удалить таблицу стилей, выберите ее в списке 
+и нажмите кнопку {\bf OK}.
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\caption{OK}
+\public{DELETESTYLE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to delete the selected style sheet from
+the current project.
+\else
+Нажмите кнопку {\bf OK}, чтобы удалить выбранный стиль из
+текущего проекта.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{DELETESTYLE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to delete a style
+sheet.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не удалять таблицу стилей.
+\fi
+\end{popup}
+%=====================================================================
+
+\ifenglish
+\section{Edit style sheet dialog}
+\else
+\section{диалог Edit style sheet}
+\fi
+\public{EDITSTYLE\_DIALOG}
+
+\ifenglish
+To edit a style sheet, select it in the
+listbox and select the {\bf OK} pushbutton.
+
+Style sheets are edited in the same manner as projects are. The visual options
+editor will appear.
+\else
+Для редактирования стиля, выберите его в списке
+и нажмите кнопку {\bf OK}.
+
+Стили редактируются таким же образом, как и проекты. Появится редактор
+визуальных опций.
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\caption{OK}
+\public{EDITSTYLE\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to edit the selected style sheet.
+\else
+Нажмите кнопку {\bf OK}, чтобы редактировать выбранную таблицу стилей.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{EDITSTYLE\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to edit a style
+sheet.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не редактировать стиль.
+\fi
+\end{popup}

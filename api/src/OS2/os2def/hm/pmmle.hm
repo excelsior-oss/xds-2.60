@@ -1,0 +1,249 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMMLE.H
+*
+* OS/2 Presentation Manager MultiLine Edit Control
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_WINMLE             Includes this file
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+
+   #define MLE_INCLUDED
+
+   (*************************************************************************
+   * MLE Window styles ( in addition to WS_* )
+   *************************************************************************)
+   CONST MLS_WORDWRAP             =  00000001H;
+   CONST MLS_BORDER               =  00000002H;
+   CONST MLS_VSCROLL              =  00000004H;
+   CONST MLS_HSCROLL              =  00000008H;
+   CONST MLS_READONLY             =  00000010H;
+   CONST MLS_IGNORETAB            =  00000020H;
+   CONST MLS_DISABLEUNDO          =  00000040H;
+
+   (*************************************************************************
+   * MLE External Data Types
+   *************************************************************************)
+   TYPE IPT  = LONG;            (* insertion point         *)
+   TYPE PIPT = POINTER TO IPT;  (* insertion point         *)
+   TYPE PIX  = LONG;            (* pixel                   *)
+   TYPE LINE = ULONG;           (* Line number             *)
+
+   TYPE MLEFORMATRECT = RECORD   (* MLEFRD *)
+      cxFormat:   LONG;           (* format rectangle width  *)
+      cyFormat:   LONG;           (* format rectangle height *)
+   END;
+   TYPE PFORMATRECT = POINTER TO MLEFORMATRECT;
+
+   TYPE MLECTLDATA = RECORD   (* MLECTL *)
+      cbCtlData:     USHORT;     (* Length of the MLECTLDATA structure  *)
+      afIEFormat:    USHORT;     (* import/export format                *)
+      cchText:       ULONG;      (* text limit                          *)
+      iptAnchor:     IPT;        (* beginning of selection              *)
+      iptCursor:     IPT;        (* ending of selection                 *)
+      cxFormat:      LONG;       (* format rectangle width              *)
+      cyFormat:      LONG;       (* format rectangle height             *)
+      afFormatFlags: ULONG;      (* formatting rectangle flags          *)
+      pHWXCtlData:   PVOID;      (* reserved for Pen CtlData (penpm.h)  *)
+   END;
+   TYPE PMLECTLDATA = POINTER TO MLECTLDATA;
+
+   (*************************************************************************
+   * afFormatFlags mask
+   *************************************************************************)
+   CONST MLFFMTRECT_LIMITHORZ     =  00000001H;
+   CONST MLFFMTRECT_LIMITVERT     =  00000002H;
+   CONST MLFFMTRECT_MATCHWINDOW   =  00000004H;
+   CONST MLFFMTRECT_FORMATRECT    =  00000007H;
+
+   (*************************************************************************
+   * afIEFormat - Import/Export Format flags
+   *************************************************************************)
+   CONST MLFIE_CFTEXT             =  0;
+   CONST MLFIE_NOTRANS            =  1;
+   CONST MLFIE_WINFMT             =  2;
+   CONST MLFIE_RTF                =  3;
+
+   (*************************************************************************
+   * MLN_OVERFLOW structure
+   *************************************************************************)
+   TYPE MLEOVERFLOW = RECORD   (* overflow *)
+      afErrInd:      ULONG;         (* see mask below                         *)
+      nBytesOver:    LONG;          (* number of bytes overflowed             *)
+      pixHorzOver:   LONG;          (* number of pixels horizontally overflow *)
+      pixVertOver:   LONG;          (* number of pixels vertically overflowed *)
+   END;
+   TYPE POVERFLOW = POINTER TO MLEOVERFLOW;
+
+   (*************************************************************************
+   * afErrInd - error format rectangle flags
+   *************************************************************************)
+   CONST MLFEFR_RESIZE            =  00000001H;
+   CONST MLFEFR_TABSTOP           =  00000002H;
+   CONST MLFEFR_FONT              =  00000004H;
+   CONST MLFEFR_TEXT              =  00000008H;
+   CONST MLFEFR_WORDWRAP          =  00000010H;
+   CONST MLFETL_TEXTBYTES         =  00000020H;
+
+   (*************************************************************************
+   * MLN_MARGIN structure
+   *************************************************************************)
+   TYPE MLEMARGSTRUCT = RECORD   (* margin *)
+      afMargins:  USHORT;      (* margin indicator     *)
+      usMouMsg:   USHORT;      (* mouse message        *)
+      iptNear:    IPT;         (* the geometrically nearest insertion point *)
+   END;
+   TYPE PMARGSTRUCT = POINTER TO MLEMARGSTRUCT;
+
+   (*************************************************************************
+   * afFlags - margin notification indicators
+   *************************************************************************)
+   CONST MLFMARGIN_LEFT           =  0001H;
+   CONST MLFMARGIN_BOTTOM         =  0002H;
+   CONST MLFMARGIN_RIGHT          =  0003H;
+   CONST MLFMARGIN_TOP            =  0004H;
+
+   (*************************************************************************
+   * MLM_QUERYSELECTION flags
+   *************************************************************************)
+   CONST MLFQS_MINMAXSEL          =  0;
+   CONST MLFQS_MINSEL             =  1;
+   CONST MLFQS_MAXSEL             =  2;
+   CONST MLFQS_ANCHORSEL          =  3;
+   CONST MLFQS_CURSORSEL          =  4;
+
+   (*************************************************************************
+   * MLN_CLPBDFAIL flags
+   *************************************************************************)
+   CONST MLFCLPBD_TOOMUCHTEXT     =  00000001H;
+   CONST MLFCLPBD_ERROR           =  00000002H;
+
+   (*************************************************************************
+   * MLM_SEARCH structure
+   *************************************************************************)
+   TYPE MLE_SEARCHDATA = RECORD   (* search *)
+      cb:          USHORT;            (* size of search spec structure       *)
+      pchFind:     PCHAR;       (* string to search for                *)
+      pchReplace:  PCHAR;    (* string to replace with              *)
+      cchFind:     SHORT;       (* length of pchFindString             *)
+      cchReplace:  SHORT;    (* length of replace string            *)
+      iptStart:    IPT;      (* point at which to start search      *)
+      (* (negative indicates cursor pt)      *)
+      (* becomes pt where string found       *)
+      iptStop:     IPT;       (* point at which to stop search       *)
+      (* (negative indicates EOT)            *)
+      cchFound:    USHORT;      (* Length of found string at iptStart  *)
+   END;
+   TYPE PMLE_SEARCHDATA = POINTER TO MLE_SEARCHDATA;
+
+   (*************************************************************************
+   * MLM_SEARCH style flags
+   *************************************************************************)
+   CONST MLFSEARCH_CASESENSITIVE  =  000000001H;
+   CONST MLFSEARCH_SELECTMATCH    =  000000002H;
+   CONST MLFSEARCH_CHANGEALL      =  000000004H;
+
+   (*************************************************************************
+   * MLE messages - MLM from 0x01b0 to 0x01de; MLN from 0x0001 to 0x000f
+   *************************************************************************)
+   (* formatting messages *)
+   CONST MLM_SETTEXTLIMIT         =  01B0H;
+   CONST MLM_QUERYTEXTLIMIT       =  01B1H;
+   CONST MLM_SETFORMATRECT        =  01B2H;
+   CONST MLM_QUERYFORMATRECT      =  01B3H;
+   CONST MLM_SETWRAP              =  01B4H;
+   CONST MLM_QUERYWRAP            =  01B5H;
+   CONST MLM_SETTABSTOP           =  01B6H;
+   CONST MLM_QUERYTABSTOP         =  01B7H;
+   CONST MLM_SETREADONLY          =  01B8H;
+   CONST MLM_QUERYREADONLY        =  01B9H;
+
+   (* text content manipulation and queries messages *)
+   CONST MLM_QUERYCHANGED         =  01BAH;
+   CONST MLM_SETCHANGED           =  01BBH;
+   CONST MLM_QUERYLINECOUNT       =  01BCH;
+   CONST MLM_CHARFROMLINE         =  01BDH;
+   CONST MLM_LINEFROMCHAR         =  01BEH;
+   CONST MLM_QUERYLINELENGTH      =  01BFH;
+   CONST MLM_QUERYTEXTLENGTH      =  01C0H;
+
+   (* text import and export messages *)
+   CONST MLM_FORMAT               =  01C1H;
+   CONST MLM_SETIMPORTEXPORT      =  01C2H;
+   CONST MLM_IMPORT               =  01C3H;
+   CONST MLM_EXPORT               =  01C4H;
+   CONST MLM_DELETE               =  01C6H;
+   CONST MLM_QUERYFORMATLINELENGTH=  01C7H;
+   CONST MLM_QUERYFORMATTEXTLENGTH=  01C8H;
+   CONST MLM_INSERT               =  01C9H;
+
+   (* selection messages *)
+   CONST MLM_SETSEL               =  01CAH;
+   CONST MLM_QUERYSEL             =  01CBH;
+   CONST MLM_QUERYSELTEXT         =  01CCH;
+
+   (* undo and redo messages *)
+   CONST MLM_QUERYUNDO            =  01CDH;
+   CONST MLM_UNDO                 =  01CEH;
+   CONST MLM_RESETUNDO            =  01CFH;
+
+   (* text attributes messages *)
+   CONST MLM_QUERYFONT            =  01D0H;
+   CONST MLM_SETFONT              =  01D1H;
+   CONST MLM_SETTEXTCOLOR         =  01D2H;
+   CONST MLM_QUERYTEXTCOLOR       =  01D3H;
+   CONST MLM_SETBACKCOLOR         =  01D4H;
+   CONST MLM_QUERYBACKCOLOR       =  01D5H;
+
+   (* scrolling messages *)
+   CONST MLM_QUERYFIRSTCHAR       =  01D6H;
+   CONST MLM_SETFIRSTCHAR         =  01D7H;
+
+   (* clipboard messages *)
+   CONST MLM_CUT                  =  01D8H;
+   CONST MLM_COPY                 =  01D9H;
+   CONST MLM_PASTE                =  01DAH;
+   CONST MLM_CLEAR                =  01DBH;
+
+   (* display manipulation messages *)
+   CONST MLM_ENABLEREFRESH        =  01DCH;
+   CONST MLM_DISABLEREFRESH       =  01DDH;
+
+   (* search message *)
+   CONST MLM_SEARCH               =  001DEH;
+   CONST MLM_QUERYIMPORTEXPORT    =  001DFH;
+
+   (* notification messages *)
+   CONST MLN_OVERFLOW             =  0001H;
+   CONST MLN_PIXHORZOVERFLOW      =  0002H;
+   CONST MLN_PIXVERTOVERFLOW      =  0003H;
+   CONST MLN_TEXTOVERFLOW         =  0004H;
+   CONST MLN_VSCROLL              =  0005H;
+   CONST MLN_HSCROLL              =  0006H;
+   CONST MLN_CHANGE               =  0007H;
+   CONST MLN_SETFOCUS             =  0008H;
+   CONST MLN_KILLFOCUS            =  0009H;
+   CONST MLN_MARGIN               =  000AH;
+   CONST MLN_SEARCHPAUSE          =  000BH;
+   CONST MLN_MEMERROR             =  000CH;
+   CONST MLN_UNDOOVERFLOW         =  000DH;
+   CONST MLN_CLPBDFAIL            =  000EH;
+
+(**************************** end of file **********************************)

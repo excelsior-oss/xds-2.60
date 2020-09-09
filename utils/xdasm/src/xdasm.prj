@@ -1,0 +1,132 @@
+% Project file for XDS-x86 Disassembler.
+%
+% Valid modes are: work,enduser
+%       The differences are: debug settings, lookup paths
+
+!if not defined mode then
+  !new mode = work
+!end
+
+-TARGET_VAX:-
+-TARGET_x86:+
+-TARGET_m68k:-
+-TARGET_PPC:-
+
+-DEST_XDS:-
+-DEST_XDASM:+
+
+-OBJ_FORMAT_OMF:+
+-OBJ_FORMAT_ELF:-
+-OBJ_FORMAT_AOUT:-
+-OBJ_FORMAT_XOMF:-
+
+% ======================================================
+% Files lookup settings
+% ======================================================
+-changesym+
+
+% Output lookup settings
++makedirs
+
+!if mode="enduser" then
+  -lookup = *.lnk = enduser\tmp
+  -lookup = *.obj = enduser\tmp
+  -lookup = *.sym = enduser\tmp;enduser\xds\sym\X86
+  -lookup = *.exe = enduser\xds\bin
+  -lookup = *.lib = enduser\xds\lib\X86
+!elsif mode="work" then
+  -lookup = *.lnk = ch
+  -lookup = *.obj = ch
+  -lookup = *.sym = sym
+  -lookup = *.lib = .
+  -lookup = *.exe = .
+!end
+
+% Source lookup settings
+-lookup = *.ob2=$!
+-lookup = *.def=$!
+-lookup = *.mod=$!
+!if OBJ_FORMAT_OMF then
+  -lookup = *.ob2=$!\omf
+  -lookup = *.def=$!\omf
+  -lookup = *.mod=$!\omf
+!end
+!if OBJ_FORMAT_XOMF then
+  -lookup = *.ob2=$!\xomf
+  -lookup = *.def=$!\xomf
+  -lookup = *.mod=$!\xomf
+!end
+!if OBJ_FORMAT_ELF then
+  -lookup = *.ob2=$!\elf
+  -lookup = *.def=$!\elf
+  -lookup = *.mod=$!\elf
+!end
+!if OBJ_FORMAT_AOUT then
+  -lookup = *.ob2=$!\aout
+  -lookup = *.def=$!\aout
+  -lookup = *.mod=$!\aout
+!end
+
+
+!if mode="enduser" then
+  -gendebug+
+  -lineno+
+  -genhistory+
+  -assert+
+  -checkindex-
+  -checkdindex-
+  -checkrange-
+  -checkset-
+  -checknil-
+  -checkproc-
+  -ioverflow-
+  -coverflow-
+  -foverflow-
+
+!elsif mode="work" then
+
+  -gendebug+
+  -lineno+
+  -genhistory+
+  -assert+
+  -checkindex+
+  -checkdindex+
+  -checkrange+
+  -checkset+
+  -checknil+
+  -checkproc+
+  -ioverflow+
+  -coverflow+
+  -foverflow+
+  -dbgnestedproc+
+
+  !if not defined noregvars then
+    -noregvars:+
+  !else
+    -noregvars+
+  !end
+
+!end
+
+
+
+-m2addtypes+
+-m2extensions+
+-o2extensions+
+-changesym+
+-usedll+
+
+-heaplimit=32000000
+-gcthreshold=8000000
+
+-makefile+
+-mkfext=lnk
+!if mode="enduser" then
+  -mkfname=enduser/tmp/xdasm
+!elsif mode="demo" then
+  -mkfname=demo/tmp/xdasm
+!else
+  -mkfname=xdasm
+!end
+
+!module xdasm

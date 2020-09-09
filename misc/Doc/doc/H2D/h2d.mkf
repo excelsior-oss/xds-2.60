@@ -1,0 +1,8 @@
+SOURCE = h2d.tex intro.tex config.tex \
+	 options.tex project.tex rules.tex \
+	 start.tex using.tex \
+	 body.tex preamble.tex
+
+TARGET = h2d
+
+!include ..\$(FORMAT).inc

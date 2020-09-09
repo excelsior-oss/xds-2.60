@@ -1,0 +1,1033 @@
+
+\ifenglish
+\section{Configure tools dialog}
+\else
+\section{диалог Configure tools}
+\fi
+\public{CFGTOOLS\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog is provided for configuration of external \ref[{\em Tools}]{Tools}.
+You may add and remove tools here and set their properties such as invocation
+conditions, menu strings, hot keys etc.
+
+Following configurable options are provided:
+
+\else
+Этот диалог позволяет настраивать внешние \ref[{\em утилиты}]{Tools}.
+Здесь вы можете добавлять и удалять утилиты, и устанавливать их свойства, такие 
+как условия вызова, строки меню, активизирующие клавиши и т. д.
+
+Предусмотрены следующие настраиваемые опции:
+\fi
+
+{\bf Compiler executable}
+
+\ifenglish
+Four standard tools ({\bf Compile}, {\bf Make}, {\bf Build} and {\bf MakeList})
+and four versions of standard tools for working without project usually are
+based on common executable file with different options. To make configuration easier
+this field is provided. Once entered here, the main XDS executable file name may
+be referenced as many times as you wish.
+
+You may type the name of an XDS compiler executable file in the entry field,
+or select the {\bf Browse} pushbutton to display a standard file dialog.
+
+\ref[variables]{variables} may be used in this field.
+
+\verb'$(xdsmain}', \verb'$(xdsname)', and \verb'$(xdsdir)'
+\ref[substitution variables]{variables} receive their values from this field.
+They may be used in command lines of other tools.
+
+Separate definition of main XDS executable allows quick change of compiler
+used, for example, change from using native-code compiler to the C converter.
+
+\else
+Четыре стандартных утилиты ({\bf Compile}, {\bf Make}, {\bf Build} и {\bf MakeList}),
+и четыре версии стандартных утилит для работы без проекта основываются на одном
+исполняемом файле с применением различных опций. Это поле делает настройку проще.
+На однажды введенный здесь главный исполняемый файл XDS можно ссылаться сколько
+угодно раз.
+
+Вы можете набрать в этом поле ввода имя исполняемого файла XDS компилятора,
+или нажать кнопку {\bf Browse}, чтобы вывести стандартный файловый диалог.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+\ref[переменные подстановки]{variables}
+\verb'$(xdsmain}', \verb'$(xdsname)', and \verb'$(xdsdir)'
+получают в этом поле свои значения. Они могут быть использованы в командных 
+строках других утилит.
+
+Отдельное определение главного исполняемого модуля XDS позволяет быстро 
+изменять используемый компилятор, например, переходить с компилятора, порождающего
+объектный код, на транслятор в язык C.
+\fi
+
+{\bf Select a tool to configure}
+
+\ifenglish
+This list contains names of all currently available tools. Select
+the tool you want to configure.
+
+\else
+Этот список содержит имена всех доступных на данный момент утилит. Выберите
+утилиту, которую вы хотите настроить. 
+ \fi
+
+{\bf Add/edit}
+\ifenglish
+This pushbutton to add a new tool to the list or
+to edit the currently selected tool's comment and category. The
+\ref[Add New or Edit Existing tool]{ADDTOOL\_DIALOG} dialog will appear.
+\else
+Используйте эту кнопку, чтобы добавлять новую утилиту в список, или менять 
+комментарий к выбранной в данный момент утилите и ее категорию.
+Появится диалог \ref[Add New or Edit Existing tool]{ADDTOOL\_DIALOG}.
+\fi
+
+{\bf Remove}
+\ifenglish
+This pushbutton removes the currently selected
+tool from the list.
+
+{\bf Note:} predefined tools can not be removed.
+
+\else
+Эта кнопка удаляет выбранную утилиту из списка.
+
+{\bf Заметьте:} стандартные утилиты не могут быть удалены.
+\fi
+
+{\bf Category}
+\ifenglish
+Displays current tool's category. The category can be edited by pressing
+{\bf Add/edit} button. What category is and how it affects tools behavior see
+\ref[here]{Tools}
+
+\else
+Отображает категорию текущей утилиты. Категорию можно изменять с помощью 
+нажатия кнопки {\bf Add/edit}. Чтобы узнать, что такое категория, и как она 
+влияет на утилиту, смотрите \ref[сюда]{Tools}.
+\fi
+
+{\bf Command line}
+\ifenglish
+Type in this field an external  command you want to be invoked when
+you activate the currently selected tool. You may select the
+{\bf Browse} pushbutton to locate an executable file via a
+standard file dialog. For a predefined tool, selecting the
+{\bf Default} pushbutton sets the default command line.
+
+\ref{variables} may be used in this field.
+\else
+Наберите в этом поле внешнюю команду, которую вы хотите вызвать, когда вы 
+запускаете выбранную утилиту. Вы можете нажать кнопку {\bf Browse}, чтобы выбрать
+исполняемый файл посредством стандартного файлового диалога. В случае стандартной
+утилиты нажатие кнопки {\bf Default} устанавливает задаваемую по умолчанию
+командную строку.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+\fi
+
+{\bf Menu item}
+\ifenglish
+If you want the currently selected tool to appear in the {\bf Tools}
+menu when the tool is enabled, select the checkbox and type a menu item
+text in the entry field.
+
+\ref{variables} may be used in this field.
+
+{\bf Note:} The rules that regulate how tools appear in main menu see
+\ref[here]{Tools}.
+
+\else
+Если вы хотите, чтобы выбранная утилита появилась в меню {\bf Tools},
+когда утилита задействована, установите этот контроль и наберите текст пункта 
+меню в этом поле ввода.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+{\bf Замечание:} Сведения о правилах, управляющих появлением утилиты в главном меню
+содержатся \ref[здесь]{Tools}.
+\fi
+
+{\bf Inactive menu item}
+\ifenglish
+If you want the currently selected tool to appear in the {\bf Tools}
+menu when the tool is disabled, select the checkbox and type a menu item
+text in the entry field.
+
+\ref{variables} may be used in this field.
+
+{\bf Note:} See previous {\bf Note}.
+\else
+Если вы хотите, чтобы выбранная утилита появилась в меню {\bf Tools},
+когда утилита не задействована, установите этот контроль и наберите текст 
+пункта меню в этом поле ввода.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+{\bf Замечание:} Смотрите предыдущее замечание.
+\fi
+
+{\bf Run when project open}
+\ifenglish
+Select this checkbox if you want the currently selected tool to be
+available only when a project is open in the Environment.
+\else
+Установите этот контроль, если хотите чтобы выбранная в данный момент утилита 
+была доступна, только если в рабочей среде открыт проект. 
+\fi
+
+{\bf Run on files with suffixes}
+\ifenglish
+Select this checkbox if you want the currently selected tool to be
+available only if the current edit window contains a file which name
+ends in a suffix belonging to a certain list. Type the list of suffixes
+(separated with semicolons) in the entry field.
+
+Suffix {\bf "*"} means any file is suitable.
+\else
+Установите этот контроль, если хотите, чтобы выбранная в данный момент утилита 
+была доступна, только если текущее окно редактирования содержит файл, имя 
+которого оканчивается расширением, приписываемым определенному списку. Наберите
+в этом поле ввода список расширений (разделяемых точкой с запятой). 
+
+Расширение {\bf "*"} означает, что подходит любой файл
+\fi
+
+{\bf Start in directory}
+\ifenglish
+Defines what directory is current when the tool is run. Usually this is set to
+{\bf \$(projdir)} for tools that work on projects and to
+{\bf \$(filedir)} for
+other tools. You may select the directory by pressing {\bf Browse} button.
+For predefined tools pressing the {\bf Default} button sets the directory to the
+default state.
+\else
+Определяет, какая директория становится текущей, когда запускается утилита. Обычно 
+это равно {\bf \$(projdir)} для утилит, которые работают с проектами, и 
+{\bf \$(filedir)} для других утилит. 
+Вы можете выбрать директорию с помощью нажатия кнопки {\bf Browse}.
+Для стандартных утилит нажатие кнопки {\bf Default} инициализирует директорию
+значением, принимаемым по умолчанию. 
+\fi
+
+{\bf Advanced}
+\ifenglish
+Select the {\bf Advanced} pushbutton to display a \ref[dialog]{ADVANCED\_TOOL\_DIALOG}
+that allows setup of advanced properties of
+the currently selected tool, that include:
+\else
+Нажмите кнопку {\bf Advanced}, чтобы вывести \ref[диалог]{ADVANCED\_TOOL\_DIALOG},
+который позволяет устанавливать дополнительные свойства 
+выбранной в данный момент утилиты, которые включают:
+\fi
+\begin{itemize}
+\item \ifenglish
+      how to run tool (in its own window or in pop-up)
+     \else
+      как запускать утилиту (в своем окне или во всплывающем)
+      \fi
+\item \ifenglish
+      if in pop-up, close it automatically or wait for keypress
+      \else  
+      если во всплывающем, то закрывать его автоматически, или ждать нажатия 
+      клавиши 
+      \fi
+\item \ifenglish
+      caption of the window
+      \else
+      заголовок окна
+      \fi
+\item \ifenglish
+      hot key
+      \else
+      активизирующая клавиша
+      \fi
+\item \ifenglish
+      \ref[Message Filter]{MessageFilters}
+       \else
+      \ref[фильтр сообщений]{MessageFilters}
+      \fi
+\item \ifenglish
+      checking of program return code
+       \else
+      проверка возвращаемого программой кода
+      \fi
+\end{itemize}
+
+%-----------------------------------------------------------------------
+\begin{popup}
+\ifenglish
+\caption{Configuration file}
+ \else
+\caption{Файл конфигураций}
+\fi
+\public{CFGTOOLS\_INIFILE}
+\ifenglish
+This label indicates main XDS configuration file in which tools settings are kept.
+ \else
+Эта метка показывает главный конфигурационный файл XDS, в котором хранятся установки
+утилит.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Compiler executable}
+\public{CFGTOOLS\_XDSMAIN}
+
+\ifenglish
+Type the name of an XDS compiler executable file in the entry field,
+or select the {\bf Browse} pushbutton to display a standard file dialog.
+
+Substitution variables may be used in this field.
+ \else
+Наберите имя исполняемого файла XDS компилятора в этом поле ввода,
+или нажмите кнопку {\bf Browse}, чтобы вывести стандартный файловый диалог.
+
+В этои поле могут быть использованы переменные замены.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Compiler executable}
+\public{CFGTOOLS\_XDSMAIN\_BROWSE}
+
+\ifenglish
+Select XDS compiler executable file in a standard file dialog,
+or type it manually in the entry field.
+ \else
+Выберите исполняемый файл XDS компилятора в стандартном файловом диалоге 
+или введите его вручную в этом поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Select a tool to configure}
+ \else
+\caption{Выберите утилиту для настройки}
+\fi
+\public{CFGTOOLS\_LIST}
+
+\ifenglish
+This list contains names of all currently available tools. Select
+the tool you want to configure.
+ \else
+Это список содержит имена всех доступных на данный момент утилит. Выберите 
+утилиту, которую вы хотите настроить.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Category}
+\public{CFGTOOLS\_CATEGORY}
+
+\ifenglish
+Defines the {\bf category} of current tool. Several tool of the same category
+share single menu entry, toolbar button and keyboard shortcut.
+
+{\bf Note:} See general help on tools to know what category is and how it
+affect tools behavior.
+ \else
+Определяет {\bf категорию} текущей утилиты. Несколько утилит одной категории
+делят между собой одну строчку меню, кнопку toolbar и комбинацию клавиш 
+клавиатуры. 
+
+{\bf Замечание:} Смотрите общую справку по утилитам, чтобы узнать, что такое 
+категория, и как она влияет на поведение утилит.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Comment}
+\public{CFGTOOLS\_COMMENT}
+
+\ifenglish
+This label contains the comment of currently selected tool.
+Comment is a text that appears in the Statusbar when the user selects this
+tool in a menu or places the mouse cursor over this tool's button in the Toolbar.
+
+The comment can be edited using {\bf add/edit} button.
+ \else
+Эта метка содержит комментарий к выбранной в данный момент утилите. 
+Комментарий -- это текст, который появляется в Statusbar когда пользователь 
+выбирает эту утилиту в меню, или помещает курсор мыши на кнопку этой утилиты в
+Toolbar. 
+
+Коментарий можно менять с помощью кнопки {\bf add/edit}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Command line}
+\public{CFGTOOLS\_CMDLINE}
+
+\ifenglish
+Type in this field an external  command you want to be invoked when
+you activate the currently selected tool. The file name component of
+a command line may be located using standard file dialog by pressing the
+{\bf Browse} button.
+
+Substitution variables may be used in this field.
+ \else
+Наберите в этом поле внешнюю команду, которую вы хотите вызвать при запуске
+выбранной в данный момент утилиты. Компонент имени файла командной строки
+может быть задан с помощью стандартного файлового диалога посредством нажатия 
+кнопки {\bf Browse}.
+
+В этом поле могут быть использованы переменные замены.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{CFGTOOLS\_BROWSE}
+
+\ifenglish
+Locate an executable file using standard file dialog and store it into
+file name component of current tool command line. Only file name is
+replaced; parameters remain untouched.
+ \else
+Выберите исполняемый файл, используя стандартный файловый диалог, и вставьте
+его на место компоненты имени файла командной строки текущей утилиты. Заменяется
+только имя файла, параметры не затрагиваются. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Default}
+\public{CFGTOOLS\_DEFAULT}
+
+\ifenglish
+This option is only available for standard tools, for which the IDE knows
+command line format. This button sets tool command line to default state.
+ \else
+Эта опция доступна только для стандартных утилит, формат командной строки 
+которых известен IDE. Эта кнопка устанавливает командную строку утилиты в 
+положение, принимаемое по умолчанию. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Add/edit}
+\public{CFGTOOLS\_ADD}
+
+\ifenglish
+Select the {\bf Add/edit} pushbutton to add a new tool to the list or
+to edit the currently selected tool comment.
+ \else
+Нажмите кнопку {\bf Add/edit}, чтобы добавить новую утилиту в список, или 
+редактировать комментарий к выбранной в данный момент утилите.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Remove}
+\public{CFGTOOLS\_REMOVE}
+
+\ifenglish
+Select the {\bf Remove} pushbutton to remove the currently selected
+tool from the list.
+
+{\bf Note:} predefined tools can not be removed.
+
+ \else
+Нажмите кнопку {\bf Remove}, чтобы удалить выбранную утилиту из списка.
+
+{\bf Замечание:} стандартные утилиты не могут быть удалены.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Menu item}
+\public{CFGTOOLS\_MENU}
+\public{CFGTOOLS\_MENUITEM}
+
+\ifenglish
+If you want the currently selected tool to appear in the {\bf Tools}
+menu when it is enabled, select the checkbox and type a menu item text in the entry field.
+
+Substitution variables may be used in this field.
+
+{\bf Note:} See general help on tools to know how exactly tools menu is 
+constructed.
+ \else
+Если вы хотите, чтобы выбранная в данный момент утилита появилась в меню 
+{\bf Tools}, когда она разрешена к употреблению, установите этот контроль, 
+и наберите текст пункта меню в поле ввода.
+
+В этом поле могут быть использованы переменные замены.
+
+{\bf Замечание:} Смотрите общую справку по утилитам, чтобы узнать, как устроено 
+меню утилит.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Inactive menu item}
+\public{CFGTOOLS\_INACTIVE\_MENU}
+\public{CFGTOOLS\_INACTIVE\_MENUITEM}
+
+\ifenglish
+If you want the currently selected tool to appear in the {\bf Tools}
+menu when it is disabled, select the checkbox and type a menu item text in the entry field.
+
+Substitution variables may be used in this field.
+
+{\bf Note:} See general help on tools to know how exactly tools menu is 
+constructed.
+ \else
+Если вы хотите, чтобы выбранная в данный момент утилита появилась в меню 
+{\bf Tools}, когда она не разрешена к употреблению, установите этот контроль 
+и наберите текст пункта меню в поле ввода.
+
+В этом поле могут быть использованы переменные замены.
+
+{\bf Замечание:} Смотрите общую справку по утилитам, чтобы узнать, как устроено 
+меню утилит.
+\fi
+\end{popup}
+
+
+\begin{popup}
+\caption{Run when project open}
+\public{CFGTOOLS\_RUNPROJECT}
+
+\ifenglish
+Select this checkbox if you want the currently selected tool to be
+available only when a project is open in the Environment.
+ \else
+Установите этот контроль, если хотите, чтобы выбранная в данный момент утилита 
+была доступна только когда в рабочей среде открыт проект.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Run on files with suffixes}
+\public{CFGTOOLS\_RUNFILE}
+
+\ifenglish
+Select this checkbox if you want the currently selected tool to be
+available only if current window is edit window and name of file in it
+ends in a suffix belonging to a certain list. Type the list of suffixes
+in the entry field.
+ \else
+Установите этот контроль, если хотите чтобы выбранная в данный момент утилита
+была доступна только если текущее окно -- это окно редактирования, и имя файла,
+содержащегося в нем, оканчивается расширением, принадлежащим определенному 
+списку. Наберите список расширений в этом поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Run on files with suffixes}
+\public{CFGTOOLS\_SUFFIX}
+
+\ifenglish
+When {\bf Run on files with suffixes} box is checked this field defines
+list of possible file suffixes. Suffixes are listed without "{\bf .}"
+character and separated by a semicolon. Special value "{\bf *}" means that
+any suffix is allowed.
+ \else
+Когда установлен контроль {\bf Run on files with suffixes}, это поле определяет
+список возможных расширений файлов. Расширения перечисляются без символа "{\bf .}"
+и разделяются точкой с запятой. Особое значение "{\bf *}" говорит, что допущено
+любое расширение.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Advanced}
+\public{CFGTOOLS\_ADVANCED}
+
+\ifenglish
+Select the {\bf Advanced} pushbutton to setup advanced properties of
+the currently selected tool, such as run mode, hot-key, return code
+checking, and message filter.
+ \else
+Нажмите кнопку {\bf Advanced}, чтобы установить доплнительные свойства 
+выбранной утилиты, такие, как режим запуска, активизирующую клавишу, проверку 
+возвратного кода и фильтр сообщений.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Start in directory}
+\public {CFGTOOLS\_DIR}
+
+\ifenglish
+Type here the start directory for a tool. Alternatively, you may select it
+using the {\bf Browse} button.
+
+Substitution variables may be used here.
+ \else
+Введите здесь директорию запуска утилиты. Вы также можете выбрать ее, используя 
+кнопку {\bf Browse}.
+
+Здесь могут быть использованы переменные замены.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public {CFGTOOLS\_DIRBROWSE}
+
+\ifenglish
+Select start directory for a tool. You may also write it manually into the entry field.
+ \else
+Выберите директорию запуска для утилиты. Вы также можете вручную написать ее в 
+поле ввода. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Default}
+\public{CFGTOOLS\_DEFAULTDIR}
+
+\ifenglish
+This option is available for predefined tools. It sets startup directory for a tool
+to default value.
+ \else
+Эта опция доступна для стандартных утилит. Она инициализирует директорию запуска
+утилиты значением, принимаемым по умолчанию.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{CFGTOOLS\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to confirm the changes you've made to the
+tools configuration.
+ \else
+Нажмите кнопку {\bf OK}, чтобы подтвердить произведенные вами в настройках 
+утилит изменения.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{CFGTOOLS\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to make any changes
+to the current tools configuration.
+ \else
+Нажмите кнопку {\bf Cancel}, если решили не производить изменений в настройках
+утилит.
+\fi
+\end{popup}
+
+%-----------------------------------------------------------------------
+
+\ifenglish
+\subsection{Add New or Edit Existing Tool dialog}
+ \else
+\subsection{диалог Add New or Edit Existing Tool}
+\fi
+\public{ADDTOOL\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog is displayed when you select the {\bf Add/edit} pushbutton
+in the \ref[Configure Tools]{CFGTOOLS\_DIALOG} dialog.
+To add a new tool, type its name, category and comment in
+corresponding entry fields and select the {\bf OK}
+pushbutton. To change existing tool's category and comment,
+leave its name unchanged.
+
+Tool's {\em comment} is a string that is displayed in the
+Statusbar when the user selects corresponding item in menu or moves mouse over
+toolbar button.
+
+What is a {\em category} and how it affects tools behavior see
+\ref[here]{Tools}.
+ \else
+Этот диалог отображается, когда вы нажимаете кнопку {\bf Add/edit}
+в диалоге \ref[Configure Tools]{CFGTOOLS\_DIALOG}. 
+Чтобы добавить новую утилиту, введите ее имя, категорию и комментарий 
+в соответствующих полях ввода и нажмите кнопку {\bf OK}.
+Чтобы изменить категорию и комментарий к существующей утилите,
+оставьте ее имя неизмененным.
+
+{\em Комментарий} утилиты -- это строка, которая отображается в 
+Statusbar, когда пользователь выбирает соответствующий пункт меню
+или перемещает мышь вдоль toolbar.
+
+Что такое {\em категория}, и как она влияет на поведение утилиты, смотрите 
+\ref[здесь]{Tools}.
+\fi
+%-----------------------------------------------------------------------
+
+\begin{popup}
+\caption{Tool name}
+\public{ADDTOOL\_NAME}
+
+\ifenglish
+Selected tool name. Changing this name will create new tool.
+Leaving it unchanged allows changing of current tool properties.
+ \else
+Имя выбранной утилиты. Изменение этого имени создаст новую утилиту.
+Если оставить имя неизмененным, то можно будет менять свойства текущей утилиты.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Category}
+\public{ADDTOOL\_CATEGORY}
+
+\ifenglish
+Type the category of new or existing tool. Read general tools section for
+description of tool category.
+ \else
+Введите категорию новой или существующей утилиты. Прочтите раздел, посвященный
+утилитам, чтобы посмотреть описание категории утилиты.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Comment}
+\public{ADDTOOL\_COMMENT}
+
+\ifenglish
+Type tool's comment here. Tool's comment is a string that is displayed in the
+Statusbar when the user selects corresponding item in menu or moves mouse over
+tool bar button.
+ \else
+Введите здесь комментарий к утилите. Комментарий к утилите -- это строка, которая
+отображается в Statusbar, когда пользователь выбирает соответствующий пункт меню
+или передвигает мышь через кнопку toolbar.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{ADDTOOL\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to add a new tool or confirm editing
+of an existent one.
+ \else
+Нажмите кнопку {\bf OK}, чтобы добавить новую утилиту или редактировать
+существующую.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{ADDTOOL\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to add or modify
+a tool.
+ \else
+Нажмите кнопку {\bf Cancel}, если решили ни добавлять, ни менять утилиту.
+\fi
+\end{popup}
+
+%-----------------------------------------------------------------------
+
+\ifenglish
+\subsection{Advanced tool configuration dialog}
+ \else
+\subsection{диалог Advanced tool configuration}
+\fi
+\public{ADVANCED\_TOOL\_DIALOG}
+\nominitoc
+
+\ifenglish
+Use this dialog to specify advanced tool settings:
+ \else
+Используйте этот диалог, чтобы определять дополнительные установки утилиты.
+\fi
+\begin{itemize}
+\item \ifenglish
+      Run mode
+       \else
+      Режим запуска
+      \fi
+\item \ifenglish
+      Pop-up window caption
+       \else
+      Заголовок всплывающего окна
+      \fi
+\item \ifenglish
+      Hot-key
+       \else
+      Активизирующая клавиша
+      \fi
+\item \ifenglish
+      Return code checking
+       \else
+      Проверка возвратного кода 
+      \fi
+\item \ifenglish
+      \ref[Message filter]{MessageFilters}
+       \else
+      \ref[фильтр сообщений]{MessageFilters}
+      \fi
+\end{itemize}
+
+{\bf Run in pop-up}
+
+\ifenglish
+Select this checkbox if you would like the tool output and progress
+indicators to be displayed in a pop-up window; clear it if you want
+a separate console to be created for the tool, or if a tool provides
+its own window.
+ \else
+Установите этот контроль, если хотите, чтобы вывод и индикаторы 
+работы утилиты отображались во всплывающем окне. Очистите его, если
+хотите, чтобы для утилиты был создан отдельный консоль, или если утилита
+заводит свое собственное окно. 
+\fi
+{\bf Wait for keypress}
+
+\ifenglish
+Select this checkbox if you want the pop-up window
+to remain on the screen after termination of the tool.
+ \else
+Установите этот контроль, если хотите, чтобы всплывающее окно
+осталось на экране после завершения работы утилиты.
+ \fi
+{\bf Caption}
+
+\ifenglish
+Type in this field a string which you would like to be displayed in the
+pop-up window or the tool console title bar.
+
+\ref{variables} may be used in this field.
+ \else
+Наберите в этом поле строку, которую вы хотите отобразить в заголовке 
+всплывающего окна или консоля утилиты.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+ \fi
+{\bf Assign hot key}
+
+\ifenglish
+Press the hot-key combination with which you would like to invoke the
+currently selected tool.
+ \else
+Нажмите активизирующую комбинацию, посредством которой вы хотели бы 
+вызывать текущую утилиту.
+ \fi
+{\bf Messages filter}
+
+\ifenglish
+Select \ref[messages filter]{MessageFilters} for current tool from a set of
+configured filters. Generally message filters are maintained by a dialog that
+follows \ref[Configure]{M\_CONFIGURE}:\ref[Message Filters]{IDM\_CONFIGUREFILTERS}
+menu command, but there is a shortcut: you may create new filter by pressing
+{\bf New Filter} pushbutton of edit currently assigned filter by {\bf Edit filter}
+pushbutton.
+
+Select {\bf None} from the list if you want to remove message filter from a tool.
+
+ \else
+Выберите \ref[фильтр сообщений]{MessageFilters} для текущей утилиты из набора
+настроенных фильтров. Вообще, фильтры сообщений поддерживаются диалогом, который 
+появляется после выбора команды меню 
+\ref[Configure]{M\_CONFIGURE}:\ref[Message Filters]{IDM\_CONFIGUREFILTERS},
+но существует более короткий путь: вы можете создать новый фильтр посредством 
+нажатия кнопки {\bf New Filter}, или редактировать текущий приписанный фильтр
+с помощью кнопки {\bf Edit filter}.
+
+Выберите {\bf None}, если хотите удалить фильтр сообщений из утилиты.
+  \fi
+{\bf Check return code}
+
+\ifenglish
+Select this checkbox if the tool success or failure may be determined by
+examining it return code.
+ \else
+Установите этот контроль, если удачный и неблагоприятный результаты работы 
+утилиты могут быть распознаны с помощью анализа ее возвратного кода.
+  \fi
+{\bf Max good value}
+
+\ifenglish
+Type here the maximum value of the return code which indicates successful
+completion of a tool. In most cases, however, it should be set to zero.
+ \else
+Наберите здесь максимальное значение возвратного кода, которое сигнализирует
+об удачном завершении работы утилиты. В большинстве случаев, однако, его следует
+задавать нулем.
+ \fi
+%-----------------------------------------------------------------------
+
+\begin{popup}
+\caption{Run in pop-up}
+\public{ADVANCED\_TOOL\_POPUP}
+
+\ifenglish
+Select this checkbox if you would like the tool output and progress
+indicators to be displayed in a pop-up window; clear it if you want
+a separate console to be created for the tool, or if the tool is GUI
+application itself and it provides its own window.
+ \else
+Установите этот контроль, если хотите, чтобы вывод и индикаторы работы 
+утилиты отображались во всплывающем окне; очистите его, если хотите, 
+чтобы для утилиты был создан отдельный консоль, или если утилита 
+есть GUI-приложение и создает себе окно сама. 
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Wait for keypress}
+\public{ADVANCED\_TOOL\_WAITOK}
+
+\ifenglish
+Select this checkbox if you want the pop-up window in which the tool was run
+to remain on the screen after termination of the tool.
+ \else
+Установите этот контроль, если хотите, чтобы всплывающее окно, в котором была 
+запущена утилита, оставалось на экране после завершения работы утилиты.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Comment}
+\public{ADVANCED\_TOOL\_CAPTION}
+
+\ifenglish
+This label shows tool's comment.
+ \else
+Эта метка отображает комментарий к утилите.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Caption}
+\public{ADVANCED\_TOOL\_POPUP\_CAPTION}
+
+\ifenglish
+Type in this field a string which you would like to be displayed in the
+pop-up window or the tool console title bar.
+
+Substitution variables may be used in this field.
+ \else
+Наберите в этом поле строку, которую вы хотите отобразить в заголовке
+всплывающего окна или консоля утилиты.
+
+В этом поле могут использоваться переменные замены.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Assign hot key}
+\public{ADVANCED\_TOOL\_HOTKEY}
+
+\ifenglish
+Press the hot-key combination with which you would like to assign to the
+currently selected tool. Pressing this combination will invoke the tool without
+entering the menu.
+ \else
+Нажмите активизирующую комбинацию клавиш, которую вы хотите приписать к 
+выбранной утилите. Нажатие этой комбинации запустит утилиту. 
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Messages filter}
+\public {ADVANCED\_TOOL\_FILTERS}
+
+\ifenglish
+This combo box displays all available message filter. Choose one to assign it
+to current tool. Choose {\bf none} to assign no message filter.
+New message filter may be created, if necessary, by pressing {\bf New filter}
+button.
+  \else
+Этот комбинированный список отображает все доступные фильтры сообщений. Выберите
+один из них чтобы, приписать к текущей утилите. Выберите {\bf none}, чтобы не
+приписывать фильтр сообщений. Если необходимо, может быть создан новый фильтр
+сообщений посредством нажатия кнопки {\bf New filter}.
+  \fi
+\end{popup}
+
+\begin{popup}
+\caption{Check return code}
+\public{ADVANCED\_TOOL\_CHECKRETURN}
+
+\ifenglish
+Select this checkbox if the tool success or failure may be determined by
+examining it return code.
+ \else
+Установите этот контроль, если удачное и неблагоприятное завершения работы
+утилиты могут быть определены с помощью ее возвратного кода.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Max good value}
+\public{ADVANCED\_TOOL\_MAXGOOD}
+
+\ifenglish
+Type here the maximum value of the return code which indicates successful
+completion of a tool. Usually success is indicated by zero return code;
+in this case you should type zero here. Some crazy tools exist, however,
+that indicate "Success" by 0, "Success with warnings" by 1 and "Failure"
+by bigger numbers.
+
+ \else
+Введите здесь максимальное значение возвратного кода, которое сигнализирует об 
+удачном завершении работы утилиты. Обычно об успешном завершении говорит
+нулевой возвратный код, в этом случае здесь нужно ввести ноль. Однако, существуют 
+некоторые ненормальные утилиты, которые сигнализируют об "Успехе" нулем, об
+"Успехе с предупреждениями" единицей, и об "Неудаче" -- большими числами.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Edit filter}
+\public{ADVANCED\_TOOL\_EDITFILTER}
+
+\ifenglish
+Edit message filter that is assigned to current tool.
+ \else
+Редактировать фильтр сообщений, который приписан к текущей утилите.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{New filter}
+\public{ADVANCED\_TOOL\_NEWFILTER}
+
+\ifenglish
+Create new message filter and assign it to current tool.
+ \else
+Создать новый фильтр сообщений и приписать его к текущей утилите.
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{ADVANCED\_TOOL\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to confirm changes you've made to the
+advanced tool configuration options.
+ \else
+Нажмите кнопку {\bf OK}, чтобы подтвердить изменения, которые вы произвели 
+в продвинутых опциях настройки утилиты. 
+ \fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{ADVANCED\_TOOL\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton to dismiss the dialog without
+applying any changes you've made.
+ \else
+Нажмите кнопку {\bf Cancel}, чтобы закрыть диалог, не применяя произведенные
+вами изменения.
+ \fi
+\end{popup}
+

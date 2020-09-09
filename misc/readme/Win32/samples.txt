@@ -1,0 +1,392 @@
+SAMPLES.TXT                   Copyright (c) 1999-2011 Excelsior.
+----------------------------------------------------------------
+
+                  Excelsior XDS Win32 Edition
+                  ---------------------------
+                            v2.60
+
+                       Sample Programs
+                       ---------------
+
+You may work with sample programs right in the XDS\Samples
+directory or create a copy first.
+
+The "samples" directory contains the following subdirectories:
+
+        modula   - simple samples in Modula-2
+        oberon   - simple samples in Oberon-2
+        huffchan - Modula-2 device modules and low-level data
+                   manipulations sample.
+        nodes    - an Oberon-2 example, illustrating the using
+                   of Oberon run-time support.
+
+        generic  - An example of Win32 application that can be
+                   used as a sketch for your own applications.
+        mand     - Mandelbrot Set Explorer - a Win32 application.
+        penta    - Pentamino Problem Solver - another Win32 app.
+
+The following samples are available for Native XDS-x86 only:
+ 
+        bench    - benchmark programs 
+        dll      - dynamic linking illustrations
+
+        jni      - implementation of Java native nethods in M2
+
+        mgdemo   - originally a TopSpeed Modula-2 sample program
+                   illustrating usage of the module Graph. 
+        windemom - another TopSpeed sample - a mutithreaded
+                   program making use of the module Window.
+
+        vterm    - samples illustrating usage of the module VTerm 
+
+The following samples are available for XDS-C only:
+
+        mixed    - mulitlanguage (Modula-2 and C) samples
+
+All samples in directories "modula", "oberon" and "bench" consist
+of one module only. Project files for these samples are not
+provided. If you are going to compile and run them in XDS
+environment it is necessary to create a project file for each
+sample. In a command line there is no need to create a project
+file. Just run for Native XDS-x86
+
+        xc =m <filename>
+
+or run for XDS-C
+
+        xm =m <filename>
+
+For example, to build "hello" example in the "modula" directory,
+run for Native XDS-x86
+
+        xc =m hello.mod
+
+or run for XDS-C
+
+        xm =m hello.mod
+
+This invocation will build "hello.exe".
+
+
+samples\modula
+--------------
+
+The following tests are provided (in Modula-2):
+
+        hello.mod       Hello, World program
+
+        e.mod           Calculates digits of "e"
+        exp.mod         Another exponent
+
+        sieve.mod       Prime numbers
+
+        fact.mod        Factorial
+        bf.mod          Another factorial
+
+        queens.mod      Solves 8 queens problem
+
+        hisdemo.mod     History demo
+
+        halt.mod        Termination
+        term.mod        Termination
+        except.mod      Exceptions
+
+Tests "halt", "term" and "except" illustrate new ISO Modula-2
+features, namely finalization and exceptions.
+
+Tests "bf" and "hisdemo" are terminated abnormally. Both tests
+illustrate postmorten history. To get the history "GENHISTORY"
+option must be switch ON. If this option is not set in your
+configuration file, set it in command line (or in project file),
+e.g:
+
+        xc =m hisdemo.mod +genhistory
+
+For "bf" test "COVERFLOW" must be also ON.
+
+If you run these tests in the XDS environment use "History" tool and
+then open "Message" window to see the positions in the source text.
+
+
+samples\oberon
+--------------
+
+All tests in this directory do not use specific Oberon-2 features,
+like type extensions (See "samples\nodes"). Some tests (exp, sieve)
+are provided in Modula-2 also (see "samples\module").
+
+The following tests are provided (in Oberon-2):
+
+        hello.ob2       Hello, World
+
+        ackermann.ob2   Ackermann function
+
+        exp.ob2         Calculates digits of "e"
+
+        self.ob2        Print self text
+
+        sieve.ob2       Prime numbers
+
+        gcreport.ob2    Object finalization
+
+The "gcreport" sample shows how to use "object finalization"
+feature, implemented in the XDS run-time system. For each object
+(pointer to record) a finalizing procedure can be defined.
+This procedure is called by garbage collector when there is no more
+references to the object. The procedure may add a reference to the
+object (as it is done in the example). In this case the object will
+not be deleted.
+
+
+samples\bench
+-------------
+
+This directory contains several benchmark programs written in
+Modula-2 and C. You can use them to compare XDS with other Modula-2
+or C compilers.
+
+Note, that the same code generator is used for Modula-2 and
+Oberon-2 and the code quality is the same. However, speed of some
+programs may change significantly when translating from Modula to
+Oberon or vice versa. As a rule it is a result of incorrect
+translation of whole types. For example, "INTEGER" type is 32-bit
+wide in Modula and 16-bit wide in Oberon. If you don't replace
+INTEGER by LONGINT when translating from Modula to Oberon the
+performance of Oberon program will be smaller (especially on
+Pentium Pro).
+
+The directory contains:
+        dry.mod         Dhrystone Benchmark (Modula-2)
+        dry.c           Dhrystone Benchmark (C)
+
+        whet.mod        Whetstone Benchmark (Modula-2)
+
+        linnew.mod      LinPack Benchmark   (Modula-2)
+        linnew.c        LinPack Benchmark   (C)
+
+In Modula-2 sources XDS options are set for maximum speed.
+
+
+samples\huffchan
+----------------
+
+This sample illustrates the concept of device modules introduced
+in the ISO Modula-2 input/output library, and low-level data
+manipulation tchniques.
+
+        HuffChan.txt   - sample description
+        HuffChan.def   - HuffChan device module
+        HuffChan.mod   
+        huf.mod        - file packing utility
+        unhuf.mod      - file unpacking utility
+
+To build this sample, type:
+
+    xc =m huf.mod
+    xc =m unhuf.mod
+
+The sample contains the HuffChan device module, which may be 
+used to perfrom Huffman encoding and decoding on channels opened
+by other device modules, The two programs, "huf" and "unhuf",
+utilize the HuffChan module facilities. The first program 
+encodes a given file and writes it to another file; the
+second one reverses that operation.
+
+
+samples\nodes
+-------------
+
+The "nodes" subdirectory contains the following files, constituting
+the Oberon-2 program:
+
+        Nodes.ob2       - definition of abstract Node class
+        Echo.ob2        - concrete Node extension
+        GenEcho.ob2     - concrete Node extension
+        Commands.ob2    - concrete Node extension
+        Types.ob2       - concrete Node extension
+        runme.ob2       - the top-level module
+
+To build the program on the command line, invoke:
+
+        xc runme.prj =p
+
+The  "Nodes" module defines an abstract object (Node). Objects of
+this  type  are  linked  in  the  list.  The  module "Nodes" also
+implement  the  command  monitor  ("Loop"  procedure). The "Loop"
+procedure  reads an input from keyboard and then passes the input
+to  the  current  node,  or  if  the  input  line starts from "."
+executes some standard action.
+
+The  module  "runme"  imports  modules defining the extensions of
+type  Node  (concrete  classes),  inserts it in the list and then
+call "Nodes.Loop".
+
+Nodes.Node extensions:
+----------------------
+
+"Echo"     - implements a node which prints its input to terminal.
+
+"GenEcho"  - if the number N is specified in the input line
+             creates "N" examples of the "Echo" Node.
+
+"Commands" - provides facilities to call commands (exported
+             parameterless procedures) in the form:
+                ModuleName.ProcedureName
+             Also implements operations to enumerate all modules
+             in the program and all commands in the given module.
+
+"Types"    - provides facilities to allocate an object by the
+             given name in the form:
+                ModuleName.RecordTypeName
+
+
+Modules   "Types"   and   "Commands"  illustrates  the  using  of
+meta-language   facilities,   including  the  command  calls  and
+creating an object by its type name.
+
+It is important to note, that the current version of XDS does not
+support the dynamic loading of the modules. You can use commands
+and types from the modules which are already linked in the program.
+
+
+samples\dll
+-----------
+
+This directory contains source for two sample programs, consisting 
+of one EXE and one DLL each. The first program (EXE1.EXE and DLL1.DLL)
+illustrates load-time dynamic linking, the second program (EXE2.EXE
+and DLL2.DLL) illustrates run-time dynamic linking.
+
+See Chapter "Dynamic Linking" in the Native XDS-x86 User's Guide 
+for more information.
+
+Files:
+
+        dllsrc\dll1.def         - DLL1.DLL sources
+        dllsrc\dll1.mod
+        dllsrc\dll1.prj
+        dllsrc\dll2.def         - DLL2.DLL sources
+        dllsrc\dll2.mod
+        dllsrc\dll2.prj
+        dllsrc\dll2init.mod
+        exesrc\exe1.mod         - EXE1.EXE sources
+        exesrc\exe1.prj
+        exesrc\exe2.mod         - EXE2.EXE sources
+        exesrc\exe2.prj
+
+Issue the following commands to build this sample:
+
+        xc =p dllsrc\dll1.prj
+        xc =p dllsrc\dll2.prj
+        xc =p exesrc\exe1.prj
+        xc =p exesrc\exe2.prj
+
+samples\jni
+-----------
+
+See samples\jni\regkey.txt.
+
+
+samples\generic
+---------------
+
+The directory contains a sketch file of a Windows application.
+However, it is completed application which can be compiled and run.
+You can copy it and use as a start point of your application.
+
+The directory contains:
+
+        Generic.mod     Modula-2 module (application)
+        Generic.h       defines resource identifiers for Generic.r
+        Generic.prj     project file
+        Generic.rc      resource file (text)
+        Generic.res     resource file (binary)
+        Generic.ico     icon
+        Small.ico       small icon
+
+To build the program on the command line, run
+
+        xc Generic =p
+
+
+samples\mand
+------------
+
+The directory contains:
+        MandSet.mod    - Modula-2 module
+        MandSet.txt    - very short user's guide
+        MandSet.prj    - project file
+
+To build the program on the command line, run
+
+        xc MandSet =p
+
+This sample shows how to write Windows application in Modula or
+Oberon.
+
+
+samples\mgdemo
+--------------
+
+	mgdemo.mod   - program module
+	mgdemo.prj   - project file
+	mgdemo.txt   - short annotation
+
+This is a TopSpeed Modula-2 sample ported to XDS with the help
+of XDS TS-like library. It illustartes usage of the module Graph,
+which was slightly enhanced and improved during implementation.
+
+
+samples\windemom
+----------------
+	
+	windemom.mod - program module
+	windemom.prj - project file
+	windemom.txt - short annotation
+
+Another TopSpeed sample which intensively used the modules Window 
+and Process. This port shows how the module Process functionality
+may be achieved using the ISO standard module Processes.
+
+
+samples\mixed
+-------------
+
+        cmain.prj    - C program calling a Modula-2 procedure
+        cmain.c
+        m2test.def
+        m2test.mod
+
+        ctest.c      - Modula-2 program calling a C function
+        ctest.def
+        ctest.h
+        m2main.mod
+        m2main.prj
+
+These samples illustrate usage of XDS Modula-2 and a third party C
+compiler in a single project.
+
+
+samples\vterm
+
+        golygon.mod - program module
+        golygon.prj - project file
+
+This sample program illustrates usage of the module VTerm, which
+combines standard input and output with graphic output in a 
+single window.
+
+DEFINITION: A closed polygonal path is called a GOLYGON if 
+lengths of adjacent segments form the sequence 1,2, ... ,N and
+the angle between any two adjacent segments except maybe first 
+and last is right. 
+
+The program reads a number N from the standard input and attempts
+to find a golygon, which largest segment is of length N. If a
+golygon is found, it is drawn in the graphic field.
+
+This program uses a brute force recursive algorithm that can be
+significantly improved.
+
+
+                        [end of document]

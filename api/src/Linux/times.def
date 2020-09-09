@@ -1,0 +1,26 @@
+(* Copyright (c) xTech 1997.  All Rights Reserved *)
+
+(* $RCSfile: times.def,v $ $Revision: 4 $ $Date: 1/31/04 4:26p $ *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] times;
+
+IMPORT time;
+
+TYPE
+  clock_t = time.clock_t;
+
+<* IF __GEN_C__ THEN *> <*- GENTYPEDEF *> <* END *>
+  tms = RECORD
+    tms_utime:  clock_t;
+    tms_stime:  clock_t;
+    tms_cutime: clock_t;
+    tms_cstime: clock_t;
+  END;
+
+PROCEDURE times (VAR tp: tms): clock_t;
+
+END times.

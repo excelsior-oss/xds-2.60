@@ -1,0 +1,211 @@
+\ifenglish
+\section {Configure Printing dialog}
+\else
+\section {диалог Configure Printing}
+\fi
+\public{CFGPRINT\_DIALOG}
+\nominitoc
+
+\ifenglish
+This dialog allows you to configure how your files are printed.
+
+You can select paper size, source and orientation and set up page margins
+using {\bf Page setup} button.
+
+You can select printer font using {\bf Choose font} button.
+
+You can also select decorations of printed page. You can configure pages to
+have headers which can optionally include {\bf Page numbers} and {\bf File name}
+by selecting these checkboxes. It is possible to select either short or full
+file names printed by {\bf File path} checkbox.
+
+You can turn on printing line numbers with each line by {\bf Line numbers}
+checkbox.
+
+\else
+Этот диалог предоставляет средства настройки печати файлов.  
+
+Вы можете выбрать размер листа, устройство подачи бумаги и ориентацию печати 
+и установить поля с помощью кнопки {\bf Page setup}.
+
+Вы можете выбрать шрифт принтера, используя кнопку {\bf Choose font}.
+
+Вы также можете выбрать элементы отделки печатного листа. Установив 
+соответствующие контроли, вы можете сделать так, чтобы листы печатались с 
+заголовком, который может включать {\bf номер листа} ({\bf Page numbers}) 
+и {\bf имя файла} ({\bf File name}). Можно выдавать как краткое, так и полное 
+имя распечатываемого файла (выбор с помощью контроля {\bf File path}).
+
+Вы можете включить печать номеров строк в каждой строке с помощью контроля.
+\fi
+{\bf Line numbers}
+
+\ifenglish
+Files often contain lines that are too long to fin into printer page. Most
+systems simply truncate these lines. XDS IDE has three modes of handling long
+lines. You can choose the mode in {\bf Long lines handling} group.
+Long lines can be truncated by selecting {\bf Truncate} button.
+They can be continued on the next line by selecting {\bf Continue on next line}
+button. In this case one source line can occupy more than one printer lines.
+Lines are split at the page boundary. No word wrapping is provided.
+At last, lines can be continued on next page by selecting {\bf Continue on next page}
+button. In this case additional page will be printed with trailers of long lines.
+As many additional pages as necessary will be printed. All pages can be then glued
+together to make one wide page.
+
+Actual printing is invoked by \ref[File]{M\_FILE}:\ref[Print]{IDM\_PRINT} menu item.
+
+\else
+Файлы часто содержат слишком длинные по сравнению с размерами печатного листа 
+строки. Большинство систем просто обрывает такие строки. В XDS IDE есть три 
+режима обработки длинных строк. Вы можете выбрать один из них в группе 
+{\bf Long lines handling}. Длинные строки могут быть обрезаны с помощью кнопки
+{\bf Truncate}. Они могут быть продолжены на следующей строке с помощью кнопки
+{\bf Continue on next line}. Строки разбиваются на границе листа. Это происходит
+без заворачивания слов. Наконец, строки могут быть продолжены на следующем листе
+с помощью кнопки  {\bf Continue on next page}. В этом случае будет напечатан 
+дополнительный лист, содержащий обрывки длинных строк. Дополнительных листов
+будет напечатано столько, сколько необходимо. Все листы могут затем быть склеены,
+образуя один широкий лист.
+
+Процесс печати начинается после выбора пункта меню
+\ref[File]{M\_FILE}:\ref[Print]{IDM\_PRINT}.
+\fi
+%--------------------------------------------------------------------------
+\begin{popup}
+\caption{OK}
+\public{CFGPRINT\_OK}
+\ifenglish
+Accept changes in printing settings and close dialog.
+\else
+Подтвердить изменения установок печати и закрыть диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{CFGPRINT\_CANCEL}
+\ifenglish
+Discard changes in printing settings and close dialog.
+\else
+Отказаться от изменений установок печати и закрыть диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Truncate}
+\public{CFGPRINT\_TRUNCATE}
+\ifenglish
+When this option is selected,
+if some lines are too long to fit in the printer page they are  truncated
+\else
+Когда установлена эта опция,
+длинные строки обрезаются, чтобы поместиться на печатный лист.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Continue on next line}
+\public{CFGPRINT\_NEXTLINE}
+\ifenglish
+When this option is selected,
+if some lines are too long to fit in the printer page they are continued on
+next line so one source line can occupy several printer lines.
+\else
+Когда установлена эта опция,
+тогда, если некоторые строки слишком длинные, чтобы поместиться на печатный лист, 
+то они будут продолжены на следующей строке, так что одна строка исходного файла
+может занять несколько строк печатного листа.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Continue on next page}
+\public{CFGPRINT\_NEXTPAGE}
+\ifenglish
+When this option is selected,
+if some lines are too long to fit in the printer page new page with line trailers
+is printed so that it's possible to combine several pages into one wide page.
+Note that the number  of pages is determined by the longest line in a page,
+so this method is potentially paper-consuming.
+
+For this method to work properly, turn off duplex printing in your printer
+configuration dialog.
+\else
+Когда установлена эта опция,
+тогда, если некоторые строки слишком длинные, чтобы поместиться на печатный лист,
+то печатается новый лист, содержащий обрывки длинных строк, так что становится 
+возможным совместить несколько листов в один широкий лист. Заметьте, что 
+количество листов определяется самой длинной строкой листа, а поэтому этот способ
+потенциально чрезмерно бумагоемкий.
+
+Чтобы этот способ действовал надлежащим образом, выключите двустороннюю печать
+в конфигурационном диалоге вашего принтера. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Page setup}
+\public{CFGPRINT\_PAGE}
+\ifenglish
+Invokes standard Page Setup dialog where you can select paper size, source and
+orientation and set up page margins.
+\else
+Вызывает стандартный диалог Page Setup, где вы можете выбрать размер листа, устройство
+подачи бумаги и ориентацию, и установить поля. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Choose font}
+\public{CFGPRINT\_FONT}
+\ifenglish
+Invokes standard dialog to choose font to use for printing. Only fixed-pitch
+fonts are available.
+\else
+Вызывает стандартный диалог выбора шрифта для печати. Доступны только
+моноширинные шрифты.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{File name}
+\public{CFGPRINT\_FILENAME}
+\ifenglish
+Turns on printing of file name in the page header.
+\else
+Включает печать имени файла в заголовке листа.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{File path}
+\public{CFGPRINT\_FILEPATH}
+\ifenglish
+If file names in page headers are turned on, this option turns on printing full
+file paths.
+\else
+Если включена печать имени файла в заголовке листа, эта опция включает печать
+полного пути файла.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Page numbers}
+\public{CFGPRINT\_PAGENUM}
+\ifenglish
+Turns on printing of page numbers in page headers.
+\else
+Включает печать номера листа в заголовке листа.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Line numbers}
+\public{CFGPRINT\_LINENUM}
+\ifenglish
+Turns on printing of line numbers at the left of each line.
+\else
+Включает печать номера строки слева от каждой строки.
+\fi
+\end{popup}

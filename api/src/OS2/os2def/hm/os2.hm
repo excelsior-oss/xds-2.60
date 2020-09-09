@@ -1,0 +1,39 @@
+(****************************** Module Header ******************************
+*                                                                          *
+* Copyright (c) 1996 xTech Ltd. All rights reserved.                       *
+* Copyright (c) 1987 - 1992 IBM Corporation                                *
+*                                                                          *
+* Module Name: OS2.H                                                       *
+*                                                                          *
+* This is the top level include file that includes all the files necessary *
+* for writing an OS/2 application.                                         *
+*                                                                          *
+****************************************************************************)
+
+<* M2EXTENSIONS +     *>
+<* IF __GEN_C__ THEN  *>
+<*   CSTDLIB    +     *>
+<*   NOHEADER   +     *>
+<*   GENTYPEDEF +     *>
+<* ELSE               *>
+<*   ALIGNMENT  = "4" *>
+<* END                *>
+
+DEFINITION MODULE ["SysCall"] OS2;
+IMPORT SYSTEM;
+
+(* Common definitions *)
+#include <os2def.hm>
+
+(* OS/2 Base Include File *)
+#if ! defined(INCL_NOBASEAPI)
+   #include <bse.hm>
+#endif (* INCL_NOBASEAPI *)
+
+(* OS/2 Presentation Manager Include File *)
+#if ! defined(INCL_NOPMAPI)
+   #include <pm.hm>
+#endif (* INCL_NOPMAPI *)
+
+END OS2.
+

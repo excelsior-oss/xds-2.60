@@ -1,0 +1,581 @@
+\ifenglish
+\section {Configure Windows System dialog}
+ \else
+\section {диалог Configure Windows System}
+ \fi
+\public{CFGWIN\_DIALOG}
+\nominitoc
+
+\ifenglish
+XDS IDE uses its own version of {\bf MDI} (Multiple Document Interface).
+This version provides {\bf docked} windows (windows that are never overlapped by others)
+and {\bf free} windows (windows that appear on the desktop rather than inside
+IDE frame). It also allows window numbering that is more convenient than
+in classic MDI and provides {\bf winbar} to make navigation among your windows
+easier.
+
+This dialog allows you to configure various details of windows behavior
+and interface elements such as Winbar and Windows menu.
+
+This dialog contains following pages:
+ \else
+XDS IDE использует свою собственную версию {\bf MDI}. Эта версия дает возможность 
+использования неперекрывающихся окон ( которые никогда не закрываются другими) 
+и свободных окон (которые появляются скорее на рабочем столе, чем внутри 
+IDE оболочки). Она также предоставляет более удобный, чем в классическом MDI 
+способ нумерации окон и позволяет легче управляться с окнами.
+
+Этот диалог позволяет настраивать различные детали поведения окон и элементы
+интерфейса, такие как Winbar и Windows menu.
+\fi 
+
+\ref[Numbering]{CFGWIN\_NUMBERING\_DIALOG} -- 
+\ifenglish
+configure window numbering scheme
+ \else
+настройка системы нумерации окон
+ \fi
+
+\ref[Windows Menu]{CFGWIN\_MENU\_DIALOG} -- 
+\ifenglish
+configure Windows Menu appearance
+ \else
+настройка внешнего вида Windows Menu
+  \fi
+
+\ref[Docked Windows]{CFGWIN\_DOCKED\_DIALOG} -- 
+\ifenglish
+configure which windows are docked by default
+ \else
+указать, какие окна неперекрывающиеся по умолчанию
+ \fi
+
+\ref[WinBar]{CFGWIN\_WINBAR\_DIALOG} -- 
+\ifenglish
+configure \ref{WinBar}
+ \else
+настройка \ref{WinBar}
+ \fi
+%---------------------------------------------------------------------
+
+\ifenglish
+\subsection {Numbering tab}
+ \else
+\subsection {Схема нумерации}
+ \fi
+\public{CFGWIN\_NUMBERING\_DIALOG}
+
+\ifenglish
+Windows in the IDE are numbered, that is, small integral numbers are assigned
+to them. The rules of this assignment can be configured. Following options
+are available:
+
+ \else
+Окна в IDE пронумерованы, то есть, им сопоставлены целые числа. Правила 
+нумерации могут настраиваться. Имеются следующие варианты:
+\fi
+\begin{description}
+\item {\bf Classic MDI}
+\ifenglish
+-- this scheme is identical to standard Microsoft MDI scheme. New window
+is appended to the list. When the window is destroyed all the windows
+are shifted up in the list. When the window with number greater than 9 is
+activated it is swapped with the window with number 9. So active window never
+has number greater than 9. A bit strange scheme. It's recommended to use it
+together with {\bf Classic "More Windows"} window menu style.
+ \else
+--Эта система идентична стандартной системе Microsoft MDI. Список пополняется
+новым окном. Когда окно уничтожается, все окна поднимаются вверх по списку.
+Когда активируется окно с номером большим 9, оно заменяется окном с номером 9.
+Таким образом, активные окна не могут иметь номер больше 9. Немного странная
+схема. Рекомендуется использовать ее со стилем {\bf Classic "More Windows"}.
+\fi
+
+\item {\bf Classic MDI, no window swap}
+
+\ifenglish
+-- same as Classic MDI but windows are never swapped. Window with any number
+can be active.  It's recommended to use it
+together with {\bf Long} or {\bf Multi-column} window menu style.
+ \else
+-- то же, что и Classic MDI, но окна не меняются местами. Окно с любым номером
+может быть активным. Рекомендуется использовать вместе со стилями {\bf Long} или {\bf Multi-column}.
+\fi
+
+\item {\bf New window first}
+
+\ifenglish
+-- new window appears at the beginning, not at the end of a list. All the other
+windows are shifted to the bottom. This style collects most recently loaded
+files at the top of menu.
+ \else
+-- новое окно появляется в начале, а не в конце списка. Все остальные окна
+сдвигаются вниз. Этот стиль собирает недавно загруженные файлы в начале меню.
+\fi
+\item {\bf Active window first}
+
+\ifenglish
+-- not only new window appears at the beginning of the list, but activation of any
+window also moves it to the top of the list. This style collects most frequently
+accessed files at the top of the list.
+ \else
+-- не только новое окно появляется в начале списка, но и активация любого окна
+перемещает его на вершину списка. Этот стиль собирает наиболее часто открываемые
+файлы в начале списка.
+\fi
+
+\item {\bf Fixed window number}
+
+\ifenglish
+-- once the window got a number it retains it during all its existence. Windows are
+never swapped or shifted. New windows are created at first free position.
+When the window is closed its number becomes free and is visible in the Window
+menu as free position. Selecting it causes creation of new edit buffer with this
+number.
+ \else
+-- раз получив номер, окно сохраняет его пожизненно. Окна не передвигаются и не 
+меняются местами. Новые окна создаются на первой свободной позиции. Когда окно 
+закрывается, его номер становится свободным, и выглядит в Windows menu как
+свободная позиция. Ее выбор создает новый буфер редактирования с этим номером.
+\fi 
+
+\end{description}
+
+\ifenglish
+By default window numbers are drawn at the top-right corner of windows,
+next to minimize and maximize buttons. To turn this off, use the
+{\bf Display window numbers in captions} checkbox.
+ \else
+По умолчанию номера окон отображаются в верхнем правом углу, сразу за 
+кнопками максимизации и минимизации. Чтобы это отключить, используйте 
+контроль {\bf Display window numbers in captions}.
+\fi
+
+%---------------------------------------------------------------------
+
+\ifenglish
+\subsection {Windows Menu tab}
+ \else
+\subsection {закладка Windows Menu}
+\fi
+\public{CFGWIN\_MENU\_DIALOG}
+
+\ifenglish
+Following options are available for Windows Menu:
+ \else
+В Windows menu доступны следующие опции:
+\fi
+\begin{description}
+\item{\bf Classic "More Windows"}
+
+\ifenglish
+-- windows menu contains at most nine windows.
+If there are more windows opened in the IDE, the "More windows" item
+appears at the bottom of Windows menu
+
+ \else
+-- оконное меню содержит самое большее 9 окон
+Если в IDE открыто больше окон, пункт 
+появляется в нижней части меню Windows.
+ \fi
+\item{\bf Long Menu}
+
+\ifenglish
+-- behaves basically as Classic "More Windows" but limit on number of windows
+is determined by size of the screen rather than by predefined constant. Note that
+only first nine windows are available by keyboard shortcut (key with window number).
+
+ \else
+-- ведет себя в основном как и классическое "More Windows", но ограничение на
+количество окон определяется скорее размерами экрана, чем заданной константой.
+Обратите внимание, что только первые 9 окон доступны с клавиатуры (клавиша с
+цифрой, соответствующей номеру окна).
+ \fi
+\item{\bf Multi-column menu}
+
+\ifenglish
+-- when menu items do not fit into screen height they are arranged into several
+columns.
+ \else
+-- когда пункты меню не помещаются в экран по высоте, они перестраиваются в 
+несколько колонок.
+ \fi
+\end{description}
+
+\ifenglish
+If "More windows" item is not added to the menu (either because menu mode
+ chosen does not provide it or because there're too few windows) you can still
+get Windows dialog by selecting "Windows List" item in the Windows menu.
+ \else
+Если пункт "More windows" не добавлен в меню, (потому что этого не позволил 
+режим меню, или из-за того что окон недостаточно) вы все же можете
+вызвать диалог Windows путем выбора "Windows List" в меню Windows.
+ \fi
+%---------------------------------------------------------------------
+
+\ifenglish
+\subsection {Docked Windows tab}
+ \else
+\subsection {закладка Docked Windows}
+ \fi
+\public{CFGWIN\_DOCKED\_DIALOG}
+
+\ifenglish
+When messages window, file list or search result window is opened it occupies
+the same position that it has last time it was opened before. When any of
+mentioned windows is opened for the first time, it can either be opened as
+arbitrary new MDI window, or be opened in {\bf Docked} state, when it is aligned
+along one side of a frame window without being overlapped by other windows.
+
+You may select the behavior for each type of windows.
+
+Message window is by default docked to the bottom of a frame window, file list to
+the left of it, and search results to the right.
+
+You can also configure appearance of docked window. They can either have normal
+window caption with all kinds of buttons and an icon, or have small caption
+with only one small button at the top-right corner - the close button.
+ \else
+Когда открывается окно сообщения, списка файлов или результата поиска, оно 
+занимает то же положение, которое оно занимало, будучи открытым последний раз.
+Когда любое из упомянутых окон открывается первый раз, оно может быть открыто
+как произвольное новое окно MDI, или в неперекрывающемся состоянии, когда оно 
+выровнено вдоль стороны окна оболочки, и другие окна его не перекрывают.
+
+Вы можете выбрать поведение любого типа окон.
+
+Окно сообщения по умолчанию привязано к низу окна оболочки слева - список 
+файлов и результаты поиска поиска - справа. 
+                                          
+Можно также настраивать внешний вид неперекрывающихся окон. Они могут иметь 
+как обычный заголовок со всевозможными кнопками и иконкой, так и  
+маленький заголовок лишь с одной небольшой кнопкой в верхнем правом углу 
+- кнопкой закрытия.
+\fi
+%---------------------------------------------------------------------
+
+\ifenglish
+\subsection {WinBar tab}
+ \else
+\subsection {закладка WinBar}
+ \fi
+\public{CFGWIN\_WINBAR\_DIALOG}
+
+\ifenglish
+This page allows configuration of \ref{WinBar}.
+
+You may place it at the top or at the bottom of the frame window, or you
+can remove it at all.
+
+You may also configure what information appears in the WinBar buttons. Each
+button may contain an icon, a window number and window title. Each of these
+components may be turned on and off. Note that turning all of them off makes
+the WinBar very close to useless.
+ \else
+Эта страница позволяет настраивать \ref{WinBar}.
+
+Вы можете поместить его сверху или снизу на окне оболочки или вовсе убрать.
+
+Вы также можете менять появляющуюся на кнопках WinBar информацию. Каждая кнопка 
+может содержать иконку, номер окна или заголовок окна. Каждый из этих компонент
+может быть включен и выключен. Заметьте, что их полное отключение делает
+WInBar почти бесполезным.
+\fi
+%---------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Classic MDI}
+ \else
+\caption{Классический MDI}
+ \fi
+\public{CFGWIN\_NUMBERING\_MDI}
+
+\ifenglish
+New window is appended to the list.
+When the window is destroyed all the windows are shifted up in the list.
+When the window with number greater than 9 is
+activated it is swapped with the window with number 9.
+ \else
+К списку добавляется новое окно.
+Когда окно уничтожается, все окна поднимаются вверх по списку.
+Когда активируется окно с номером большим 9, оно замещается окном с номером 9.
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Classic MDI, no window swap}
+ \else
+\caption{Классический MDI, без передвижения окон в списке}
+\fi
+\public{CFGWIN\_NUMBERING\_MDINOFLIP}
+
+\ifenglish
+New window is appended to the list.
+When the window is destroyed all the windows are shifted up in the list.
+Window numbers are never swapped. 
+Window with any number can be active.
+ \else
+К списку добавляется новое окно.
+Когда окно уничтожается, все окна поднимаются вверх по списку.
+Окна не обмениваются номерами.
+Окно с любым номером может быть активным.
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{New window first}
+ \else
+\caption{Новое окно -- первое}
+\fi
+\public{CFGWIN\_NUMBERING\_NEWFIRST}
+
+\ifenglish
+New window appears at the beginning, not at the end of a list. All the other
+windows are shifted to the bottom. This style collects most recently loaded
+files at the top of menu.
+ \else
+Новое окно появляется в начале, а не в конце списка. Все остальные окна 
+сдвигаются к низу. Этот стиль собирает недавно открытые файлы в начале меню.
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Active window first}
+ \else
+\caption{Активное окно -- первое}
+\fi
+\public{CFGWIN\_NUMBERING\_ACTIVEFIRST}
+
+\ifenglish
+Activation of any window moves it to the top of the list.
+This style collects most frequently accessed files at the top of the list.
+ \else
+Активация любого окна перемещает его в начало списка.
+Этот стиль собирает наиболее часто открываемые файлы в начале списка.
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Fixed window numbers}
+ \else
+\caption{Фиксированные номера окон}
+\fi
+\public{CFGWIN\_NUMBERING\_FIXED}
+
+\ifenglish
+Once the window got a number it retains it during all its existence. Windows are
+never swapped or shifted. New windows are created at first free position.
+
+ \else
+-- раз получив номер, окно сохраняет его пожизненно. Окна не передвигаются и не 
+меняются местами. Новые окна создаются на первой свободной позиции. 
+\fi
+
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Display window numbers in captions}
+ \else
+\caption{Отображать номера окон в заголовках}
+\fi
+\public{CFGWIN\_NUMBERING\_SHOW}
+
+\ifenglish
+By default window numbers are drawn at the top-right corner of windows,
+next to minimize and maximize buttons.
+This checkbox turns this option on and off.
+ \else
+По умолчанию номера окон отображаются в верхнем правом углу сразу за 
+кнопками максимизации и минимизации. Контроль включает и выключает эту опцию. 
+\fi 
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Classic "More windows"}
+ \else
+\caption{Классическое "More windows"}
+\fi
+\public{CFGWIN\_MENU\_MOREWINDOWS}
+
+\ifenglish
+Window menu contains at most nine windows.
+If there are more windows opened in the IDE, the "More windows" item
+appears at the bottom of Windows menu.
+ \else
+Меню Window содержит не более 9 окон.
+Если в IDE есть другие открытые окна, в меню Window появляется пункт 
+"More Windows".
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Long menu}
+ \else
+\caption{Длинное меню}
+\fi
+\public{CFGWIN\_MENU\_LONG}
+
+\ifenglish
+Window menu contains as many items as the screen height allows.
+If there are more windows opened in the IDE, the "More windows" item
+appears at the bottom of Windows menu.
+ \else
+Оконное меню содержит столько пунктов, сколько позволяет высота экрана.
+Если в IDE есть другие открытые окна, в нижней части меню Window появляется
+пункт "More Windows".
+\fi
+\end{popup}
+
+\begin{popup}
+
+\ifenglish
+\caption{Multi-column menu}
+ \else
+\caption{Многоколоночное меню}
+\fi
+\public{CFGWIN\_MENU\_MULTICOLUMN}
+
+\ifenglish
+There is no limit on number of items in Window menu.
+When menu items do not fit into screen height they are arranged into several
+columns.
+ \else
+Ограничения на количество пунктов меню Window нет.
+Когда пункты меню не помещаются в экран по высоте, они перестраиваются в 
+несколько колонок.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Messages window}
+\public{CFGWIN\_DOCKED\_MESSAGES}
+
+\ifenglish
+If this option is turned on, the first time message window is displayed,
+it appears docked to the bottom edge of frame window.
+ \else
+Если эта опция включена, то появившись в первый раз, окно сообщений окажется
+привязанным к нижнему краю окна оболочки.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{File list}
+\public{CFGWIN\_DOCKED\_FILELIST}
+
+\ifenglish
+If this option is turned on, the first time file list window is displayed,
+it appears docked to the left side of frame window.
+ \else
+Если эта опция включена, то, появившись в первый раз, окно списка файлов 
+оказется привязанным к левой стороне окна оболочки. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Search results}
+\public{CFGWIN\_DOCKED\_SEARCHRES}
+
+\ifenglish
+If this option is turned on, the first time search result window is displayed,
+it appears docked to the right side of frame window.
+ \else
+Если эта опция включена, то появившись в первый раз, окно результата поиска
+окажется привязанным к правой стороне окна оболочки.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Small captions in docked windows}
+\public{CFGWIN\_SMALL\_DOCKED}
+\ifenglish
+When this option is turned on docked windows have narrow caption with no icon and
+only one small button at the right (close button). Turning it off makes docked
+windows captions look like normal windows captions.
+ \else
+Когда эта опция включена, неперекрывающиеся окна имеют узкий заголовок без иконки и 
+единственную маленькую кнопку справа (кнопка закрытия). Ее выключение заставляет
+заголовок неперекрывающегося окна выглядеть как заголовок обычного окна.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{At the Top}
+\public{CFGWIN\_WINBAR\_TOP}
+\ifenglish
+Places WinBar at the top of frame window, right under Toolbar.
+ \else
+Помещает WinBar сверху на окне оболочки под Toolbar.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{At the Bottom}
+\public{CFGWIN\_WINBAR\_BOTTOM}
+
+\ifenglish
+Places WinBar at the bottom of frame window, just above the Status Bar.
+ \else
+Помещает Winbar снизу на окне оболочки над StatusBar.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{None}
+\public{CFGWIN\_WINBAR\_NONE}
+
+\ifenglish
+Removes the WinBar.
+ \else
+Удаляет WinBar.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Window icon}
+\public{CFGWIN\_WINBAR\_ICON}
+
+\ifenglish
+When turned on, WinBar buttons contain small icons (same as corresponding windows).
+ \else
+Если включено, то кнопки Winbar содержат маленькие иконки (те же, что и 
+соответствующие окна).
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Window number}
+\public{CFGWIN\_WINBAR\_NUMBER}
+
+\ifenglish
+When turned on, WinBar buttons contain window numbers.
+ \else
+Если включено, то кнопки Winbar содержат номера окон.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Short window title}
+\public{CFGWIN\_WINBAR\_TEXT}
+
+\ifenglish
+When turned on, WinBar buttons short titles of windows (for edit windows short
+title is the file name without a path).
+ \else
+Если включено, то кнопки Winbar содержат краткие заголовки окон (для окон
+редактирования краткое название - имя файла без пути).
+\fi
+\end{popup}

@@ -1,0 +1,9 @@
+-usedll+
+-gendll+
+-implib-
+-dllexport+
+
+-lookup = *.def = $!/dllsrc
+-lookup = *.mod = $!/dllsrc
+
+!module dll2init.mod

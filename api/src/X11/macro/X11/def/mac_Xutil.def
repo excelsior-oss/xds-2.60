@@ -1,0 +1,49 @@
+(* Created using H2D v1.00 from X11/Xutil.h.
+ * X11/mac_Xutil.def  Apr 7  18:39:47  1996
+ *
+ * Copyright (c) 1996,1997 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_Xutil.def,v $ $Revision: 3 $ $Date: 14.02.98 18:06 $
+ *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_Xutil;
+
+IMPORT SYSTEM, X, Xlib, Xutil;
+
+FROM X IMPORT KeySym;
+FROM Xlib IMPORT Bool, XImage, PtrXImage, funcs;
+
+PROCEDURE ["C"] IsCursorKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsFunctionKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsKeypadKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsMiscFunctionKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsModifierKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsPFKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] IsPrivateKeypadKey ( keysym: KeySym ): Bool;
+
+PROCEDURE ["C"] XAddPixel ( ximage: PtrXImage; value: LONGINT ): SYSTEM.int;
+
+PROCEDURE ["C"] XDestroyImage ( ximage: PtrXImage ): SYSTEM.int;
+
+PROCEDURE ["C"] XGetPixel ( ximage: PtrXImage; x, y: SYSTEM.int ): LONGCARD;
+
+PROCEDURE ["C"] XPutPixel ( ximage: PtrXImage; x, y: SYSTEM.int;
+			    pixel: LONGCARD ): SYSTEM.int;
+
+PROCEDURE ["C"] XStringToContext ( string: ARRAY OF CHAR ): SYSTEM.int;
+
+PROCEDURE ["C"] XSubImage ( ximage: PtrXImage; x, y: SYSTEM.int;
+			    width, height: SYSTEM.unsigned ): PtrXImage;
+
+PROCEDURE ["C"] XUniqueContext ( ): SYSTEM.int;
+
+END mac_Xutil.

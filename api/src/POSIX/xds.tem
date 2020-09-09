@@ -1,0 +1,50 @@
+# Copyright (c) XDS Team 1996,1997. All rights reserved.
+#
+# $RCSfile: xds.tem,v $ $Revision: 1.1.1.1 $ $Date: 1997/10/20 19:32:35 $
+#
+
+! "M\t= %s\n",mkfname#>mkfext
+!if defined xdsdir and (xdsdir#"") then
+  ! "XDSDIR\t= %s\n",xdsdir#""
+!else
+  ! "XDSDIR\t=.\n"
+!end
+! "INCL\t= $(XDSDIR)/include\n"
+
+!if defined libname then
+  ! "XDSLIB\t= %s\n",libname#>libext
+!else
+  ! "XDSLIB\t= %s\n","libxds"#>libext
+!end
+
+! "LIBCMD\t= %s\n","libxds"#>"tmp"
+
+# ------------------ objects enumeration ------------------
+#                    -------------------
+
+! "OBJ="; { obj : " \\\n\t%s",# }
+
+# ------------------- target make rules -------------------
+#                     -----------------
+
+! "$(XDSLIB) : $(M) $(OBJ)\n"
+!if (env_target="linux") or (env_target="x86linux") or (env_target="free_bsd") or (env_target="sunos4") or (env_target="aix") then
+  ! "\trm -f $(XDSLIB)\n"
+  ! "\tar q $(XDSLIB) $(OBJ)\n"
+  ! "\tranlib $(XDSLIB)\n"
+!elsif (env_target="hp9000") or \
+       (env_target="hp9gpp") or \
+       (env_target="sunosgpp") then
+  ! "\trm -f $(XDSLIB)\n"
+  ! "\tar q $(XDSLIB) $(OBJ)\n"
+  ! "\tar ts $(XDSLIB)\n"
+!else
+  ! "\tar q $(XDSLIB) $(OBJ)\n"
+!end
+
+! "clean:\n"
+! "\trm -f *.sym\n"
+! "\trm -f $(OBJ)\n"
+! "\trm -f makefile.lib\n"
+
+# end of makefile

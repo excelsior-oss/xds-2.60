@@ -1,0 +1,116 @@
+\section{Debug Menu}
+\public{M\_DEBUG}
+\index{Debug Menu}
+\nominitoc
+
+\ifenglish
+The {\bf Debug} menu contains commands that you use to run and debug
+your program.
+The following commands appear in the {\bf Debug} menu:
+\else
+Меню {\bf Debug} содержит команды, которые вы используете, чтобы запускать
+и отлаживать вашу программу.
+\fi
+\begin{description}
+\item \ref[Run]{IDM\_RUN}
+ \ifenglish
+  - Makes and runs your program
+  \else
+  - Компонует и запускает вашу программу
+  \fi
+\item \ref[Stop]{IDM\_STOP}
+  \ifenglish
+  - Stops a running program
+  \else
+  - Останавливает запущенную программу
+  \fi
+\item \ref[Run Debugger]{IDM\_DEBUG}
+ \ifenglish
+  - Invokes an external debugger with your program
+ \else
+  - Вызывает внешний отладчик для вашей программы
+ \fi
+\item \ref[View Program Output]{IDM\_VIEWUSERS}
+ \ifenglish
+  - Switch to the main window of running or finished program
+ \else
+  - Переключается в основное окно работающей или завершившейся программы
+ \fi
+\item \ref[Options]{IDM\_RUNOPTIONS}
+  \ifenglish
+  - Lets you specify various run options
+  \else
+  - Позволяет задавать различные опции запуска
+  \fi
+\end{description}
+
+\subsection{Debug: Run}
+\public{IDM\_RUN}
+
+\ifenglish
+Use the {\bf Run} command to make current project and execute your program.
+Program is not run if project make produces errors.
+
+You can specify program name, its command line and starting directory
+in the dialog box displayed via \ref[Options]{IDM\_RUNOPTIONS} menu command. 
+
+Keyboard shortcut: {\bf Ctrl+F9}
+\else
+Используйте команду {\bf Run}, чтобы собрать текущий проект и выполнить вашу 
+программу. Программа не запускается, если компоновка проекта обнаружила ошибки.
+
+Вы можете определить имя программы, ее командную строку и начальную директорию
+в диалоге, отображаемом командой меню \ref[Options]{IDM\_RUNOPTIONS}.
+                             
+Комбинация клавиш: {\bf Ctrl+F9}.
+\fi
+\subsection{Debug: Stop}
+\public{IDM\_STOP}
+
+\ifenglish
+Use the {\bf Stop} command to stop your running program. The program is stopped
+immediately without any chance to prevent termination or execute any finalizing
+code.
+\else
+Используйте команду {\bf Stop}, чтобы остановить запущенную программу. Программа
+останавливается немедленно без возможности предотвратить остановку или выполнить
+завершающую часть кода.
+\fi
+\subsection{Debug: Run Debugger}
+\public{IDM\_DEBUG}
+
+\ifenglish
+Use the {\bf Run Debugger} command to invoke an external debugger,
+loading your program into it. By default this command invokes XDS debugger;
+you can assign any other debugger to this command. For example, in XDS-C
+it might be reasonable to use debugger that comes with the C/C++ compiler used.
+\else
+Используйте команду {\bf Run Debugger}, чтобы вызвать внешний отладчик, загружая
+в него вашу программу. По умолчанию эта команда вызывает XDS отладчик. 
+Вы можете привязать к этой команде друной отладчик. Например, в XDS-C можно
+использовать отладчик, поставлемый с используемым компилятором C/C++.
+\fi
+\subsection{Debug: View Program Output}
+\public{IDM\_VIEWUSERS}
+
+\ifenglish
+Use the {\bf View program output} command to display
+your program output window.
+
+Keyboard shortcut: {\bf F5}
+\else
+Используйте команду {\bf View program output}, чтобы отобразить окно вывода 
+вашей программы.
+
+Комбинация клавиш: {\bf F5}
+\fi
+\subsection{Debug: Options}
+\public{IDM\_RUNOPTIONS}
+
+\ifenglish
+Use the {\bf Options} command to set various run options
+via a dialog box.
+\else
+Используйте команду {\bf Options}, чтобы установить различные опции запуска
+с помощью окна диалога.
+\fi

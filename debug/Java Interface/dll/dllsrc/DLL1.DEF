@@ -1,0 +1,23 @@
+DEFINITION MODULE dll1;
+
+TYPE
+ PASSPORT = RECORD
+   time: CARDINAL;
+ END; 
+ STRING = ARRAY[0..255] OF CHAR;
+
+-- заносить текущее время в паспорт
+PROCEDURE ["StdCall"] RegisterWindow(VAR p:PASSPORT); 
+
+-- выдает случайно некоторое количество ID  - от 0 до 10 штук
+PROCEDURE ["StdCall"] IterId(p:PASSPORT; VAR id:CARDINAL): CARDINAL;
+
+-- по ID выдает строчку - целое число
+PROCEDURE ["StdCall"] IterData1 (p:PASSPORT; id:CARDINAL; VAR str: STRING);
+
+-- по ID выдает строчку - целое число в 16 с/с
+PROCEDURE ["StdCall"] IterData2 (p:PASSPORT; id:CARDINAL; VAR str: STRING);
+
+
+
+END dll1.

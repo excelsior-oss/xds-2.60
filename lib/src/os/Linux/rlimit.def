@@ -1,0 +1,39 @@
+(* Copyright (c) Excelsior 2003.  All Rights Reserved *)
+
+<*+ CSTDLIB *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+<* IF NOT DEFINED(GENTYPEDEF) THEN *> <* NEW GENTYPEDEF+ *> <* END *>
+
+DEFINITION MODULE ["C"] rlimit;
+
+
+CONST
+  RLIMIT_CPU      = 0; 
+  RLIMIT_FSIZE    = 1; 
+  RLIMIT_DATA     = 2; 
+  RLIMIT_STACK    = 3; 
+  RLIMIT_CORE     = 4; 
+  RLIMIT_RSS      = 5; 
+  RLIMIT_NPROC    = 6; 
+  RLIMIT_NOFILE   = 7; 
+  RLIMIT_MEMLOCK  = 8; 
+  RLIMIT_AS       = 9; 
+  RLIMIT_LOCKS    = 10;
+  RLIM_NLIMITS    = 11;
+
+
+TYPE
+  rlimit = RECORD
+    rlim_cur :CARDINAL;
+    rlim_max :CARDINAL;
+  END;
+
+
+PROCEDURE getrlimit (res :INTEGER; VAR rlim :rlimit): INTEGER;
+PROCEDURE setrlimit (res :INTEGER; VAR rlim :rlimit): INTEGER;
+
+
+END rlimit.
+

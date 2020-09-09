@@ -1,0 +1,164 @@
+(*static char *SCCSID = "@(#)bdcalls.h  6.6 92/03/15";*)
+(***************************************************************************
+*
+* Module Name: BDCALLS.H
+*
+* OS/2 Bidi public header file.
+*
+* Copyright (c) 1987 - 1992  IBM Corporation
+*
+*****************************************************************************)
+
+
+(********************  BidiHotKeys in BIDISTRUCT ****************************)
+(*                                                                          *)
+(* The following defined value may be used to Enable/Disable the Bidi       *)
+(* keyboard hot keys.                                                       *)
+(* To enable a hot key, perform an 'OR' operation on the Bidi hot key flag  *)
+(* word in the KBVCBTYPE  structure with the required defined value.        *)
+(* To disable a hot key, perform an 'AND NOT' operation on the Bidi hot key *)
+(* flag word in the KBVCBTYPE  structure with the required defined value.   *)
+(*                                                                          *)
+(****************************************************************************)
+
+CONST BDHKFLAG_PUSH        = USHORT(0004H);
+CONST BDHKFLAG_END_PUSH    = USHORT(0008H);
+CONST BDHKFLAG_AUTO_PUSH   = USHORT(0010H);
+CONST BDHKFLAG_FIELD_REV   = USHORT(0020H);
+CONST BDHKFLAG_SCREEN_REV  = USHORT(0040H);
+CONST BDHKFLAG_BIDI_POPUP  = USHORT(0200H);
+CONST BDHKFLAG_AUTOMATIC   = USHORT(0400H);
+CONST BDHKFLAG_INITIAL     = USHORT(0800H);
+CONST BDHKFLAG_MIDDLE      = USHORT(1000H);
+CONST BDHKFLAG_FINAL       = USHORT(2000H);
+CONST BDHKFLAG_ISOLATED    = USHORT(4000H);
+
+(*******************  Bidi Flags in BIDISTRUCT ******************************)
+(*                                                                          *)
+(* The following defined value may be used to Enable/Disable the Bidi       *)
+(* functions.                                                               *)
+(* To enable a Bidi function, perform an 'OR' operation on the Bidi flags   *)
+(* word in the BDKBVCB  structure with the required defined value.          *)
+(* To disable a Bidi fuction, perform an 'AND NOT' operation on the Bidi    *)
+(* flags word in the BDKBVCB  structure with the required defined value.    *)
+(*                                                                          *)
+(****************************************************************************)
+
+CONST BDFLAG_AUTOPUSH_RTL  = USHORT(0001H);
+CONST BDFLAG_AUTOPUSH_LTR  = USHORT(0002H);
+CONST BDFLAG_PUSHLEVEL     = USHORT(0004H);
+CONST BDFLAG_LAYER         = USHORT(0010H);
+CONST BDFLAG_FIELD_REV     = USHORT(0020H);
+
+(***********************  CSD in BIDIATT ************************************)
+(*                                                                          *)
+(* The following defined value may be used to select the specified          *)
+(* bit in the Bidi Attributes.                                              *)
+(*                                                                          *)
+(****************************************************************************)
+
+CONST BDCSD_AUTOMATIC      = (00000000H);
+CONST BDCSD_PASSTHRU       = (00000001H);
+CONST BDCSD_BASE           = (00000010H);
+CONST BDCSD_INITIAL        = (00000011H);
+CONST BDCSD_MIDDLE         = (00000012H);
+CONST BDCSD_FINAL          = (00000013H);
+CONST BDCSD_ISOLATED       = (00000014H);
+CONST BDNUM_ARABIC         = (00000000H);
+CONST BDNUM_PASSTHRU       = (00001000H);
+CONST BDNUM_HINDU          = (00002000H);
+CONST BDORIENT_LTR         = (00000000H);
+CONST BDORIENT_RTL         = (00010000H);
+CONST BD_LEVEL             = (30000000H);
+CONST BD_SUPPORT           = (00000000H);
+
+
+(********* the keyboard control block structure *********)
+--#pragma pack(2)
+TYPE BDKVCB = RECORD
+   BDLength:            USHORT;
+   BDVersionId:         USHORT;
+   BDAtts:              ULONG;
+   Reserved:            ULONG;
+   BDHotKeyFlags:       USHORT;
+   BDFlags:             USHORT;
+   Reserved2:           ARRAY [0..63] OF UCHAR;
+END;
+
+(******* the printer control block structure ************)
+TYPE BDPRCB = RECORD
+   PRLength:      USHORT;
+   PRAtts:        ULONG;
+   Reserved:      POINTER TO ARRAY[0..13] OF UCHAR;
+END;
+
+(***** the Character Shape Determination structure *******)
+TYPE CSDRec = RECORD
+   RecLength:       ULONG;
+   Buffer:          PCHAR;    (* !!! 16:16 *)
+   BufferLength:    ULONG;
+   BufferIndex:     ULONG;
+END;
+--#pragma pack()
+
+(* ??? typedef   CSDRec   * _Seg16  PCSDRec;: *)
+TYPE PCSDRec  = POINTER TO CSDRec;
+TYPE PRETINFO = PBYTE;
+TYPE PSETINFO = PBYTE;
+
+
+
+PROCEDURE NlsQueryBidiAtt(Effect  : LONG
+                         ;RetInfo : PRETINFO
+                         ): APIRET16;
+
+PROCEDURE NlsSetBidiAtt(Effect  : LONG
+                       ;SetInfo : PSETINFO
+                       ): APIRET16;
+
+PROCEDURE NlsShapeBidiString(BidiAtts  : ULONG
+                            ;Reserved  : ULONG
+                            ;Source    : PCHAR 
+                            ;Target    : PCHAR 
+                            ;Length    : ULONG
+                            ;Increment : ULONG
+                            ): APIRET16;
+
+PROCEDURE NlsEditShape(BidiAtts  : ULONG
+                      ;Effect    : LONG
+                      ;Source    : PCSDRec
+                      ;Target    : PCSDRec
+                      ;CSDState  : PULONG
+                      ;Increment : ULONG
+                      ): APIRET16;
+
+PROCEDURE NlsInverseString(Source    : PCHAR
+                          ;Target    : PCHAR
+                          ;Length    : ULONG
+                          ;Increment : ULONG
+                          ): APIRET16;
+
+PROCEDURE NlsConvertBidiNumerics(BidiAtts  : ULONG
+                                ;Reserved  : LONG
+                                ;Source    : PUCHAR
+                                ;Target    : PUCHAR
+                                ;Length    : ULONG
+                                ;Increment : ULONG
+                                ): APIRET16;
+
+PROCEDURE NlsSetBidiPrint(BidiAtts   : ULONG
+                         ;Length     : ULONG
+                         ;FileHandle : USHORT
+                         ): APIRET16;
+
+PROCEDURE NlsConvertBidiString(Source    : PUCHAR
+                              ;Target    : PUCHAR
+                              ;Length    : ULONG
+                              ;Increment : ULONG
+                              ;SBidiAtts : ULONG
+                              ;TBidiAtts : ULONG
+                              ;Reserved  : ULONG
+                              ): APIRET16;
+
+(************************** End of file ***************************************)
+

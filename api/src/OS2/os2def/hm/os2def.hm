@@ -1,0 +1,507 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: OS2DEF.H
+*
+* OS/2 Common Definitions file
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+CONST APIENTRY    = "SysCall"; -- for APIENTRY
+CONST EXPENTRY    = "SysCall"; -- for EXPENTRY...
+
+TYPE APIRET   = SYSTEM.CARD32;      -- unsigned long
+TYPE APIRET16 = SYSTEM.CARD16;      -- unsigned short
+TYPE APIRET32 = SYSTEM.CARD32;      -- unsigned long
+
+TYPE SHANDLE  = SYSTEM.CARD16;      -- unsigned short
+TYPE LHANDLE  = SYSTEM.CARD32;      -- unsigned long
+
+CONST NULLHANDLE  = LHANDLE(0);
+CONST NULLSHANDLE = LHANDLE(0);
+
+--TYPE CHAR    = CHAR;          (* ch  *)
+TYPE SHORT     = SYSTEM.INT16;  (* s   *)
+TYPE LONG      = SYSTEM.INT32;  (* l   *)
+
+#if ! defined(INCL_SAADEFS)
+  TYPE INT       = SYSTEM.int;  (* i   *)
+#endif (* !INCL_SAADEFS *)
+(* INC *)
+
+TYPE UCHAR       = CHAR;           (* uch *)
+TYPE USHORT      = SYSTEM.CARD16;  (* us  *)
+TYPE ULONG       = SYSTEM.CARD32;  (* ul  *)
+
+#if ! defined(INCL_SAADEFS)
+   TYPE UINT     = SYSTEM.unsigned;(* ui  *)
+#endif (* !INCL_SAADEFS *)
+
+TYPE BYTE        = SYSTEM.CARD8;    (* b   *)
+
+TYPE PSZ         = POINTER TO CHAR;
+TYPE NPSZ        = POINTER TO CHAR;
+
+TYPE PCH         = POINTER TO CHAR;
+TYPE NPCH        = POINTER TO CHAR;
+TYPE PCSZ        = POINTER TO CHAR;
+TYPE PPCSZ       = POINTER TO PCSZ;
+
+(*
+    Declarations below are interpreted in M2/O2 as
+    pointers, original C typedefs _PFN and _NPFN are never used.
+
+    Original:
+
+    typedef int ( APIENTRY _PFN)  ();
+    typedef _PFN    *PFN;
+    typedef int ( APIENTRY _NPFN)  ();
+    typedef _NPFN   *NPFN;
+*)
+
+TYPE PFN  = PROCEDURE [APIENTRY] (): INT;
+TYPE NPFN = PROCEDURE [APIENTRY] (): INT;
+
+TYPE PBYTE       = POINTER TO BYTE;
+TYPE NPBYTE      = POINTER TO BYTE;
+
+TYPE PCHAR       = POINTER TO CHAR;
+TYPE PPCHAR      = POINTER TO PCHAR;
+TYPE PSHORT      = POINTER TO SHORT;
+TYPE PLONG       = POINTER TO LONG;
+
+#if ! defined(INCL_SAADEFS)
+   TYPE PINT     = POINTER TO INT;
+#endif (* !INCL_SAADEFS *)
+
+TYPE PUCHAR      = POINTER TO UCHAR;
+TYPE PUSHORT     = POINTER TO USHORT;
+TYPE PULONG      = POINTER TO ULONG;
+
+#if ! defined(INCL_SAADEFS)
+   TYPE PUINT    = POINTER TO UINT;
+#endif (* !INCL_SAADEFS *)
+
+TYPE PVOID       = SYSTEM.ADDRESS;
+TYPE PPVOID      = POINTER TO PVOID;
+
+TYPE BOOL        = BOOLEAN;
+TYPE PBOOL       = POINTER TO BOOL;
+
+TYPE BOOL32      = BOOL;
+TYPE PBOOL32     = PBOOL;
+
+(* Quad-word *)
+TYPE QWORD = RECORD         (* qword *)
+   ulLo: ULONG;
+   ulHi: ULONG;
+END;
+TYPE PQWORD = POINTER TO QWORD;
+
+#if ! defined(INCL_SAADEFS)
+   TYPE SEL       = SYSTEM.CARD16;    (* sel *)
+   TYPE PSEL      = POINTER TO SEL;
+
+   (*** Useful Helper Macros *)(* Sorry. Can't use macro *)
+
+   (* Create untyped far pointer from selector and offset *)
+   --CONST MAKEP( sel,off ) (( void * )( void * _Seg16 )( (sel) << 16 | (off) ))
+   --CONST MAKE16P( sel,off ) (( void * _Seg16 )( (sel) << 16 | (off) ))
+
+   (* Extract selector or offset from far pointer *)
+   (* Warning:the selectorof macro should not be used*)
+   (* for 32 bit objects                             *)
+   --CONST SELECTOROF(ptr)     ((((ULONG)(ptr))>>13)|7)
+   --CONST OFFSETOF(p)         (((PUSHORT)&(p))[0])
+#endif  (* !INCL_SAADEFS *)
+
+(* Cast any variable to an instance of the specified type. *)
+--CONST MAKETYPE(v, type)   (*((type *)&v))
+
+(* Calculate the byte offset of a field in a structure of type type. *)
+--CONST FIELDOFFSET(type, field)    ((SHORT)&(((type *)0)->field))
+
+(* Combine l & h to form a 32 bit quantity. *)
+--CONST MAKEULONG(l, h)  ((ULONG)(((USHORT)(l)) | ((ULONG)((USHORT)(h))) << 16))
+--CONST MAKELONG(l, h)   ((LONG)MAKEULONG(l, h))
+
+(* Combine l & h to form a 16 bit quantity. *)
+--CONST MAKEUSHORT(l, h) (((USHORT)(l)) | ((USHORT)(h)) << 8)
+--CONST MAKESHORT(l, h)  ((SHORT)MAKEUSHORT(l, h))
+
+(* Extract high and low order parts of 16 and 32 bit quantity *)
+--CONST LOBYTE(w)       LOUCHAR(w)
+--CONST HIBYTE(w)       HIUCHAR(w)
+--CONST LOUCHAR(w)      ((UCHAR)(w))
+--CONST HIUCHAR(w)      ((UCHAR)(((USHORT)(w) >> 8) & 0xff))
+--CONST LOUSHORT(l)     ((USHORT)((ULONG)l))
+--CONST HIUSHORT(l)     ((USHORT)(((ULONG)(l) >> 16) & 0xffff))
+
+(*** Common Error definitions ****)
+
+TYPE ERRORID  = CARDINAL;
+TYPE PERRORID = POINTER TO ERRORID;
+
+(* Combine severity and error code to produce ERRORID *)
+--CONST MAKEERRORID(sev, error) (ERRORID)(MAKEULONG((error), (sev)))
+
+(* Extract error number from an errorid *)
+--CONST ERRORIDERROR(errid)            (LOUSHORT(errid))
+
+(* Extract severity from an errorid *)
+--CONST ERRORIDSEV(errid)              (HIUSHORT(errid))
+
+(* Severity codes *)
+CONST SEVERITY_NOERROR = 0000H;
+CONST SEVERITY_WARNING = 0004H;
+CONST SEVERITY_ERROR   = 0008H;
+CONST SEVERITY_SEVERE  = 000CH;
+CONST SEVERITY_UNRECOVERABLE = 0010H;
+
+(* Base component error values *)
+
+CONST WINERR_BASE =  1000H;  (* Window Manager                  *)
+CONST GPIERR_BASE =  2000H;  (* Graphics Presentation Interface *)
+CONST DEVERR_BASE =  3000H;  (* Device Manager                  *)
+CONST SPLERR_BASE =  4000H;  (* Spooler                         *)
+
+(*** Common types used across components *)
+
+(*** Common DOS types *)
+
+TYPE HMODULE = LHANDLE;        (* hmod *)
+TYPE PID     = LHANDLE;        (* pid  *)
+TYPE TID     = LHANDLE;        (* tid  *)
+
+#if ! defined(INCL_SAADEFS)
+   TYPE SGID = USHORT;            (* sgid *)
+#endif  (* !INCL_SAADEFS *)
+
+TYPE PHMODULE = POINTER TO HMODULE;
+TYPE PPID     = POINTER TO PID;
+TYPE PTID     = POINTER TO TID;
+
+#if ! defined(INCL_SAADEFS)
+   #if ! defined(__HSEM__)
+#define __HSEM__
+       TYPE HSEM   = SYSTEM.ADDRESS;      (* hsem *)
+       TYPE PHSMEM = POINTER TO HSEM;
+   #endif
+#endif (* !INCL_SAADEFS *)
+
+(*** Common SUP types *)
+
+TYPE HAB  = LHANDLE;         (* hab  *)
+TYPE PHAB = POINTER TO HAB;
+
+(*** Common GPI/DEV types *)
+
+TYPE HPS  = LHANDLE;         (* hps  *)
+TYPE PHPS = POINTER TO HPS;
+
+TYPE HDC  = LHANDLE;         (* hdc  *)
+TYPE PHDC = POINTER TO HDC;
+
+TYPE HRGN  = LHANDLE;        (* hrgn *)
+TYPE PHRGN = POINTER TO HRGN;
+
+TYPE HBITMAP  = LHANDLE;     (* hbm  *)
+TYPE PHBITMAP = POINTER TO HBITMAP;
+
+TYPE HMF  = LHANDLE;         (* hmf  *)
+TYPE PHMF = POINTER TO HMF;
+
+TYPE HPAL  = LHANDLE;        (* hpal *)
+TYPE PHPAL = POINTER TO HPAL;
+
+TYPE COLOR  = LONG;        (* clr  *)
+TYPE PCOLOR = POINTER TO COLOR;
+
+TYPE POINTL = RECORD        (* ptl  *)
+   x: LONG;
+   y: LONG;
+END;
+
+TYPE PPOINTL = POINTER TO POINTL;
+TYPE NPPOINTL = POINTER TO POINTL;
+
+TYPE POINTS = RECORD        (* pts *)
+   x: SHORT;
+   y: SHORT;
+END;
+TYPE PPOINTS = POINTER TO POINTS;
+
+TYPE RECTL = RECORD          (* rcl *)
+   xLeft,
+   yBottom,
+   xRight,
+   yTop: LONG;
+END;
+TYPE PRECTL  = POINTER TO RECTL;
+TYPE NPRECTL = POINTER TO RECTL;
+
+TYPE STR8  = ARRAY [0..7] OF CHAR;    (* str8 *)
+TYPE PSTR8 = POINTER TO STR8;
+
+(*** common DEV/SPL types *)
+
+(* structure for Device Driver data *)
+
+TYPE DRIVDATA = RECORD       (* driv *)
+   cb:        LONG;
+   lVersion:  LONG;
+   szDeviceName:  ARRAY [0..31] OF CHAR;
+   abGeneralData: ARRAY [0..0]  OF CHAR;
+END;
+TYPE PDRIVDATA = POINTER TO DRIVDATA;
+
+(* pointer data for DevOpenDC *)
+
+TYPE PDEVOPENDATA = POINTER TO PSZ;
+
+(* array indices for array parameter for DevOpenDC, SplQmOpen or SplQpOpen *)
+
+CONST ADDRESS           =  0;
+#if ! defined(INCL_SAADEFS)
+   CONST DRIVER_NAME    =  1;
+   CONST DRIVER_DATA    =  2;
+   CONST DATA_TYPE      =  3;
+   CONST COMMENT        =  4;
+   CONST PROC_NAME      =  5;
+   CONST PROC_PARAMS    =  6;
+   CONST SPL_PARAMS     =  7;
+   CONST NETWORK_PARAMS =  8;
+
+   (* structure definition as an alternative of the array parameter *)
+
+   TYPE DEVOPENSTRUC = RECORD     (* dop *)
+      pszLogAddress,
+      pszDriverName:    PSZ;
+      pdriv:            PDRIVDATA;
+      pszDataType,
+      pszComment,
+      pszQueueProcName,
+      pszQueueProcParams,
+      pszSpoolerParams,
+      pszNetworkParams: PSZ;
+   END;
+   TYPE PDEVOPENSTRUC = POINTER TO DEVOPENSTRUC;
+#endif  (* !INCL_SAADEFS *)
+
+(* common PMWP object and PMSTDDLG drag data *)
+
+TYPE PRINTDEST = RECORD     (* prntdst *)
+   cb:         ULONG;
+   lType:      LONG;
+   pszToken:   PSZ;
+   lCount:     LONG;
+   pdopData:   PDEVOPENDATA;
+   fl:         ULONG;
+   pszPrinter: PSZ;
+END;
+TYPE PPRINTDEST = POINTER TO PRINTDEST;
+
+CONST PD_JOB_PROPERTY  =  0001H;      (* Flags for .fl field           *)
+
+(*** common AVIO/GPI types *)
+
+(* values of fsSelection field of FATTRS structure *)
+CONST FATTR_SEL_ITALIC      =  0001H;
+CONST FATTR_SEL_UNDERSCORE  =  0002H;
+CONST FATTR_SEL_OUTLINE     =  0008H;
+CONST FATTR_SEL_STRIKEOUT   =  0010H;
+CONST FATTR_SEL_BOLD        =  0020H;
+
+(* values of fsType field of FATTRS structure *)
+CONST FATTR_TYPE_KERNING    =  0004H;
+CONST FATTR_TYPE_MBCS       =  0008H;
+CONST FATTR_TYPE_DBCS       =  0010H;
+CONST FATTR_TYPE_ANTIALIASED=  0020H;
+
+(* values of fsFontUse field of FATTRS structure *)
+CONST FATTR_FONTUSE_NOMIX         = 0002H;
+CONST FATTR_FONTUSE_OUTLINE       = 0004H;
+CONST FATTR_FONTUSE_TRANSFORMABLE = 0008H;
+(* size for fields in the font structures *)
+
+CONST FACESIZE = 32;
+
+(* font struct for Vio/GpiCreateLogFont *)
+
+TYPE FATTRS = RECORD            (* fat *)
+   usRecordLength:   USHORT;
+   fsSelection:      USHORT;
+   lMatch:           LONG;
+   szFacename:       ARRAY [0..FACESIZE-1] OF CHAR;
+   idRegistry:       USHORT;
+   usCodePage:       USHORT;
+   lMaxBaselineExt:  LONG;
+   lAveCharWidth:    LONG;
+   fsType:           USHORT;
+   fsFontUse:        USHORT;
+END;
+TYPE PFATTRS = POINTER TO FATTRS;
+
+(* values of fsType field of FONTMETRICS structure *)
+CONST FM_TYPE_FIXED          = 0001H;
+CONST FM_TYPE_LICENSED       = 0002H;
+CONST FM_TYPE_KERNING        = 0004H;
+CONST FM_TYPE_DBCS           = 0010H;
+CONST FM_TYPE_MBCS           = 0018H;
+CONST FM_TYPE_64K            = 8000H;
+CONST FM_TYPE_ATOMS          = 4000H;
+CONST FM_TYPE_FAMTRUNC       = 2000H;
+CONST FM_TYPE_FACETRUNC      = 1000H;
+
+(* values of fsDefn field of FONTMETRICS structure *)
+CONST FM_DEFN_OUTLINE        = 0001H;
+CONST FM_DEFN_IFI            = 0002H;
+CONST FM_DEFN_WIN            = 0004H;
+CONST FM_DEFN_GENERIC        = 8000H;
+
+(* values of fsSelection field of FONTMETRICS structure *)
+CONST FM_SEL_ITALIC          = 0001H;
+CONST FM_SEL_UNDERSCORE      = 0002H;
+CONST FM_SEL_NEGATIVE        = 0004H;
+CONST FM_SEL_OUTLINE         = 0008H;          (* Hollow Outline Font *)
+CONST FM_SEL_STRIKEOUT       = 0010H;
+CONST FM_SEL_BOLD            = 0020H;
+CONST FM_SEL_ISO9241_TESTED  = 0040H;
+
+(* ISO 9241 is an international standard covering health and safety      *)
+(* in the work place for users of visual display terminals. Part 3 of    *)
+(* this standard covers clarity and legibility of text displayed on      *)
+(* computer screens, it places requirements on minimum sizes and         *)
+(* luminance contrast. The presence of FM_SEL_ISO9241_TESTED flag in the *)
+(* font metrics indicates that the font has been tested for compliance   *)
+(* to the standard. The FM_ISO_XXX flags indicate the results of the     *)
+(* test on the IBM 9515, 9517 and 9518 color displays at the supported   *)
+(* dimensions of 640x480 and 1024x768. To ensure compliance the          *)
+(* sXDeviceRes and sYDeviceRes must also match the target display        *)
+(* resolution.                                                           *)
+
+(* values of fbPassed/FailedISO field in the PANOSE structure *)
+CONST FM_ISO_9518_640       = 01H;
+CONST FM_ISO_9515_640       = 02H;
+CONST FM_ISO_9515_1024      = 04H;
+CONST FM_ISO_9517_640       = 08H;
+CONST FM_ISO_9517_1024      = 10H;
+
+(* values of fsCapabilities field of FONTMETRICS structure *)
+CONST FM_CAP_NOMIX          =  0001H;
+
+(* font metrics returned by GpiQueryFonts and others *)
+
+TYPE PANOSE = RECORD  (* panose *)
+   bFamilyType,
+   bSerifStyle,
+   bWeight,
+   bProportion,
+   bContrast,
+   bStrokeVariation,
+   bArmStyle,
+   bLetterform,
+   bMidline,
+   bXHeight,
+   fbPassedISO,
+   fbFailedISO: BYTE;
+END;
+
+TYPE FONTMETRICS = RECORD    (* fm *)
+   szFamilyname:    ARRAY [0..FACESIZE-1] OF CHAR;
+   szFacename:      ARRAY [0..FACESIZE-1] OF CHAR;
+   idRegistry:        USHORT;
+   usCodePage:        USHORT;
+   lEmHeight,
+   lXHeight,
+   lMaxAscender,
+   lMaxDescender,
+   lLowerCaseAscent,
+   lLowerCaseDescent,
+   lInternalLeading,
+   lExternalLeading,
+   lAveCharWidth,
+   lMaxCharInc,
+   lEmInc,
+   lMaxBaselineExt:   LONG;
+   sCharSlope:        SHORT;
+   sInlineDir:        SHORT;
+   sCharRot:          SHORT;
+   usWeightClass:     USHORT;
+   usWidthClass:      USHORT;
+   sXDeviceRes,
+   sYDeviceRes,
+   sFirstChar,
+   sLastChar,
+   sDefaultChar,
+   sBreakChar,
+   sNominalPointSize,
+   sMinimumPointSize,
+   sMaximumPointSize: SHORT;
+   fsType:            USHORT;
+   fsDefn:            USHORT;
+   fsSelection:       USHORT;
+   fsCapabilities:    USHORT;
+   lSubscriptXSize,
+   lSubscriptYSize,
+   lSubscriptXOffset,
+   lSubscriptYOffset,
+   lSuperscriptXSize,
+   lSuperscriptYSize,
+   lSuperscriptXOffset,
+   lSuperscriptYOffset,
+   lUnderscoreSize,
+   lUnderscorePosition,
+   lStrikeoutSize,
+   lStrikeoutPosition:LONG;
+   sKerningPairs:     SHORT;
+   sFamilyClass:      SHORT;
+   lMatch:            LONG;
+   FamilyNameAtom:    LONG;
+   FaceNameAtom:      LONG;
+   panose:            PANOSE;
+END;
+TYPE PFONTMETRICS = POINTER TO FONTMETRICS;
+
+(*** Common WIN types *)
+
+TYPE HWND  = LHANDLE;      (* hwnd *)
+TYPE PHWND = POINTER TO HWND;
+
+TYPE HMQ  = LHANDLE;       (* hmq *)
+TYPE PHMQ = POINTER TO LHANDLE;
+
+TYPE WRECT    = RECTL;
+TYPE PWRECT   = PRECTL;
+TYPE NPWRECT  = NPRECTL;
+
+TYPE WPOINT   = POINTL;
+TYPE PWPOINT  = PPOINTL;
+TYPE NPWPOINT = NPPOINTL;
+
+TYPE ICONINFO = RECORD   (* icninf *)
+   cb:           ULONG;       (* size of ICONINFO structure *)
+   fFormat:      ULONG;
+   pszFileName:  PSZ;         (* use when fFormat = ICON_FILE *)
+   hmod:         HMODULE;     (* use when fFormat = ICON_RESOURCE *)
+   resid:        ULONG;       (* use when fFormat = ICON_RESOURCE *)
+   cbIconData:   ULONG;       (* use when fFormat = ICON_DATA     *)
+   pIconData:    PVOID;       (* use when fFormat = ICON_DATA     *)
+END;
+TYPE PICONINFO = POINTER TO ICONINFO;
+
+CONST ICON_FILE     = 1;         (* flags for fFormat *)
+CONST ICON_RESOURCE = 2;
+CONST ICON_DATA     = 3;
+CONST ICON_CLEAR    = 4;
+
+(**************************** end of file **********************************)

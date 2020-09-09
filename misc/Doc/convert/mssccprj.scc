@@ -1,0 +1,10 @@
+SCC = This is a Source Code Control file
+
+[convert.mak]
+SCC_Project_Name = "$/xds2.6/misc/Doc/convert", HOGYAAAA
+
+[convert.vcproj]
+SCC_Project_Name = "$/xds2.6/misc/Doc/convert", HOGYAAAA
+
+[convertn.mak]
+SCC_Project_Name = "$/xds2.6/misc/Doc/convert", HOGYAAAA

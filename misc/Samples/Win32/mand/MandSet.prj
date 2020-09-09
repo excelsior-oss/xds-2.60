@@ -1,0 +1,5 @@
+% XDS project file
+-COMPILERHEAP = 12000000
+-HEAPLIMIT    = 12000000
+-GUI+
+!module MandSet.mod

@@ -1,0 +1,46 @@
+(* Created using H2D v1.1 from X11/xpm.h.
+ * X11/mac_xpm.def  Apr 8  20:49:4  1996
+ *
+ * Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_xpm.def,v $ $Revision: 3 $ $Date: 14.02.98 18:06 $
+ *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_xpm;
+
+IMPORT SYSTEM, X, xpm;
+
+FROM Xlib IMPORT PChar, PAPChar;
+FROM X IMPORT MAX_STUP_ARR;
+
+PROCEDURE ["C"] XCreateDataFromPixmap ( dpy: xpm.PtrDisplay;
+					VAR data: PAPChar;
+					pix, mask: X.Pixmap;
+					VAR att: xpm.XpmAttributes ): SYSTEM.int;
+PROCEDURE ["C"] XCreatePixmapFromData ( dpy: xpm.PtrDisplay; d: X.Drawable;
+					data: PAPChar; 
+					VAR mask, pix: X.Pixmap;
+					VAR att: xpm.XpmAttributes ): SYSTEM.int;
+PROCEDURE ["C"] XReadPixmapFile ( dpy: xpm.PtrDisplay;
+				  d: X.Drawable;
+				  file: ARRAY OF CHAR;
+				  VAR pix, mask: X.Pixmap;
+				  VAR att: xpm.XpmAttributes ): SYSTEM.int;
+PROCEDURE ["C"] XWritePixmapFile ( dpy: xpm.PtrDisplay;
+				   file: ARRAY OF CHAR;
+				   pix, mask: X.Pixmap; 
+				   VAR att: xpm.XpmAttributes): SYSTEM.int;
+PROCEDURE ["C"] XpmFree ( ptr: SYSTEM.ADDRESS );
+PROCEDURE ["C"] XpmReadPixmapFile ( dpy: xpm.PtrDisplay;
+				    d: X.Drawable;
+				    file: ARRAY OF CHAR;
+				    VAR pix, mask: X.Pixmap;
+				    VAR att: xpm.XpmAttributes ): SYSTEM.int;
+PROCEDURE ["C"] XpmWritePixmapFile ( dpy: xpm.PtrDisplay;
+				     file: ARRAY OF CHAR; 
+				     pix, mask: X.Pixmap; 
+				     VAR att: xpm.XpmAttributes ): SYSTEM.int;
+END mac_xpm.

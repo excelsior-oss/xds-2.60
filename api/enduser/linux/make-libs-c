@@ -1,0 +1,13 @@
+#!/bin/sh
+
+myfp=`which $0`
+xdsdir=`dirname $myfp`
+
+pushd $xdsdir
+
+pushd lib/C
+make -f lib.mkf
+make -f tslib.mkf
+popd 
+
+popd

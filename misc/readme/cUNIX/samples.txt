@@ -1,0 +1,160 @@
+SAMPLES.TXT                        Copyright (c) 1994-98 XDS Ltd
+----------------------------------------------------------------
+
+                     XDS-C Unix Edition
+                 ---------------------------
+                            v2.31
+
+                       Sample Programs
+
+
+There is a number of sample programs in the samples/ subdirectory
+of your XDS installation. However, it is recommended to play with
+them in a separate working directory. 
+
+The `xdssamp' script accepts XDS root directory as a parameter
+and copies all subdirectories containing samples to the current 
+directory:
+
+    mkdir ~/work
+    cd ~/work
+    xdssamp /usr/local/xds
+
+The samples/ subdirectory contains the following subdirectories:
+
+    modula/   - programs illustrating basic Modula-2 features.
+
+    oberon/   - programs illustrating basic Oberon-2 features.
+
+    huffchan/ - ISO Modula-2 device modules and low-level data
+                manipulations sample.
+
+    nodes/    - example of Oberon-2 run-time support usage.
+
+
+samples/modula
+--------------
+
+Each sample in this directory consists of a single Modula-2 module.
+
+    except.mod      Exceptions
+    exp.mod         Calculate exponent
+    fact.mod        Factorial
+    halt.mod        Termination
+    hello.mod       Hello, World
+    hisdemo.mod     History demo (See hisdemo.prj)
+    sieve.mod       Prime numbers
+    term.mod        Termination
+
+To build an executable program for a sample, invoke the compiler
+in the make mode, passing the name of the sample module as a
+parameter:
+
+    xm =m hello.mod
+
+For "hisdemo" sample, use:
+
+    xm =m hisdemo.mod +gendebug
+
+
+samples/oberon
+--------------
+
+Each sample in this directory consists of a single Oberon-2 module.
+In these samples the specific features of Oberon-2 are not used.
+
+    ackerman.ob2    Ackermann function
+    exp.ob2         Calculate exponent
+    hello.ob2       Hello, World
+    self.ob2        Print self text
+    sieve.ob2       Prime numbers
+
+To build an executable program for a sample, invoke the compiler in
+the make mode, passing the name of the sample module as an argument:
+
+    xm =m hello.ob2
+
+
+samples/huffchan
+----------------
+
+This sample illustrates the concept of device modules introduced
+in the ISO Modula-2 input/output library, and low-level data
+manipulation techniques.
+
+        HuffChan.txt   - sample description
+        HuffChan.def   - HuffChan device module
+        HuffChan.mod
+        huf.mod        - file packing utility
+        unhuf.mod      - file unpacking utility
+
+To build this sample, type:
+
+    xm =m huf.mod
+    xm =m unhuf.mod
+
+The sample contains the HuffChan device module, which may be
+used to perfrom Huffman encoding and decoding on channels opened
+by other device modules, The two programs, "huf" and "unhuf",
+utilize the HuffChan module facilities. The first program
+encodes a given file and writes it to another file; the
+second one reverses that operation.
+
+
+samples/nodes
+-------------
+
+The "nodes" subdirectory contains the following files, constituting
+a single Oberon-2 program:
+
+    Nodes.ob2       - definition of abstract Node class
+    Echo.ob2        - concrete Node extension
+    GenEcho.ob2     - concrete Node extension
+    Commands.ob2    - concrete Node extension
+    Types.ob2       - concrete Node extension
+    runme.ob2       - the main module
+    nodes.prj       - project file
+
+To build the program, type:
+
+    xm =p nodes
+
+The  "Nodes" module defines an abstract object (Node). Objects of
+this  type  are  linked  in  the  list.  The  module "Nodes" also
+implement  the  command  monitor  ("Loop"  procedure). The "Loop"
+procedure  reads an input from keyboard and then passes the input
+to  the  current  node,  or  if  the  input  line starts from "."
+executes some standard action.
+
+The  module  "runme"  imports  modules defining the extensions of
+type  Node  (concrete  classes),  inserts it in the list and then
+call "Nodes.Loop".
+
+Nodes.Node extensions:
+----------------------
+
+"Echo"     - implements a node which prints its input to terminal.
+
+"GenEcho"  - if the number N is specified in the input line
+             creates "N" examples of the "Echo" Node.
+
+"Commands" - provides facilities to call commands (exported
+             parameterless procedures) in the form:
+                ModuleName.ProcedureName
+             Also implements operations to enumerate all modules
+             in the program and all commands in the given module.
+
+"Types"    - provides facilities to allocate an object by the
+             given name in the form:
+                ModuleName.RecordTypeName
+
+Modules "Types" and "Commands" illustrate usage of meta-language
+facilities,  including command calls and creation of an object of
+a type with a given name.
+
+It is important to note, that XDS does not yet support dynamic
+module loading. You can use commands and types from the modules
+which are already linked in the program.
+
+
+                        [end of document]

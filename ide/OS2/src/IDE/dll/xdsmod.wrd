@@ -1,0 +1,52 @@
+% Modula2 language
+% Valid lists are: ResWords, CommEOL, CommBeg, CommEnd, PragmaBeg, PragmaEnd
+
+ResWords =
+  "ARRAY",
+  "IMPORT",
+  "RETURN",
+  "BEGIN",
+  "IN",
+  "THEN",
+  "MODULE",
+  "BY",
+  "IS",
+  "TO",
+  "CASE",
+  "LOOP",
+  "TYPE",
+  "CONST",
+  "MOD",
+  "UNTIL",
+  "DIV",
+  "EXCEPT",
+  "VAR",
+  "DO",
+  "NIL",
+  "WHILE",
+  "ELSE",
+  "OF",
+  "WITH",
+  "ELSIF",
+  "OR",
+  "AND",
+  "END",
+  "POINTER",
+  "EXIT",
+  "PROCEDURE",
+  "FOR",
+  "RECORD",
+  "IF",
+  "REPEAT";
+
+CommEOL =
+  "--";
+CommBeg =
+  "(*";
+CommEnd =
+  "*)";
+PragmaBeg =
+  "<*";
+PragmaEnd =
+  "*>";
+

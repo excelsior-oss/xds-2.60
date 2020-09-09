@@ -1,0 +1,26 @@
+manual
+def
+title
+intro
+config
+start
+usage
+ifgenc program
+ifgeni %runload
+options
+%ifgeni utils
+modula2
+oberon2
+multlang
+library
+rts
+ifgencode
+  ccomp
+  lowlevel
+ifgenc
+  seamless
+  maptoc
+  problems
+limits
+bibliog
+o2rep

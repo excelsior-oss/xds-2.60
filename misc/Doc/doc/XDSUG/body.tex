@@ -1,0 +1,60 @@
+% 10-Dec-1999: \part commented out due to problems caused by it on double-side printers
+
+\input{intro.tex}
+\input{start.tex}
+% \ifonline\else\part{Tools Reference}\fi
+\input{config.tex}
+\input{usage.tex}
+\ifgenc
+  %\input{program.tex}  % programming in the large
+\fi
+\input{options.tex}
+\input{errors.tex}
+\ifgencode
+  \ifxlink   \input{xlink.tex} \fi
+  \ifxlib    \input{xlib.tex}  \fi
+\fi
+%\input{osa.tex}
+\ifgencode
+  \ifprofile \input{profile.tex} \fi
+\fi
+% \ifonline\else\part{Programming Guide}\fi
+\input{modula2.tex}
+\input{oberon2.tex}
+\input{rts.tex}
+\input{multlang.tex}
+\ifgencode
+  \input{optimize.tex}
+\fi
+\ifgencode
+  \ifthreads \input{threads.tex} \fi
+  \ifdll \input{dll.tex} \fi
+  \input{lowlevel.tex}
+  \input{asm.tex}
+\fi
+\ifgenc
+  \input{maptoc.tex}
+  \input{problems.tex}
+\fi
+\ifwinnt
+  \input{win32api.tex}
+\fi
+\ifosii
+  \input{os2api.tex}
+\fi
+\appendix
+\input{limits.tex}
+\iftopspeed
+  \input{tscp.tex}
+\fi
+\ifdll
+  \input{redistr.tex}
+\fi
+\ifonline \else % Convertor does not support bibliography yet
+\input{../bibliog.tex}
+\fi
+
+\printindex
+
+%installation guide (or READ.ME) !!!
+%

@@ -1,0 +1,38 @@
+% Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+%
+% X11 macros implementation library for Xlib, Xt, and X color pixmap (XPM) 
+%
+% $RCSfile: libmac_X11.prj,v $ $Revision: 2.1 $ $Date: 1998/02/14 22:29:54 $
+%
+
+% Let's define library project
+-library:+
+-libname!libmac_X11
+-genlib+
+
+% We have to generate makefile
+-makefile+
+-mkfname=$(libname)
+-mkfext=mkf
+
+% Make library
+-link = "make -f %s",mkfname#mkfext
+
+-lookup = *.def = $!/def
+-lookup = *.mod = $!
+-lookup = *.sym=$(sym_place)
+-lookup = *.o = $(tmp_place)
+-lookup = *.a = $(lib_place)
+-lookup = $(mkfname).$(mkfext) = $(tmp_place)
+
+
+% Modules list
+!module mac_Xlib.mod
+!module	mac_Xutil.mod
+!module	mac_Xresource.mod
+!module	mac_Xcms.mod
+!module mac_Intrinsic.mod
+!module	mac_IntrinsicP.mod
+!module	mac_xpm.mod
+
+

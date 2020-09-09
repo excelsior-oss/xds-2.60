@@ -1,0 +1,503 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMHELP.H
+*
+* OS/2 Presentation Manager Information Presentation Facility;
+* Help Manager declarations.
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1993
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_WINHELP            Help manager structures and APIs
+*   INCL_DDF                Dynamic Data Formatting APIs
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+   (* XLATON *)
+   #define PMHELP_INCLUDED
+
+
+
+   (************************************************************************)
+   (* HelpSubTable entry structure                                         *)
+   (************************************************************************)
+   TYPE HELPSUBTABLE  = USHORT;
+   TYPE PHELPSUBTABLE = POINTER TO HELPSUBTABLE;
+
+   (************************************************************************)
+   (* HelpTable entry structure                                            *)
+   (*                                                                      *)
+   (*  Pack the structure HELPTABLE so that it is identical in the 32-Bit  *)
+   (*  and 16-Bit world.  We have to do this because the HelpTable can     *)
+   (*  reside either in memory or in the application's resources.          *)
+   (************************************************************************)
+
+   (* XLATOFF *)
+   <* ALIGNMENT = "2" *>   (* pack on word boundary *)
+   (* XLATON *)
+
+   TYPE HELPTABLE = RECORD       (* ht *)
+      idAppWindow:      USHORT          ;
+      phstHelpSubTable: PHELPSUBTABLE   ;
+      idExtPanel:       USHORT          ;
+   END;
+   TYPE PHELPTABLE = POINTER TO HELPTABLE;
+
+   (* XLATOFF *)
+   <* ALIGNMENT = "4" *>    (* reset to default packing *)
+   (* XLATON *)
+
+
+   (************************************************************************)
+   (* IPF Initialization Structure used on the                             *)
+   (* WinCreateHelpInstance() call.                                        *)
+   (************************************************************************)
+
+   TYPE HELPINIT = RECORD     (* hinit 32 bit *)
+      cb:                  ULONG        ;
+      ulReturnCode:        ULONG        ;
+      pszTutorialName:     PSZ          ;
+      phtHelpTable:        PHELPTABLE   ;
+      hmodHelpTableModule: HMODULE      ;
+      hmodAccelActionBarModule:    HMODULE      ;
+      idAccelTable:        ULONG        ;
+      idActionBar:         ULONG        ;
+      pszHelpWindowTitle:  PSZ          ;
+      fShowPanelId:        ULONG        ;
+      pszHelpLibraryName:  PSZ          ;
+   END;
+   TYPE PHELPINIT = POINTER TO HELPINIT;
+
+
+   (************************************************************************)
+   (* Search parent chain indicator for HM_SET_ACTIVE_WINDOW message.      *)
+   (************************************************************************)
+   CONST HWND_PARENT       = HWND(NIL);
+
+   (************************************************************************)
+   (* Constants used to define whether user wants to display panel using   *)
+   (* panel number or panel name.                                          *)
+   (************************************************************************)
+   CONST HM_RESOURCEID            = 0;
+   CONST HM_PANELNAME             = 1;
+
+   CONST HMPANELTYPE_NUMBER       = 0;
+   CONST HMPANELTYPE_NAME         = 1;
+
+   (************************************************************************)
+   (* Constants used to define how the panel IDs are displayed on          *)
+   (* help panels.                                                         *)
+   (************************************************************************)
+   CONST CMIC_HIDE_PANEL_ID       = 0000H;
+   CONST CMIC_SHOW_PANEL_ID       = 0001H;
+   CONST CMIC_TOGGLE_PANEL_ID     = 0002H;
+
+   (************************************************************************)
+   (* Window Help API declarations.                                        *)
+   (************************************************************************)
+   PROCEDURE WinDestroyHelpInstance(hwndHelpInstance : HWND): BOOL;
+
+   PROCEDURE WinCreateHelpInstance(hab                       : HAB
+                                  ;VAR phinitHMInitStructure : HELPINIT
+                                  ): HWND;
+
+   PROCEDURE WinAssociateHelpInstance(hwndHelpInstance : HWND
+                                     ;hwndApp          : HWND
+                                     ): BOOL;
+
+   PROCEDURE WinQueryHelpInstance(hwndApp : HWND): HWND;
+
+   PROCEDURE WinLoadHelpTable(hwndHelpInstance : HWND
+                             ;idHelpTable      : ULONG
+                             ;Module           : HMODULE
+                             ): BOOL;
+
+   PROCEDURE WinCreateHelpTable(hwndHelpInstance : HWND
+                               ;htHelpTable      : ARRAY OF HELPTABLE
+                               ): BOOL;
+
+   (************************************************************************)
+   (* IPF message base.                                                    *)
+   (************************************************************************)
+   CONST HM_MSG_BASE              = 0220H;
+
+   (************************************************************************)
+   (* Messages applications can send to the IPF.                           *)
+   (************************************************************************)
+   CONST HM_DISMISS_WINDOW             = HM_MSG_BASE+00001H;
+   CONST HM_DISPLAY_HELP               = HM_MSG_BASE+00002H;
+   CONST HM_EXT_HELP                   = HM_MSG_BASE+00003H;
+   CONST HM_GENERAL_HELP               = HM_EXT_HELP;
+   CONST HM_SET_ACTIVE_WINDOW          = HM_MSG_BASE+00004H;
+   CONST HM_LOAD_HELP_TABLE            = HM_MSG_BASE+00005H;
+   CONST HM_CREATE_HELP_TABLE          = HM_MSG_BASE+00006H;
+   CONST HM_SET_HELP_WINDOW_TITLE      = HM_MSG_BASE+00007H;
+   CONST HM_SET_SHOW_PANEL_ID          = HM_MSG_BASE+00008H;
+   CONST HM_REPLACE_HELP_FOR_HELP      = HM_MSG_BASE+00009H;
+   CONST HM_REPLACE_USING_HELP         = HM_REPLACE_HELP_FOR_HELP;
+   CONST HM_HELP_INDEX                 = HM_MSG_BASE+0000aH;
+   CONST HM_HELP_CONTENTS              = HM_MSG_BASE+0000bH;
+   CONST HM_KEYS_HELP                  = HM_MSG_BASE+0000cH;
+   CONST HM_SET_HELP_LIBRARY_NAME      = HM_MSG_BASE+0000dH;
+
+   CONST HM_SET_OBJCOM_WINDOW          = HM_MSG_BASE+00018H;
+   CONST HM_UPDATE_OBJCOM_WINDOW_CHAIN = HM_MSG_BASE+00019H;
+   CONST HM_QUERY_DDF_DATA             = HM_MSG_BASE+0001aH;
+   CONST HM_INVALIDATE_DDF_DATA        = HM_MSG_BASE+0001bH;
+   CONST HM_QUERY                      = HM_MSG_BASE+0001cH;
+   CONST HM_SET_COVERPAGE_SIZE         = HM_MSG_BASE+0001dH;
+
+   (************************************************************************)
+   (* Constants used to query the info from IPF in HM_QUERY message        *)
+   (************************************************************************)
+
+   (* Hi word in lParam 1 *)
+   CONST HMQW_COVERPAGE          = 00001H;
+   CONST HMQW_INDEX              = 00002H;
+   CONST HMQW_TOC                = 00003H;
+   CONST HMQW_SEARCH             = 00004H;
+   CONST HMQW_VIEWPAGES          = 00005H;
+   CONST HMQW_LIBRARY            = 00006H;
+   CONST HMQW_VIEWPORT           = 00007H;
+   CONST HMQW_OBJCOM_WINDOW      = 00008H;
+   CONST HMQW_INSTANCE           = 00009H;
+   CONST HMQW_ACTIVEVIEWPORT     = 0000aH;
+   CONST CONTROL_SELECTED        = 0000bH;
+
+   CONST HMQW_GROUP_VIEWPORT     = 000f1H;
+   CONST HMQW_RES_VIEWPORT       = 000f2H;
+   CONST USERDATA                = 000f3H;
+
+   (* Lo word in lParam1 of HMQW_VIEWPORT *)
+   CONST HMQVP_NUMBER            = 00001H;
+   CONST HMQVP_NAME              = 00002H;
+   CONST HMQVP_GROUP             = 00003H;
+
+   (************************************************************************)
+   (* Predefined Control IDs                                               *)
+   (************************************************************************)
+   CONST CTRL_PREVIOUS_ID    = 00001H;
+   CONST CTRL_SEARCH_ID      = 00002H;
+   CONST CTRL_PRINT_ID       = 00003H;
+   CONST CTRL_INDEX_ID       = 00004H;
+   CONST CTRL_CONTENTS_ID    = 00005H;
+   CONST CTRL_BACK_ID        = 00006H;
+   CONST CTRL_FORWARD_ID     = 00007H;
+   CONST CTRL_TUTORIAL_ID    = 000FFH;
+
+   CONST CTRL_USER_ID_BASE   = 257;
+
+   (************************************************************************)
+   (* Messages the IPF sends to the applications active window             *)
+   (* as defined by the IPF.                                               *)
+   (************************************************************************)
+
+   CONST HM_ERROR                      = HM_MSG_BASE+0000eH;
+   CONST HM_HELPSUBITEM_NOT_FOUND      = HM_MSG_BASE+0000fH;
+   CONST HM_QUERY_KEYS_HELP            = HM_MSG_BASE+00010H;
+   CONST HM_TUTORIAL                   = HM_MSG_BASE+00011H;
+   CONST HM_EXT_HELP_UNDEFINED         = HM_MSG_BASE+00012H;
+   CONST HM_GENERAL_HELP_UNDEFINED     = HM_EXT_HELP_UNDEFINED;
+   CONST HM_ACTIONBAR_COMMAND          = HM_MSG_BASE+00013H;
+   CONST HM_INFORM                     = HM_MSG_BASE+00014H;
+   CONST HM_NOTIFY                     = HM_MSG_BASE+00022H;
+   CONST HM_SET_USERDATA               = HM_MSG_BASE+00023H;
+   CONST HM_CONTROL                    = HM_MSG_BASE+00024H;
+
+   (************************************************************************)
+   (* notify information for HM_NOTIFY                                     *)
+   (************************************************************************)
+   CONST OPEN_COVERPAGE       = 00001H;
+   CONST OPEN_PAGE            = 00002H;
+   CONST SWAP_PAGE            = 00003H;
+   CONST OPEN_TOC             = 00004H;
+   CONST OPEN_INDEX           = 00005H;
+   CONST OPEN_HISTORY         = 00006H;
+   CONST OPEN_SEARCH_HIT_LIST = 00007H;
+   CONST OPEN_LIBRARY         = 00008H;
+   CONST HELP_REQUESTED       = 00009H;
+
+   (************************************************************************)
+   (* HMERR_NO_FRAME_WND_IN_CHAIN - There is no frame window in the        *)
+   (* window chain from which to find or set the associated help           *)
+   (* instance.                                                            *)
+   (************************************************************************)
+   CONST  HMERR_NO_FRAME_WND_IN_CHAIN               = 000001001H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_ASSOC_APP_WND - The application window handle         *)
+   (* specified on the WinAssociateHelpInstance() call is not a valid     *)
+   (* window handle.                                                      *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_ASSOC_APP_WND               = 000001002H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_ASSOC_HELP_INST - The help instance handle specified  *)
+   (* on the WinAssociateHelpInstance() call is not a valid               *)
+   (* window handle.                                                      *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_ASSOC_HELP_INST             = 000001003H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_DESTROY_HELP_INST - The window handle specified       *)
+   (* as the help instance to destroy is not of the help instance class.  *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_DESTROY_HELP_INST           = 000001004H;
+
+   (***********************************************************************)
+   (* HMERR_NO_HELP_INST_IN_CHAIN - The parent or owner chain of the      *)
+   (* application window specified does not have a help instance          *)
+   (* associated with it.                                                 *)
+   (***********************************************************************)
+   CONST  HMERR_NO_HELP_INST_IN_CHAIN               = 000001005H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_HELP_INSTANCE_HDL - The handle specified to be a      *)
+   (* help instance does not have the class name of a IPF                 *)
+   (* help instance.                                                      *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_HELP_INSTANCE_HDL           = 000001006H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_QUERY_APP_WND - The application window specified on   *)
+   (* a WinQueryHelpInstance() call is not a valid window handle.         *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_QUERY_APP_WND               = 000001007H;
+
+   (***********************************************************************)
+   (* HMERR_HELP_INST_CALLED_INVALID -  The handle of the help instance   *)
+   (* specified on an API call to the IPF does not have the               *)
+   (* class name of an IPF help instance.                                 *)
+   (***********************************************************************)
+   CONST  HMERR_HELP_INST_CALLED_INVALID            = 000001008H;
+
+   CONST  HMERR_HELPTABLE_UNDEFINE                  = 000001009H;
+   CONST  HMERR_HELP_INSTANCE_UNDEFINE              = 00000100aH;
+   CONST  HMERR_HELPITEM_NOT_FOUND                  = 00000100bH;
+   CONST  HMERR_INVALID_HELPSUBITEM_SIZE            = 00000100cH;
+   CONST  HMERR_HELPSUBITEM_NOT_FOUND               = 00000100dH;
+
+   (***********************************************************************)
+   (* HMERR_INDEX_NOT_FOUND - No index in library file.                   *)
+   (***********************************************************************)
+   CONST  HMERR_INDEX_NOT_FOUND                     = 000002001H;
+
+   (***********************************************************************)
+   (* HMERR_CONTENT_NOT_FOUND - Library file does not have any contents.  *)
+   (***********************************************************************)
+   CONST  HMERR_CONTENT_NOT_FOUND                   = 000002002H;
+
+   (***********************************************************************)
+   (* HMERR_OPEN_LIB_FILE     - Cannot open library file                  *)
+   (***********************************************************************)
+   CONST  HMERR_OPEN_LIB_FILE                       = 000002003H;
+
+   (***********************************************************************)
+   (* HMERR_READ_LIB_FILE     - Cannot read library file                  *)
+   (***********************************************************************)
+   CONST  HMERR_READ_LIB_FILE                       = 000002004H;
+
+   (***********************************************************************)
+   (* HMERR_CLOSE_LIB_FILE    - Cannot close library file                 *)
+   (***********************************************************************)
+   CONST  HMERR_CLOSE_LIB_FILE                      = 000002005H;
+
+   (***********************************************************************)
+   (* HMERR_INVALID_LIB_FILE  - Improper library file provided            *)
+   (***********************************************************************)
+   CONST  HMERR_INVALID_LIB_FILE                    = 000002006H;
+
+   (***********************************************************************)
+   (* HMERR_NO_MEMORY - Unable to allocate the requested amount of memory.*)
+   (***********************************************************************)
+   CONST  HMERR_NO_MEMORY                           = 000002007H;
+
+   (***********************************************************************)
+   (* HMERR_ALLOCATE_SEGMENT - Unable                                     *)
+   (* to allocate a segment of memory for memory allocation requested     *)
+   (* from the IPF.                                                       *)
+   (***********************************************************************)
+   CONST  HMERR_ALLOCATE_SEGMENT                    = 000002008H;
+
+   (***********************************************************************)
+   (* HMERR_FREE_MEMORY - Unable to free allocated  memory                *)
+   (***********************************************************************)
+   CONST  HMERR_FREE_MEMORY                         = 000002009H;
+
+   (***********************************************************************)
+   (* HMERR_PANEL_NOT_FOUND  - Unable                                     *)
+   (* to find a help panel requested to help manager                      *)
+   (***********************************************************************)
+   CONST  HMERR_PANEL_NOT_FOUND                     = 000002010H;
+
+   (***********************************************************************)
+   (* HMERR_DATABASE_NOT_OPEN - Unable to read the unopened database      *)
+   (***********************************************************************)
+   CONST  HMERR_DATABASE_NOT_OPEN                   = 000002011H;
+
+   (***********************************************************************)
+   (* HMERR_DDL_ERROR - Unable to load resource dll                       *)
+   (***********************************************************************)
+   CONST  HMERR_LOAD_DLL                             = 000002013H;
+
+   (***********************************************************************)
+   (* AC Viewport stucture definitions                                    *)
+   (***********************************************************************)
+   TYPE ACVP = RECORD       (* acvp *)
+      cb:          ULONG;
+      hAB:         HAB;
+      hmq:         HMQ;
+      ObjectID:    ULONG;            (* object identifier *)
+      hWndParent:  HWND;             (* IPF viewport client handle *)
+      hWndOwner:   HWND;             (* IPF viewport client handle *)
+      hWndACVP:    HWND;             (* applications frame window hwnd *)
+   END;
+   TYPE PACVP = POINTER TO ACVP;
+
+   (***********************************************************************)
+   (* DDF defines and prototypes                                          *)
+   (***********************************************************************)
+   #if ! defined(PMDDF_H)
+      #define PMDDF_H
+   #endif (* PMDDF_H *)
+
+   #if defined(INCL_DDF)
+      (*********************************************************************)
+      (* Define Handle to DDF                                              *)
+      (*********************************************************************)
+      TYPE HDDF = SYSTEM.ADDRESS;
+
+      (* DdfHyperText Flags *)
+      CONST REFERENCE_BY_ID    = 0H;
+      CONST REFERENCE_BY_RES   = 1H;
+
+      (* DdfBeginList formatting flags *)
+      CONST HMBT_NONE          = 1H;
+      CONST HMBT_ALL           = 2H;
+      CONST HMBT_FIT           = 3H;
+
+      CONST HMLS_SINGLELINE    = 1H;
+      CONST HMLS_DOUBLELINE    = 2H;
+
+      (* DdfBitmap alignment flags *)
+      CONST ART_RUNIN          = 010H;
+      CONST ART_LEFT           = 001H;
+      CONST ART_RIGHT          = 002H;
+      CONST ART_CENTER         = 004H;
+
+      (* DdfSetColor Color Flag *)
+      CONST CLR_UNCHANGED      = -6;
+
+      (**********************************************************************)
+      (* DDF API declarations.                                              *)
+      (**********************************************************************)
+
+      PROCEDURE DdfInitialize(hwndHelpInstance : HWND
+                             ;cbBuffer         : ULONG
+                             ;ulIncrement      : ULONG
+                             ): HDDF;
+
+      PROCEDURE DdfPara(hddf : HDDF): BOOL;
+
+      PROCEDURE DdfSetFormat(hddf        : HDDF
+                            ;fFormatType : ULONG
+                            ): BOOL;
+
+      PROCEDURE DdfSetTextAlign(hddf   : HDDF
+                               ;fAlign : ULONG
+                               ): BOOL;
+
+      PROCEDURE DdfSetColor(hddf       : HDDF
+                           ;fBackColor : COLOR
+                           ;fForColor  : COLOR
+                           ): BOOL;
+
+      PROCEDURE DdfInform(hddf            : HDDF
+                         ;szText          : ARRAY OF CHAR
+                         ;resInformNumber : ULONG
+                         ): BOOL;
+
+      PROCEDURE DdfSetFontStyle(hddf       : HDDF
+                               ;fFontStyle : ULONG
+                               ): BOOL;
+
+      PROCEDURE DdfHyperText(hddf           : HDDF
+                            ;pszText        : ARRAY OF CHAR
+                            ;pszReference   : ARRAY OF CHAR
+                            ;fReferenceType : ULONG
+                            ): BOOL;
+
+      PROCEDURE DdfBeginList(hddf       : HDDF
+                            ;ulWidthDT  : ULONG
+                            ;fBreakType : ULONG
+                            ;fSpacing   : ULONG
+                            ): BOOL;
+
+      PROCEDURE DdfListItem(hddf          : HDDF
+                           ;szTerm        : ARRAY OF CHAR
+                           ;szDescription : ARRAY OF CHAR
+                           ): BOOL;
+
+      PROCEDURE DdfEndList(hddf : HDDF): BOOL;
+
+      PROCEDURE DdfMetafile(hddf              : HDDF
+                           ;hmf               : HMF
+                           ;VAR [NIL] rclRect : RECTL
+                           ): BOOL;
+
+      PROCEDURE DdfText(hddf   : HDDF
+                       ;szText : ARRAY OF CHAR
+                       ): BOOL;
+
+      PROCEDURE DdfSetFont(hddf        : HDDF
+                          ;pszFaceName : PCSZ      (* !!! NIL *)
+                          ;ulWidth     : ULONG
+                          ;ulHeight    : ULONG
+                          ): BOOL;
+
+      PROCEDURE DdfBitmap(hddf   : HDDF
+                         ;hbm    : HBITMAP
+                         ;fAlign : ULONG
+                         ): BOOL;
+
+      (*********************************************************************)
+      (* error codes returned by DDF API functions                         *)
+      (*********************************************************************)
+      CONST HMERR_DDF_MEMORY                 = 03001H;
+      CONST HMERR_DDF_ALIGN_TYPE             = 03002H;
+      CONST HMERR_DDF_BACKCOLOR              = 03003H;
+      CONST HMERR_DDF_FORECOLOR              = 03004H;
+      CONST HMERR_DDF_FONTSTYLE              = 03005H;
+      CONST HMERR_DDF_REFTYPE                = 03006H;
+      CONST HMERR_DDF_LIST_UNCLOSED          = 03007H;
+      CONST HMERR_DDF_LIST_UNINITIALIZED     = 03008H;
+      CONST HMERR_DDF_LIST_BREAKTYPE         = 03009H;
+      CONST HMERR_DDF_LIST_SPACING           = 0300AH;
+      CONST HMERR_DDF_HINSTANCE              = 0300BH;
+      CONST HMERR_DDF_EXCEED_MAX_LENGTH      = 0300CH;
+      CONST HMERR_DDF_EXCEED_MAX_INC         = 0300DH;
+      CONST HMERR_DDF_INVALID_DDF            = 0300EH;
+      CONST HMERR_DDF_FORMAT_TYPE            = 0300FH;
+      CONST HMERR_DDF_INVALID_PARM           = 03010H;
+      CONST HMERR_DDF_INVALID_FONT           = 03011H;
+      CONST HMERR_DDF_SEVERE                 = 03012H;
+
+   #endif (* INCL_DDF *)
+   (* XLATOFF *)
+
+
+
+(**************************** end of file **********************************)

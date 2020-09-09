@@ -1,0 +1,26 @@
+                    Native XDS-x86 OS/2 Edition
+
+                          Sample Program:
+
+          Mandelbrodt Set Explorer for Presentation Manager 
+
+
+    To build the executable file. issue the following commands
+    at the OS/2 command prompt:
+
+        xc =p mand
+        rc mand.res mand.exe  
+
+    Controls:
+        - press left mouse button to magnify image two times
+          (right button - four times )
+        - after the window size is changed, use the Refresh
+          command to update it
+        - use the Copy command to copy the current image
+          to the Clipboard
+        - use Back and Forward commands to review already
+          built images
+
+                         [end of document]
+
+

@@ -1,0 +1,56 @@
+(* Copyright (c) Excelsior LLC, 2003.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE ["C"] glob;
+
+FROM SYSTEM IMPORT ADDRESS, INT32;
+FROM types IMPORT size_t;
+
+
+CONST
+  GLOB_ERR       = 1;    -- Return on read errors.  
+  GLOB_MARK      = 2;    -- Append a slash to each name.  
+  GLOB_NOSORT    = 4;    -- Don't sort the names.  
+  GLOB_DOOFFS    = 8;    -- Insert PGLOB->gl_offs NULLs.  
+  GLOB_NOCHECK   = 16;   -- If nothing matches, return the pattern.  
+  GLOB_APPEND    = 32;   -- Append to results of a previous call.  
+  GLOB_NOESCAPE  = 64;   -- Backslashes don't quote metacharacters.  
+  GLOB_PERIOD    = 128;  -- Leading `.' can be matched by metachars.
+
+  -- Error returns from `glob'.
+  GLOB_NOSPACE    = 1;  -- Ran out of memory.
+  GLOB_ABORTED    = 2;  -- Read error.
+  GLOB_NOMATCH    = 3;  -- No matches found.
+  GLOB_NOSYS      = 4;  -- Not implemented.
+    
+TYPE
+  globerrfunc_t = PROCEDURE(ADDRESS, INT32): INT32;
+
+  glob_t = RECORD
+    gl_pathc : size_t;                     -- Count of paths matched so far.
+    gl_pathv : POINTER TO POINTER TO CHAR; -- List of matched pathnames.
+    gl_offs  : size_t;                     -- Slots to reserve in ¢ gl_pathv.
+    reserved : ARRAY[0..7] OF CARDINAL;
+  END;
+
+  glob64_t = glob_t; -- initial members are equal
+
+
+PROCEDURE glob (pattern: ARRAY OF CHAR; flags: INT32;
+                errfunc: globerrfunc_t; VAR buf: glob_t): INT32;
+
+PROCEDURE globfree (VAR buf: glob_t);
+
+
+PROCEDURE glob64 (pattern: ARRAY OF CHAR; flags: INT32;
+                  errfunc: globerrfunc_t; VAR buf: glob64_t): INT32;
+
+PROCEDURE globfree64 (VAR buf: glob64_t);
+
+
+END glob.
+
+

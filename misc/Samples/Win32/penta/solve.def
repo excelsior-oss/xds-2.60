@@ -1,0 +1,11 @@
+DEFINITION MODULE solve;
+FROM pat IMPORT N, SOLUTION;
+
+TYPE REPORT_PROC = PROCEDURE (VAR SOLUTION);
+
+PROCEDURE clear_solve_field;
+PROCEDURE set_solve_field (x, y : INTEGER);
+PROCEDURE search (report_proc : REPORT_PROC) : BOOLEAN;
+PROCEDURE stop_solving;
+
+END solve.

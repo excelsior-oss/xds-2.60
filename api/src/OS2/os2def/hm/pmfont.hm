@@ -1,0 +1,201 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMFONT.H
+*
+* OS/2 Presentation Manager type declarations for Fonts.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+*
+\***************************************************************************)
+
+#if ! defined(PMFONT_INCLUDED)
+   (* XLATON *)
+   #define PMFONT_INCLUDED
+
+   TYPE FOCAMETRICS = RECORD    (* foca *)
+      ulIdentity:           ULONG;
+      ulSize:               ULONG;
+      szFamilyname:         ARRAY [0..31] OF CHAR;
+      szFacename:           ARRAY [0..31] OF CHAR;
+      usRegistryId:         SHORT;
+      usCodePage:           SHORT;
+      yEmHeight:            SHORT;
+      yXHeight:             SHORT;
+      yMaxAscender:         SHORT;
+      yMaxDescender:        SHORT;
+      yLowerCaseAscent:     SHORT;
+      yLowerCaseDescent:    SHORT;
+      yInternalLeading:     SHORT;
+      yExternalLeading:     SHORT;
+      xAveCharWidth:        SHORT;
+      xMaxCharInc:          SHORT;
+      xEmInc:               SHORT;
+      yMaxBaselineExt:      SHORT;
+      sCharSlope:           SHORT;
+      sInlineDir:           SHORT;
+      sCharRot:             SHORT;
+      usWeightClass:        USHORT;
+      usWidthClass:         USHORT;
+      xDeviceRes:           SHORT;
+      yDeviceRes:           SHORT;
+      usFirstChar:          SHORT;
+      usLastChar:           SHORT;
+      usDefaultChar:        SHORT;
+      usBreakChar:          SHORT;
+      usNominalPointSize:   SHORT;
+      usMinimumPointSize:   SHORT;
+      usMaximumPointSize:   SHORT;
+      fsTypeFlags:          SHORT;
+      fsDefn:               SHORT;
+      fsSelectionFlags:     SHORT;
+      fsCapabilities:       SHORT;
+      ySubscriptXSize:      SHORT;
+      ySubscriptYSize:      SHORT;
+      ySubscriptXOffset:    SHORT;
+      ySubscriptYOffset:    SHORT;
+      ySuperscriptXSize:    SHORT;
+      ySuperscriptYSize:    SHORT;
+      ySuperscriptXOffset:  SHORT;
+      ySuperscriptYOffset:  SHORT;
+      yUnderscoreSize:      SHORT;
+      yUnderscorePosition:  SHORT;
+      yStrikeoutSize:       SHORT;
+      yStrikeoutPosition:   SHORT;
+      usKerningPairs:       SHORT;
+      sFamilyClass:         SHORT;
+      pszDeviceNameOffset:  PSZ;
+   END;
+   TYPE PFOCAMETRICS = POINTER TO FOCAMETRICS;
+
+   TYPE FONTFILEMETRICS = RECORD   (* ffm *)
+      ulIdentity:          ULONG;
+      ulSize:              ULONG;
+      szFamilyname:        ARRAY [0..31] OF CHAR;
+      szFacename:          ARRAY [0..31] OF CHAR;
+      usRegistryId:        SHORT;
+      usCodePage:          SHORT;
+      yEmHeight:           SHORT;
+      yXHeight:            SHORT;
+      yMaxAscender:        SHORT;
+      yMaxDescender:       SHORT;
+      yLowerCaseAscent:    SHORT;
+      yLowerCaseDescent:   SHORT;
+      yInternalLeading:    SHORT;
+      yExternalLeading:    SHORT;
+      xAveCharWidth:       SHORT;
+      xMaxCharInc:         SHORT;
+      xEmInc:              SHORT;
+      yMaxBaselineExt:     SHORT;
+      sCharSlope:          SHORT;
+      sInlineDir:          SHORT;
+      sCharRot:            SHORT;
+      usWeightClass:       USHORT;
+      usWidthClass:        USHORT;
+      xDeviceRes:          SHORT;
+      yDeviceRes:          SHORT;
+      usFirstChar:         SHORT;
+      usLastChar:          SHORT;
+      usDefaultChar:       SHORT;
+      usBreakChar:         SHORT;
+      usNominalPointSize:  SHORT;
+      usMinimumPointSize:  SHORT;
+      usMaximumPointSize:  SHORT;
+      fsTypeFlags:         SHORT;
+      fsDefn:              SHORT;
+      fsSelectionFlags:    SHORT;
+      fsCapabilities:      SHORT;
+      ySubscriptXSize:     SHORT;
+      ySubscriptYSize:     SHORT;
+      ySubscriptXOffset:   SHORT;
+      ySubscriptYOffset:   SHORT;
+      ySuperscriptXSize:   SHORT;
+      ySuperscriptYSize:   SHORT;
+      ySuperscriptXOffset: SHORT;
+      ySuperscriptYOffset: SHORT;
+      yUnderscoreSize:     SHORT;
+      yUnderscorePosition: SHORT;
+      yStrikeoutSize:      SHORT;
+      yStrikeoutPosition:  SHORT;
+      usKerningPairs:      SHORT;
+      sFamilyClass:        SHORT;
+      ulReserved:          ULONG;
+      panose:              PANOSE;
+   END;
+   TYPE PFONTFILEMETRICS = POINTER TO FONTFILEMETRICS;
+
+   TYPE FONTDEFINITIONHEADER = RECORD   (* fdh *)
+      ulIdentity:      ULONG;
+      ulSize:          ULONG;
+      fsFontdef:       SHORT;
+      fsChardef:       SHORT;
+      usCellSize:      SHORT;
+      xCellWidth:      SHORT;
+      yCellHeight:     SHORT;
+      xCellIncrement:  SHORT;
+      xCellA:          SHORT;
+      xCellB:          SHORT;
+      xCellC:          SHORT;
+      pCellBaseOffset: SHORT;
+   END;
+   TYPE PFONTDEFINITIONHEADER = POINTER TO FONTDEFINITIONHEADER;
+
+   CONST FONTDEFFONT1   =  00047H;  (* set width, height, inc. & base offset *)
+   CONST FONTDEFFONT2   =  00042H;  (* set height & base offset            *)
+   CONST FONTDEFFONT3   =  00042H;  (* set height & base offset            *)
+   CONST FONTDEFCHAR1   =  00081H;  (* set char offset and width           *)
+   CONST FONTDEFCHAR2   =  00081H;  (* set char offset and width           *)
+   CONST FONTDEFCHAR3   =  000b8H;  (* set char offset, A, B, and C space  *)
+   CONST SPACE_UNDEF    =  08000H;  (* space undefined = take default      *)
+
+   TYPE FONTSIGNATURE = RECORD   (* fs *)
+      ulIdentity:     ULONG;
+      ulSize:         ULONG;
+      achSignature:   ARRAY [0..11] OF CHAR;
+   END;
+   TYPE PFONTSIGNATURE = POINTER TO FONTSIGNATURE;
+
+   TYPE ADDITIONALMETRICS = RECORD   (* am *)
+      ulIdentity: ULONG;
+      ulSize:     ULONG;
+      panose:     PANOSE;
+   END;
+   TYPE PADDITIONALMETRICS = POINTER TO ADDITIONALMETRICS;
+
+   TYPE FOCAFONT = RECORD   (* ff *)
+      fsSignature:   FONTSIGNATURE;
+      fmMetrics:     FOCAMETRICS;
+      fdDefinitions: FONTDEFINITIONHEADER;
+   END;
+   TYPE PFOCAFONT = POINTER TO FOCAFONT;
+
+   CONST FONT_SIGNATURE        =  0FFFFFFFEH; (* Identity header start    *)
+   CONST FONT_METRICS          =  000000001H; (* Identity metrics         *)
+   CONST FONT_DEFINITION       =  000000002H; (* Identity definition      *)
+   CONST FONT_KERNPAIRS        =  000000003H; (* Identity Kern Pairs      *)
+   CONST FONT_ADDITIONALMETRICS=  000000004H; (* Identity Additional Metrics *)
+   CONST FONT_ENDRECORD        =  0FFFFFFFFH; (* Identity record end      *)
+
+   (* Options for QueryFonts *)
+
+   CONST QUERY_PUBLIC_FONTS    =  00001H;
+   CONST QUERY_PRIVATE_FONTS   =  00002H;
+
+   CONST CDEF_GENERIC          =  00001H;
+   CONST CDEF_BOLD             =  00002H;
+   CONST CDEF_ITALIC           =  00004H;
+   CONST CDEF_UNDERSCORE       =  00008H;
+   CONST CDEF_STRIKEOUT        =  00010H;
+   CONST CDEF_OUTLINE          =  00020H;
+
+   (* XLATOFF *)
+#endif (* PMFONT_INCLUDED *)
+(* XLATON *)
+
+
+(**************************** end of file **********************************)

@@ -1,0 +1,133 @@
+XDSC.TXT                      Copyright (c) 1999-2011 Excelsior.
+----------------------------------------------------------------
+
+                     XDS-C Win32 Edition
+                     -------------------
+                            v2.60
+
+                        Read Me First!
+
+In  the  following text we assume that you have chosen the C:\XDS
+directory for installation. If another directory was used, please
+use the name of that directory instead.
+
+1. Directory Structure
+----------------------
+
+The following directory structure is created during installation:
+
+C:\XDS\
+    BIN         executable and system files
+    DEF\        definition modules:
+        ISO         ISO Modula-2 library 
+        OB2         Oberon-2 library pseudo-definition modules
+        PIM         PIM library
+        POSIX       POSIX API
+        TS          TopSpeed-like library
+        WIN32       Win32 API 
+        XDS         XDS library 
+    C\C         run-time library C sources
+    INCLUDE\C   run-time library C headers
+    LIB\C       library files
+    README      useful texts
+    SAMPLES     Modula-2/Oberon-2 code samples
+    SYM\C       symbol files
+    UnInst      Uninstaller files
+
+
+2. Tuning XDS-C for your C compiler
+-----------------------------------
+
+Your XDS package includes the run-time library in C source code form.
+This allows you to port it to virtually any platform for which a C 
+compiler is available. Microsoft Visual C++ and Open Watcom C compilers
+are supported out-of-the-box.
+
+Microsoft Visual C++:
+
+    1. Issue the following commands:
+
+        cd c:\xds\lib\c
+        nmake -f msvc.mkf
+        nmake -f msvcts.mkf
+
+    2. Set the CC equiation to "MSVC" in C:\XDS\BIN\XM.CFG, your
+       local configuration file, or your project file:
+
+        -CC = MSVC
+
+Open Watcom C:
+
+    1. Issue the following commands:
+
+        cd c:\xds\lib\c
+        wmake -f watcom.mkf
+        wmake -f watcomts.mkf
+
+    2. Set the CC equiation to "Watcom" in C:\XDS\BIN\XM.CFG, your
+       local configuration file, or your project file:
+
+        -CC = Watcom
+
+To use XDS with another C compiler, do the following:
+
+    1. Create a new run-time library makefile, using one of the 
+       makefiles in C:\XDS\LIB\C as a base. The generic UNIX.MKF
+       file may be of use if you are going to cross program for
+       a Unix environment.
+
+    2. Build the run-time library on your target system.
+
+    3. Add support for your C compiler to C:\XDS\BIN\XM.TEM or 
+       create a new template file, using that file as a base.
+
+
+3. How to start
+----------------
+
+To configure XDS Environment for XDS-C, copy the XDSC.INI to XDS.INI 
+file in the BIN subdirectory. Copy the XDSX86.INI to XDS.INI file to 
+switch back to the Native XDS-x86.
+
+To invoke XDS Environment, select the "XDS Environment" item from
+the XDS folder of your Start menu or type
+
+    xds
+
+at the command prompt and press Enter. 
+
+To start the compiler from the command prompt, type
+
+    xm {options | modes} module_or_project_file {options | modes}
+
+and press Enter. Specifying no arguments would cause a brief help to 
+be printed.
+
+To set up a working directory for a new project, create a new directory,
+go to it, and type
+
+    xmwork
+
+This would create subdirectories for source and output files and a 
+project file template, XM.TPR.
+
+
+4. See also
+-----------
+
+To view the on-line documentation, type
+
+    start xds.hlp 
+
+at the command prompt or select the "XDS Help" item in the Excelsior XDS
+folder of your Start menu.
+
+The following text files in the README subdirectory contain additional
+information:
+
+    report.txt       bug reporting guidelines
+    samples.txt      sample programs description
+    whatsnew.txt     what is new in this release
+    xdsx86.txt       Native XDS-x86 readme first
+
+                         [end of document]

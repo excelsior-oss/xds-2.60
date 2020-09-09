@@ -1,0 +1,6 @@
+
+<* IF __GEN_JAVA__ THEN *> <* NEW StubJavaGen+ *> <* END *>
+
+IMPLEMENTATION MODULE EDIF;
+
+END EDIF.

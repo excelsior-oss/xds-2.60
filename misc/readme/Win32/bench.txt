@@ -1,0 +1,40 @@
+BENCH.TXT                         Copyright (c) 1994,97 XDS Ltd.
+----------------------------------------------------------------
+
+                 Native XDS-x86 Win32 Edition
+                 ----------------------------
+                            v2.32
+
+                          Benchmarks
+
+
+The directory SAMPLES\BENCH contains the following files:
+
+	dry.mod 	dhrystone test (Modula-2)
+	dry.c           dhrystone test (C)
+	whet.mod        whetstone test (Modula-2)
+	linnew.mod      linpack test   (Modula-2)
+	linnew.c        linpack test   (C)
+
+These tests can be used to compare different platforms and different
+compilers.  We include C sources to make it possible to compare
+the quality of the generated code with C compilers.
+
+Enclosed are results of comparision between our compiler, Microsoft
+Visual C++ 4.2 and Watcom C 10.5. All benchmarks were executed on
+a Pentum-150 (256 asynch L2 cache, 32Mb EDO RAM) running WinNT 4.0
+All possible optimizations for each compiler were turned on:
+
+     MSVC 4.2               /Ox /G5 /Gr /Oa
+     Watcom C 10.5          /Ox /5r /fp5 /Oa
+     Native XDS-x86 2.32    see sources
+
+Results:
+     
+               Dhrystone (12000000 iterations)   LinPack (200x200)
+                    
+     MSVC      214.2 KDhry/sec (56 sec)          13.8 MFlops (57.5 sec)
+     WC        184.6 KDhry/sec (65 sec)          12.0 MFlops (70.0 sec)
+     XDS       240.0 KDhry/sec (50 sec)          13.0 MFlops (62.0 sec)
+
+			[end of document]

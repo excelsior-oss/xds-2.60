@@ -1,0 +1,23 @@
+(* Copyright (c) 1997 xTech Ltd, Russia. All rights reserved. *)
+
+(* $RCSfile: mac_wait.def,v $ $Revision: 1.1.1.1 $ $Date: 1997/10/20 19:32:35 $ *)
+
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_wait;
+
+(*
+    Title: 	Definition module for implementation of POSIX 1003.1
+                wait.h header C-macros 
+    Created:	Sat Aug 30 20:07:25 1997
+    Author: 	Igor L. Ziryanov
+		<ego@pluto.xTech.RU>
+*)
+
+PROCEDURE ["C"] WEXITSTATUS (status: BITSET) : BITSET;
+PROCEDURE ["C"] WTERMSIG (status: BITSET) : BITSET;
+PROCEDURE ["C"] WIFEXITED (status: BITSET) : BOOLEAN;
+PROCEDURE ["C"] WIFSTOPPED (status: BITSET) : BOOLEAN;
+PROCEDURE ["C"] WIFSIGNALED (status: CARDINAL) : BOOLEAN;
+
+END mac_wait.

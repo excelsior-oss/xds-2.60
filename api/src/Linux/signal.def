@@ -1,0 +1,342 @@
+(* Copyright (c) xTech 1993,95,97,2003.  All Rights Reserved *)
+
+(* $RCSfile: signal.def,v $ $Revision: 9 $ $Date: 14.04.05 18:58 $ *)
+
+<* +CSTDLIB  *>
+<* +NOHEADER *>
+<* +M2EXTENSIONS *>
+
+DEFINITION MODULE ["C"] signal;
+
+FROM SYSTEM IMPORT CARD32, INT32, MAKEADR, ADDRESS;
+FROM types IMPORT pid_t, uid_t, size_t;
+FROM time IMPORT clock_t;
+
+CONST
+  SI_MAX_SIZE = 128;
+  SI_PAD_SIZE = ((SI_MAX_SIZE / SIZE(INT32)) - 3);
+  SIGSET_NWORDS = (1024 / (8 * SIZE (CARD32)));
+
+TYPE
+  sig_atomic_t = INTEGER;
+
+  sigset_t = RECORD
+    val : ARRAY[0..SIGSET_NWORDS-1] OF CARD32;
+  END;    
+
+<* IF __GEN_C__ THEN *> <*- GENTYPEDEF *> <* END *>
+
+  sigaltstack_p = POINTER TO sigaltstack_t;
+
+  sigaltstack_t = RECORD
+    ss_sp    :ADDRESS;
+    ss_flags :INTEGER;
+    ss_size  :size_t;
+  END;
+
+  sighandler_t = PROCEDURE (INTEGER);
+
+  (* In C should be struct sigaction and function named sigaction - we get
+     type and function identifier conflict. We use typename sigaction_t to
+     decide a conflict *)
+  sigaction_t = RECORD
+    sa_handler  : sighandler_t;
+    sa_mask     : sigset_t;
+    sa_flags    : CARDINAL;
+    sa_restorer : PROCEDURE ();
+  END;
+
+  sigval_t = RECORD
+    CASE : INTEGER OF
+       0: sival_int: INT32;
+      |1: sival_ptr: ADDRESS;
+    END;
+  END;
+  
+  kill_Struct = RECORD
+    si_pid: pid_t;     (*  Sending process ID.   *)
+    si_uid: uid_t;     (*  Real user ID of sending process.   *)
+  END;
+
+  timer_Struct = RECORD
+    _timer1: CARD32;
+    _timer2: CARD32;
+  END;
+
+  rt_Struct = RECORD
+    si_pid   : pid_t;     (*  Sending process ID.   *)
+    si_uid   : uid_t;     (*  Real user ID of sending process.   *)
+    si_sigval: sigval_t;  (*  Signal value.   *)
+  END;
+
+  sigchld_Struct = RECORD
+    si_pid   : pid_t;       (*  Which child.   *)
+    si_uid   : uid_t;       (*  Real user ID of sending process.   *)
+    si_status: INT32;       (*  Exit value or signal.   *)
+    si_utime : clock_t;
+    si_stime : clock_t;
+  END;
+
+  sigfault_Struct = RECORD
+    si_addr: ADDRESS;       (*  Faulting insn/memory ref.   *)
+  END;
+
+  sigpoll_Struct = RECORD
+    si_band: INT32;     (*  Band event for SIGPOLL.   *)
+    si_fd  : INT32;
+  END;
+
+  siginfo_Union = RECORD
+    CASE : INTEGER OF
+       0 : _pad     : ARRAY [0..SI_PAD_SIZE-1] OF INT32;
+    (*  kill().   *)
+      |1 : _kill    : kill_Struct;
+    (*  POSIX.1b timers.   *)
+      |2 : _timer   : timer_Struct;
+    (*  POSIX.1b signals.   *)
+      |3 : _rt      : rt_Struct;
+    (*  SIGCHLD.   *)
+      |4 : _sigchld : sigchld_Struct;
+    (*  SIGILL, SIGFPE, SIGSEGV, SIGBUS.   *)
+      |5 : _sigfault: sigfault_Struct;
+    (*  SIGPOLL.   *)
+      |6 : _sigpoll : sigpoll_Struct;
+    END;
+  END;
+                     
+  siginfo_t = RECORD
+    si_signo : INT32;       (*  Signal number.   *)
+    si_errno : INT32;       (*  If non-zero, an errno value associated with  *)
+                            (*  this signal, as defined in <errno.h>.        *)
+    si_code  : INT32;       (*  Signal code.   *)
+    _sifields: siginfo_Union;
+  END;
+
+
+<* IF __GEN_C__ THEN *>
+(* it is constants indeed but declared as read-only variables *)
+(* to provide portability *)
+VAR
+  SIG_DFL -: sighandler_t;
+  SIG_ERR -: sighandler_t;
+  SIG_IGN -: sighandler_t;
+
+  _NSIG      -: INTEGER;
+  NSIG       -: INTEGER;
+
+  SIGHUP     -: INTEGER;
+  SIGINT     -: INTEGER;
+  SIGQUIT    -: INTEGER;
+  SIGILL     -: INTEGER;
+  SIGTRAP    -: INTEGER;
+  SIGABRT    -: INTEGER;
+  SIGIOT     -: INTEGER;
+  SIGBUS     -: INTEGER;
+  SIGFPE     -: INTEGER;
+  SIGKILL    -: INTEGER;
+  SIGUSR1    -: INTEGER;
+  SIGSEGV    -: INTEGER;
+  SIGUSR2    -: INTEGER;
+  SIGPIPE    -: INTEGER;
+  SIGALRM    -: INTEGER;
+  SIGTERM    -: INTEGER;
+  SIGSTKFLT  -: INTEGER;
+  SIGCHLD    -: INTEGER;
+  SIGCONT    -: INTEGER;
+  SIGSTOP    -: INTEGER;
+  SIGTSTP    -: INTEGER;
+  SIGTTIN    -: INTEGER;
+  SIGTTOU    -: INTEGER;
+  SIGURG     -: INTEGER;
+  SIGXCPU    -: INTEGER;
+  SIGXFSZ    -: INTEGER;
+  SIGVTALRM  -: INTEGER;
+  SIGPROF    -: INTEGER;
+  SIGWINCH   -: INTEGER;
+  SIGIO      -: INTEGER;
+  SIGPOLL    -: INTEGER;
+  SIGPWR     -: INTEGER;
+  SIGSYS     -: INTEGER;
+  SIGUNUSED  -: INTEGER;
+  SIGRTMIN   -: INTEGER;
+  SIGRTMAX   -: INTEGER;
+
+  SIG_BLOCK    -: INTEGER;
+  SIG_SETMASK  -: INTEGER;
+  SIG_UNBLOCK  -: INTEGER;
+
+  (* Bits in `sa_flags'.  *)
+  SA_NOCLDSTOP  -: INTEGER;          (* Don't send SIGCHLD when children stop.  *)
+  SA_NOCLDWAIT  -: INTEGER;          (* Don't create zombie on child death.  *)
+  SA_SIGINFO    -: INTEGER;          (* Invoke signal-catching function with
+                                        three arguments instead of one.  *)
+
+  SA_ONSTACK   -: INTEGER; (* Use signal stack by using `sa_restorer'. *)
+  SA_RESTART   -: INTEGER; (* Restart syscall on signal return.  *)
+  SA_NODEFER   -: INTEGER; (* Don't automatically block the signal when
+                                    its handler is being executed.  *)
+  SA_RESETHAND -: INTEGER; (* Reset to SIG_DFL on entry to handler.  *)
+
+  SA_INTERRUPT -: INTEGER; (* Historical no-op.  *)
+
+  (* Some aliases for the SA_ constants.  *)
+  SA_NOMASK    -: INTEGER;
+  SA_ONESHOT   -: INTEGER;
+  SA_STACK     -: INTEGER;
+
+<* ELSE *>
+(* Constants got from LiNUX i386 as an XDS native compiler platform *)
+CONST
+  (* default signal handling *)
+  SIG_DFL = sighandler_t (MAKEADR (0));
+  (* ignore signal *)
+  SIG_IGN = sighandler_t (MAKEADR (1));
+  (* error return from signal *)
+  SIG_ERR = sighandler_t (MAKEADR (0FFFFFFFFH (* -1 *)));
+  
+  _NSIG      = 64;
+  NSIG       = _NSIG;
+
+  SIGHUP     = 1;
+  SIGINT     = 2;
+  SIGQUIT    = 3;
+  SIGILL     = 4;
+  SIGTRAP    = 5;
+  SIGABRT    = 6;
+  SIGIOT     = 6;
+  SIGBUS     = 7;
+  SIGFPE     = 8;
+  SIGKILL    = 9;
+  SIGUSR1    = 10;
+  SIGSEGV    = 11;
+  SIGUSR2    = 12;
+  SIGPIPE    = 13;
+  SIGALRM    = 14;
+  SIGTERM    = 15;
+  SIGSTKFLT  = 16;
+  SIGCHLD    = 17;
+  SIGCONT    = 18;
+  SIGSTOP    = 19;
+  SIGTSTP    = 20;
+  SIGTTIN    = 21;
+  SIGTTOU    = 22;
+  SIGURG     = 23;
+  SIGXCPU    = 24;
+  SIGXFSZ    = 25;
+  SIGVTALRM  = 26;
+  SIGPROF    = 27;
+  SIGWINCH   = 28;
+  SIGIO      = 29;
+  SIGPOLL    = SIGIO;
+  SIGPWR     = 30;
+  SIGSYS     = 31;
+  SIGUNUSED  = 31;
+  SIGRTMIN   = 32;
+  SIGRTMAX   = (_NSIG-1);
+                     
+  SIG_BLOCK    = 0;
+  SIG_UNBLOCK  = 1;
+  SIG_SETMASK  = 2;
+
+  (* Bits in `sa_flags'.  *)
+  SA_NOCLDSTOP  = 1;          (* Don't send SIGCHLD when children stop.  *)
+  SA_NOCLDWAIT  = 2;          (* Don't create zombie on child death.  *)
+  SA_SIGINFO    = 4;          (* Invoke signal-catching function with
+                                 three arguments instead of one.  *)
+
+  SA_ONSTACK   = 008000000H; (* Use signal stack by using `sa_restorer'. *)
+  SA_RESTART   = 010000000H; (* Restart syscall on signal return.  *)
+  SA_NODEFER   = 040000000H; (* Don't automatically block the signal when
+                                    its handler is being executed.  *)
+  SA_RESETHAND = 080000000H; (* Reset to SIG_DFL on entry to handler.  *)
+
+  SA_INTERRUPT = 020000000H; (* Historical no-op.  *)
+
+  (* Some aliases for the SA_ constants.  *)
+  SA_NOMASK    = SA_NODEFER;
+  SA_ONESHOT   = SA_RESETHAND;
+  SA_STACK     = SA_ONSTACK;
+
+
+------------------
+
+  SI_ASYNCNL = -6;  (*  Sent by asynch name lookup completion.   *)
+  SI_SIGIO   = -5;  (*  Sent by queued SIGIO.  *)
+  SI_ASYNCIO = -4;  (*  Sent by AIO completion.   *)
+  SI_MESGQ   = -3;  (*  Sent by real time mesq state change.   *)
+  SI_TIMER   = -2;  (*  Sent by timer expiration.   *)
+  SI_QUEUE   = -1;  (*  Sent by sigqueue.   *)
+  SI_USER    = 0;   (*  Sent by kill, sigsend, raise.   *)
+  SI_KERNEL  = 80H; (*  Send by kernel.   *)
+
+  ILL_ILLOPC = 1;   (*  Illegal opcode.   *)
+  ILL_ILLOPN = 2;   (*  Illegal operand.   *)
+  ILL_ILLADR = 3;   (*  Illegal addressing mode.   *)
+  ILL_ILLTRP = 4;   (*  Illegal trap.  *)
+  ILL_PRVOPC = 5;   (*  Privileged opcode.   *)
+  ILL_PRVREG = 6;   (*  Privileged register.   *)
+  ILL_COPROC = 7;   (*  Coprocessor error.   *)
+  ILL_BADSTK = 8;   (*  Internal stack error.   *)
+
+  FPE_INTDIV = 1;   (*  Integer divide by zero.   *)
+  FPE_INTOVF = 2;   (*  Integer overflow.   *)
+  FPE_FLTDIV = 3;   (*  Floating point divide by zero.   *)
+  FPE_FLTOVF = 4;   (*  Floating point overflow.   *)
+  FPE_FLTUND = 5;   (*  Floating point underflow.   *)
+  FPE_FLTRES = 6;   (*  Floating point inexact result.   *)
+  FPE_FLTINV = 7;   (*  Floating point invalid operation.   *)
+  FPE_FLTSUB = 8;   (*  Subscript out of range.   *)
+
+  SEGV_MAPERR = 1;   (*  Address not mapped to object.   *)
+  SEGV_ACCERR = 2;   (*  Invalid permissions for mapped object.   *)
+
+  BUS_ADRALN = 1;   (*  Invalid address alignment.   *)
+  BUS_ADRERR = 2;   (*  Non-existant physical address.   *)
+  BUS_OBJERR = 3;   (*  Object specific hardware error.   *)
+
+  TRAP_BRKPT = 1;   (*  Process breakpoint.   *)
+  TRAP_TRACE = 2;   (*  Process trace trap.   *)
+
+  CLD_EXITED = 1;   (*  Child has exited.   *)
+  CLD_KILLED = 2;   (*  Child was killed.   *)
+  CLD_DUMPED = 3;   (*  Child terminated abnormally.   *)
+  CLD_TRAPPED = 4;   (*  Traced child has trapped.   *)
+  CLD_STOPPED = 5;   (*  Child has stopped.   *)
+  CLD_CONTINUED = 6;   (*  Stopped child has continued.   *)
+
+  POLL_IN = 1;   (*  Data input available.   *)
+  POLL_OUT = 2;   (*  Output buffers available.   *)
+  POLL_MSG = 3;   (*  Input message available.    *)
+  POLL_ERR = 4;   (*  I/O error.   *)
+  POLL_PRI = 5;   (*  High priority input available.   *)
+  POLL_HUP = 6;   (*  Device disconnected.   *)
+
+
+------------------
+
+
+  MINSIGSTKSZ = 2048;
+  SIGSTKSZ    = 8192;
+
+
+<* END *>
+
+PROCEDURE signal (signo: INTEGER; func: sighandler_t): sighandler_t;
+PROCEDURE raise  (signo: INTEGER): INTEGER;
+
+PROCEDURE kill (pid: pid_t; signo: INTEGER): INTEGER;
+PROCEDURE sigaction (sig: INTEGER; VAR act, oact: sigaction_t): INTEGER;
+PROCEDURE sigaddset (VAR set: sigset_t; signo: INTEGER): INTEGER;
+PROCEDURE sigdelset (VAR set: sigset_t; signo: INTEGER): INTEGER;
+PROCEDURE sigemptyset (VAR set: sigset_t): INTEGER;
+PROCEDURE sigfillset (VAR set: sigset_t): INTEGER;
+PROCEDURE sigismember (VAR set: sigset_t; signo: INTEGER): INTEGER;
+PROCEDURE sigpending (VAR set: sigset_t): INTEGER;
+PROCEDURE sigprocmask (how: INTEGER; VAR set, oset: sigset_t): INTEGER;
+PROCEDURE sigsuspend (VAR sigmask: sigset_t): INTEGER;
+PROCEDURE sigwait (VAR set: sigset_t; VAR sig: INTEGER): INTEGER;
+
+PROCEDURE sigaltstack (ss, oss :sigaltstack_p): INTEGER;
+
+
+END signal.

@@ -1,0 +1,103 @@
+Product: Excelsior XDS 2.6 for Windows
+
+EXCELSIOR BETA SOFTWARE LICENSE AGREEMENT
+
+Please read this license agreement (called the "Agreement") carefully.
+Your use of the software or any related documentation (called 
+the "Software") indicates your acceptance of the following terms and 
+conditions. If you do not agree to these terms and conditions, you may 
+not install or use the Software.
+
+Notice: The Software is not generally available software, but a beta
+version. It has not undergone complete testing and may contain errors.
+It may not function properly and is subject to change or withdrawal
+at any time. No support or maintenance is provided with the Software.
+Do not install this software if you are not accustomed to using
+experimental software.
+
+The Software is made available without charge at the beta level
+in order to allow you to evaluate the Software in its developmental
+stage. We encourage your feedback and suggestions.
+
+
+1. Title and Ownership
+
+Title, ownership rights, and intellectual property rights in and to the
+Software, and any copies of the Software shall remain with Excelsior, LLC
+("Excelsior"). The Software is protected by the copyright laws of the
+Russian Federation and international copyright treaties. 
+
+
+2. License.
+
+Excelsior hereby grants you a non-exclusive, non-transferable license to
+download and use the Software on the following terms:
+
+You may: a. use the Software on any single computer; b. use the Software
+on a second computer as long as the first and second computers are not used
+simultaneously; and c. copy the Software for backup purposes, provided any
+copy must contain all of the original Software's proprietary notices.
+
+You may not: a. permit other individuals or entities to use the Software;
+b. modify, translate, reverse engineer, decompile, disassemble (except to
+the extent applicable laws specifically prohibit such restriction), or
+create derivative works based on the Software; c. copy the Software
+(except for back-up purposes); d. rent, lease, or otherwise transfer
+rights to the Software; e. distribute (for free or for sale) the Software;
+or f. remove any proprietary notices or labels on the Software.
+
+The Software is in "use" on a computer when it is loaded into temporary
+memory (i.e., RAM) or installed into permanent memory (e.g. hard disk,
+CD-ROM) of that computer. 
+
+Implied licenses are negated.
+
+
+3. Term and Termination
+
+This Agreement will terminate automatically if you fail to comply with the
+limitations described above, or ninety (90) days after the date
+on which you receive the Software, whichever comes first.
+Upon such termination you must delete or destroy all copies of the Software. 
+
+
+4. Warranty Disclaimer and Limitation of Liability
+
+Excelsior licenses the Software to you on an "as is" basis, without
+warranty of any kind. Excelsior hereby expressly disclaims all warranties
+or conditions, either express or implied, including, but not limited to, 
+the implied warranties or conditions of merchantability and fitness for 
+a particular purpose. You are solely responsible for determining the 
+appropriateness of using this Software and assume all risks associated 
+with the use of this Software, including but not limited to the risks of 
+program errors, damage to or loss of data, programs or equipment, and 
+unavailability or interruption of operations. Some jurisdictions do not 
+allow for the exclusion or limitation of implied warranties, so the 
+above limitations or exclusions may not apply to you.
+
+Excelsior will not be liable for any direct damages or for any special, 
+incidental, or indirect damages or for any economic consequential 
+damages (including lost profits or savings), even if Excelsior has been 
+advised of the possibility of such damages. Excelsior will not be liable for 
+the loss of, or damage to, your records or data, or any damages claimed 
+by you based on a third party claim. Some jurisdictions do not allow for 
+the exclusion or limitation of incidental or consequential damages, so 
+the above limitations or exclusions may not apply to you.
+
+
+5. License Rights
+
+You hereby grant to Excelsior an irrevocable license under all intellectual 
+property rights (including copyright) to use, copy, distribute, sublicense,
+display, perform and prepare derivative works based upon any feedback,
+including materials, fixes, error corrections, enhancements, suggestions
+and the like that you provide to Excelsior. 
+
+
+6. General
+
+This Agreement is governed by the laws of the Russian Federation.
+
+This Agreement is the only understanding and agreement we have regarding 
+your use of the Software. It supersedes all other communications, 
+understandings or agreements we may have had prior to this Agreement. 

@@ -1,0 +1,21 @@
+#IMPORT xd_b_ex3
+
+;         LOG
+
+         GOSUB Info
+         GOSUB WriteInit
+         
+         LOAD d:\xds\samples\bench\dry.exe
+         Write Registers
+
+         START
+         Write Registers
+
+         PAUSE
+
+         QUIT
+
+Info     PRINT "--- Example 2 ---"
+         RETURN
+
+

@@ -1,0 +1,46 @@
+XDSENV.TXT                    Copyright (c) 1999-2001 Excelsior.
+----------------------------------------------------------------
+
+                   XDS Environment for OS/2
+                   ------------------------
+                            v2.21 
+
+                        Read Me First!
+
+
+1. Setting up the IDE profile path
+----------------------------------
+
+XDS Environment stores its configuration information in profiles.
+These profiles may reside on any of your local and network drives.
+Before you start using the Environment, you have to set up a profile
+path, even if your installation is stand-alone.
+
+In case of network installation, you may store the profiles either:
+
+  - on local drives, to have unique profiles on each workstation.
+  - on users' network directories mapped to the same drive letter,
+    to have unique profiles for each user on all workstation.
+
+To specify a directory for profiles, type:
+
+    xds /i <directory>
+
+at the OS/2 command prompt and press Enter.
+
+If you do not set the profile path or the Environment fails to 
+find the corresponding record in OS2.INI during startup, a directory
+selection dialog box will be displayed.
+
+
+2. How to start
+---------------
+
+To invoke the Environment, double click the XDS Environment icon 
+in the XDS folder, or type 
+
+    start /f xds
+
+at the OS/2 command prompt and press Enter.
+
+                     [end of document]

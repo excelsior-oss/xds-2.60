@@ -1,0 +1,357 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMDEV.H
+*
+* OS/2 Presentation Manager Device Context constants; types and
+* function declarations
+*
+* Copyright (c) International Business Machines Corporation 1981; 1988-1992
+*
+* ===========================================================================
+*
+* The following symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_DEVERRORS          error definitions
+*   INCL_DEV                Dev APIs and structures
+*
+* There is a symbol used in this file called INCL_DDIDEFS. This is used to
+* include only the definitions for the DDI. The programmer using the GPI
+* can ignore this symbol
+*
+* There is a symbol used in this file called INCL_SAADEFS. This is used to
+* include only the definitions for the SAA. The programmer using the GPI
+* can ignore this symbol
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+#define DEV_INCLUDED
+
+
+#if defined(INCL_ERRORS)  (* if errors are required then allow DEV errors *)
+   #define INCL_DEVERRORS
+#endif (* INCL_ERRORS *)
+
+#if defined(INCL_DDIDEFS)  (* if only DDI required then enable all of DEV *)
+   #define INCL_DEV
+#endif (* INCL_DDIDEFS *)
+
+#if defined(INCL_SAADEFS)  (* if only SAA required then enable all of DEV *)
+   #define INCL_DEV
+#endif (* INCL_SAADEFS *)
+
+#if defined(INCL_DEV) || ! defined(INCL_NOCOMMON)
+
+   (* General DEV return values *)
+   CONST DEV_ERROR                     =  0;
+   CONST DEV_OK                        =  1;
+
+   (* DC type for DevOpenDC *)
+   CONST OD_QUEUED                     =  2;
+   CONST OD_DIRECT                     =  5;
+   CONST OD_INFO                       =  6;
+   CONST OD_METAFILE                   =  7;
+   CONST OD_MEMORY                     =  8;
+   CONST OD_METAFILE_NOQUERY           =  9;
+
+   (* codes for DevQueryCaps *)
+   CONST CAPS_FAMILY                   =  0;
+   CONST CAPS_IO_CAPS                  =  1;
+   CONST CAPS_TECHNOLOGY               =  2;
+   CONST CAPS_DRIVER_VERSION           =  3;
+   CONST CAPS_WIDTH                    =  4;      (* pels            *)
+   CONST CAPS_HEIGHT                   =  5;      (* pels            *)
+   CONST CAPS_WIDTH_IN_CHARS           =  6;
+   CONST CAPS_HEIGHT_IN_CHARS          =  7;
+   CONST CAPS_HORIZONTAL_RESOLUTION    =  8;      (* pels per meter  *)
+   CONST CAPS_VERTICAL_RESOLUTION      =  9;      (* pels per meter  *)
+   CONST CAPS_CHAR_WIDTH              =  10;      (* pels            *)
+   CONST CAPS_CHAR_HEIGHT             =  11;      (* pels            *)
+   CONST CAPS_SMALL_CHAR_WIDTH        =  12;      (* pels            *)
+   CONST CAPS_SMALL_CHAR_HEIGHT       =  13;      (* pels            *)
+   CONST CAPS_COLORS                  =  14;
+   CONST CAPS_COLOR_PLANES            =  15;
+   CONST CAPS_COLOR_BITCOUNT          =  16;
+   CONST CAPS_COLOR_TABLE_SUPPORT     =  17;
+   CONST CAPS_MOUSE_BUTTONS           =  18;
+   CONST CAPS_FOREGROUND_MIX_SUPPORT  =  19;
+   CONST CAPS_BACKGROUND_MIX_SUPPORT  =  20;
+   CONST CAPS_DEVICE_WINDOWING        =  31;
+   CONST CAPS_ADDITIONAL_GRAPHICS     =  32;
+   CONST CAPS_VIO_LOADABLE_FONTS      =  21;
+   CONST CAPS_WINDOW_BYTE_ALIGNMENT   =  22;
+   CONST CAPS_BITMAP_FORMATS          =  23;
+   CONST CAPS_RASTER_CAPS             =  24;
+   CONST CAPS_MARKER_HEIGHT           =  25;      (* pels            *)
+   CONST CAPS_MARKER_WIDTH            =  26;      (* pels            *)
+   CONST CAPS_DEVICE_FONTS            =  27;
+   CONST CAPS_GRAPHICS_SUBSET         =  28;
+   CONST CAPS_GRAPHICS_VERSION        =  29;
+   CONST CAPS_GRAPHICS_VECTOR_SUBSET  =  30;
+   CONST CAPS_PHYS_COLORS             =  33;
+   CONST CAPS_COLOR_INDEX             =  34;
+   CONST CAPS_GRAPHICS_CHAR_WIDTH     =  35;
+   CONST CAPS_GRAPHICS_CHAR_HEIGHT    =  36;
+   CONST CAPS_HORIZONTAL_FONT_RES     =  37;
+   CONST CAPS_VERTICAL_FONT_RES       =  38;
+   CONST CAPS_DEVICE_FONT_SIM         =  39;
+   CONST CAPS_LINEWIDTH_THICK         =  40;
+   CONST CAPS_DEVICE_POLYSET_POINTS   =  41;
+
+   (* Constants for CAPS_IO_CAPS *)
+   CONST CAPS_IO_DUMMY                =   1;
+   CONST CAPS_IO_SUPPORTS_OP          =   2;
+   CONST CAPS_IO_SUPPORTS_IP          =   3;
+   CONST CAPS_IO_SUPPORTS_IO          =   4;
+
+   (* Constants for CAPS_TECHNOLOGY *)
+   CONST CAPS_TECH_UNKNOWN            =   0;
+   CONST CAPS_TECH_VECTOR_PLOTTER     =   1;
+   CONST CAPS_TECH_RASTER_DISPLAY     =   2;
+   CONST CAPS_TECH_RASTER_PRINTER     =   3;
+   CONST CAPS_TECH_RASTER_CAMERA      =   4;
+   CONST CAPS_TECH_POSTSCRIPT         =   5;
+
+   (* Constants for CAPS_COLOR_TABLE_SUPPORT *)
+   CONST CAPS_COLTABL_RGB_8           =   1;
+   CONST CAPS_COLTABL_RGB_8_PLUS      =   2;
+   CONST CAPS_COLTABL_TRUE_MIX        =   4;
+   CONST CAPS_COLTABL_REALIZE         =   8;
+
+   (* Constants for CAPS_FOREGROUND_MIX_SUPPORT *)
+   CONST CAPS_FM_OR                   =   1;
+   CONST CAPS_FM_OVERPAINT            =   2;
+   CONST CAPS_FM_XOR                  =   8;
+   CONST CAPS_FM_LEAVEALONE           =  16;
+   CONST CAPS_FM_AND                  =  32;
+   CONST CAPS_FM_GENERAL_BOOLEAN      =  64;
+
+   (* Constants for CAPS_BACKGROUND_MIX_SUPPORT *)
+   CONST CAPS_BM_OR                   =   1;
+   CONST CAPS_BM_OVERPAINT            =   2;
+   CONST CAPS_BM_XOR                  =   8;
+   CONST CAPS_BM_LEAVEALONE           =  16;
+   CONST CAPS_BM_AND                  =  32;
+   CONST CAPS_BM_GENERAL_BOOLEAN      =  64;
+   CONST CAPS_BM_SRCTRANSPARENT       = 128;
+   CONST CAPS_BM_DESTTRANSPARENT      = 256;
+
+   (* Constants for CAPS_DEVICE_WINDOWING *)
+   CONST CAPS_DEV_WINDOWING_SUPPORT   =   1;
+
+   (* Constants for CAPS_ADDITIONAL_GRAPHICS *)
+   CONST CAPS_VDD_DDB_TRANSFER         =   1;
+   CONST CAPS_GRAPHICS_KERNING_SUPPORT =   2;
+   CONST CAPS_FONT_OUTLINE_DEFAULT     =   4;
+   CONST CAPS_FONT_IMAGE_DEFAULT       =   8;
+   (* bits represented by values 16L and 32L are reserved *)
+   CONST CAPS_SCALED_DEFAULT_MARKERS   =  64;
+   CONST CAPS_COLOR_CURSOR_SUPPORT     = 128;
+   CONST CAPS_PALETTE_MANAGER          = 256;
+   CONST CAPS_COSMETIC_WIDELINE_SUPPORT= 512;
+   CONST CAPS_DIRECT_FILL            =  1024;
+   CONST CAPS_REBUILD_FILLS          =  2048;
+   CONST CAPS_CLIP_FILLS             =  000001000H; (* 4096L  *)
+   CONST CAPS_ENHANCED_FONTMETRICS   =  000002000H; (* 8192L  *)
+   CONST CAPS_TRANSFORM_SUPPORT      =  000004000H; (* 16384L *)
+
+   #if ! defined(INCL_SAADEFS)
+
+      (* Constants for CAPS_WINDOW_BYTE_ALIGNMENT *)
+      CONST CAPS_BYTE_ALIGN_REQUIRED      =  0;
+      CONST CAPS_BYTE_ALIGN_RECOMMENDED   =  1;
+      CONST CAPS_BYTE_ALIGN_NOT_REQUIRED  =  2;
+   #endif (* no INCL_SAADEFS *)
+
+   (* Constants for CAPS_RASTER_CAPS *)
+   CONST CAPS_RASTER_BITBLT           =   1;
+   CONST CAPS_RASTER_BANDING          =   2;
+   CONST CAPS_RASTER_BITBLT_SCALING   =   4;
+   CONST CAPS_RASTER_SET_PEL          =  16;
+   CONST CAPS_RASTER_FONTS            =  32;
+   CONST CAPS_RASTER_FLOOD_FILL       =  64;
+
+   #if ! defined(INCL_DDIDEFS)
+
+      PROCEDURE DevOpenDC(hab      : HAB
+                         ;lType    : LONG
+                         ;szToken  : ARRAY OF CHAR
+                         ;lCount   : LONG
+                         ;pdopData : PDEVOPENDATA
+                         ;hdcComp  : HDC
+                         ): HDC;
+
+      PROCEDURE DevCloseDC(hdc : HDC): HMF;
+
+      PROCEDURE DevQueryCaps(hdc         : HDC
+                            ;lStart      : LONG
+                            ;lCount      : LONG
+                            ;VAR alArray : ARRAY OF LONG
+                            ): BOOL;
+   #endif (* no INCL_DDIDEFS *)
+
+#endif (* common DEV *)
+
+#if defined(INCL_DEV)
+
+   #if ! defined(INCL_SAADEFS)
+
+      (* structures for DEVESC_QUERYVIOCELLSIZES *)
+      TYPE VIOSIZECOUNT = RECORD   (* vios *)
+         maxcount: LONG;
+         count:    LONG;
+      END;
+      TYPE VPIOSIZECOUNT = POINTER TO VIOSIZECOUNT;
+
+      TYPE VIOFONTCELLSIZE = RECORD   (* viof *)
+         cx: LONG;
+         cy: LONG;
+      END;
+      TYPE PVIOFONTCELLSIZE = POINTER TO VIOFONTCELLSIZE;
+
+      (* structure for DEVESC_GETSCALINGFACTOR *)
+      TYPE SFACTORS = RECORD   (* sfactors *)
+         x: LONG;
+         y: LONG;
+      END;
+      TYPE PSFACTORS = POINTER TO SFACTORS;
+
+      (* structure for DEVESC_NEXTBAND *)
+      TYPE BANDRECT = RECORD   (* bandrect *)
+         xleft:   LONG;
+         ybottom: LONG;
+         xright:  LONG;
+         ytop:    LONG;
+      END;
+      TYPE PBANDRECT = POINTER TO BANDRECT;
+
+      (* return codes for DevEscape *)
+      CONST DEVESC_ERROR               =    -1;
+      CONST DEVESC_NOTIMPLEMENTED      =     0;
+
+      (* codes for DevEscape *)
+      CONST DEVESC_QUERYESCSUPPORT     =     0;
+      CONST DEVESC_GETSCALINGFACTOR    =     1;
+      CONST DEVESC_QUERYVIOCELLSIZES   =     2;
+      CONST DEVESC_GETCP               =  8000;
+
+      CONST DEVESC_STARTDOC            =  8150;
+      CONST DEVESC_ENDDOC              =  8151;
+      CONST DEVESC_NEXTBAND            =  8152;
+      CONST DEVESC_ABORTDOC            =  8153;
+
+      CONST DEVESC_NEWFRAME            = 16300;
+      CONST DEVESC_DRAFTMODE           = 16301;
+      CONST DEVESC_FLUSHOUTPUT         = 16302;
+      CONST DEVESC_RAWDATA             = 16303;
+      CONST DEVESC_SETMODE             = 16304;
+
+      CONST DEVESC_DBE_FIRST           = 24450;
+      CONST DEVESC_DBE_LAST            = 24455;
+
+      (* DevEscape codes for adding extra space to character strings *)
+      CONST DEVESC_CHAR_EXTRA          = 16998;
+      CONST DEVESC_BREAK_EXTRA         = 16999;
+
+      (* codes for DevEscape PM_Q_ESC spool files *)
+      CONST DEVESC_STD_JOURNAL         = 32600;
+
+      (* structure for DEVESC_SETMODE *)
+      TYPE ESCMODE = RECORD    (* em *)
+         mode:     ULONG;
+         modedata: ARRAY [0..0] OF BYTE;
+      END;
+      TYPE PESCMODE = POINTER TO ESCMODE;
+
+      (* return codes for DevPostDeviceModes *)
+      CONST DPDM_ERROR                 =    -1;
+      CONST DPDM_NONE                  =     0;
+
+      (* codes for DevPostDeviceModes *)
+      CONST DPDM_POSTJOBPROP           =     0;
+      CONST DPDM_CHANGEPROP            =     1;
+      CONST DPDM_QUERYJOBPROP          =     2;
+
+      (* string types for DevQueryDeviceNames *)
+      TYPE STR16  = ARRAY [0..15] OF CHAR;     (* str16 *)
+      TYPE PSTR16 = POINTER TO STR16;
+      TYPE STR32  = ARRAY [0..31] OF CHAR;     (* str32 *)
+      TYPE PSTR32 = POINTER TO STR32;
+      TYPE STR64  = ARRAY [0..63] OF CHAR;     (* str64 *)
+      TYPE PSTR64 = POINTER TO STR64;
+
+      (* return code for DevQueryHardcopyCaps *)
+      CONST DQHC_ERROR                 =    -1;
+
+      (* codes for DevQueryHardcopyCaps *)
+      CONST HCAPS_CURRENT              =     1;
+      CONST HCAPS_SELECTABLE           =     2;
+
+      (* structure for DevQueryHardcopyCaps *)
+      TYPE HCINFO = RECORD          (* hci *)
+         szFormname:   ARRAY [0..31] OF CHAR;
+         cx:           LONG;
+         cy:           LONG;
+         xLeftClip:    LONG;
+         yBottomClip:  LONG;
+         xRightClip:   LONG;
+         yTopClip:     LONG;
+         xPels:        LONG;
+         yPels:        LONG;
+         flAttributes: LONG;
+      END;
+      TYPE PHCINFO = POINTER TO HCINFO;
+
+      (* Device Context Functions *)
+      #if ! defined(INCL_DDIDEFS)
+
+         PROCEDURE DevEscape(hdc                 : HDC
+                            ;lCode               : LONG
+                            ;lInCount            : LONG
+                            ;VAR [NIL] bInData   : ARRAY OF SYSTEM.BYTE
+                            ;VAR lOutCount       : LONG
+                            ;VAR [NIL] bOutData  : ARRAY OF SYSTEM.BYTE
+                            ): LONG;
+
+         PROCEDURE DevQueryDeviceNames(hab             : HAB
+                                      ;szDriverName    : ARRAY OF CHAR
+                                      ;VAR ldn         : LONG
+                                      ;VAR aDeviceName : ARRAY OF STR32 (* !!! Not sure *)
+                                      ;VAR aDeviceDesc : ARRAY OF STR64 (* !!! Not sure *)
+                                      ;VAR ldt         : PLONG
+                                      ;VAR aDataType   : ARRAY OF STR16 (* !!! Not sure *)
+                                      ): BOOL;
+
+         PROCEDURE DevQueryHardcopyCaps(hdc           : HDC
+                                       ;lStartForm    : LONG
+                                       ;lForms        : LONG
+                                       ;VAR hciHcInfo : ARRAY OF HCINFO
+                                       ): LONG;
+
+         PROCEDURE DevPostDeviceModes(hab                      : HAB
+                                     ;VAR [NIL] drivDriverData : DRIVDATA
+                                     ;szDriverName             : ARRAY OF CHAR
+                                     ;szDeviceName             : ARRAY OF CHAR
+                                     ;VAR [NIL] szName         : ARRAY OF CHAR
+                                     ;flOptions                : ULONG
+                                     ): LONG;
+
+      #endif (* no INCL_DDIDEFS *)
+   #endif (* no INCL_SAADEFS *)
+#endif (* non-common DEV *)
+
+#if defined(INCL_DEVERRORS)
+   (* AAB error codes for the DEV - same as GPI errors at present *)
+#endif (* INCL_DEVERRORS *)
+
+(**************************** end of file **********************************)

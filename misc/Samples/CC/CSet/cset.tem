@@ -1,0 +1,32 @@
+! "M\t= %s\n",mkfname#>mkfext
+! "TARGET\t= cdemo.exe\n"
+! "XDSLIB\t= %s\n","libxds"#libext
+! "CMDFILE\t=%s\n","cdemo"#>"tmp"
+
+! "CF\t= -q -Ti- -c -Ms\n"
+! "CC\t= @icc\n"
+!new ccomp = "$(CC) $(CDEFS) $(CF)  -Fo%s %s"
+
+# ------------------ objects enumeration ------------------
+#                    -------------------
+
+! "OBJ="; { obj : " \\\n\t%s",# }
+! "\n"
+
+# ------------------- target make rules -------------------
+#                     -----------------
+
+! "$(TARGET) : $(OBJ) $(XDSLIB)\n"
+! '\t@echo >$(CMDFILE) -q -Ti- -Ms -B"/ST:%s" -Fe$(TARGET)\n',stacklimit
+! '\t@echo >>$(CMDFILE) $(XDSLIB)\n'
+! '\t@echo >>$(CMDFILE) OS2386.LIB\n'
+! { imp oberon main c : '\t@echo >>$(CMDFILE) %s\n',#>objext }
+! '\t@icc @$(CMDFILE)\n'
+
+# ----------------- Dependency information ----------------
+#                   ----------------------
+
+! { c : "%-12s : ",#>objext; { header : "%s ",#header } \
+    "$(M) %s\n\t",#; ccomp,#>objext,#; "\n\n" }
+
+# end of makefile

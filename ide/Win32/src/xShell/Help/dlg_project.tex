@@ -1,0 +1,548 @@
+
+%-----------------------------------------------------------------------
+
+\ifenglish
+\section{Create new project dialog}
+\else
+\section{диалог Create new project}
+\fi
+\public{NEWPROJ\_DIALOG}
+\nominitoc
+
+\ifenglish
+To create a new project:
+\else
+Чтобы создать новый проект:
+\fi
+\begin{enumerate}
+\item \ifenglish
+      Type its full name in the \ref[Project name]{NEWPROJ\_PROJECT} field
+      \else
+      Введите его полное имя в поле \ref[Project name]{NEWPROJ\_PROJECT} 
+      \fi
+\item \ifenglish
+      Type the name of a project template in the \ref[Project template]{NEWPROJ\_TEMPLATE}
+      field
+      \else
+      Введите имя файла шаблона проекта в поле \ref[Project template]{NEWPROJ\_TEMPLATE}
+      \fi
+\item 
+      \ifenglish
+      Type a main module name in the \ref[Main module]{NEWPROJ\_STDMODULE} field
+      \else
+      Введите название главного модуля в поле \ref[Main module]{NEWPROJ\_STDMODULE} 
+      \fi
+\item \ifenglish
+      Select the \ref[Create directories]{NEWPROJ\_CREATEDIR} checkbox if you want
+      subdirectories for source, symbol, object, etc. files to be
+      created it the project directory
+      \else
+      Установите контроль \ref[Create directories]{NEWPROJ\_CREATEDIR}, если хотите, чтобы 
+      для исходных объектных и прочих файлов были созданы поддиректории в директории проекта.
+      \fi
+\item 
+      \ifenglish
+      Select the \ref[Create RED file]{NEWPROJ\_CREATERED} checkbox if you want
+      the redirection file to be created in the project directory
+      \else
+      Установите контроль \ref[Create RED file]{NEWPROJ\_CREATERED}, если хотите 
+      чтобы в директории проекта был создан файл путей поиска 
+      \fi
+\item 
+      \ifenglish
+      Select the \ref[OK]{NEWPROJ\_OK} pushbutton
+      \else
+      Нажмите кнопку \ref[OK]{NEWPROJ\_OK}
+      \fi
+\end{enumerate}
+
+\ifenglish
+Instead of typing a filename, you may select the corresponding
+{\bf Browse} pushbutton to bring up a standard file dialog, or the
+{\bf Default} pushbutton to fill an entry field with the default value.
+
+\ref{variables} may be used in \ref[Project template]{NEWPROJ\_TEMPLATE}
+and \ref[Main module]{NEWPROJ\_STDMODULE} fields.
+
+Select the \ref[Configure]{NEWPROJ\_CONFIGURE} pushbutton to view and/or edit new
+project defaults.
+\else
+Вместо того, чтобы вводить имя файла вручную, вы можете нажать кнопку {\bf Browse},
+вызвав стандартный файловый диалог или кнопку {\bf Default}, чтобы заполнить 
+поле ввода значением, присваиваемым по умолчанию.
+
+\ref[Переменные]{variables} могут быть использованы в полях \ref[Project template]{NEWPROJ\_TEMPLATE} и 
+в \ref[Main module]{NEWPROJ\_STDMODULE}.
+
+Чтобы просмотреть и/или исправить значения, присваиваемые по умолчанию,
+нажмите кнопку \ref[Configure]{NEWPROJ\_CONFIGURE}.
+\fi
+\begin{popup}
+\caption{Project name}
+\public{NEWPROJ\_PROJECT}
+\public{NEWPROJ\_PROJBROWSE}
+
+\ifenglish
+Type a full name of a new project file in the entry field or select the
+{\bf Browse} pushbutton to choose it using a standard file dialog.
+\else
+Наберите полное имя проекта в поле ввода или нажмите кнопку {\bf Browse}, 
+чтобы выбрать его, используя стандартный файловый диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Project template}
+\public{NEWPROJ\_TEMPLATE}
+\public{NEWPROJ\_TEMPLBROWSE}
+\public{NEWPROJ\_STDTEMPL}
+
+\ifenglish
+Type a full name of a project template file in the entry field or select the
+{\bf Browse} pushbutton to choose it using a standard file dialog.
+
+Project template is the file on which new project is based.
+The project file results from project template after substituting \ref{variables} with their
+values in the template.
+
+Select the {\bf Default} pushbutton to restore the default value of the
+entry field. The default template file is selected in a dialog box that
+appears after pressing \ref[Configure]{NEWPROJ\_CONFIGURE} button.
+
+\ref{variables} may be used in this field.
+\else
+Введите полное имя файла шаблонов проекта в поле ввода или нажмите
+кнопку {\bf Browse}, чтобы выбрать его, используя стандартный файловый диалог.
+
+Файл шаблона проекта -- это файл, на котором основывается новый проект.
+Файл проекта получается из файла шаблона проекта после замещения \ref[переменных]{variables}
+их шаблонными значениями.
+
+Нажмите кнопку {\bf Default}, чтобы восстановить значение поля, принимаемое по 
+умолчанию. Используемый по умолчанию шаблонный файл выбирается в диалоговом окне, 
+которое появляется после нажатия кнопки \ref[Configure]{NEWPROJ\_CONFIGURE}.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+\fi
+\end{popup}
+
+
+\begin{popup}
+\caption{Main module}
+\public{NEWPROJ\_STARTFILE}
+\public{NEWPROJ\_FILEBROWSE}
+\public{NEWPROJ\_STDMODULE}
+
+\ifenglish
+Type a name of a main project module in the entry field or select the
+{\bf Browse} pushbutton to choose it using a standard file dialog.
+Select the {\bf Default} pushbutton to restore the default value of the
+entry field. The default value of this field is selected in a dialog box that
+appears after pressing \ref[Configure]{NEWPROJ\_CONFIGURE} button.
+
+\ref{variables} may be used in this field.
+
+For example, if you mainly work in Modula-2, it is reasonable to set this field
+equal to
+
+\verb'${projname}.mod'
+
+In this case the system will automatically create main file with the same name as the
+project and extension "mod".
+\else
+Введите имя основного модуля проекта в поле ввода или нажмите кнопку 
+{\bf Browse}, чтобы выбрать его, используя стандартный файловый диалог.
+Нажмите кнопку {\bf Default}, чтобы восстановить значение поля, принимаемое 
+по умолчанию. Значение поля, принимаемое по умолчанию, устанавливается в 
+диалоге, который появляется после нажатия кнопки \ref[Configure]{NEWPROJ\_CONFIGURE}.
+
+В этом поле могут быть использованы \ref[переменные]{variables}.
+
+Например, если вы в основном работаете в Modula-2, разумно установить это поле
+равным
+
+\verb'${projname}.mod'
+
+В этом случае система автоматически создаст основной файл с тем же именем, 
+что и у проекта, и расширением "mod". 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Create directories}
+\public{NEWPROJ\_CREATEDIR}
+
+\ifenglish
+Select this checkbox if you want subdirectories, e.g. {\tt BIN}, {\tt SRC},
+and {\tt SYM}, to be created in the project directory.
+
+The set of directories that will be created if this option is on can be
+configured in a dialog box that
+appears after pressing \ref[Configure]{NEWPROJ\_CONFIGURE} button.
+\else
+Установите этот контроль, если хотите, чтобы в директории проекта были созданы
+поддиректории {\tt BIN}, {\tt SRC}, и {\tt SYM}. 
+
+Набор директорий, который будет создан в случае, если эта опция установлена,
+настраивается в диалоге, который появляется после нажатия кнопки \ref[Configure]{NEWPROJ\_CONFIGURE}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Create RED file}
+\public{NEWPROJ\_CREATERED}
+
+\ifenglish
+Select this checkbox if you want a redirection file to be created in the
+project directory.
+\else
+Установите этот контроль, если хотите, чтобы в директории проекта был создан 
+файл путей поиска.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Configure}
+\public{NEWPROJ\_CONFIGURE}
+
+\ifenglish
+Select the {\bf Configure} pushbutton to bring up the \ref{CFGPROJ\_DIALOG}.
+\else
+Нажмите кнопку {\bf Configure} чтобы вызвать диалог \ref{CFGPROJ\_DIALOG}. 
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{NEWPROJ\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to create a new project using the current
+settings.
+\else
+Нажмите кнопку {\bf OK}, чтобы создать новый проект, используя текущие 
+установки.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{NEWPROJ\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to create a new project.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не создавать новый проект.
+\fi
+\end{popup}
+
+%-----------------------------------------------------------------------
+\ifenglish
+\section{Project editor}
+\else
+\section{Редактор проекта}
+\fi
+\nominitoc
+\public{OPT\_DIALOG}
+
+\ifenglish
+Use the {\bf Project Editor} to view and modify contents of the current
+project file or a previously created style sheet in a visual manner.
+
+Select a project file \ref[statements category]{StatementCategories}
+in the listbox. For project options, the corresponding controls
+will appear to the right:
+\else
+Используйте {\bf Project Editor}, чтобы естественным образом просматривать 
+и изменять содержимое текущего файла проекта или предварительно созданный 
+стиль.          
+
+Выберите \ref[категорию установок]{StatementCategories} проектного файла. 
+Справа появятся контроли, отвечающие 
+опциям проекта:
+\fi
+\ifenglish
+\begin{tabular}{ll}
+\bf Control  & \bf Represent \\
+\hline
+Checkbox     & a boolean option \\
+Entry field  & an equation with arbitrary value \\
+Combo box    & an equation with a fixed set of values
+\end{tabular}
+\else
+\begin{tabular}{ll}
+\bf Контроль           & \bf Представление \\
+\hline
+Переключатель          & двоичная опция \\
+Поле ввода             & параметр произвольного значения \\
+Комбинированный список & параметр с фиксированным набором значений
+\end{tabular}
+\fi
+\ifenglish
+{\bf Present} checkboxes indicate whether the corresponding equations
+are present in the project of style being edited. Absence of a boolean
+option is represented by the third (grayed) checkbox state.
+
+When you move mouse pointer over the option control (be it edit box, combo box,
+or check box) you can see the name of this option and its default state in special panel
+at the bottom-right of the dialog.
+
+For user options, user equations, and module list, a listbox containing
+all of them is displayed, along with a set of pushbuttons which may be
+used to add, remove, or modify its entries.
+\else
+Контроли показывают, присутствуют ли соответствующие параметры
+в проекте редактируемого стиля. Отсутствие булевой опции обозначается
+третьим (серым) состоянием контроля. 
+
+Когда вы двигаете курсор мыши по контролю (полю редактирования, 
+комбинированному списку или переключателю), то в верхнем правом углу диалога
+показывается название опции и ее значение по умолчанию.
+
+Для опций и параметров пользователя и списка модулей выводится список, 
+содержащий их все, вместе с набором кнопок, которые могут быть использованы 
+для их добавления, удаления или изменения.
+\fi
+%-----------------------------------------------------------------------
+
+\ifenglish
+\subsection{Statement categories}
+\else
+\subsection{Категории установок}
+\fi
+\public{StatementCategories}
+
+\ifenglish
+All the project file directives are organized in the set of categories.
+The left area of the dialog contains list of categories.
+When you select a statement category from the list, the corresponding
+controls are displayed to the right, allowing you to view and edit
+these statements.
+
+Categories are organized into a hierarchic structure.
+Book icon on a line indicates that this line has subcategories.
+Subcategories list can be either opened (open book icon) or closed (closed book).
+You can toggle open status of a subcategory list by clicking on a book icon
+or double-clicking anywhere else on a line. You can also press {\bf Space} for this.
+\else
+Все директивы проектного файла выстроены в ряд категорий.
+Левая часть диалога содержит список категорий.
+Когда вы выбираете категорию установки из списка, справа отображаются 
+соответствующие контроли, позволяя просматривать и редактировать эти установки.
+
+Категории выстроены иерархически. 
+Иконка-книга в строке показывает, что эта строка имеет подкатегории.
+Список подкатегорий может быть либо открыт (закрытая книга), либо закрыт
+(закрытая книга). Щелчок по иконке-книге открывает/закрывает ее. Для этого
+можно также нажать {\bf Space} или дважды щелкнуть по любому другому месту в 
+строке.
+\fi
+%-----------------------------------------------------------------------
+
+\begin{popup}
+\ifenglish
+\caption{Statement categories}
+\else
+\caption{Категории установок}
+\fi
+\public{OPT\_LISTBOX}
+
+\ifenglish
+When you select a statement category from this list, the corresponding
+controls are displayed to the right, allowing you to view and edit
+these statements. Categories are organized into a tree-like structure.
+Book icon on a line indicates that this line has subcategories.
+Subcategories list can be either opened (open book icon) or closed (closed book).
+You can toggle open status of a subcategory list by clicking on a book icon
+or double-clicking anywhere else on a line. You can also press {\bf Space} for this.
+\else
+Когда вы выбираете категорию установок из списка, справа отображается 
+соответствующий контроль, позволяя просматривать и редактировать эти установки.
+Категории выстроены в древовидную структуру. Иконка-книга в строке показывает,
+что эта категория имеет подкатегории. Список подкатегорий может быть либо открыт
+(открытая книга), либо закрыт (закрытая книга). Щелчок по иконке-книге 
+открывает/закрывает ее. Для этого можно также нажать {\bf Space} или дважды 
+щелкнуть по любому другому месту в строке.
+\fi
+\end{popup}
+
+\begin{popup}
+\public{OPT\_FRAME}
+\ifenglish
+This is a frame page.
+\else
+Это - каркасная страница.
+\fi
+\end{popup}
+
+
+\begin{popup}
+\caption{Present}
+\public{OPT\_PRESENT}
+\ifenglish
+{\bf Present} checkboxes indicate whether the corresponding equations
+are present in the project of style being edited.
+Options that are not present in the project have default values defined by
+XDS compiler configuration file ({\bf xc.cfg} file for native-code compiler).
+\else
+Контроли {\bf Present} показывают, присутствуют ли в редактируемом стиле 
+проекта соответсвующие параметры.
+Опции, не присутствующие в проекте, задаются значениями, принимаемыми по 
+умолчанию, указанными в файле настроек XDS-компилятора. 
+(файл {\bf xc.cfg} для native-code компилятора).
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Restore page}
+\public{OPT\_UNDOPAGE}
+
+\ifenglish
+Select the {\bf Restore page} pushbutton if you want statements from
+the currently displayed category to be set to values they have before
+you invoke the {\bf Project Editor}.
+\else
+Нажмите кнопку {\bf Restore page}, если хотите, чтобы установки из отображенной 
+в данный момент категории приняли значения, которые они имели до того, как вы 
+вызвали {\bf Project Editor}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Default value}
+\public{OPT\_DEFPANE}
+
+\ifenglish
+The name of the option or equation corresponding to the control under
+the mouse cursor is displayed in this area along with its default value.
+\else
+Название опции или параметра, соответствующих контролю, находящемуся под 
+курсором мыши, отображаются в этой области вместе с их значением по умолчанию.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Option value}
+\public{OPT\_CHECK}
+
+\ifenglish
+Select or clear this checkbox to toggle the currently selected user option
+setting.
+\else
+Включите или выключите этот контроль, чтобы включить/выключить установку 
+текущей опции пользователя.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Add}
+\public{OPT\_ADDOPTION}
+
+\ifenglish
+Select the {\bf Add} pushbutton to add a new item to the list.
+\else
+Нажмите кнопку {\bf Add}, чтобы добавить в список новый элемент.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Remove}
+\public{OPT\_REMOVEOPTION}
+
+\ifenglish
+Select the {\bf Remove} pushbutton to remove the currently selected item
+from the list.
+\else
+Нажмите кнопку {\bf Remove}, чтобы удалить выбранный элемент списка.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Item list}
+\public{OPT\_OPTLIST}
+
+\ifenglish
+This list contains user options, user equations, or modules from
+the current project.
+\else
+Этот список содержит опции пользователя, параметры пользователя или модули
+текущего проекта.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OPT\_COMMENT}
+\public{OPT\_COMMENT}
+
+\ifenglish
+This help topic is not available yet % !!!
+\else
+Этот раздел подзказки пока не доступен % !!!
+\fi
+\end{popup}
+
+\begin{popup}
+\ifenglish
+\caption{Equation value}
+\else
+\caption{Значение параметра}
+\fi
+\public{OPT\_EQUEDIT}
+
+\ifenglish
+Type a new value for the currently selected user equation in this entry field.
+\else
+Наберите новое значение выбранного параметра пользователя в этом поле ввода.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Browse}
+\public{OPT\_BROWSE}
+
+\ifenglish
+Select the {\bf Browse} pushbutton to select a module using a standard file
+dialog.
+\else
+Нажмите кнопку {\bf Browse}, чтобы выбрать модуль, используя стандартный 
+файловый диалог.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Modify}
+\public{OPT\_SET}
+
+\ifenglish
+Select the {\bf Modify} pushbutton to replace the currently selected module
+with the contents of the module name entry field.
+\else
+Нажмите кнопку {\bf Modify}, чтобы заменить выбранный модуль содержимым поля 
+ввода имени модуля.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{OK}
+\public{OPT\_OK}
+
+\ifenglish
+Select the {\bf OK} pushbutton to confirm the changes you've made to the
+project file and close the {\bf Project Editor}.
+\else
+Нажмите кнопку {\bf OK}, чтобы подтвердить изменения, произведенные с файлом 
+проекта и закрыть {\bf Project Editor}.
+\fi
+\end{popup}
+
+\begin{popup}
+\caption{Cancel}
+\public{OPT\_CANCEL}
+
+\ifenglish
+Select the {\bf Cancel} pushbutton if you decided not to perform any
+changes to the project file.
+\else
+Нажмите кнопку {\bf Cancel}, если решили не вносить изменения в файл проекта.
+\fi
+\end{popup}

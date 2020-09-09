@@ -1,0 +1,155 @@
+what is new 2.07
+
+1) изменены правила совместимости для параметров С-процедур
+	(p: POINTER TO T) -> ARRAY [] OF T
+   See multlang.
+
+2) Расширен синтакс cond expression (see options.tex).
+   DEFINE, equation, =, #
+
+
+3)      "C", "Pascal", "Modula", "Oberon",
+	"StdCall"
+	"BNRP"
+	"SL1"
+        valid values for system flag
+
+4)      new equations
+                GENINDENT - indentation step (def. 3)
+		COMPILERHEAP
+		COMPILERTHRES
+
+5)      ERRNO in ERRFMT
+
+6)      OPTIMIZE -> NOOPTIMIZE
+
+7)      SPACE -
+
+8)      ONECODESEG
+
+9)      new option M2UNPACKTYPES
+                if TRUE then SET, enum, BOOLEAN size = 4
+        new types SYSTEM.BOOL8, SYSTEM.BOOL32
+
+10) delete ALIGNMENET equation - describe option
+
+11)  equation declaration: -xxx!value
+
+12)  Make does not use dependency on project files
+
+13)  redirections: continue search for multiple patterns
+	*.mod =
+	*.*   =
+
+14)     in .cfg, .prj, template, .red files:
+
+        !if expr then
+        !elsif expr then
+        !else
+        !end
+
+        !new ident [ - | + | = value ]
+        !set ident [ - | + | = value ]
+        !message expr
+
+        expr = simple [ ("=" | "#" | "<" | ">") simple ]
+        simple = term { "+" | "OR" term }
+        term = factor { "AND" factor }
+        factor = "(" expr ")"
+               | quoted_string
+               | "NOT" factor
+               | "DEFINED" ident
+               | ident
+        ident = option | equation
+
+	\ at the end of line - перенос строки во всех системных файлах.
+
+        $! - во всех system files обозначает имя директории на
+             которой лежит этот system file.
+	     *.sym = $!/sym;
+
+	имена файлов во всех system files & command line:
+		[letter:] unix path
+		case sensitive
+
+	разрешено писать DOS'овские:
+		-lookup=
+		redirection
+		command line
+14) template:
+
+-------------------- XDS/C --------------------
+
+15) new option GENDATE+
+
+16) новая опция GENFULLFNAME - разрешает полные имена файлов в
+    #lineno
+
+17)  template:
+			#, obj, header
+			^#
+
+18) PROJECT equation
+
+19) unix users: environment variable XDSDIR is required
+    is used in makefile(s)
+
+20) ENV_HOST & ENV_TARGET
+-------------------------------------------------------
+-------------------------------------------------------
+fixed bugs:
+
+1)      bug: exception reraise in function -
+		function without return
+	was raised instead of required exc.
+
+2)
+	ошибка в генерации переменных с абсолютным адресом:
+        неправильный С-тип адресного выражения (всегда char *)
+
+3)
+        ошибка в pcConst: переменные и процедуры,
+        которые использовались только в описании константы или
+        в адресном выражении переменной с абсолютным адресом
+        удалялись из программы, в результете FAULT:
+        Can not generate object declaration
+
+-------------------------------------------------------
+TO.DO:
+
+3) code procedure?
+
+5) xlink, xlib
+
+12) undocumented options/equations
+
+13) ccomp: examples MSVC, Watcom
+
+14)  inter-dependencies between options & equations
+---------------------------------------------------------------
+
+                 For XDS/C only
+                ----------------
+
+---------
+        GENDLL -- ???
+        GENCNSEXP
+---------
+	new function:
+		SYSTEM.TARGET(): ARRAY OF CHAR;
+
+---------
+DONE:
+1) LINK & COMPILE : seamless for XDS/C -> start.tex
+2) config.tex - preparing library for non-unix versions
+3) What's new
+5) maptoc.tex - fix errors
+6) start.tex - running, debugging
+---------
+TO DO:
+
+4) readme.1st - Unix     - XDSDIR
+              - non-Unix - configuring
+7) comments in xm.cfg
+8) msdos16 platform?
+

@@ -1,0 +1,290 @@
+WHATSNEW.TXT                       Copyright (c) 1995,98 XDS Ltd
+----------------------------------------------------------------
+
+                     XDS-C Unix Edition
+                     ------------------
+                           v2.31
+
+                   Fixes And New Features
+
+Version 2.31
+------------
+
+This is a maintenance release, that includes minor bug fixes and
+improvements, and mostly aims at preserving compatibility with 
+the current version of the native code compiler.
+
+The only component that was significantly improved is the H2D 
+utlity:
+
+        Generalized #variant directive
+        
+        Custom mapping of C base types to Modula-2 types
+
+        Non-standard directives extraction
+
+        Options renamed to follow XDS compilers style
+
+        Control file syntax now closely matches used by XDS compilers
+
+
+Version 2.21
+------------
+
+The first commercial release.
+
+Make system:
+
+        It is now possible to iterate files by extension in makefile
+          templates, and specify any file in !module directive.
+        Equation and synonym declaration syntax changed
+        SETSIZE and ENUMSIZE equations
+
+C back-end:
+
+        Placement of original comments in output C text improved
+
+x86 back-end:
+
+        New optimizations
+
+Library:
+
+        OS/2 API import library added
+        32->16 thunk code for Vio, Mou, Kbd calls
+        Multithread version of the Modula-2 libraries
+        RTS now finalizes all objects and flushes files
+          upon program termination
+        Raw mode is supported on standard channels
+        TopSpeed-like library set implemented (x86 only)
+
+Utilities:
+
+        H2D speeded up
+        H2D documentation is now consistent
+        A fake linker called XLINK is provided to automate resource
+        binding
+
+IDE:
+
+        IDE now checks files for being changed outside IDE
+        Read-only files
+        Recall pop-up window menu item
+        Toolset management
+        Lots of other improvements (see help)
+
+Setup:
+
+        Installation program is provided.
+
+New samples:
+
+        PM Application Template from IBM Developer's Toolkit
+        His utility source
+        H2D usage example
+
+
+Version 2.17
+------------
+
+This version is the last freely available before commercial release.
+The following changes were made since previous releases (2.10 and 2.12):
+
+Compiler:
+
+        A number of bugs fixed
+
+        SYM-FILE VERSION CHANGED - RECOMPILATION IS NECESSARY
+
+        Pentium instruction scheduling implemented
+
+        A number of floating-point optimizations introduced
+
+        Integer division by constant is now replaced with multiplication
+
+        Long file names support (see the FATFS option)
+
+        xc =m <file> now calls linker if <file> is a Modula-2 program
+        module or an Oberon-2 main module (option MAIN is on)
+
+        The SYSTEM.REF procedure was added (the same as ADR, but returns
+        typized pointer.
+
+        Compatibility rules for foreign procedures are relaxed further
+        (see User's Guide->Multilanluage Programming->Relaxation of
+        compatibility rules).
+
+        Much more efficient (but still not ideal) code is generated
+        for aggregate constants.
+
+        Equations and environment variables may be used in redirections:
+        *.sym = $(XDSDIR)/sym
+
+        Separate exception source for ASSERT added
+
+        Compiler sets new equations:
+                MODULE (name of the current module)
+                FILE (name of the current file)
+
+        Compiler exit code is now either 0 (ok) or 1 (error).
+
+        SYSTEM.FILL is added
+
+        <type>(<const>) is now equivalent to SYSTEM.CAST(<type>,<const>)
+
+        VIO option introduced in xc.cfg
+
+        BOOLEAN, SYSTEM.BOOL8 and SYSTEM.BOOL32 are much more compatible
+
+        SYSTEM.M2ADR is available from Oberon-2
+
+        CODENAME and DATANAME equations for segment names
+
+        CPU486 is replaced with CPU and MINCPU
+
+        It is now possible to declare/set equations in source text
+
+        ALIGNMENT is an inlineable equation now
+
+        DEF option is renamed to CHANGESYM to avoid conflicts
+
+Library:
+
+        Some bugs fixed
+
+        Added module Printf
+
+        ISO modules LowReal, LowLong are implemented
+
+        ProgEnv.String and ProgEnv.StringLength are implemented
+
+        TopSpeed-like library is partially implemented
+
+IDE:
+
+        Plenty of bugs fixed
+
+        New concepts introduced: tools, workplaces, and stylesheets.
+        Refer to the on-line help for more information.
+
+        A number of text editing features introduced (see Keys Help).
+
+        A number of menu commands introduced (press F1 on menu items).
+
+        Files are opened using redirections and lookups if typed without
+        path
+
+        IDE maintains a list of source files which are either specified
+        by user or received from the compiler.
+
+        Project file editor:
+                a number of bug fixes
+                user options/equations
+                lookups
+
+OS2.DEF:
+
+        Some bugs fixed
+
+        Formatting slightly improved
+
+        Some pointer type parameters changed to VAR-parameters and
+        arrays according to an API call semantics.
+
+        Some negative constants replaced with large positive
+
+Doc:
+
+        ISO Modula-2 Library Reference added
+
+        ISO Modula-2 Lexis and Syntax added
+
+        RegComp.Substitute description is corrected
+
+Samples:
+
+        The PMHello sample removed
+
+        New samples:
+                LinPack benchmark
+                FindProc IDE tool
+                Mandelbrodt Set Explorer for PM
+
+
+Version 2.10
+------------
+
+This is the first product version of Native XDS for OS/2. After more
+then half a year of extensive testing we are happy to announce this
+product.
+
+For the users of XDS v2.06 we list the differences between v2.06
+and v2.10. Note: there are no product versions such as v2.07,
+v2.08, v2.09. The version v2.07 was used internally and
+distributed as beta and demo version.
+
+What is new in v2.10:
+
+        1) Extended syntax of conditional expressions, e.g:
+
+           <* IF defined cc & (cc = Watcom) THEN *>
+
+           See "Configuring XDS" and "Conditional compilation".
+
+        2) Relaxed compatibility rules are introduced for
+           parameters of "C" procedures. See "Multilanguage
+           programming".
+
+        3) String literal may be used in a direct language
+           specification instead of numeric values:
+              "Oberon"  = 0
+              "Modula"  = 1
+              "C"       = 2
+              "Pascal"  = 5
+              "StdCall" = 7 (Win32 standard calling convention)
+              "SysCall" = 8 (OS/2 system calls)
+
+        4) new equations
+              COMPILERHEAP   - defines compiler heap limit
+              COMPILERTHRES  - defines compiler threshold
+
+        5) New clause in the ERRFMT equation - errno (error
+        number).
+
+        6) new option M2UNPACKTYPES - for Windows interface
+
+        7) new ALIGNMENET option
+
+        8) equation declaration syntax is introduced:
+           -xxx!value
+
+        9) Make does not use dependency on a project file.
+
+
+       10) New directives may be used in configuration, redirection
+           project and template files:
+
+           !if expr then
+           !elsif expr then
+           !else
+           !end
+
+           !message expr
+
+           expr = simple [ ("=" | "#" | "<" | ">") simple ]
+           simple = term { "+" | "OR" term }
+           term = factor { "AND" factor }
+           factor = "(" expr ")"| quoted_string
+                  | "NOT" factor | "DEFINED" ident | ident
+           ident = option | equation
+
+       11) In all system files:
+
+            \ at the end of line - line continuation.
+
+            $! - denotes the directory name of this file:
+               *.sym = $!/sym;
+
+       12) new template syntax (See "Template files").
+
+                         [end of document]

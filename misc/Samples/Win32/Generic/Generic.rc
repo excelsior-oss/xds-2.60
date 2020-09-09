@@ -1,0 +1,37 @@
+/*#include "windows.h"*/
+#include "generic.h"
+
+GENERIC ICON "GENERIC.ICO"
+SMALL   ICON "SMALL.ICO"
+
+GENERIC MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+	MENUITEM "&New",                        IDM_NEW, GRAYED
+	MENUITEM "&Open...",                    IDM_OPEN, GRAYED
+	MENUITEM "&Save",                       IDM_SAVE, GRAYED
+	MENUITEM "Save &As...",                 IDM_SAVEAS, GRAYED
+	MENUITEM SEPARATOR
+	MENUITEM "&Print...",                   IDM_PRINT, GRAYED
+	MENUITEM "P&rint Setup...",             IDM_PRINTSETUP, GRAYED
+	MENUITEM SEPARATOR
+	MENUITEM "E&xit",                       IDM_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+	MENUITEM "&Undo\tCtrl+Z",               IDM_UNDO, GRAYED
+	MENUITEM SEPARATOR
+	MENUITEM "Cu&t\tCtrl+X",                IDM_CUT, GRAYED
+	MENUITEM "&Copy\tCtrl+C",               IDM_COPY, GRAYED
+	MENUITEM "&Paste\tCtrl+V",              IDM_PASTE, GRAYED
+	MENUITEM "Paste &Link",                 IDM_LINK, GRAYED
+	MENUITEM SEPARATOR
+	MENUITEM "Lin&ks...",                   IDM_LINKS, GRAYED
+    END
+END
+
+STRINGTABLE
+BEGIN
+    IDSTR_FILTER, "Text files (*.txt)\0*.txt\0All files (*.*)\0*.*"
+END

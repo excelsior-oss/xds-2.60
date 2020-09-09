@@ -1,0 +1,384 @@
+\section{Project Menu}
+\public{M\_PROJECT}
+\nominitoc
+
+\ifenglish
+The {\bf Project} menu contains commands that you use to create,
+open, close, and edit a project file. It also contains a list 
+of the recently opened project files to let you quickly switch
+to another project. The following commands appear
+in the {\bf Project} menu:
+\else
+Меню {\bf Project} содержит команды, которые вы используете, чтобы создавать,
+открывать, закрывать и редактировать файлы проекта. Оно также содержит список
+недавно открывавшихся файлов, позволяя бысто переключаться на другой проект.
+В меню {\bf Project} содержатся следующие команды:
+\fi
+\begin{description}
+\item \ref[New]{IDM\_PROJNEW}
+\ifenglish
+  - Creates a new project file
+  \else
+  - Создает новый файл проекта
+ \fi
+\item \ref[Open]{IDM\_PROJOPEN}
+\ifenglish
+  - Opens an existent project file
+  \else
+  - Открывает существующий файл проекта
+  \fi
+\item \ref[Close]{IDM\_PROJCLOSE}
+\ifenglish
+  - Closes the current project file
+  \else
+  - Закрывает текущий файл проекта
+  \fi
+\item \ref[Modify]{IDM\_PROJOPTIONS}
+\ifenglish
+  - Lets you modify the current project in a visual project editor
+  \else
+  - Позволяет изменять текущий проект с помощью средств графического 
+    интерфейса
+  \fi
+\item \ref[Edit]{IDM\_PROJEDIT}
+\ifenglish
+  - Lets you edit the current project file manually
+  \else
+  - Позволяет вручную редактировать текущий файл проекта
+  \fi
+\item \ref[File list]{IDM\_FILELIST}
+\ifenglish
+  - Displays a list of the current project source files
+  \else
+  - Отображает список исходных файлов текущего проекта  
+  \fi
+\item \ref[Style sheets]{M\_STYLES}
+\ifenglish
+  - Activates the {\bf Style sheets} submenu
+  \else
+  - Активирует подменю {\bf Style sheets}
+  \fi
+\end{description}
+
+\subsection{Project: New}
+\public{IDM\_PROJNEW}
+
+\ifenglish
+Use the {\bf New} command to create a new project. A dialog
+box will appear, letting you specify a project file name,
+location, template, main module and some options.
+\else
+Используйте команду {\bf New}, чтобы создавать новый проект. Будет
+выведен диалог, позволяющий указать имя файла проекта, его место на диске,
+шаблон, главный модуль и некоторые опции.
+\fi
+\subsection{Project: Open}
+\public{IDM\_PROJOPEN}
+
+\ifenglish
+Use the {\bf Open} command to open an existent project file
+by means of a standard file dialog.
+
+The IDE keeps track of opened windows in each project separately.
+So opening new project will close all your windows and open windows
+that were opened last time you worked with that project.
+
+The system also considers the directory of current project its current directory.
+That affects invocation of tools.
+\else
+Используйте команду {\bf Open}, чтобы открывать существующие файлы проекта 
+с помощью стандартного файлового диалога.
+
+IDE отдельно для каждого проекта хранит данные об открытых окнах.
+Таким образом, новый проект закроет все ваши окна и откроет окна, которые 
+были открыты в последний раз, когда вы работали с этим проектом.
+
+Система также считает директорию текущего проекта текущей директорией.
+Это влияет на вызов утилит.
+\fi
+\ifenglish
+{\bf Note:} The IDE maintains a list of the most recently 
+opened project files, which is shown at the bottom of the
+\ref[Project menu]{M\_PROJECT}. You may use it to quickly load a project.
+\else
+Замечание: IDE заводит список недавно открывавшихся файлов, который отображается
+в нижней части меню \ref[Project menu]{M\_PROJECT}. Вы можете использовать
+его для быстрой загрузки проекта.
+\fi
+\subsection{Project: Close}
+\public{IDM\_PROJCLOSE}
+
+\ifenglish
+Use the {\bf Close} command to close the current project 
+and all windows without terminating the IDE.
+\else
+Используйте команду {\bf Close}, чтобы закрыть текущий проект и все
+окна, не завершая работы IDE.
+\fi
+\subsection{Project: Modify}
+\public{IDM\_PROJOPTIONS}
+
+\ifenglish
+Use the {\bf Modify} command to edit the current project file 
+in a visual project editor. In this editor all project options
+are combined into meaningful hierarchical groups and presented in
+human-readable rather than compiler-readable form.
+
+The visual editor can't modify projects with complicated syntax,
+for instance, those with conditional clauses. In is recommended
+to \ref[Edit]{IDM\_PROJEDIT} such project files in usual text editor.
+\else
+Используйте команду {\bf Modify}, чтобы редактировать текущий файл проекта,
+используя средства графического интерфейса. В этом редакторе все опции 
+проекта собраны в значащие иерархические группы и представлены в виде,
+предназначенном для прочтения скорее человеком, чем компилятором.
+
+Графический интерфейс не позволяет изменять проекты со сложным 
+синтаксисом, содержащие, например, условные операторы. Такие проекты 
+рекомендуется редактировать (\ref[Edit]{IDM\_PROJEDIT}) в обычном 
+текстовом редакторе.
+\fi
+\subsection{Project: Edit}
+\public{IDM\_PROJEDIT}
+
+\ifenglish
+Use the {\bf Edit} command to load the current project file 
+into a regular edit window.
+
+If you \ref[Modify]{IDM\_PROJOPTIONS} the project visually
+while it is opened in regular edit window the
+new changes will immediately appear in that window.
+\else
+Используйте команду {\bf Edit}, чтобы загружать текущий файл проекта в
+обычное окно редактирования.
+
+Если вы будете изменять (\ref[Modify]{IDM\_PROJOPTIONS}) проект, 
+используя средства графического интерфейса, в то время как он открыт 
+в обычном окне редактирования, то новые изменения будут отображаться 
+в этом окне немедленно.
+\fi
+\subsection{Project: File list}
+\public{IDM\_FILELIST}
+
+\ifenglish
+Use the {\bf File list} command to display a list of source
+files belonging to the current project.
+
+This list is initially empty and is
+updated during each make because in languages like Modula-2 and Oberon-2 you
+can only tell what files belong to the project after you build the project.
+
+The list is written to disk and kept from session to session but it is considered
+unreliable until first project make and is marked as "Not updated" because
+source files could be modified outside the IDE.
+
+It is possible to gather project file list quickly by scanning source files
+for IMPORT directives without compiling them. This function is available via
+the \ref[Tools]{M\_TOOLS}:Update file list option.
+
+If you opened file list window earlier it will be opened in the same position and will have same size.
+
+It is possible to specify that new file list window must be docked.
+
+Keyboard shortcut: {\bf Alt+"="}
+\else
+Используйте команду {\bf File list}, чтобы отображать список исходных файлов,
+принадлежащих текущему проекту.
+
+Список изначально пуст, и обновляется во время каждой компоновки, так как в 
+таких языках как Modula-2 и Oberon-2 вы можете определить, какие файлы 
+принадлежат проекту, только после его сборки.
+
+Список хранится на диске в промежутках между сеансами работы, но считается
+недостоверным до первой компоновки и помечается как "Not updated", потому что
+исходные файлы могли быть изменены вне IDE.
+
+Существует возможность быстрого составления списка файлов проекта путем
+поиска в исходных файлах директив IMPORT без их компиляции. Эта функция 
+доступна посредством \ref[Tools]{M\_TOOLS}: Опция обновления списка файлов.
+
+Если вы открывали окно списка файлов ранее, оно будет открыто на том же месте 
+и будет иметь тот же размер.
+
+Можно указать, чтобы окно списка файлов было неперекрывающимся.
+
+Комбинация клавиш: {\bf Alt+"="}
+\fi
+\subsection{Project: Style sheets}
+\public{M\_STYLES}
+\nominitoc
+
+\ifenglish
+The {\bf Style sheets} command displays a submenu,
+which contains the following commands for work with \ref[Style sheets]{StyleSheets}.
+\else
+Команда {\bf Style sheets} отображает подменю,
+содержащее следующие команды для работы со \ref[стилями]{StyleSheets}.
+\fi
+\begin{description}
+\item \ref[New Style]{IDM\_NEWSTYLE}
+\ifenglish
+  - Creates a new style file
+  \else
+  - Создает новый файл стиля
+  \fi
+\item \ref[Save project as style]{IDM\_PROJSAVESTYLE}
+\ifenglish
+  - Saves the current project options and equations as style
+  \else
+  - Сохраняет опции и параметры текущего проекта
+  \fi
+\item \ref[Apply style]{IDM\_APPLYSTYLE}
+\ifenglish
+  - Applies a style to the current project
+  \else
+  - Применяет стиль к текущему проекту
+  \fi
+\item \ref[Edit style]{IDM\_EDITSTYLE}
+\ifenglish
+  - Invokes the style editor
+  \else
+  - Вызывает редактор стиля
+  \fi
+\item \ref[Delete style]{IDM\_DELETESTYLE}
+\ifenglish
+  - Deletes a style file
+  \else
+  - Удаляет файл стиля
+  \fi
+\end{description}
+
+\ifenglish
+\subsubsection{Style sheets}
+\else
+\subsubsection{Стили}
+\fi
+\public{StyleSheets}
+\ifenglish
+It is often necessary to change several project options at once into some
+well-known state. For example to make a project in debug mode you usually
+turn on generation of debug information, turn on all run-time checks and turn
+off optimizations, while for release mode you need opposite settings to all
+those options. It takes long time to set all the options manually. Besides it
+is possible to forget some options.
+
+This is what the {\bf Style sheet} is for.
+The style sheet is some subset of project options saved to separate file.
+Applying the style sheet means copying project options from style sheet to
+project file while retaining those options in a project that aren't present in
+the style sheet.
+
+You can create new empty style sheet. Use \ref[New Style]{IDM\_NEWSTYLE}
+menu command.
+
+You can create style sheet based on existing project file. Use
+\ref[Save Project as Style]{IDM\_PROJSAVESTYLE}
+menu command.
+\else
+Часто бывает необходимо изменять несколько опций сразу, задавая им вполне 
+определенные значения. Например, чтобы скомпоновать проект в режиме отладки,
+обычно включаются генерация отладочной информации и прогоночные проверки, 
+а все оптимизации отключаются, в то время как для компоновки в режиме рабочей
+версии требуются противоположные установки этих же самых опций. Установка опций
+вручную требует значительного времени. Кроме того, некоторые опции можно опустить.
+
+Вот для чего нужен {\bf стиль}.
+Стиль - это некоторое подмножество опций проекта, сохраненное в отдельном файле.
+Применение стиля означает копирование опций проекта из стиля в файл проекта
+с сохранением установок незадействованных в стиле опций.
+
+Вы можете создать новый пустой стиль. Используйте команду меню 
+\ref[New Style]{IDM\_NEWSTYLE}.
+
+Вы можете создать новый стиль, основываясь на существующем файле проекта 
+Используйте команду меню 
+\ref[Save Project as Style]{IDM\_PROJSAVESTYLE}.
+\fi
+\ifenglish
+Once created, the style sheet can be edited in a visual editor similar to
+the one used for editing projects. Use
+\ref[Edit Style]{IDM\_EDITSTYLE} menu command.
+
+Style sheets are usually kept in XDS system directory under names with
+{\bf .Sty} extensions.
+
+There are two pre-defined style sheets, {\bf Debug} and {\bf Release} with
+debug and release options set.
+\else
+Будучи созданным, стиль может редактироваться посредством 
+графического интерфейса точно также, как и проект.
+Используйте команду \ref[Edit Style]{IDM\_EDITSTYLE}
+
+Стили обычно хранятся в системной директории XDS в файлах с расширением
+{\bf .Sty}.
+\fi
+
+\subsubsection{Project: Style sheets: New Style}
+\public{IDM\_NEWSTYLE}
+
+\ifenglish
+Use the {\bf New style} command to create a new empty \ref[Style sheet]{StyleSheets}.
+A dialog box will appear, prompting you for a 
+style name, comment and file location.
+\else
+Используйте команду {\bf New style}, чтобы создать новый пустой
+\ref[стиль]{StyleSheets}.
+Появится диалог, запрашивающий имя стиля, комментарий и место файла на диске.
+\fi
+\subsubsection{Project: Style sheets: Save Project as style}
+\public{IDM\_PROJSAVESTYLE}
+
+\ifenglish
+Use the {\bf Save Project as style} command to store the 
+current project options and equations in a new or existent
+\ref[Style sheet]{StyleSheets} file.
+A dialog box will appear, prompting you for a 
+style name, comment and file location.
+\else
+Используйте команду {\bf Save Project as style}, чтобы сохранять
+опции и параметры текущего проекта в новый или существующий файл
+\ref[стиля]{StyleSheets}.
+Появится диалог, запрашивающий имя стиля, комментарий и место файла на диске.
+\fi
+\subsubsection{Project: Style sheets: Apply Style}
+\public{IDM\_APPLYSTYLE}
+
+\ifenglish
+Use the {\bf Apply Style} command to apply a specific
+\ref[Style sheet]{StyleSheets} 
+to the current project, i.e. to add style options and equations 
+to it. If a style option or equation already exists in the
+project, it is replaced by style sheet value. Options and equations that are
+not present in the style sheet are not affected.
+
+A dialog box will appear, allowing you to select a style to apply.
+\else
+Используйте команду {\bf Apply Style}, чтобы применить заданный
+\ref[стиль]{StyleSheets} к текущему проекту, иначе говоря, чтобы добавить
+к нему опции и параметры стиля. Если опция или параметр стиля уже существуют в
+проекте, то они задаются значением, указанным в проекте. Опции и параметры проекта,
+не участвующие в стиле, этой командой не затрагиваются.
+
+Будет выведен диалог, позволяющий вам выбрать стиль для применения.
+\fi
+\subsubsection{Project: Style sheets: Edit Style}
+\public{IDM\_EDITSTYLE}
+
+\ifenglish
+Use the {\bf Edit Style} command to edit a \ref[Style sheet]{StyleSheets} using a
+style visual editor (similar to project editor).
+\else
+Используйте команду {\bf Edit Style}, чтобы редактировать 
+\ref[стиль]{StyleSheets} с помощью средств графического интерфейса.
+
+\fi
+\subsubsection{Project: Style sheets: Delete Style}
+\public{IDM\_DELETESTYLE}
+
+\ifenglish
+Use the {\bf Delete style} command to permanently delete
+a \ref[Style sheet]{StyleSheets} file.
+\else
+Используйте команду {\bf Delete style}, чтобы окончательно удалить файл
+\ref[стиля]{StyleSheets}.
+\fi

@@ -1,0 +1,1778 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMSTDDLG.H
+*
+* OS/2 Presentation Manager CUA controls and dialogs declarations
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* The folowing symbols are used in this file for conditional sections.
+*
+*   CONST:                To include:
+*
+*   INCL_WINSTDDLGS         include all dialogs/controls
+*   INCL_WINSTDBOOK         book control class
+*   INCL_WINSTDCNR          container control class
+*   INCL_WINSTDDRAG         standard drag dll
+*   INCL_WINSTDFILE         standard file dialog
+*   INCL_WINSTDFONT         standard font dialog
+*   INCL_WINSTDSLIDER       slider control class
+*   INCL_WINSTDSPIN         spin button control class
+*   INCL_WINSTDVALSET       value set control class
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between NOINC
+* and INC comments.
+*
+\***************************************************************************)
+
+
+#define STDDLG_INCLUDED
+
+
+#if defined(INCL_WINSTDDLGS)  (* enable everything *)
+   #define INCL_WINSTDFILE
+   #define INCL_WINSTDFONT
+   #define INCL_WINSTDSPIN
+   #define INCL_WINSTDDRAG
+   #define INCL_WINSTDCNR
+   #define INCL_WINSTDSLIDER
+   #define INCL_WINSTDVALSET
+   #define INCL_WINSTDBOOK
+#endif (* INCL_WINSTDDLGS *)
+
+#if (defined(INCL_WINSTDCNR) || defined(INCL_WINSTDVALSET))
+   #define INCL_WINSTDDRAG
+#endif (* INCL_WINSTDCNR || INCL_WINSTDVALSET *)
+
+#if !(defined(INCL_WINSTDFILE_INCLUDED) || ! defined(INCL_WINSTDFILE))
+   #define INCL_WINSTDFILE_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                     F I L E    D I A L O G                         *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog Invocation Flag Definitions.                           *)
+   (*--------------------------------------------------------------------*)
+   CONST FDS_CENTER          = 000000001H;(* Center within owner wnd   *)
+   CONST FDS_CUSTOM          = 000000002H;(* Use custom user template  *)
+   CONST FDS_FILTERUNION     = 000000004H;(* Use union of filters      *)
+   CONST FDS_HELPBUTTON      = 000000008H;(* Display Help button       *)
+   CONST FDS_APPLYBUTTON     = 000000010H;(* Display Apply button      *)
+   CONST FDS_PRELOAD_VOLINFO = 000000020H;(* Preload volume info       *)
+   CONST FDS_MODELESS        = 000000040H;(* Make dialog modeless      *)
+   CONST FDS_INCLUDE_EAS     = 000000080H;(* Always load EA info       *)
+   CONST FDS_OPEN_DIALOG     = 000000100H;(* Select Open dialog        *)
+   CONST FDS_SAVEAS_DIALOG   = 000000200H;(* Select SaveAs dialog      *)
+   CONST FDS_MULTIPLESEL     = 000000400H;(* Enable multiple selection *)
+   CONST FDS_ENABLEFILELB    = 000000800H;(* Enable SaveAs Listbox     *)
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog Selection returned attribute                           *)
+   (*--------------------------------------------------------------------*)
+   CONST  FDS_EFSELECTION   = 0;
+   CONST  FDS_LBSELECTION   = 1;
+
+   (*--------------------------------------------------------------------*)
+   (* Error Return Codes from dialog (self defining)                     *)
+   (*--------------------------------------------------------------------*)
+   CONST  FDS_SUCCESSFUL                       =     0;
+   CONST  FDS_ERR_DEALLOCATE_MEMORY            =     1;
+   CONST  FDS_ERR_FILTER_TRUNC                 =     2;
+   CONST  FDS_ERR_INVALID_DIALOG               =     3;
+   CONST  FDS_ERR_INVALID_DRIVE                =     4;
+   CONST  FDS_ERR_INVALID_FILTER               =     5;
+   CONST  FDS_ERR_INVALID_PATHFILE             =     6;
+   CONST  FDS_ERR_OUT_OF_MEMORY                =     7;
+   CONST  FDS_ERR_PATH_TOO_LONG                =     8;
+   CONST  FDS_ERR_TOO_MANY_FILE_TYPES          =     9;
+   CONST  FDS_ERR_INVALID_VERSION              =     10;
+   CONST  FDS_ERR_INVALID_CUSTOM_HANDLE        =     11;
+   CONST  FDS_ERR_DIALOG_LOAD_ERROR            =     12;
+   CONST  FDS_ERR_DRIVE_ERROR                  =     13;
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog Messages.                                              *)
+   (*--------------------------------------------------------------------*)
+   CONST FDM_FILTER     =  WM_USER+40;  (* mp1 = PSZ pszFileName         *)
+   (*                   =                   mp2 = PSZ EA .TYPE value      *)
+   (*                                      mr  = TRUE -> keep file.      *)
+   CONST FDM_VALIDATE   =  WM_USER+41;  (* mp1 = PSZ pszPathName         *)
+   (*                                      mp2 = USHORT Field name id    *)
+   (*                                      mr  = TRUE -> Valid name      *)
+   CONST FDM_ERROR      =  WM_USER+42;  (* mp1 = USHORT Error message id *)
+   (*                                      mp2 = NULL   reserved         *)
+   (*                                      mr  = NULL -> Use default msg *)
+
+   (*--------------------------------------------------------------------*)
+   (* Define the type that is a pointer to an array of pointers.         *)
+   (*     Hence: pointer to an array of Z string pointers.               *)
+   (*--------------------------------------------------------------------*)
+   TYPE  APSZ  = ARRAY [0..0] OF PSZ;
+   TYPE  PAPSZ = POINTER TO APSZ;          (* papsz *)
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog application data structure.                            *)
+   (*--------------------------------------------------------------------*)
+   TYPE FILEDLG = RECORD    (* fildlg *)
+      cbSize:           ULONG    ;   (* Size of FILEDLG structure.         *)
+      fl:               ULONG    ;   (* FDS_ flags. Alter behavior of dlg. *)
+      ulUser:           ULONG    ;   (* User defined field.                *)
+      lReturn:          LONG     ;   (* Result code from dialog dismissal. *)
+      lSRC:             LONG     ;   (* System return code.                *)
+      pszTitle:         PSZ      ;   (* String to display in title bar.    *)
+      pszOKButton:      PSZ      ;   (* String to display in OK button.    *)
+      pfnDlgProc:       PFNWP    ;   (* Entry point to custom dialog proc. *)
+      pszIType:         PSZ      ;   (* Pointer to string containing       *)
+      (*                                initial EA type filter. Type       *)
+      (*                                does not have to exist in list.    *)
+      papszITypeList:   PAPSZ    ;   (* Pointer to table of pointers that  *)
+      (*                                point to null terminated Type      *)
+      (*                                strings. End of table is marked    *)
+      (*                                by a NULL pointer.                 *)
+      pszIDrive:        PSZ      ;   (* Pointer to string containing       *)
+      (*                                initial drive. Drive does not      *)
+      (*                                have to exist in drive list.       *)
+      papszIDriveList:  PAPSZ    ;   (* Pointer to table of pointers that  *)
+      (*                                point to null terminated Drive     *)
+      (*                                strings. End of table is marked    *)
+      (*                                by a NULL pointer.                 *)
+      hMod:             HMODULE  ;   (* Custom File Dialog template.       *)
+                        (* ____________ CCHMAXPATH=260 defined in bsedos.h *)
+      szFullFile:       ARRAY [0..CCHMAXPATH-1] OF CHAR; (*     *)
+      (*                                Initial or selected fully          *)
+      (*                                qualified path and file.           *)
+      papszFQFilename:  PAPSZ    ;   (* Pointer to table of pointers that  *)
+      (*                                point to null terminated FQFname   *)
+      (*                                strings. End of table is marked    *)
+      (*                                by a NULL pointer.                 *)
+      ulFQFCount:       ULONG    ;   (* Number of files selected           *)
+      usDlgId:          USHORT   ;   (* Custom dialog id.                  *)
+      x:                SHORT    ;   (* X coordinate of the dialog         *)
+      y:                SHORT    ;   (* Y coordinate of the dialog         *)
+      sEAType:          SHORT    ;   (* Selected file's EA Type.           *)
+   END;
+   TYPE PFILEDLG = POINTER TO FILEDLG;
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog - Function Prototype                                   *)
+   (*--------------------------------------------------------------------*)
+
+   PROCEDURE WinFileDlg(hwndP    : HWND
+                       ;hwndO    : HWND
+                       ;VAR fild : FILEDLG
+                       ): HWND;
+
+   PROCEDURE WinDefFileDlgProc(hwnd : HWND
+                              ;msg  : ULONG
+                              ;mp1  : MPARAM
+                              ;mp2  : MPARAM
+                              ): MRESULT;
+
+   PROCEDURE WinFreeFileDlgList(papszFQFilename : PAPSZ): BOOL;
+
+   (*--------------------------------------------------------------------*)
+   (* File Dialog - dialog and control ids                               *)
+   (*--------------------------------------------------------------------*)
+   CONST   DID_FILE_DIALOG           =  256;
+   CONST   DID_FILENAME_TXT          =  257;
+   CONST   DID_FILENAME_ED           =  258;
+   CONST   DID_DRIVE_TXT             =  259;
+   CONST   DID_DRIVE_CB              =  260;
+   CONST   DID_FILTER_TXT            =  261;
+   CONST   DID_FILTER_CB             =  262;
+   CONST   DID_DIRECTORY_TXT         =  263;
+   CONST   DID_DIRECTORY_LB          =  264;
+   CONST   DID_FILES_TXT             =  265;
+   CONST   DID_FILES_LB              =  266;
+   CONST   DID_HELP_PB               =  267;
+   CONST   DID_APPLY_PB              =  268;
+   CONST   DID_OK_PB                 =  DID_OK;
+   CONST   DID_CANCEL_PB             =  DID_CANCEL;
+
+   CONST   IDS_FILE_ALL_FILES_SELECTOR   =   1000;
+   CONST   IDS_FILE_BACK_CUR_PATH        =   1001;
+   CONST   IDS_FILE_BACK_PREV_PATH       =   1002;
+   CONST   IDS_FILE_BACK_SLASH           =   1003;
+   CONST   IDS_FILE_BASE_FILTER          =   1004;
+   CONST   IDS_FILE_BLANK                =   1005;
+   CONST   IDS_FILE_COLON                =   1006;
+   CONST   IDS_FILE_DOT                  =   1007;
+   CONST   IDS_FILE_DRIVE_LETTERS        =   1008;
+   CONST   IDS_FILE_FWD_CUR_PATH         =   1009;
+   CONST   IDS_FILE_FWD_PREV_PATH        =   1010;
+   CONST   IDS_FILE_FORWARD_SLASH        =   1011;
+   CONST   IDS_FILE_PARENT_DIR           =   1012;
+   CONST   IDS_FILE_Q_MARK               =   1013;
+   CONST   IDS_FILE_SPLAT                =   1014;
+   CONST   IDS_FILE_SPLAT_DOT            =   1015;
+   CONST   IDS_FILE_SAVEAS_TITLE         =   1016;
+   CONST   IDS_FILE_SAVEAS_FILTER_TXT    =   1017;
+   CONST   IDS_FILE_SAVEAS_FILENM_TXT    =   1018;
+   CONST   IDS_FILE_DUMMY_FILE_NAME      =   1019;
+   CONST   IDS_FILE_DUMMY_FILE_EXT       =   1020;
+   CONST   IDS_FILE_DUMMY_DRIVE          =   1021;
+   CONST   IDS_FILE_DUMMY_ROOT_DIR       =   1022;
+   CONST   IDS_FILE_PATH_PTR             =   1023;
+   CONST   IDS_FILE_VOLUME_PREFIX        =   1024;
+   CONST   IDS_FILE_VOLUME_SUFFIX        =   1025;
+   CONST   IDS_FILE_PATH_PTR2            =   1026;
+   CONST   IDS_FILE_INVALID_CHARS        =   1027;
+
+   CONST   IDS_FILE_BAD_DRIVE_NAME         = 1100;
+   CONST   IDS_FILE_BAD_DRIVE_OR_PATH_NAME = 1101;
+   CONST   IDS_FILE_BAD_FILE_NAME          = 1102;
+   CONST   IDS_FILE_BAD_FQF                = 1103;
+   CONST   IDS_FILE_BAD_NETWORK_NAME       = 1104;
+   CONST   IDS_FILE_BAD_SUB_DIR_NAME       = 1105;
+   CONST   IDS_FILE_DRIVE_NOT_AVAILABLE    = 1106;
+   CONST   IDS_FILE_FQFNAME_TOO_LONG       = 1107;
+   CONST   IDS_FILE_OPEN_DIALOG_NOTE       = 1108;
+   CONST   IDS_FILE_PATH_TOO_LONG          = 1109;
+   CONST   IDS_FILE_SAVEAS_DIALOG_NOTE     = 1110;
+
+   CONST   IDS_FILE_DRIVE_DISK_CHANGE      = 1120;
+   CONST   IDS_FILE_DRIVE_NOT_READY        = 1122;
+   CONST   IDS_FILE_DRIVE_LOCKED           = 1123;
+   CONST   IDS_FILE_DRIVE_NO_SECTOR        = 1124;
+   CONST   IDS_FILE_DRIVE_SOME_ERROR       = 1125;
+   CONST   IDS_FILE_DRIVE_INVALID          = 1126;
+   CONST   IDS_FILE_INSERT_DISK_NOTE       = 1127;
+   CONST   IDS_FILE_OK_WHEN_READY          = 1128;
+
+#endif  (* !INCL_WINSTDFILE_INCLUDED && INCL_WINSTDFILE *)
+
+
+#if !( defined(INCL_WINSTDFONT_INCLUDED) || ! defined(INCL_WINSTDFONT))
+   #define INCL_WINSTDFONT_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                     F O N T    D I A L O G                         *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Font Dialog Creation Structure                                     *)
+   (**********************************************************************)
+
+   TYPE FONTDLG = RECORD    (* fntdlg *)
+      cbSize:                  ULONG   ;(* sizeof(FONTDLG)                 *)
+      hpsScreen:               HPS     ;(* Screen presentation space       *)
+      hpsPrinter:              HPS     ;(* Printer presentation space      *)
+      pszTitle:                PSZ     ;(* Application supplied title      *)
+      pszPreview:              PSZ     ;(* String to print in preview wndw *)
+      pszPtSizeList:           PSZ     ;(* Application provided size list  *)
+      pfnDlgProc:              PFNWP   ;(* Dialog subclass procedure       *)
+      pszFamilyname:           PSZ     ;(* Family name of font             *)
+      fxPointSize:             FIXED   ;(* Point size the user selected    *)
+      fl:                      ULONG   ;(* FNTS_* flags - dialog styles    *)
+      flFlags:                 ULONG   ;(* FNTF_* state flags              *)
+      flType:                  ULONG   ;(* Font type option bits           *)
+      flTypeMask:              ULONG   ;(* Mask of which font types to use *)
+      flStyle:                 ULONG   ;(* The selected style bits         *)
+      flStyleMask:             ULONG   ;(* Mask of which style bits to use *)
+      clrFore:                 LONG    ;(* Selected foreground color       *)
+      clrBack:                 LONG    ;(* Selected background color       *)
+      ulUser:                  ULONG   ;(* Blank field for application     *)
+      lReturn:                 LONG    ;(* Return Value of the Dialog      *)
+      lSRC:                    LONG    ;(* System return code.             *)
+      lEmHeight:               LONG    ;(* Em height of the current font   *)
+      lXHeight:                LONG    ;(* X height of the current font    *)
+      lExternalLeading:        LONG    ;(* External Leading of font        *)
+      hMod:                    HMODULE ;(* Module to load custom template  *)
+      fAttrs:                  FATTRS  ;(* Font attribute structure        *)
+      sNominalPointSize:       SHORT   ;(* Nominal Point Size of font      *)
+      usWeight:                USHORT  ;(* The boldness of the font        *)
+      usWidth:                 USHORT  ;(* The width of the font           *)
+      x:                       SHORT   ;(* X coordinate of the dialog      *)
+      y:                       SHORT   ;(* Y coordinate of the dialog      *)
+      usDlgId:                 USHORT  ;(* ID of a custom dialog template  *)
+      usFamilyBufLen:          USHORT  ;(* Length of family buffer provided*)
+      usReserved:              USHORT  ;(* reserved                        *)
+   END;
+   TYPE PFONTDLG = POINTER TO FONTDLG;
+
+   (**********************************************************************)
+   (* Font Dialog Style Flags                                            *)
+   (**********************************************************************)
+   CONST FNTS_CENTER             = 000000001H;(* Center in owner dialog*)
+   CONST FNTS_CUSTOM             = 000000002H;(* Use custom template   *)
+   CONST FNTS_OWNERDRAWPREVIEW   = 000000004H;(* Allow app to draw     *)
+   CONST FNTS_HELPBUTTON         = 000000008H;(* Display Help button   *)
+   CONST FNTS_APPLYBUTTON        = 000000010H;(* Display Apply button  *)
+   CONST FNTS_RESETBUTTON        = 000000020H;(* Display Reset button  *)
+   CONST FNTS_MODELESS           = 000000040H;(* Make dialog modeless  *)
+   CONST FNTS_INITFROMFATTRS     = 000000080H;(* Initialize from FATTRs*)
+   CONST FNTS_BITMAPONLY         = 000000100H;(* Only allow bitmap font*)
+   CONST FNTS_VECTORONLY         = 000000200H;(* Only allow vector font*)
+   CONST FNTS_FIXEDWIDTHONLY     = 000000400H;(* Only allow monospaced *)
+   CONST FNTS_PROPORTIONALONLY   = 000000800H;(* Only proportional font*)
+   CONST FNTS_NOSYNTHESIZEDFONTS = 000001000H;(* Don't synthesize fonts*)
+
+   (**********************************************************************)
+   (* Font Dialog Flags                                                  *)
+   (**********************************************************************)
+   CONST FNTF_NOVIEWSCREENFONTS    =  1;
+   CONST FNTF_NOVIEWPRINTERFONTS   =  2;
+   CONST FNTF_SCREENFONTSELECTED   =  4;
+   CONST FNTF_PRINTERFONTSELECTED  =  8;
+
+   (**********************************************************************)
+   (* Color code definitions                                             *)
+   (**********************************************************************)
+   CONST CLRC_FOREGROUND           =  1;
+   CONST CLRC_BACKGROUND           =  2;
+
+   (**********************************************************************)
+   (* Filter List message string identifiers                             *)
+   (**********************************************************************)
+   CONST FNTI_BITMAPFONT       =  00001H;
+   CONST FNTI_VECTORFONT       =  00002H;
+   CONST FNTI_FIXEDWIDTHFONT   =  00004H;
+   CONST FNTI_PROPORTIONALFONT =  00008H;
+   CONST FNTI_SYNTHESIZED      =  00010H;
+   CONST FNTI_DEFAULTLIST      =  00020H;
+   CONST FNTI_FAMILYNAME       =  00100H;
+   CONST FNTI_STYLENAME        =  00200H;
+   CONST FNTI_POINTSIZE        =  00400H;
+
+   (**********************************************************************)
+   (* Error Return Codes from dialog (self defining)                     *)
+   (**********************************************************************)
+   CONST  FNTS_SUCCESSFUL                      =     0;
+   CONST  FNTS_ERR_INVALID_DIALOG              =     3;
+   CONST  FNTS_ERR_ALLOC_SHARED_MEM            =     4;
+   CONST  FNTS_ERR_INVALID_PARM                =     5;
+   CONST  FNTS_ERR_OUT_OF_MEMORY               =     7;
+   CONST  FNTS_ERR_INVALID_VERSION             =    10;
+   CONST  FNTS_ERR_DIALOG_LOAD_ERROR           =    12;
+
+   (**********************************************************************)
+   (* Font Dialog Messages                                               *)
+   (**********************************************************************)
+   CONST FNTM_FACENAMECHANGED  = WM_USER+50;  (* mp1 = PSZ pszFacename   *)
+   CONST FNTM_POINTSIZECHANGED = WM_USER+51;  (* mp1 = PSZ pszPointSize, *)
+   (*                                            mp2 = FIXED fxPointSize *)
+   CONST FNTM_STYLECHANGED     = WM_USER+52;  (* mp1 = PSTYLECHANGE pstyc*)
+   CONST FNTM_COLORCHANGED     = WM_USER+53;  (* mp1 = LONG clr          *)
+   (*                                            mp2 = USHORT codeClr    *)
+   CONST FNTM_UPDATEPREVIEW    = WM_USER+54;  (* mp1 = HWND hWndPreview  *)
+   CONST FNTM_FILTERLIST       = WM_USER+55;  (* mp1 = PSZ pszFacename   *)
+   (*                                            mp2 = USHORT usStrStyle *)
+   (*                                            mr=TRUE(Add),FALSE(Dont)*)
+
+   (**********************************************************************)
+   (* Stylechange message parameter structure                            *)
+   (**********************************************************************)
+   TYPE STYLECHANGE = RECORD    (* stylc *)
+      usWeight:         USHORT;
+      usWeightOld:      USHORT;
+      usWidth:          USHORT;
+      usWidthOld:       USHORT;
+      flType:           ULONG;
+      flTypeOld:        ULONG;
+      flTypeMask:       ULONG;
+      flTypeMaskOld:    ULONG;
+      flStyle:          ULONG;
+      flStyleOld:       ULONG;
+      flStyleMask:      ULONG;
+      flStyleMaskOld:   ULONG;
+   END;
+   TYPE PSTYLECHANGE = POINTER TO STYLECHANGE;
+
+   (**********************************************************************)
+   (* Font Dialog Function Prototypes                                    *)
+   (**********************************************************************)
+   PROCEDURE WinFontDlg(hwndP    : HWND
+                       ;hwndO    : HWND
+                       ;VAR fntd : FONTDLG
+                       ): HWND;
+
+   PROCEDURE WinDefFontDlgProc(hwnd : HWND
+                              ;msg  : ULONG
+                              ;mp1  : MPARAM
+                              ;mp2  : MPARAM
+                              ): MRESULT;
+
+   (**********************************************************************)
+   (* font dialog and control id's                                       *)
+   (**********************************************************************)
+   CONST DID_FONT_DIALOG         = 300;
+   CONST DID_NAME                = 301;
+   CONST DID_STYLE               = 302;
+   CONST DID_DISPLAY_FILTER      = 303;
+   CONST DID_PRINTER_FILTER      = 304;
+   CONST DID_SIZE                = 305;
+   CONST DID_SAMPLE              = 306;
+   CONST DID_OUTLINE             = 307;
+   CONST DID_UNDERSCORE          = 308;
+   CONST DID_STRIKEOUT           = 309;
+   CONST DID_HELP_BUTTON         = 310;
+   CONST DID_APPLY_BUTTON        = 311;
+   CONST DID_RESET_BUTTON        = 312;
+   CONST DID_OK_BUTTON           = DID_OK;
+   CONST DID_CANCEL_BUTTON       = DID_CANCEL;
+   CONST DID_NAME_PREFIX         = 313;
+   CONST DID_STYLE_PREFIX        = 314;
+   CONST DID_SIZE_PREFIX         = 315;
+   CONST DID_SAMPLE_GROUPBOX     = 316;
+   CONST DID_EMPHASIS_GROUPBOX   = 317;
+   CONST DID_FONT_ISO_SUPPORT    = 318;
+   CONST DID_FONT_ISO_UNTESTED   = 319;
+
+   (**********************************************************************)
+   (* Stringtable id's                                                   *)
+   (**********************************************************************)
+   CONST IDS_FONT_SAMPLE         =   350;
+   CONST IDS_FONT_BLANK          =   351;
+   CONST IDS_FONT_KEY_0          =   352;
+   CONST IDS_FONT_KEY_9          =   353;
+   CONST IDS_FONT_KEY_SEP        =   354;
+   CONST IDS_FONT_DISP_ONLY      =   355;
+   CONST IDS_FONT_PRINTER_ONLY   =   356;
+   CONST IDS_FONT_COMBINED       =   357;
+   CONST IDS_FONT_WEIGHT1        =   358;
+   CONST IDS_FONT_WEIGHT2        =   359;
+   CONST IDS_FONT_WEIGHT3        =   360;
+   CONST IDS_FONT_WEIGHT4        =   361;
+   CONST IDS_FONT_WEIGHT5        =   362;
+   CONST IDS_FONT_WEIGHT6        =   363;
+   CONST IDS_FONT_WEIGHT7        =   364;
+   CONST IDS_FONT_WEIGHT8        =   365;
+   CONST IDS_FONT_WEIGHT9        =   366;
+   CONST IDS_FONT_WIDTH1         =   367;
+   CONST IDS_FONT_WIDTH2         =   368;
+   CONST IDS_FONT_WIDTH3         =   369;
+   CONST IDS_FONT_WIDTH4         =   370;
+   CONST IDS_FONT_WIDTH5         =   371;
+   CONST IDS_FONT_WIDTH6         =   372;
+   CONST IDS_FONT_WIDTH7         =   373;
+   CONST IDS_FONT_WIDTH8         =   374;
+   CONST IDS_FONT_WIDTH9         =   375;
+   CONST IDS_FONT_OPTION0        =   376;
+   CONST IDS_FONT_OPTION1        =   377;
+   CONST IDS_FONT_OPTION2        =   378;
+   CONST IDS_FONT_OPTION3        =   379;
+   CONST IDS_FONT_POINT_SIZE_LIST=   380;
+
+#endif  (* !INCL_WINSTDFONT_INCLUDED && INCL_WINSTDFONT *)
+
+
+#if (! defined(INCL_WINSTDSPIN_INCLUDED) || ! defined(INCL_WINSTDSPIN))
+   #define INCL_WINSTDSPIN_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                          S P I N    B U T T O N                    *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* SPINBUTTON Creation Flags                                          *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Character Acceptance                                               *)
+   (**********************************************************************)
+   CONST SPBS_ALLCHARACTERS= 000000000H;(* Default: All chars accepted *)
+   CONST SPBS_NUMERICONLY  = 000000001H;(* Only 0 - 9 accepted & VKeys *)
+   CONST SPBS_READONLY     = 000000002H;(* No chars allowed in entryfld*)
+
+   (**********************************************************************)
+   (* Type of Component                                                  *)
+   (**********************************************************************)
+   CONST SPBS_MASTER       = 000000010H;
+   CONST SPBS_SERVANT      = 000000000H;(* Default: Servant            *)
+
+   (**********************************************************************)
+   (* Type of Justification                                              *)
+   (**********************************************************************)
+   CONST SPBS_JUSTDEFAULT  =000000000H;(* Default: Same as Left        *)
+   CONST SPBS_JUSTLEFT     =000000008H;
+   CONST SPBS_JUSTRIGHT    =000000004H;
+   CONST SPBS_JUSTCENTER   =00000000CH;
+
+   (**********************************************************************)
+   (* Border or not                                                      *)
+   (**********************************************************************)
+   CONST SPBS_NOBORDER    = 000000020H;(* Borderless SpinField         *)
+   (*                                       Default is to have a border. *)
+
+   (**********************************************************************)
+   (* Fast spin or not                                                   *)
+   (**********************************************************************)
+   CONST SPBS_FASTSPIN    = 000000100H;(* Allow fast spinning.  Fast   *)
+   (*                                       spinning is performed by     *)
+   (*                                       skipping over numbers        *)
+
+   (**********************************************************************)
+   (* Pad numbers on front with 0's                                      *)
+   (**********************************************************************)
+   CONST SPBS_PADWITHZEROS= 000000080H;(* Pad the number with zeroes   *)
+
+   (**********************************************************************)
+   (* SPINBUTTON Messages                                                *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Notification from Spinbutton to the application is sent in a       *)
+   (* WM_CONTROL message.                                                *)
+   (**********************************************************************)
+   CONST SPBN_UPARROW     =  020AH;    (* up arrow button was pressed  *)
+   CONST SPBN_DOWNARROW   =  020BH;    (* down arrow button was pressed*)
+   CONST SPBN_ENDSPIN     =  020CH;    (* mouse button was released    *)
+   CONST SPBN_CHANGE      =  020DH;    (* spinfield text has changed   *)
+   CONST SPBN_SETFOCUS    =  020EH;    (* spinfield received focus     *)
+   CONST SPBN_KILLFOCUS   =  020FH;    (* spinfield lost focus         *)
+
+   (**********************************************************************)
+   (* Messages from application to Spinbutton                            *)
+   (**********************************************************************)
+   CONST SPBM_OVERRIDESETLIMITS= 0200H;  (* Set spinbutton limits without*)
+   (*                                        resetting the current value *)
+   CONST SPBM_QUERYLIMITS      = 0201H;  (* Query limits set by          *)
+   (*                                        SPBM_SETLIMITS              *)
+   CONST SPBM_SETTEXTLIMIT     = 0202H;  (* Max entryfield characters    *)
+   CONST SPBM_SPINUP           = 0203H;  (* Tell entry field to spin up  *)
+   CONST SPBM_SPINDOWN         = 0204H;  (* Tell entry field to spin down*)
+   CONST SPBM_QUERYVALUE       = 0205H;  (* Tell entry field to send     *)
+   (*                                        current value               *)
+
+   (**********************************************************************)
+   (* Query Flags                                                        *)
+   (**********************************************************************)
+   CONST SPBQ_UPDATEIFVALID   = 0;       (* Default                      *)
+   CONST SPBQ_ALWAYSUPDATE    = 1;
+   CONST SPBQ_DONOTUPDATE     = 3;
+
+   (**********************************************************************)
+   (* Return value for Empty Field.                                      *)
+   (*    If ptr too long, variable sent in query msg                     *)
+   (**********************************************************************)
+   CONST SPBM_SETARRAY        =  0206H;  (* Change the data to spin      *)
+   CONST SPBM_SETLIMITS       =  0207H;  (* Change the numeric Limits    *)
+   CONST SPBM_SETCURRENTVALUE =  0208H;  (* Change the current value     *)
+   CONST SPBM_SETMASTER       =  0209H;  (* Tell entryfield who master is*)
+
+#endif  (* !INCL_WINSTDSPIN_INCLUDED && INCL_WINSTDSPIN *)
+
+
+#if ! (defined(INCL_WINSTDDRAG_INCLUDED) && defined(INCL_WINSTDDRAG))
+   #define INCL_WINSTDDRAG_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                D I R E C T   M A N I P U L A T I O N               *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   CONST PMERR_NOT_DRAGGING    = 01f00H;
+   CONST PMERR_ALREADY_DRAGGING= 01f01H;
+
+   CONST MSGF_DRAG             = 00010H;    (* message filter identifier *)
+
+   CONST WM_DRAGFIRST          = 00310H;
+   CONST WM_DRAGLAST           = 0032fH;
+
+   CONST DM_DROP               = 0032fH;
+   CONST DM_DRAGOVER           = 0032eH;
+   CONST DM_DRAGLEAVE          = 0032dH;
+   CONST DM_DROPHELP           = 0032cH;
+   CONST DM_ENDCONVERSATION    = 0032bH;
+   CONST DM_PRINT              = 0032aH;
+   CONST DM_RENDER             = 00329H;
+   CONST DM_RENDERCOMPLETE     = 00328H;
+   CONST DM_RENDERPREPARE      = 00327H;
+   CONST DM_DRAGFILECOMPLETE   = 00326H;
+   CONST DM_EMPHASIZETARGET    = 00325H;
+   CONST DM_DRAGERROR          = 00324H;
+   CONST DM_FILERENDERED       = 00323H;
+   CONST DM_RENDERFILE         = 00322H;
+   CONST DM_DRAGOVERNOTIFY     = 00321H;
+   CONST DM_PRINTOBJECT        = 00320H;
+   CONST DM_DISCARDOBJECT      = 0031fH;
+
+   CONST DRT_ASM               = "Assembler Code";   (* drag type constants  *)
+   CONST DRT_BASIC             = "BASIC Code"    ;
+   CONST DRT_BINDATA           = "Binary Data"   ;
+   CONST DRT_BITMAP            = "Bitmap"        ;
+   CONST DRT_C                 = "C Code"        ;
+   CONST DRT_COBOL             = "COBOL Code"    ;
+   CONST DRT_DLL               = "Dynamic Link Library";
+   CONST DRT_DOSCMD            = "DOS Command File";
+   CONST DRT_EXE               = "Executable"    ;
+   CONST DRT_FORTRAN           = "FORTRAN Code"  ;
+   CONST DRT_ICON              = "Icon"          ;
+   CONST DRT_LIB               = "Library"       ;
+   CONST DRT_METAFILE          = "Metafile"      ;
+   CONST DRT_OS2CMD            = "OS/2 Command File";
+   CONST DRT_PASCAL            = "Pascal Code"   ;
+   CONST DRT_RESOURCE          = "Resource File" ;
+   CONST DRT_TEXT              = "Plain Text"    ;
+   CONST DRT_UNKNOWN           = "Unknown"       ;
+
+   CONST DOR_NODROP           =  00000H;   (* DM_DRAGOVER response codes *)
+   CONST DOR_DROP             =  00001H;
+   CONST DOR_NODROPOP         =  00002H;
+   CONST DOR_NEVERDROP        =  00003H;
+
+   CONST DO_COPYABLE          =  00001H;   (* supported operation flags  *)
+   CONST DO_MOVEABLE          =  00002H;
+   CONST DO_LINKABLE          =  00004H;
+
+   CONST DC_OPEN              =  00001H;   (* source control flags       *)
+   CONST DC_REF               =  00002H;
+   CONST DC_GROUP             =  00004H;
+   CONST DC_CONTAINER         =  00008H;
+   CONST DC_PREPARE           =  00010H;
+   CONST DC_REMOVEABLEMEDIA   =  00020H;
+
+   CONST DO_DEFAULT           =  0BFFEH;   (* Default operation          *)
+   CONST DO_UNKNOWN           =  0BFFFH;   (* Unknown operation          *)
+   CONST DO_COPY              =  00010H;
+   CONST DO_MOVE              =  00020H;
+   CONST DO_LINK              =  00018H;
+   CONST DO_CREATE            =  00040H;
+
+   CONST DMFL_TARGETSUCCESSFUL = 00001H;   (* transfer reply flags       *)
+   CONST DMFL_TARGETFAIL       = 00002H;
+   CONST DMFL_NATIVERENDER     = 00004H;
+   CONST DMFL_RENDERRETRY      = 00008H;
+   CONST DMFL_RENDEROK         = 00010H;
+   CONST DMFL_RENDERFAIL       = 00020H;
+
+   CONST DRG_ICON        =  000000001H;  (* drag image manipulation    *)
+   CONST DRG_BITMAP      =  000000002H;  (*   flags                    *)
+   CONST DRG_POLYGON     =  000000004H;
+   CONST DRG_STRETCH     =  000000008H;
+   CONST DRG_TRANSPARENT =  000000010H;
+   CONST DRG_CLOSED      =  000000020H;
+
+   CONST DME_IGNOREABORT       = 1;       (* DM_DRAGERROR return values *)
+   CONST DME_IGNORECONTINUE    = 2;
+   CONST DME_REPLACE           = 3;
+   CONST DME_RETRY             = 4;
+
+   CONST DF_MOVE              =  00001H; (* DM_DRAGFILECOMPLETE flags  *)
+   CONST DF_SOURCE            =  00002H;
+   CONST DF_SUCCESSFUL        =  00004H;
+
+   CONST DRR_SOURCE          =  1;
+   CONST DRR_TARGET          =  2;
+   CONST DRR_ABORT           =  3;
+
+   CONST DFF_MOVE            =   1;       (* DM_DRAGERROR operation IDs *)
+   CONST DFF_COPY            =   2;
+   CONST DFF_DELETE          =   3;
+
+
+   TYPE HSTR = LHANDLE;  (* hstr *)
+
+   TYPE DRAGITEM = RECORD    (* ditem *)
+      hwndItem:           HWND    ; (* conversation partner          *)
+      ulItemID:           ULONG   ; (* identifies item being dragged *)
+      hstrType:           HSTR    ; (* type of item                  *)
+      hstrRMF:            HSTR    ; (* rendering mechanism and format*)
+      hstrContainerName:  HSTR    ; (* name of source container      *)
+      hstrSourceName:     HSTR    ; (* name of item at source        *)
+      hstrTargetName:     HSTR    ; (* suggested name of item at dest*)
+      cxOffset:           SHORT   ; (* x offset of the origin of the *)
+      (*                                 image from the mouse hotspot*)
+      cyOffset:           SHORT   ; (* y offset of the origin of the *)
+      (*                                 image from the mouse hotspot*)
+      fsControl:          USHORT  ; (* source item control flags     *)
+      fsSupportedOps:     USHORT  ; (* ops supported by source       *)
+   END;
+   TYPE PDRAGITEM = POINTER TO DRAGITEM;
+
+   TYPE DRAGINFO = RECORD    (* dinfo *)
+      cbDraginfo:      ULONG    ; (* Size of DRAGINFO and DRAGITEMs*)
+      cbDragitem:      USHORT   ; (* size of DRAGITEM              *)
+      usOperation:     USHORT   ; (* current drag operation        *)
+      hwndSource:      HWND     ; (* window handle of source       *)
+      xDrop:           SHORT    ; (* x coordinate of drop position *)
+      yDrop:           SHORT    ; (* y coordinate of drop position *)
+      cditem:          USHORT   ; (* count of DRAGITEMs            *)
+      usReserved:      USHORT   ; (* reserved for future use       *)
+   END;
+   TYPE PDRAGINFO = POINTER TO DRAGINFO;
+
+   TYPE DRAGIMAGE = RECORD    (* dimg *)
+      cb:          USHORT  ; (* size control block            *)
+      cptl:        USHORT  ; (* count of pts, if DRG_POLYGON  *)
+      hImage:      LHANDLE ; (* image handle passed to DrgDrag*)
+      sizlStretch: SIZEL   ; (* size to strecth ico or bmp to *)
+      fl:          ULONG   ; (* flags passed to DrgDrag       *)
+      cxOffset:    SHORT   ; (* x offset of the origin of the *)
+      (*                                      image from the mouse hotspot*)
+      cyOffset:    SHORT   ; (* y offset of the origin of the *)
+      (*                                      image from the mouse hotspot*)
+   END;
+   TYPE PDRAGIMAGE = POINTER TO DRAGIMAGE;
+
+   TYPE DRAGTRANSFER = RECORD    (* dxfer *)
+      cb:                 ULONG      ; (* size of control block         *)
+      hwndClient:         HWND       ; (* handle of target              *)
+      pditem:             PDRAGITEM  ; (* DRAGITEM being transferred    *)
+      hstrSelectedRMF:    HSTR       ; (* rendering mech & fmt of choice*)
+      hstrRenderToName:   HSTR       ; (* name source will use          *)
+      ulTargetInfo:       ULONG      ; (* reserved for target's use     *)
+      usOperation:        USHORT     ; (* operation being performed     *)
+      fsReply:            USHORT     ; (* reply flags                   *)
+   END;
+   TYPE PDRAGTRANSFER = POINTER TO DRAGTRANSFER;
+
+   TYPE RENDERFILE = RECORD    (* rndf *)
+      hwndDragFiles:   HWND   ; (* conversation window           *)
+      hstrSource:      HSTR   ; (* handle to source file name    *)
+      hstrTarget:      HSTR   ; (* handle to target file name    *)
+      fMove:           USHORT ; (* TRUE - move, FALSE - copy     *)
+      usRsvd:          USHORT ; (* reserved                      *)
+   END;
+   TYPE PRENDERFILE = POINTER TO RENDERFILE;
+
+   PROCEDURE DrgAcceptDroppedFiles(hwnd              : HWND
+                                  ;VAR [NIL] szPath  : ARRAY OF CHAR
+                                  ;VAR [NIL] szTypes : ARRAY OF CHAR
+                                  ;ulDefaultOp       : ULONG
+                                  ;ulRsvd            : ULONG
+                                  ): BOOL;
+
+   PROCEDURE DrgAllocDraginfo(cditem : ULONG): PDRAGINFO;
+
+   PROCEDURE DrgAllocDragtransfer(cdxfer : ULONG): PDRAGTRANSFER;
+
+   PROCEDURE DrgDrag(hwndSource  : HWND
+                    ;pdinfo      : PDRAGINFO
+                    ;dimg        : ARRAY OF DRAGIMAGE
+                    ;cdimg       : ULONG
+                    ;vkTerminate : LONG
+                    ;pRsvd       : PVOID
+                    ): HWND;
+
+   PROCEDURE DrgDragFiles(hwnd          : HWND
+                         ;apszFiles     : PPCSZ
+                         ;apszTypes     : PPCSZ
+                         ;apszTargets   : PPCSZ
+                         ;cFiles        : ULONG
+                         ;hptrDrag      : HPOINTER
+                         ;vkTerm        : ULONG
+                         ;fSourceRender : BOOL
+                         ;ulRsvd        : ULONG
+                         ): BOOL;
+
+   PROCEDURE DrgPostTransferMsg(hwnd      : HWND
+                               ;msg       : ULONG
+                               ;VAR dxfer : DRAGTRANSFER
+                               ;fl        : ULONG
+                               ;ulRsvd    : ULONG
+                               ;fRetry    : BOOL
+                               ): BOOL;
+
+   PROCEDURE DrgQueryDragitem(pdinfo    : PDRAGINFO
+                             ;cbBuffer  : ULONG
+                             ;VAR ditem : DRAGITEM
+                             ;iItem     : ULONG
+                             ): BOOL;
+
+   PROCEDURE DrgQueryDragitemCount(pdinfo : PDRAGINFO): ULONG;
+
+   PROCEDURE DrgQueryDragitemPtr(pdinfo : PDRAGINFO
+                                ;i      : ULONG
+                                ): PDRAGITEM;
+
+   PROCEDURE DrgQueryNativeRMF(VAR ditem   : DRAGITEM
+                              ;cbBuffer    : ULONG
+                              ;VAR Buffer  : ARRAY OF CHAR
+                              ): BOOL;
+
+   PROCEDURE DrgQueryNativeRMFLen(VAR ditem : DRAGITEM): ULONG;
+
+   PROCEDURE DrgQueryStrName(hstr       : HSTR
+                            ;cbBuffer   : ULONG
+                            ;VAR Buffer : ARRAY OF CHAR
+                            ): ULONG;
+
+   PROCEDURE DrgQueryStrNameLen(hstr : HSTR): ULONG;
+
+   PROCEDURE DrgQueryTrueType(VAR ditem  : DRAGITEM
+                             ;cbBuffer   : ULONG
+                             ;VAR Buffer : ARRAY OF CHAR
+                             ): BOOL;
+
+   PROCEDURE DrgQueryTrueTypeLen(VAR ditem : DRAGITEM): ULONG;
+
+   PROCEDURE DrgSendTransferMsg(hwnd : HWND
+                               ;msg  : ULONG
+                               ;mp1  : MPARAM
+                               ;mp2  : MPARAM
+                               ): MRESULT;
+
+   PROCEDURE DrgSetDragitem(pdinfo    : PDRAGINFO
+                           ;VAR ditem : DRAGITEM
+                           ;cbBuffer  : ULONG
+                           ;iItem     : ULONG
+                           ): BOOL;
+
+   PROCEDURE DrgSetDragImage(pdinfo : PDRAGINFO
+                            ;dimg   : ARRAY OF DRAGIMAGE
+                            ;cdimg  : ULONG
+                            ;pRsvd  : PVOID
+                            ): BOOL;
+
+   PROCEDURE DrgVerifyTypeSet(VAR ditem   : DRAGITEM
+                             ;szType      : ARRAY OF CHAR
+                             ;cbMatch     : ULONG
+                             ;VAR szMatch : ARRAY OF CHAR
+                             ): BOOL;
+
+   PROCEDURE DrgAccessDraginfo(pdinfo : PDRAGINFO): BOOL;
+
+   PROCEDURE DrgAddStrHandle(sz : ARRAY OF CHAR): HSTR;
+
+   PROCEDURE DrgDeleteDraginfoStrHandles(pdinfo : PDRAGINFO): BOOL;
+
+   PROCEDURE DrgDeleteStrHandle(hstr : HSTR): BOOL;
+
+   PROCEDURE DrgFreeDraginfo(pdinfo : PDRAGINFO): BOOL;
+
+   PROCEDURE DrgFreeDragtransfer(pdxfer : PDRAGTRANSFER): BOOL;
+
+   PROCEDURE DrgGetPS(hwnd : HWND): HPS;
+
+   PROCEDURE DrgPushDraginfo(pdinfo   : PDRAGINFO
+                            ;hwndDest : HWND
+                            ): BOOL;
+
+   PROCEDURE DrgReleasePS(hps : HPS): BOOL;
+
+   PROCEDURE DrgSetDragPointer(pdinfo : PDRAGINFO
+                              ;hptr   : HPOINTER
+                              ): BOOL;
+
+   PROCEDURE DrgVerifyNativeRMF(VAR ditem : DRAGITEM
+                               ;VAR szRMF : ARRAY OF CHAR
+                               ): BOOL;
+
+   PROCEDURE DrgVerifyRMF(VAR ditem        : DRAGITEM
+                         ;VAR [NIL] szMech : ARRAY OF CHAR
+                         ;VAR [NIL] szFmt  : ARRAY OF CHAR
+                         ): BOOL;
+
+   PROCEDURE DrgVerifyTrueType(VAR ditem : DRAGITEM
+                              ;szType    : ARRAY OF CHAR
+                              ): BOOL;
+
+   PROCEDURE DrgVerifyType(VAR ditem : DRAGITEM
+                          ;szType    : ARRAY OF CHAR
+                          ): BOOL;
+
+#endif  (* !INCL_WINSTDDRAG_INCLUDED && INCL_WINSTDDRAG *)
+
+
+#if ! (defined(INCL_WINSTDCNR_INCLUDED) && defined(INCL_WINSTDCNR))
+   #define INCL_WINSTDCNR_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                         C O N T A I N E R                          *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Error constants                                                    *)
+   (**********************************************************************)
+   CONST PMERR_NOFILTERED_ITEMS         = 01f02H;
+   CONST PMERR_COMPARISON_FAILED        = 01f03H;
+   CONST PMERR_RECORD_CURRENTLY_INSERTED= 01f04H;
+   CONST PMERR_FI_CURRENTLY_INSERTED    = 01f05H;
+
+   (**********************************************************************)
+   (* Container control styles.                                          *)
+   (**********************************************************************)
+   CONST CCS_EXTENDSEL           =  000000001H;
+   CONST CCS_MULTIPLESEL         =  000000002H;
+   CONST CCS_SINGLESEL           =  000000004H;
+   CONST CCS_AUTOPOSITION        =  000000008H;
+   CONST CCS_VERIFYPOINTERS      =  000000010H;
+   CONST CCS_READONLY            =  000000020H;
+   CONST CCS_MINIRECORDCORE      =  000000040H;
+
+   (**********************************************************************)
+   (* view identifiers           (flWindowAttr)                          *)
+   (**********************************************************************)
+   CONST CV_TEXT                 = 000000001H; (* text view            *)
+   CONST CV_NAME                 = 000000002H; (* name view            *)
+   CONST CV_ICON                 = 000000004H; (* icon view            *)
+   CONST CV_DETAIL               = 000000008H; (* detail view          *)
+   CONST CV_FLOW                 = 000000010H; (* flow items           *)
+   CONST CV_MINI                 = 000000020H; (* use mini icon        *)
+   CONST CV_TREE                 = 000000040H; (* tree view            *)
+
+   (**********************************************************************)
+   (* Container Attributes        (flWindowAttr)                         *)
+   (**********************************************************************)
+   CONST CA_CONTAINERTITLE       = 000000200H;
+   CONST CA_TITLESEPARATOR       = 000000400H;
+   CONST CA_TITLELEFT            = 000000800H;
+   CONST CA_TITLERIGHT           = 000001000H;
+   CONST CA_TITLECENTER          = 000002000H;
+   CONST CA_OWNERDRAW            = 000004000H;
+   CONST CA_DETAILSVIEWTITLES    = 000008000H;
+   CONST CA_ORDEREDTARGETEMPH    = 000010000H;
+   CONST CA_DRAWBITMAP           = 000020000H;
+   CONST CA_DRAWICON             = 000040000H;
+   CONST CA_TITLEREADONLY        = 000080000H;
+   CONST CA_OWNERPAINTBACKGROUND = 000100000H;
+   CONST CA_MIXEDTARGETEMPH      = 000200000H;
+   CONST CA_TREELINE             = 000400000H;
+
+   (**********************************************************************)
+   (* child window IDs                                                   *)
+   (**********************************************************************)
+   CONST CID_LEFTCOLTITLEWND    = 07FF0H; (* column title (left)       *)
+   CONST CID_RIGHTCOLTITLEWND   = 07FF1H; (* right column title        *)
+   CONST CID_BLANKBOX           = 07FF2H; (* blank box at bottom right *)
+   CONST CID_HSCROLL            = 07FF3H; (* horizontal scroll bar     *)
+   CONST CID_RIGHTHSCROLL       = 07FF4H; (* right horz scroll bar     *)
+   CONST CID_CNRTITLEWND        = 07FF5H; (* Container title window    *)
+   CONST CID_LEFTDVWND          = 07FF7H; (* Left Details View window  *)
+   CONST CID_RIGHTDVWND         = 07FF8H; (* Right Details View window *)
+   CONST CID_VSCROLL            = 07FF9H; (* vertical scroll bar       *)
+   CONST CID_MLE                = 07FFAH; (* MLE window for direct edit*)
+
+   (**********************************************************************)
+   (* Bitmap descriptor array element.                                   *)
+   (**********************************************************************)
+   TYPE TREEITEMDESC = RECORD    (* treend *)
+      hbmExpanded:    HBITMAP;
+      hbmCollapsed:  HBITMAP;
+      hptrExpanded:  HPOINTER;
+      hptrCollapsed: HPOINTER;
+   END;
+   TYPE PTREEITEMDESC = POINTER TO TREEITEMDESC;
+
+   (**********************************************************************)
+   (* Field Info data structure, attribute and data types, CV_DETAIL     *)
+   (**********************************************************************)
+   TYPE PFIELDINFO = POINTER TO FIELDINFO;
+   TYPE FIELDINFO = RECORD     (* fldinfo *)
+      cb:             ULONG      ; (* size of FIELDINFO struct       *)
+      flData:         ULONG      ; (* attributes of field's data     *)
+      flTitle:        ULONG      ; (* attributes of field's title    *)
+      pTitleData:     PVOID      ; (* title data (default is string) *)
+      (*                                 If CFT_BITMAP, must be HBITMAP *)
+      offStruct:      ULONG      ; (* offset from RECORDCORE to data *)
+      pUserData:      PVOID      ; (* pointer to user data           *)
+      pNextFieldInfo: PFIELDINFO;  (* pointer to next linked  *)
+      (*                                       FIELDINFO structure   *)
+      cxWidth:        ULONG      ; (* width of field in pels         *)
+   END;
+
+   (**********************************************************************)
+   (* RECORDCORE data structure , attribute values                       *)
+   (**********************************************************************)
+   TYPE PRECORDCORE = POINTER TO RECORDCORE;
+   TYPE RECORDCORE = RECORD    (* recc *)
+      cb:               ULONG       ; (* record attributes             *)
+      flRecordAttr:     ULONG       ; (* record attributes             *)
+      ptlIcon:          POINTL      ; (* Position of CV_ICON item      *)
+      preccNextRecord:  PRECORDCORE ; (* ptr to next record  *)
+      pszIcon:          PSZ         ; (* Text for CV_ICON view         *)
+      hptrIcon:         HPOINTER    ; (* Icon to display for ~CV_MINI  *)
+      hptrMiniIcon:     HPOINTER    ; (* Icon to display for CV_MINI   *)
+      hbmBitmap:        HBITMAP     ; (* Bitmap to display for ~CV_MINI*)
+      hbmMiniBitmap:    HBITMAP     ; (* Bitmap to display for CV_MINI *)
+      pTreeItemDesc:    PTREEITEMDESC ; (* Icons for the tree view       *)
+      pszText:          PSZ         ; (* Text for CV_TEXT view         *)
+      pszName:          PSZ         ; (* Text for CV_NAME view         *)
+      pszTree:          PSZ         ; (* Text for CV_TREE view         *)
+   END;
+
+   (**********************************************************************)
+   (* MINIRECORDCORE data structure, attribute values                    *)
+   (**********************************************************************)
+   TYPE PMINIRECORDCORE = POINTER TO MINIRECORDCORE;
+   TYPE MINIRECORDCORE = RECORD    (* minirec *)
+      cb:              ULONG       ;
+      flRecordAttr:    ULONG       ; (* record attributes             *)
+      ptlIcon:         POINTL      ; (* Position of CV_ICON item      *)
+      preccNextRecord: PMINIRECORDCORE; (* ptr to next record *)
+      pszIcon:         PSZ         ; (* Text for CV_ICON view         *)
+      hptrIcon:        HPOINTER    ; (* Icon to display for ~CV_MINI  *)
+   END;
+
+   (**********************************************************************)
+   (* CNRINFO data structure, describes the container control.           *)
+   (**********************************************************************)
+   TYPE CNRINFO = RECORD    (* ccinfo *)
+      cb:                 ULONG       ; (* size of CNRINFO struct        *)
+      pSortRecord:        PVOID       ; (* ptr to sort function,         *)
+      (*                                    RECORDCORE                  *)
+      pFieldInfoLast:     PFIELDINFO  ; (* pointer to last column in     *)
+      (*                                    left pane of a split window.*)
+      pFieldInfoObject:   PFIELDINFO  ; (* Pointer to a column to        *)
+      (*                                  represent an object.  This is *)
+      (*                                  the column which will receive *)
+      (*                                  IN-USE emphasis.              *)
+      pszCnrTitle:        PSZ         ; (* text for container title. One *)
+      (*                                    string separated by line    *)
+      (*                                    separators for multi-lines  *)
+      flWindowAttr:       ULONG       ; (* container attrs - CV_*, CA_*  *)
+      ptlOrigin:          POINTL      ; (* lower-left origin in virtual  *)
+      (*                                    coordinates. CV_ICON view   *)
+      cDelta:             ULONG       ; (* Application defined threshold *)
+      (*                                    or number of records from   *)
+      (*                                    either end of the list.     *)
+      cRecords:           ULONG       ; (* number of records in container*)
+      slBitmapOrIcon:     SIZEL       ; (* size of bitmap in pels        *)
+      slTreeBitmapOrIcon: SIZEL       ; (* size of tree bitmaps in pels  *)
+      hbmExpanded:        HBITMAP     ; (* bitmap  for tree node         *)
+      hbmCollapsed:       HBITMAP     ; (* bitmap  for tree node         *)
+      hptrExpanded:       HPOINTER    ; (* icon    for tree node         *)
+      hptrCollapsed:      HPOINTER    ; (* icon    for tree node         *)
+      cyLineSpacing:      LONG        ; (* space between two rows        *)
+      cxTreeIndent:       LONG        ; (* indent for children           *)
+      cxTreeLine:         LONG        ; (* thickness of the Tree Line    *)
+      cFields:            ULONG       ; (* number of fields  in container*)
+      xVertSplitbar:      LONG        ; (* position relative to the      *)
+      (*                                    container (CV_DETAIL); if   *)
+      (*                                    0FFFF then unsplit         *)
+   END;
+   TYPE PCNRINFO = POINTER TO CNRINFO;
+
+   TYPE CDATE = RECORD    (* cdate *)
+      day:   UCHAR   ; (* current day               *)
+      month: UCHAR   ; (* current month             *)
+      year:  USHORT  ; (* current year              *)
+   END;
+   TYPE PCDATE = POINTER TO CDATE;
+
+   TYPE CTIME = RECORD    (* ctime *)
+      hours:       UCHAR   ; (* current hour              *)
+      minutes:     UCHAR   ; (* current minute            *)
+      seconds:     UCHAR   ; (* current second            *)
+      ucReserved:  UCHAR   ; (* reserved                  *)
+   END;
+   TYPE PCTIME = POINTER TO CTIME;
+
+   (**********************************************************************)
+   (* attribute and type values for flData and flTitle members of        *)
+   (* FIELDINFO, CFA_ (attributes), CFT_ (types)                         *)
+   (**********************************************************************)
+   CONST CFA_LEFT          =  000000001H;(* left align text            *)
+   CONST CFA_RIGHT         =  000000002H;(* right align text           *)
+   CONST CFA_CENTER        =  000000004H;(* center text                *)
+   CONST CFA_TOP           =  000000008H;(* top-align text             *)
+   CONST CFA_VCENTER       =  000000010H;(* vertically center text     *)
+   CONST CFA_BOTTOM        =  000000020H;(* bottom-align text          *)
+   CONST CFA_INVISIBLE     =  000000040H;(* Specify invisible column.  *)
+   CONST CFA_BITMAPORICON  =  000000100H;(* field title is bitmap      *)
+   CONST CFA_SEPARATOR     =  000000200H;(* vert sep, right of fld     *)
+   CONST CFA_HORZSEPARATOR =  000000400H;(* horz sep, bottom of fld    *)
+
+   CONST CFA_STRING         = 000000800H;(* string of characters       *)
+   CONST CFA_OWNER          = 000001000H;(* ownerdraw field            *)
+   CONST CFA_DATE           = 000002000H;(* date structure             *)
+   CONST CFA_TIME           = 000004000H;(* time structure             *)
+   CONST CFA_FIREADONLY     = 000008000H;(* Column is read-only.       *)
+   CONST CFA_FITITLEREADONLY= 000010000H;(* Column Title is read-only  *)
+   CONST CFA_ULONG          = 000020000H;(* Column is number format    *)
+
+   (**********************************************************************)
+   (* attribute values for flRecordAttr member of RECORDCORE             *)
+   (**********************************************************************)
+   CONST CRA_SELECTED       = 000000001H;(* record is selected         *)
+   CONST CRA_TARGET         = 000000002H;(* record has target emphasis *)
+   CONST CRA_CURSORED       = 000000004H;(* cursor is on the record    *)
+   CONST CRA_INUSE          = 000000008H;(* record has in-use emphasis *)
+   CONST CRA_FILTERED       = 000000010H;(* record has been filtered   *)
+   CONST CRA_DROPONABLE     = 000000020H;(* record can be dropped on   *)
+   CONST CRA_RECORDREADONLY = 000000040H;(* record is read-only        *)
+   CONST CRA_EXPANDED       = 000000080H;(* record is expanded         *)
+   CONST CRA_COLLAPSED      = 000000100H;(* record is collapsed        *)
+
+   (**********************************************************************)
+   (* Container messages                                                 *)
+   (**********************************************************************)
+   CONST CM_ALLOCDETAILFIELDINFO      = 00330H;
+   CONST CM_ALLOCRECORD               = 00331H;
+   CONST CM_ARRANGE                   = 00332H;
+   CONST CM_ERASERECORD               = 00333H;
+   CONST CM_FILTER                    = 00334H;
+   CONST CM_FREEDETAILFIELDINFO       = 00335H;
+   CONST CM_FREERECORD                = 00336H;
+   CONST CM_HORZSCROLLSPLITWINDOW     = 00337H;
+   CONST CM_INSERTDETAILFIELDINFO     = 00338H;
+   CONST CM_INSERTRECORD              = 00339H;
+   CONST CM_INVALIDATEDETAILFIELDINFO = 0033aH;
+   CONST CM_INVALIDATERECORD          = 0033bH;
+   CONST CM_PAINTBACKGROUND           = 0033cH;
+   CONST CM_QUERYCNRINFO              = 0033dH;
+   CONST CM_QUERYDETAILFIELDINFO      = 0033eH;
+   CONST CM_QUERYDRAGIMAGE            = 0033fH;
+   CONST CM_QUERYRECORD               = 00340H;
+   CONST CM_QUERYRECORDEMPHASIS       = 00341H;
+   CONST CM_QUERYRECORDFROMRECT       = 00342H;
+   CONST CM_QUERYRECORDRECT           = 00343H;
+   CONST CM_QUERYVIEWPORTRECT         = 00344H;
+   CONST CM_REMOVEDETAILFIELDINFO     = 00345H;
+   CONST CM_REMOVERECORD              = 00346H;
+   CONST CM_SCROLLWINDOW              = 00347H;
+   CONST CM_SEARCHSTRING              = 00348H;
+   CONST CM_SETCNRINFO                = 00349H;
+   CONST CM_SETRECORDEMPHASIS         = 0034aH;
+   CONST CM_SORTRECORD                = 0034bH;
+   CONST CM_OPENEDIT                  = 0034cH;
+   CONST CM_CLOSEEDIT                 = 0034dH;
+   CONST CM_COLLAPSETREE              = 0034eH;
+   CONST CM_EXPANDTREE                = 0034fH;
+   CONST CM_QUERYRECORDINFO           = 00350H;
+
+   (**********************************************************************)
+   (* Container notifications                                            *)
+   (**********************************************************************)
+   CONST CN_DRAGAFTER                 = 101;
+   CONST CN_DRAGLEAVE                 = 102;
+   CONST CN_DRAGOVER                  = 103;
+   CONST CN_DROP                      = 104;
+   CONST CN_DROPHELP                  = 105;
+   CONST CN_ENTER                     = 106;
+   CONST CN_INITDRAG                  = 107;
+   CONST CN_EMPHASIS                  = 108;
+   CONST CN_KILLFOCUS                 = 109;
+   CONST CN_SCROLL                    = 110;
+   CONST CN_QUERYDELTA                = 111;
+   CONST CN_SETFOCUS                  = 112;
+   CONST CN_REALLOCPSZ                = 113;
+   CONST CN_BEGINEDIT                 = 114;
+   CONST CN_ENDEDIT                   = 115;
+   CONST CN_COLLAPSETREE              = 116;
+   CONST CN_EXPANDTREE                = 117;
+   CONST CN_HELP                      = 118;
+   CONST CN_CONTEXTMENU               = 119;
+
+   (**********************************************************************)
+   (*   Data Structures for Message Parameters                           *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Container Direct Manipulation structures                           *)
+   (**********************************************************************)
+   TYPE CNRDRAGINIT = RECORD    (* cdrginit *)
+      hwndCnr:     HWND        ; (* Container window handle   *)
+      pRecord:     PRECORDCORE ; (* record under mouse ptr    *)
+      x:           LONG        ; (* x coordinate of mouse ptr *)
+      y:           LONG        ; (* y coordinate of mouse ptr *)
+      cx:          LONG        ; (* x offset from record      *)
+      cy:          LONG        ; (* y offset from record      *)
+   END;
+   TYPE PCNRDRAGINIT = POINTER TO CNRDRAGINIT;
+
+   (**********************************************************************)
+   (* Data structure for CM_INSERTDETAILFIELDINFO                        *)
+   (* This structure is used by the application to specify the position  *)
+   (* of the FieldInfo structures they are inserting.                    *)
+   (**********************************************************************)
+   TYPE FIELDINFOINSERT = RECORD    (* fiins *)
+      cb:                   ULONG       ; (* Size of structure.             *)
+      pFieldInfoOrder:      PFIELDINFO  ; (* Specifies the order of the     *)
+      (*                                     FieldInfo structures.          *)
+      fInvalidateFieldInfo: ULONG       ; (* Invalidate on Insert.          *)
+      cFieldInfoInsert:     ULONG       ; (* The number of FieldInfo        *)
+      (*                                     structures to insert.          *)
+   END;
+   TYPE PFIELDINFOINSERT = POINTER TO FIELDINFOINSERT;
+
+   (**********************************************************************)
+   (* Data structure for CM_INSERTRECORD                                 *)
+   (**********************************************************************)
+   TYPE RECORDINSERT = RECORD    (* recins *)
+      cb:                     ULONG;
+      pRecordOrder:           PRECORDCORE;
+      pRecordParent:          PRECORDCORE;
+      fInvalidateRecord:      ULONG;
+      zOrder:                 ULONG;
+      cRecordsInsert:         ULONG;
+   END;
+   TYPE PRECORDINSERT = POINTER TO RECORDINSERT;
+
+   (**********************************************************************)
+   (* Data structure for CM_QUERYRECORDFROMRECT                          *)
+   (**********************************************************************)
+   TYPE QUERYRECFROMRECT = RECORD    (* qrecfrct *)
+      cb:       ULONG;
+      rect:     RECTL;
+      fsSearch: ULONG;
+   END;
+   TYPE PQUERYRECFROMRECT = POINTER TO QUERYRECFROMRECT;
+
+   (**********************************************************************)
+   (* Data structure for CM_QUERYRECORDRECT                              *)
+   (**********************************************************************)
+   TYPE QUERYRECORDRECT = RECORD    (* qrecrct *)
+      cb:                   ULONG;
+      pRecord:              PRECORDCORE;
+      fRightSplitWindow:    ULONG;
+      fsExtent:             ULONG;
+   END;
+   TYPE PQUERYRECORDRECT = POINTER TO QUERYRECORDRECT;
+
+   (**********************************************************************)
+   (* Data structure for CM_SEARCHSTRING                                 *)
+   (**********************************************************************)
+   TYPE SEARCHSTRING = RECORD    (* srchstr *)
+      cb:                ULONG;
+      pszSearch:         PSZ;
+      fsPrefix:          ULONG;
+      fsCaseSensitive:   ULONG;
+      usView:            ULONG;
+   END;
+   TYPE PSEARCHSTRING = POINTER TO SEARCHSTRING;
+
+   #if defined(INCL_WINSTDDRAG)
+      (*******************************************************************)
+      (* Data Structure for CN_DRAGLEAVE,CN_DRAGOVER,CN_DROP,CN_DROPHELP *)
+      (*******************************************************************)
+      TYPE CNRDRAGINFO = RECORD    (* cdrginfo *)
+         pDragInfo: PDRAGINFO;
+         pRecord:   PRECORDCORE;
+      END;
+      TYPE PCNRDRAGINFO = POINTER TO CNRDRAGINFO;
+   #endif
+
+   (**********************************************************************)
+   (* Data structure for CN_EMPHASIS                                     *)
+   (**********************************************************************)
+   TYPE NOTIFYRECORDEMPHASIS = RECORD    (* nrecemph *)
+      hwndCnr:          HWND;
+      pRecord:          PRECORDCORE;
+      fEmphasisMask:    ULONG;
+   END;
+   TYPE PNOTIFYRECORDEMPHASIS = POINTER TO NOTIFYRECORDEMPHASIS;
+
+   (**********************************************************************)
+   (* Data structure for CN_ENTER                                        *)
+   (**********************************************************************)
+   TYPE NOTIFYRECORDENTER = RECORD    (* notrecen *)
+      hwndCnr:       HWND;
+      fKey:          ULONG;
+      pRecord:       PRECORDCORE;
+   END;
+   TYPE PNOTIFYRECORDENTER = POINTER TO NOTIFYRECORDENTER;
+
+   (**********************************************************************)
+   (* Data structure for CN_QUERYDELTA                                   *)
+   (**********************************************************************)
+   TYPE NOTIFYDELTA = RECORD    (* notdlt *)
+      hwndCnr: HWND;
+      fDelta:  ULONG;
+   END;
+   TYPE PNOTIFYDELTA = POINTER TO NOTIFYDELTA;
+
+   (**********************************************************************)
+   (* Data structure for CN_SCROLL                                       *)
+   (**********************************************************************)
+   TYPE NOTIFYSCROLL = RECORD    (* notscr *)
+      hwndCnr:      HWND;
+      lScrollInc:   LONG;
+      fScroll:      ULONG;
+   END;
+   TYPE PNOTIFYSCROLL = POINTER TO NOTIFYSCROLL;
+
+   (**********************************************************************)
+   (* Data structure for CN_REALLOCPSZ                                   *)
+   (**********************************************************************)
+   TYPE CNREDITDATA = RECORD    (* cnredat *)
+      cb:           ULONG;
+      hwndCnr:      HWND;
+      pRecord:      PRECORDCORE;
+      pFieldInfo:   PFIELDINFO;
+      ppszText:     POINTER TO PSZ; (*  address of PSZ        *)
+      cbText:       ULONG        ;  (* size of the new text  *)
+      id:           ULONG;
+   END;
+   TYPE PCNREDITDATA = POINTER TO CNREDITDATA;
+
+   (**********************************************************************)
+   (* Data structure for CM_PAINTBACKGROUND                              *)
+   (**********************************************************************)
+   TYPE OWNERBACKGROUND = RECORD    (* ownbckg *)
+      hwnd:            HWND;
+      hps:             HPS;
+      rclBackground:   RECTL;
+      idWindow:        LONG;
+   END;
+   TYPE POWNERBACKGROUND = POINTER TO OWNERBACKGROUND;
+
+   (**********************************************************************)
+   (* Data structure used as part of WM_DRAWITEM                         *)
+   (**********************************************************************)
+   TYPE CNRDRAWITEMINFO = RECORD    (* cnrdrwii *)
+      pRecord:    PRECORDCORE;
+      pFieldInfo: PFIELDINFO;
+   END;
+   TYPE PCNRDRAWITEMINFO = POINTER TO CNRDRAWITEMINFO;
+
+   (**********************************************************************)
+   (* Message parameter flags                                            *)
+   (**********************************************************************)
+   CONST CMA_TOP            =  00001H;     (* Place at top of zorder   *)
+   CONST CMA_BOTTOM         =  00002H;     (* Place at bottom of zorder*)
+   CONST CMA_LEFT           =  00004H;
+   CONST CMA_RIGHT          =  00008H;
+
+   CONST CMA_FIRST          =  00010H;     (* Add record as first      *)
+   CONST CMA_LAST           =  00020H;
+   CONST CMA_END            =  00040H;     (* Add record to end of list*)
+   CONST CMA_PREV           =  00080H;
+   CONST CMA_NEXT           =  00100H;
+
+   CONST CMA_HORIZONTAL     =  00200H;
+   CONST CMA_VERTICAL       =  00400H;
+   CONST CMA_ICON           =  00800H;
+   CONST CMA_TEXT           =  01000H;
+   CONST CMA_PARTIAL        =  02000H;
+   CONST CMA_COMPLETE       =  04000H;
+
+   CONST CMA_PARENT         =  00001H;
+   CONST CMA_FIRSTCHILD     =  00002H;
+   CONST CMA_LASTCHILD      =  00004H;
+
+   CONST CMA_CNRTITLE       =  00001H;     (* Container title          *)
+   CONST CMA_DELTA          =  00002H;     (* Application defined      *)
+   CONST CMA_FLWINDOWATTR   =  00004H;     (* Container attributes     *)
+   CONST CMA_LINESPACING    =  00008H;
+   CONST CMA_PFIELDINFOLAST =  00010H;     (* Ptr to last column in    *)
+
+   CONST CMA_PSORTRECORD    =  00020H;     (* Pointer to sort function *)
+   CONST CMA_PTLORIGIN      =  00040H;     (* Lower left origin        *)
+   CONST CMA_SLBITMAPORICON =  00080H;     (* Size  of bitmap          *)
+   CONST CMA_XVERTSPLITBAR  =  00100H;     (* Splitbar position        *)
+   CONST CMA_PFIELDINFOOBJECT= 00200H;     (* Pointer to IN-USE        *)
+   (*                                             emphasis column.       *)
+
+   CONST CMA_TREEICON          = 00400H;   (* Icon for tree node      *)
+   CONST CMA_TREEBITMAP        = 00800H;   (* bitmap for tree node    *)
+   CONST CMA_CXTREEINDENT      = 01000H;   (* indent for children     *)
+   CONST CMA_CXTREELINE        = 02000H;   (* thickness of tree line  *)
+   CONST CMA_SLTREEBITMAPORICON= 04000H;   (* size of icon of tree node *)
+
+   CONST CMA_ITEMORDER       = 00001H;     (* QueryRecord search flags *)
+   CONST CMA_WINDOW          = 00002H;
+   CONST CMA_WORKSPACE       = 00004H;
+   CONST CMA_ZORDER          = 00008H;
+
+   CONST CMA_DELTATOP        = 00001H;     (* Industrial - top delta   *)
+   CONST CMA_DELTABOT        = 00002H;     (* Industrial - bottom delta*)
+   CONST CMA_DELTAHOME       = 00004H;     (* Industrial - top of list *)
+   CONST CMA_DELTAEND        = 00008H;     (* Industrial - end of list *)
+
+   CONST CMA_NOREPOSITION    = 00001H;     (* InvalidateRecord flags   *)
+   CONST CMA_REPOSITION      = 00002H;
+   CONST CMA_TEXTCHANGED     = 00004H;
+   CONST CMA_ERASE           = 00008H;
+
+   CONST CMA_FREE            = 00001H;
+   CONST CMA_INVALIDATE      = 00002H;
+
+#endif (* !INCL_WINSTDCNR_INCLUDED && INCL_WINSTDCNR *)
+
+
+#if ! (defined(INCL_WINSTDSLIDER_INCLUDED) && defined(INCL_WINSTDSLIDER))
+   #define INCL_WINSTDSLIDER_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                            S L I D E R                             *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Define messages for the slider control                             *)
+   (**********************************************************************)
+   CONST SLM_ADDDETENT         = 00369H;  (* Add detent niche          *)
+   CONST SLM_QUERYDETENTPOS    = 0036aH;  (* Query position of detent  *)
+   CONST SLM_QUERYSCALETEXT    = 0036bH;  (* Query text at tick number *)
+   CONST SLM_QUERYSLIDERINFO   = 0036cH;  (* Query slider information  *)
+   CONST SLM_QUERYTICKPOS      = 0036dH;  (* Query position of tick    *)
+   CONST SLM_QUERYTICKSIZE     = 0036eH;  (* Query size of tick        *)
+   CONST SLM_REMOVEDETENT      = 0036fH;  (* Remove detent niche       *)
+   CONST SLM_SETSCALETEXT      = 00370H;  (* Set text above tick       *)
+   CONST SLM_SETSLIDERINFO     = 00371H;  (* Set slider parameters     *)
+   CONST SLM_SETTICKSIZE       = 00372H;  (* Set size of tick          *)
+   CONST SLN_CHANGE            = 1;        (* Slider position changed   *)
+   CONST SLN_SLIDERTRACK       = 2;        (* Slider dragged by user    *)
+   CONST SLN_SETFOCUS          = 3;        (* Slider gaining focus      *)
+   CONST SLN_KILLFOCUS         = 4;        (* Slider losing focus       *)
+
+   (**********************************************************************)
+   (* Slider control data structure                                      *)
+   (**********************************************************************)
+   TYPE SLDCDATA = RECORD    (* sldcd *)
+      cbSize:                 ULONG   ; (* Size of control block             *)
+      usScale1Increments:     USHORT  ; (* # of divisions on scale           *)
+      usScale1Spacing:        USHORT  ; (* Space in pels between increments  *)
+      usScale2Increments:     USHORT  ; (* # of divisions on scale           *)
+      usScale2Spacing:        USHORT  ; (* Space in pels between increments  *)
+   END;
+   TYPE PSLDCDATA = POINTER TO SLDCDATA;
+
+   (**********************************************************************)
+   (* Slider control style flag definition                               *)
+   (**********************************************************************)
+   CONST SLS_HORIZONTAL      = 000000000H;(* Orient slider horizontally*)
+   CONST SLS_VERTICAL        = 000000001H;(* Orient slider vertically  *)
+   CONST SLS_CENTER          = 000000000H;(* Center shaft in window    *)
+   CONST SLS_BOTTOM          = 000000002H;(* Offset shaft to bottom (H)*)
+   CONST SLS_TOP             = 000000004H;(* Offset shaft to top (H)   *)
+   CONST SLS_LEFT            = 000000002H;(* Offset shaft to left (V)  *)
+   CONST SLS_RIGHT           = 000000004H;(* Offset shaft to right (V) *)
+   CONST SLS_SNAPTOINCREMENT = 000000008H;(* Snap to nearest increment *)
+   CONST SLS_BUTTONSBOTTOM   = 000000010H;(* Add buttons at shaft bot. *)
+   CONST SLS_BUTTONSTOP      = 000000020H;(* Add buttons at shaft top  *)
+   CONST SLS_BUTTONSLEFT     = 000000010H;(* Add buttons left of shaft *)
+   CONST SLS_BUTTONSRIGHT    = 000000020H;(* Add buttons right of shaft*)
+   CONST SLS_OWNERDRAW       = 000000040H;(* Owner draw some fields    *)
+   CONST SLS_READONLY        = 000000080H;(* Provide a read only slider*)
+   CONST SLS_RIBBONSTRIP     = 000000100H;(* Provide a ribbon strip    *)
+   CONST SLS_HOMEBOTTOM      = 000000000H;(* Set home position at bot. *)
+   CONST SLS_HOMETOP         = 000000200H;(* Set home position at top  *)
+   CONST SLS_HOMELEFT        = 000000000H;(* Set home position at left *)
+   CONST SLS_HOMERIGHT       = 000000200H;(* Set home position at right*)
+   CONST SLS_PRIMARYSCALE1   = 000000000H;(* Scale 1 is primary scale  *)
+   CONST SLS_PRIMARYSCALE2   = 000000400H;(* Scale 2 is primary scale  *)
+
+   (**********************************************************************)
+   (* Message attributes for setting and querying slider components      *)
+   (**********************************************************************)
+   CONST SMA_SCALE1              = 00001H;
+   CONST SMA_SCALE2              = 00002H;
+   CONST SMA_SHAFTDIMENSIONS     = 00000H;
+   CONST SMA_SHAFTPOSITION       = 00001H;
+   CONST SMA_SLIDERARMDIMENSIONS = 00002H;
+   CONST SMA_SLIDERARMPOSITION   = 00003H;
+   CONST SMA_RANGEVALUE          = 00000H;
+   CONST SMA_INCREMENTVALUE      = 00001H;
+   CONST SMA_SETALLTICKS         = 0FFFFH;
+
+   (**********************************************************************)
+   (* Ownerdraw flag definitions                                         *)
+   (**********************************************************************)
+   CONST SDA_RIBBONSTRIP         = 00001H;
+   CONST SDA_SLIDERSHAFT         = 00002H;
+   CONST SDA_BACKGROUND          = 00003H;
+   CONST SDA_SLIDERARM           = 00004H;
+
+   (**********************************************************************)
+   (* Error return codes                                                 *)
+   (**********************************************************************)
+   CONST PMERR_UPDATE_IN_PROGRESS   =     01F06H;
+   CONST SLDERR_INVALID_PARAMETERS  =   0FFFFFFFFH;
+
+#endif (* !INCL_WINSTDSLIDER_INCLUDED && INCL_WINSTDSLIDER *)
+
+
+#if ! (defined(INCL_WINSTDVALSET_INCLUDED) && defined(INCL_WINSTDVALSET))
+   #define INCL_WINSTDVALSET_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                         V A L U E   S E T                          *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Define messages for the value set control                          *)
+   (**********************************************************************)
+   CONST VM_QUERYITEM          = 00375H;  (* Query item at location    *)
+   CONST VM_QUERYITEMATTR      = 00376H;  (* Query item attributes     *)
+   CONST VM_QUERYMETRICS       = 00377H;  (* Query metrics of control  *)
+   CONST VM_QUERYSELECTEDITEM  = 00378H;  (* Query selected item       *)
+   CONST VM_SELECTITEM         = 00379H;  (* Set selected item         *)
+   CONST VM_SETITEM            = 0037aH;  (* Set item at location      *)
+   CONST VM_SETITEMATTR        = 0037bH;  (* Set item attributes       *)
+   CONST VM_SETMETRICS         = 0037cH;  (* Set metrics of control    *)
+
+   CONST VN_SELECT             = 120;      (* Item selected by user     *)
+   CONST VN_ENTER              = 121;      (* Item entered by user      *)
+   CONST VN_DRAGLEAVE          = 122;      (* Drag left control         *)
+   CONST VN_DRAGOVER           = 123;      (* Drag is over item         *)
+   CONST VN_DROP               = 124;      (* Drop occurred on item     *)
+   CONST VN_DROPHELP           = 125;      (* Request help for drop     *)
+   CONST VN_INITDRAG           = 126;      (* Drag initiated on item    *)
+   CONST VN_SETFOCUS           = 127;      (* Value set gaining focus   *)
+   CONST VN_KILLFOCUS          = 128;      (* Value set losing focus    *)
+   CONST VN_HELP               = 129;      (* Help requested by user    *)
+
+   (**********************************************************************)
+   (* Value set control data structure                                   *)
+   (**********************************************************************)
+   TYPE VSCDATA = RECORD    (* vscd *)
+      cbSize:             ULONG   ; (* Size of control block             *)
+      usRowCount:         USHORT  ; (* Number of rows in value set       *)
+      usColumnCount:      USHORT  ; (* Number of columns in value set    *)
+   END;
+   TYPE PVSCDATA = POINTER TO VSCDATA;
+
+   (**********************************************************************)
+   (* Value set drag initialization structure                            *)
+   (**********************************************************************)
+   TYPE VSDRAGINIT = RECORD    (* vsdinit *)
+      hwnd:          HWND    ; (* Window handle of value set control*)
+      x:             LONG    ; (* X coordinate of pointer on desktop*)
+      y:             LONG    ; (* Y coordinate of pointer on desktop*)
+      cx:            LONG    ; (* X offset from pointer hot spot    *)
+      cy:            LONG    ; (* Y offset from pointer hot spot    *)
+      usRow:         USHORT  ; (* Number of rows in value set       *)
+      usColumn:      USHORT  ; (* Number of columns in value set    *)
+   END;
+   TYPE PVSDRAGINIT = POINTER TO VSDRAGINIT;
+
+   #if defined(INCL_WINSTDDRAG)
+      (*******************************************************************)
+      (* Value set drag information structure                            *)
+      (*******************************************************************)
+      TYPE VSDRAGINFO = RECORD    (* vsdinfo *)
+         pDragInfo:    PDRAGINFO ; (* Pointer to a drag info structure *)
+         usRow:        USHORT    ; (* Number of rows in value set      *)
+         usColumn:     USHORT    ; (* Number of columns in value set   *)
+      END;
+      TYPE PVSDRAGINFO = POINTER TO VSDRAGINFO;
+   #endif
+
+   (**********************************************************************)
+   (* Value set query item text structure                                *)
+   (**********************************************************************)
+   TYPE VSTEXT = RECORD    (* vstext *)
+      pszItemText: PSZ       ; (* Pointer to string for item text      *)
+      ulBufLen:    ULONG     ; (* Length of buffer to copy string into *)
+   END;
+   TYPE PVSTEXT = POINTER TO VSTEXT;
+
+   (**********************************************************************)
+   (* Value set control style flag definition                            *)
+   (**********************************************************************)
+   CONST VS_BITMAP      = 00001H; (* Default all items to bitmaps      *)
+   CONST VS_ICON        = 00002H; (* Default all items to icons        *)
+   CONST VS_TEXT        = 00004H; (* Default all items to text strings *)
+   CONST VS_RGB         = 00008H; (* Default all items to color info   *)
+   CONST VS_COLORINDEX  = 00010H; (* Default all items to color indices*)
+   CONST VS_BORDER      = 00020H; (* Add a border around the control   *)
+   CONST VS_ITEMBORDER  = 00040H; (* Add a border around each item     *)
+   CONST VS_SCALEBITMAPS= 00080H; (* Scale bitmaps to cell size        *)
+   CONST VS_RIGHTTOLEFT = 00100H; (* Support right to left ordering    *)
+   CONST VS_OWNERDRAW   = 00200H; (* Owner draws value set background  *)
+
+   (**********************************************************************)
+   (* Value set item attribute definition                                *)
+   (**********************************************************************)
+   CONST VIA_BITMAP      = 00001H;(* If set, item contains a bitmap    *)
+   CONST VIA_ICON        = 00002H;(* If set, item contains an icon     *)
+   CONST VIA_TEXT        = 00004H;(* If set, item contains text string *)
+   CONST VIA_RGB         = 00008H;(* If set, item contains color value *)
+   CONST VIA_COLORINDEX  = 00010H;(* If set, item contains color index *)
+   CONST VIA_OWNERDRAW   = 00020H;(* If set, item is ownerdraw         *)
+   CONST VIA_DISABLED    = 00040H;(* If set, item is unselectable      *)
+   CONST VIA_DRAGGABLE   = 00080H;(* If set, item can be source of drag*)
+   CONST VIA_DROPONABLE  = 00100H;(* If set, item can be target of drop*)
+
+   (**********************************************************************)
+   (* Message parameter attributes for sizing and spacing of items       *)
+   (**********************************************************************)
+   CONST VMA_ITEMSIZE       =      00001H;
+   CONST VMA_ITEMSPACING    =      00002H;
+
+   (**********************************************************************)
+   (* Ownerdraw flag definitions                                         *)
+   (**********************************************************************)
+   CONST VDA_ITEM              =   00001H;
+   CONST VDA_ITEMBACKGROUND    =   00002H;
+   CONST VDA_SURROUNDING       =   00003H;
+   CONST VDA_BACKGROUND        =   00004H;
+
+   (**********************************************************************)
+   (* Error return codes                                                 *)
+   (**********************************************************************)
+   CONST VSERR_INVALID_PARAMETERS   = 0FFFFFFFFH;
+
+#endif (* !INCL_WINSTDVALSET_INCLUDED && INCL_WINSTDVALSET *)
+
+
+#if ! (defined(INCL_WINSTDBOOK_INCLUDED) && defined(INCL_WINSTDBOOK))
+   #define INCL_WINSTDBOOK_INCLUDED
+   (**********************************************************************)
+   (*                                                                    *)
+   (*                          N O T E B O O K                           *)
+   (*                                                                    *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Message ids                                                        *)
+   (**********************************************************************)
+   CONST BKM_CALCPAGERECT        = 00353H;(* Calc book/page rectangle  *)
+   CONST BKM_DELETEPAGE          = 00354H;(* Delete page(s)            *)
+   CONST BKM_INSERTPAGE          = 00355H;(* Insert page               *)
+   CONST BKM_INVALIDATETABS      = 00356H;(* Invalidate tab area       *)
+   CONST BKM_TURNTOPAGE          = 00357H;(* Turn to page              *)
+   CONST BKM_QUERYPAGECOUNT      = 00358H;(* Query number of pages     *)
+   CONST BKM_QUERYPAGEID         = 00359H;(* Query page identifier     *)
+   CONST BKM_QUERYPAGEDATA       = 0035aH;(* Query page user data      *)
+   CONST BKM_QUERYPAGEWINDOWHWND = 0035bH;(* Query page window handle  *)
+   CONST BKM_QUERYTABBITMAP      = 0035cH;(* Query tab bitmap handle   *)
+   CONST BKM_QUERYTABTEXT        = 0035dH;(* Query tab text pointer    *)
+   CONST BKM_SETDIMENSIONS       = 0035eH;(* Set tab/dogear dimensions *)
+   CONST BKM_SETPAGEDATA         = 0035fH;(* Set page user data        *)
+   CONST BKM_SETPAGEWINDOWHWND   = 00360H;(* Set page window handle    *)
+   CONST BKM_SETSTATUSLINETEXT   = 00361H;(* Set status line text      *)
+   CONST BKM_SETTABBITMAP        = 00362H;(* Set tab bitmap            *)
+   CONST BKM_SETTABTEXT          = 00363H;(* Set tab text              *)
+   CONST BKM_SETNOTEBOOKCOLORS   = 00364H;(* Set Notebook colors       *)
+   CONST BKM_QUERYPAGESTYLE      = 00365H;(* Query page style          *)
+   CONST BKM_QUERYSTATUSLINETEXT = 00366H;(* Query status line text    *)
+
+   CONST BKN_PAGESELECTED        = 130;    (* New page selected by user *)
+   CONST BKN_NEWPAGESIZE         = 131;    (* App page size changed     *)
+   CONST BKN_HELP                = 132;    (* Help notification         *)
+   CONST BKN_PAGEDELETED         = 133;    (* Page deleted notification *)
+
+   (**********************************************************************)
+   (* Page deletion flags (usDeleteFlag)                                 *)
+   (**********************************************************************)
+   CONST BKA_ALL                 = 00001H;(* all pages                 *)
+   CONST BKA_SINGLE              = 00002H;(* single page               *)
+   CONST BKA_TAB                 = 00004H;(* minor/major section       *)
+
+   (**********************************************************************)
+   (* Page insertion/query order (usPageOrder, usQueryOrder)             *)
+   (**********************************************************************)
+   CONST BKA_LAST                = 00002H;(* Insert/Query last page    *)
+   CONST BKA_FIRST               = 00004H;(* Insert/Query first page   *)
+   CONST BKA_NEXT                = 00008H;(* Insert/Query after page   *)
+   CONST BKA_PREV                = 00010H;(* Insert/Query before page  *)
+   CONST BKA_TOP                 = 00020H;(* Query topmost page        *)
+
+   (**********************************************************************)
+   (* Notebook region types (usBookRegion, usType)                       *)
+   (**********************************************************************)
+   CONST BKA_MAJORTAB            = 00001H;(* Major Tab                 *)
+   CONST BKA_MINORTAB            = 00002H;(* Minor Tab                 *)
+   CONST BKA_PAGEBUTTON          = 00100H;(* Page Turning Button       *)
+
+   (**********************************************************************)
+   (* Page insertion/query styles (usPageStyle,usQueryEnd)               *)
+   (**********************************************************************)
+   CONST BKA_STATUSTEXTON        = 00001H;(* status area text          *)
+   CONST BKA_MAJOR               = 00040H;(* Major Tab                 *)
+   CONST BKA_MINOR               = 00080H;(* Minor Tab                 *)
+   CONST BKA_AUTOPAGESIZE        = 00100H;(* Page window position/size *)
+   CONST BKA_END                 = 00200H;(* Query to end of book      *)
+
+   (**********************************************************************)
+   (* Tab window contents (usTabDisplay)                                 *)
+   (**********************************************************************)
+   CONST BKA_TEXT                = 00400H;(* text data                 *)
+   CONST BKA_BITMAP              = 00800H;(* bitmap                    *)
+
+   (**********************************************************************)
+   (* Notebook window styles (ulNotebookStyles)                          *)
+   (**********************************************************************)
+
+   (**********************************************************************)
+   (* Backpage Orientation                                               *)
+   (**********************************************************************)
+   CONST BKS_BACKPAGESBR         = 000000001H;(* Bottom right          *)
+   CONST BKS_BACKPAGESBL         = 000000002H;(* Bottom left           *)
+   CONST BKS_BACKPAGESTR         = 000000004H;(* Top right             *)
+   CONST BKS_BACKPAGESTL         = 000000008H;(* Top left              *)
+
+   (**********************************************************************)
+   (* Major Tab Side                                                     *)
+   (**********************************************************************)
+   CONST BKS_MAJORTABRIGHT       = 000000010H;(* Major tabs right      *)
+   CONST BKS_MAJORTABLEFT        = 000000020H;(* Major tabs left       *)
+   CONST BKS_MAJORTABTOP         = 000000040H;(* Major tabs top        *)
+   CONST BKS_MAJORTABBOTTOM      = 000000080H;(* Major tabs bottom     *)
+
+   (**********************************************************************)
+   (* Tab Type                                                           *)
+   (**********************************************************************)
+   CONST BKS_SQUARETABS          = 000000000H;(* Square edged tabs     *)
+   CONST BKS_ROUNDEDTABS         = 000000100H;(* Round edged tabs      *)
+   CONST BKS_POLYGONTABS         = 000000200H;(* Polygon edged tabs    *)
+
+   (**********************************************************************)
+   (* Binding type                                                       *)
+   (**********************************************************************)
+   CONST BKS_SOLIDBIND           = 000000000H;(* Solid binding         *)
+   CONST BKS_SPIRALBIND          = 000000400H;(* Spiral binding        *)
+
+   (**********************************************************************)
+   (* Status line text justification                                     *)
+   (**********************************************************************)
+   CONST BKS_STATUSTEXTLEFT      = 000000000H;(* Left justify text     *)
+   CONST BKS_STATUSTEXTRIGHT     = 000001000H;(* Right justify text    *)
+   CONST BKS_STATUSTEXTCENTER    = 000002000H;(* Center text           *)
+
+   (**********************************************************************)
+   (* Tab text justification                                             *)
+   (**********************************************************************)
+   CONST BKS_TABTEXTLEFT         = 000000000H;(* Left justify tab text *)
+   CONST BKS_TABTEXTRIGHT        = 000004000H;(* Right justify tab text*)
+   CONST BKS_TABTEXTCENTER       = 000008000H;(* Center tab text       *)
+
+   (**********************************************************************)
+   (* Notebook color presentation param attributes                       *)
+   (**********************************************************************)
+   CONST BKA_BACKGROUNDPAGECOLORINDEX = 00001H;(* Page Background       *)
+   CONST BKA_BACKGROUNDPAGECOLOR      = 00002H;
+   CONST BKA_BACKGROUNDMAJORCOLORINDEX= 00003H;(* Major Tab Background  *)
+   CONST BKA_BACKGROUNDMAJORCOLOR     = 00004H;
+   CONST BKA_BACKGROUNDMINORCOLORINDEX= 00005H;(* Minor Tab Background  *)
+   CONST BKA_BACKGROUNDMINORCOLOR     = 00006H;
+   CONST BKA_FOREGROUNDMAJORCOLORINDEX= 00007H;(* Major Tab Text        *)
+   CONST BKA_FOREGROUNDMAJORCOLOR     = 00008H;
+   CONST BKA_FOREGROUNDMINORCOLORINDEX= 00009H;(* Minor Tab Text        *)
+   CONST BKA_FOREGROUNDMINORCOLOR     = 0000AH;
+
+   (**********************************************************************)
+   (* Error message ids                                                  *)
+   (**********************************************************************)
+   CONST BOOKERR_INVALID_PARAMETERS  = 0FFFFFFFFH; (* Invalid parameters        *)
+
+   (**********************************************************************)
+   (* BKM_QUERYTABTEXT and BKM_QUERYSTATUSLINETEXT message structure     *)
+   (**********************************************************************)
+   TYPE BOOKTEXT = RECORD    (* booktxt *)
+      pString: PSZ    ; (* ptr to string buffer      *)
+      textLen: ULONG  ; (* length of string to query *)
+   END;
+   TYPE PBOOKTEXT = POINTER TO BOOKTEXT;
+
+   (**********************************************************************)
+   (* BKN_PAGEDELETED notify message structure                           *)
+   (**********************************************************************)
+   TYPE DELETENOTIFY = RECORD    (* delntfy *)
+      hwndBook:           HWND    ; (* Notebook window handle    *)
+      hwndPage:           HWND    ; (* App. page window handle   *)
+      ulAppPageData:      ULONG   ; (* App. page data            *)
+      hbmTab:             HBITMAP ; (* App. tab bitmap handle    *)
+   END;
+   TYPE PDELETENOTIFY = POINTER TO DELETENOTIFY;
+
+   (**********************************************************************)
+   (* BKN_PAGESELECTED notify message structure                          *)
+   (**********************************************************************)
+   TYPE PAGESELECTNOTIFY = RECORD    (* pgsntfy *)
+      hwndBook:    HWND    ; (* Notebook window handle    *)
+      ulPageIdCur: ULONG   ; (* Previous top page id      *)
+      ulPageIdNew: ULONG   ; (* New top Page id           *)
+   END;
+   TYPE PPAGESELECTNOTIFY = POINTER TO PAGESELECTNOTIFY;
+
+#endif (* !INCL_WINSTDBOOK_INCLUDED && INCL_WINSTDBOOK *)
+
+(**************************** end of file **********************************)

@@ -1,0 +1,39 @@
+BENCH.TXT                Copyright (c) 1999-2008 Excelsior, LLC.
+----------------------------------------------------------------
+
+                 Native XDS-x86 Linux Edition
+                 ----------------------------
+                            v2.60
+
+                          Benchmarks
+
+
+The directory samples/bench contains the following files:
+
+	dry.mod 	dhrystone test (Modula-2)
+	dry.c           dhrystone test (C)
+	whet.mod        whetstone test (Modula-2)
+	linnew.mod      linpack test   (Modula-2)
+	linnew.c        linpack test   (C)
+
+These tests can be used to compare different platforms and different
+compilers.  We include C sources to make it possible to compare
+the quality of the generated code with C compilers.
+
+Enclosed are results of comparision between our compiler and
+GCC 3.3.3 on an AMD Athlon(tm) 64 3000+ machine.
+
+All possible optimizations for each compiler were turned on:
+
+        GCC     -O6 -fomit-frame-pointer
+        XDS     see sources
+
+Results:
+     
+                        dry        linnew(KFLOPS/%%overhead)
+
+                         
+        GCC 3.3.3       8695k          876707 / 15.30%
+        XDS 2.60        12903k         855605 / 15.84%
+
+			[end of document]

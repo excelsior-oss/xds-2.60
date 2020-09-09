@@ -1,0 +1,4 @@
+-m2extensions+
+!module $(MSDEVDIR)\LIB\libc.lib
+!module $(MSDEVDIR)\LIB\kernel32.lib
+!module main.mod

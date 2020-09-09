@@ -1,0 +1,49 @@
+\section{WinBar}
+\public{WinBar}
+
+\ifenglish
+A {\bf WinBar} is a bar of buttons usually situated at the bottom of IDE frame
+window that looks similar to Windows 95 TaskBar.
+Each button corresponds to opened window. Pressing a button activates corresponding
+window.
+\else
+{\bf WinBar} -- это поле кнопок, обычно расположенное внизу окна IDE оболочки,
+и похожее на панель задач Windows 95.
+Каждая кнопка соответствует открытому окну. Нажатие кнопки активирует соответствующее 
+окно.
+\fi
+\ifenglish
+Buttons are ordered by window numbers.
+
+When more windows are opened the buttons get smaller and smaller. However,
+there is lower limit on their size. When the limit is reached the buttons are arranged 
+in two and more rows.
+
+Pressing right mouse button on the WinBar button invokes System menu of
+corresponding window.
+
+Each button may contain window number, file name and an icon. You may configure
+the appearance of buttons in \ref[WinBar]{CFGWIN\_WINBAR\_DIALOG} page of
+\ref[Configure Windows System]{CFGWIN\_DIALOG} dialog that appears via
+\ref[Configure]{M\_CONFIGURE}:\ref[Windows]{IDM\_CONFIGUREWINDOWS} menu.
+
+There you may also configure whether WinBar should be at the top. at the bottom
+or nowhere at all.
+\else
+Кнопки упорядочены в соответствие с номерами окон.
+
+Когда открываются, новые окна кнопки становятся все меньше и меньше. Тем не менее, 
+существует нижнее ограничение на их размер. Когда оно достигается, кнопки 
+перестраиваются в два и более рядов.
+
+Нажатие правой кнопки мыши на WinBar вызывает появление системного меню в 
+соответствующем окне.
+
+Каждая кнопка может содержать номер окна, имя файла или иконку. Вы можете
+настраивать внешний вид кнопок в страничке \ref[WinBar]{CFGWIN\_WINBAR\_DIALOG}
+диалога \ref[Configure Windows System]{CFGWIN\_DIALOG}, что появляется через
+меню \ref[Configure]{M\_CONFIGURE}:\ref[Windows]{IDM\_CONFIGUREWINDOWS}.
+
+Там вы также можете указать, где должен находиться WinBar - вверху, внизу или
+вообще нигде.
+\fi

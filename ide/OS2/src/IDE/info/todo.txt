@@ -1,0 +1,26 @@
+1. Add "reset path" button to the Load dialog
+2. Is it possible to have the pop-up menu remain on the screen
+   when the mouse button is released? If not, we have to add "Help" to it.
+3. Advanced dialog: make a diff. between WM_BTN2DOWN and WM_BTN2CLICK -
+   the latter is to display a pop-up menu.
+4. New WP dialog: It is possible to edit mirror file name even if the
+   field looks disabled.
+5. Winbar: Move to 4 group does not work
+6. Color dialog: it is non standard and incorrectly displayed in
+   256 color mode. Use standard dialog instead.
+7. The toolbar button dialog looks empty. Design more buttons.
+8. The Help button in the Edit colors dialog invokes a wrong help page.
+9. EdGoto(,0) -> crash and wrong entry in macro table.
+10. Move focus away from the key entry field after the key is entered,
+    as if the Tab key was pressed.
+11. Make Variable lists directly accessible from menu.
+12. Simplify regex's in filters, as Pasha did.
+13. Correct regexs in both XDS lib and IDE.
+14. Design and implement initialization mechanisms for variable lists,
+    associations, workplace templates, etc. Should this be entirely
+    accessible from REXX?
+15. Change version to 2.31 and copyright to 1996-98 XDS Ltd.
+16. Execute() should allow to control modality of the pop-up window.
+17. Intercept REXX SAY and the like.
+18. Disable "Recall macro editor" when appropriate.
+

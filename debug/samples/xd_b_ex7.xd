@@ -1,0 +1,18 @@
+; Load program 'test' with arguments '/a result'
+ LOAD test /a result
+
+; Set break for creating new component 'ChkData' at label BreakChkDataLoaded
+ BREAK 1, COMP, chkdata, BreakChkDataLoaded
+
+ START
+ QUIT
+
+Dialog
+ DIALOG
+ STOP
+
+BreakChkDataLoaded
+ DEL 1 
+ BREAK 1, ADDR, chkdata.CheckDataProc, Dialog
+ RESUME
+ 

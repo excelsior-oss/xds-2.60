@@ -1,0 +1,64 @@
+(* Copyright (c) Excelsior 2003.  All Rights Reserved *)
+
+<*+ CSTDLIB  *>
+<*+ NOHEADER*>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE [2] semaphore; (* Jek *)
+
+FROM SYSTEM IMPORT INT32, CARD32, BYTE;
+
+IMPORT pthread, time;
+
+TYPE
+  (* System [Linux] specific semaphore definition.  *)
+  sem_t = RECORD
+    __sem_lock     : pthread._pthread_fastlock;
+    __sem_value    : INT32;
+    __sem_waiting  : pthread._pthread_descr;
+  END;
+
+  sem_ptr = POINTER TO sem_t;
+     
+
+CONST
+  (* Value returned if `sem_open' failed.  *)
+  SEM_FAILED = NIL;
+
+  (* Maximum value the semaphore can have.  *)
+  SEM_VALUE_MAX = MAX(INT32);
+
+
+(* Initialize semaphore object SEM to VALUE.  If PSHARED then share it
+   with other processes.  *)
+PROCEDURE sem_init (VAR sem: sem_t; pshared: INT32; value: CARD32) : INT32;
+
+(* Free resources associated with semaphore object SEM.  *)
+PROCEDURE sem_destroy (VAR sem: sem_t) : INT32;
+
+(* Open a named semaphore NAME with open flaot OFLAG.  *)
+PROCEDURE sem_open (name: ARRAY OF CHAR; oflag: INT32; SEQ x: BYTE) : sem_ptr;
+
+(* Close descriptor for named semaphore SEM.  *)
+PROCEDURE sem_close (VAR sem: sem_t) : INT32;
+
+(* Remove named semaphore NAME.  *)
+PROCEDURE sem_unlink (name: ARRAY OF CHAR) : INT32;
+
+(* Wait for SEM being posted.  *)
+PROCEDURE sem_wait (VAR sem: sem_t) : INT32;
+
+(* Similar to `sem_wait' but wait only until ABSTIME.  *)
+PROCEDURE sem_timedwait (VAR sem: sem_t; VAR abstime: time.timespec) : INT32;
+
+(* Test whether SEM is posted.  *)
+PROCEDURE sem_trywait (VAR sem: sem_t) : INT32;
+
+(* Post SEM.  *)
+PROCEDURE sem_post (VAR sem: sem_t) : INT32;
+
+(* Get current value of SEM and store it in *SVAL.  *)
+PROCEDURE sem_getvalue (VAR sem: sem_t; VAR sval: INT32) : INT32;
+
+
+END semaphore.

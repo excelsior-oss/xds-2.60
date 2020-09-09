@@ -1,0 +1,5 @@
+SOURCE = o2rep.tex
+
+TARGET = o2rep
+
+!include ..\$(FORMAT).inc

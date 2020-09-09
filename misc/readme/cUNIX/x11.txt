@@ -1,0 +1,60 @@
+X11.TXT                               Copyright (c) 1998 XDS Ltd
+----------------------------------------------------------------
+
+                      XDS-C Unix Edition
+                      ------------------
+                            v2.31
+
+                 Using X Window and Motif APIs
+
+
+This document contains a short description of the X11 and Motif 
+APIs usage in your Modula-2/Oberon-2 programs.
+
+1. Documentation
+
+Your XDS package includes the X11/Motif API definition modules 
+and support files, but no documentation on these APIs. You have
+to use third-party books or the on-line documentation.
+We regret the inconvenience.
+
+
+2. Using the X11/Motif APIs in your programs
+
+X11 and Motif definition modules reside in the `def/X11' and
+`def/Xm' subdirectories of your XDS installation, resspectively. 
+Use the `apisyms' script in the root of your XDS installation to
+create symbol files for these APIs.
+
+If your program is an X11 application, toggle the XAPP option
+ON in the project file or on the command line:
+
+    +XAPP
+
+If your program is a Motif application, toggle the XMAPP option
+ON in the project file or on the command line:
+
+    +XMAPP
+
+Note: These options are only used to set up additional include 
+paths and libraries during processing of the template file, 
+`bin/xm.tem'. That file contains defaults for Solaris, HP-UX,
+and Linux. If the X11/Motif include files and libraries reside
+in different directories on your target system, you have to edit
+the default template file or to use your own modified copy in your 
+projects.
+
+
+3. Declaring callbacks
+
+You have to specify the "C" calling and naming convention for
+your callback procedures:
+
+PROCEDURE ["C"] QuitCB (
+                    w: Xt.Widget;
+                    client_data: Xt.XtPointer;
+                    call_data: Xt.XtPointer);
+
+                     [end of document]
+
+

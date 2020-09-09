@@ -1,0 +1,60 @@
+\ifenglish
+\section{Tabulation modes}
+\else
+\section{Режимы табуляции}
+\fi
+\public {Tabulation}
+
+\ifenglish
+There are three modes of tabulation:
+\else
+Существует три режима табуляции:
+\fi
+\begin{description}
+\item[{\bf Hard}]
+\ifenglish
+{\bf Tab} key enters the {\bf Tab Character} (0x09) which
+moves cursor to the next tab stop
+\else
+Клавиша {\bf Tab} вводит {\bf символ табуляции} (0x09), который передвигает
+курсор к следующей позиции табуляции.
+\fi
+\item[{\bf Spaces}]
+\ifenglish
+Tabulation is immediately expanded by spaces until next
+tab stop
+\else
+Табуляция немедленно расширяется пробелами вплоть до следующей позиции 
+табуляции.
+\fi
+\item[{\bf Smart}]
+\ifenglish
+Spaces are inserted until cursor positions under 
+beginning of the next word in previous line (more precisely, under first non-whitespace
+after first white-space after current cursor position). This mode comes from
+TopSpeed editor.
+\else
+Пробелы вставляются до тех пор, пока курсор не окажется под 
+началом следующего слова в предыдущей строке (точнее, под первым отличающимся от
+пробела символом после первого пробела после текущей позиции курсора). Этот режим
+происходит из редактора TopSpeed.
+\fi
+\end{description}
+\ifenglish
+The tabulation mode and tab-size can be selected in the
+\ref[Tabs and Indents]{CFGEDIT\_TAB\_DIALOG} page of
+\ref[Configure Editor]{CFGEDIT\_DIALOG} dialog 
+that appears after \ref[Configure]{M\_CONFIGURE}:\ref[Editor]{IDM\_CONFIGUREEDITOR} menu.
+
+Note that {\bf Tab} key is sensitive to insert/overwrite mode. In overwrite mode
+it overwrites either single character with tab character, or several characters
+with spaces.
+\else
+Режим и размер табуляции могут выбираться на закладке \ref[Tabs and Indents]{CFGEDIT\_TAB\_DIALOG} 
+диалога \ref[Configure Editor]{CFGEDIT\_DIALOG}, который появляется после меню
+\ref[Configure]{M\_CONFIGURE}:\ref[Editor]{IDM\_CONFIGUREEDITOR}.
+
+Заметьте что клавиша {\bf Tab} чувствительна к режиму вставки/перезаписи.
+В режиме перезаписи она либо заменяет один символ на символ табуляции, либо 
+несколько символов -- на пробелы. 
+\fi

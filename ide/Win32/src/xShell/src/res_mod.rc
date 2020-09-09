@@ -1,0 +1,140 @@
+
+#include "xdsres.h"
+
+MAIN_ICON              ICON    DISCARDABLE     "xds.ico"
+
+BMP_ABOUT               BITMAP  MOVEABLE PURE   "about.bmp"
+BMP_LOGO                BITMAP  MOVEABLE PURE   "logo.bmp"
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_SHELLNAME         "XDS "
+    IDSTR_INIFILENAME       "XDS.ini"
+    IDSTR_XREDFILENAME      "XDS.red"
+    IDSTR_HELPFILENAME      "XDS.hlp"
+    IDSTR_IDEHELPFILENAME   "XDSEnv.hlp"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_CMDLINE   """$(xdsmain)"" =c ""$(file)"" ""-prj=$(project)"""
+    IDSTR_COMPILE_NOPROJ_CMDLINE """$(xdsmain)"" =c ""$(file)"""
+    IDSTR_MAKE_CMDLINE      """$(xdsmain)"" =p ""$(project)"""
+    IDSTR_MAKE_NOPROJ_CMDLINE """$(xdsmain)"" =m ""$(file)"""
+    IDSTR_BUILD_CMDLINE     """$(xdsmain)"" =a =p ""$(project)"""
+    IDSTR_BUILD_NOPROJ_CMDLINE """$(xdsmain)"" =a =m ""$(file)"""
+    IDSTR_MAKELIST_CMDLINE  """$(xdsmain)"" =p ""$(project)"" -__XDS_LIST__:+"
+    IDSTR_MAKELIST_NOPROJ_CMDLINE 
+                            """$(xdsmain)"" =m ""$(file)"" -__XDS_LIST__:+"
+    IDSTR_DEBUG_CMDLINE     """$(homedir)\\xd.exe"" ""$(exefile)"" $(arguments)"
+END
+
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_TITLE     "Compiling file: $(file)"
+    IDSTR_COMPILE_NOPROJ_TITLE "Compiling file: $(file)"
+    IDSTR_MAKE_TITLE        "Making project: $(project)"
+    IDSTR_MAKE_NOPROJ_TITLE "Making file: $(file)"
+    IDSTR_BUILD_TITLE       "Building project: $(project)"
+    IDSTR_BUILD_NOPROJ_TITLE "Building file: $(file)"
+    IDSTR_MAKELIST_TITLE    "Filling project files list for $(project)"
+    IDSTR_MAKELIST_NOPROJ_TITLE "Filling files list for $(file)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_MENU      "&Compile $(filewholename)"
+    IDSTR_COMPILE_NOPROJ_MENU "&Compile $(filewholename)"
+    IDSTR_MAKE_MENU         "&Make $(projwholename)"
+    IDSTR_MAKE_NOPROJ_MENU  "&Make $(filewholename)"
+    IDSTR_BUILD_MENU        "&Build all"
+    IDSTR_BUILD_NOPROJ_MENU "&Build all $(filewholename)"
+    IDSTR_MAKELIST_MENU     "&Update file list"
+    IDSTR_MAKELIST_NOPROJ_MENU "&Update file list for $(filewholename)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_INV_MENU  "&Compile current file"
+    IDSTR_COMPILE_NOPROJ_INV_MENU "&Compile current file"
+    IDSTR_MAKE_INV_MENU     "&Make current project"
+    IDSTR_MAKE_NOPROJ_INV_MENU "&Make current file"
+    IDSTR_BUILD_INV_MENU    "&Build all"
+    IDSTR_BUILD_NOPROJ_INV_MENU "&Build all"
+    IDSTR_MAKELIST_INV_MENU "&Update file list"
+    IDSTR_MAKELIST_NOPROJ_INV_MENU "&Update file list"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_HOTKEY    "78"
+    IDSTR_MAKE_HOTKEY       "178"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_COMMENT   "Compile the file in active window"
+    IDSTR_COMPILE_NOPROJ_COMMENT "Compile the file in active window"
+    IDSTR_MAKE_COMMENT      "Make current project"
+    IDSTR_MAKE_NOPROJ_COMMENT "Make current project"
+    IDSTR_BUILD_COMMENT     "Compile every file in current project and link the target"
+    IDSTR_BUILD_NOPROJ_COMMENT 
+                            "Compile every file in current project and link the target"
+    IDSTR_MAKELIST_COMMENT  "Invoke the compiler and get full list of files in the project"
+    IDSTR_MAKELIST_NOPROJ_COMMENT 
+                            "Invoke the compiler and get full list of files in the project"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_COMPILE_STARTDIR  "$(projdir)"
+    IDSTR_COMPILE_NOPROJ_STARTDIR "$(filedir)"
+    IDSTR_MAKE_STARTDIR     "$(projdir)"
+    IDSTR_MAKE_NOPROJ_STARTDIR "$(filedir)"
+    IDSTR_BUILD_STARTDIR    "$(projdir)"
+    IDSTR_BUILD_NOPROJ_STARTDIR "$(filedir)"
+    IDSTR_MAKELIST_STARTDIR "$(projdir)"
+    IDSTR_MAKELIST_NOPROJ_STARTDIR "$(filedir)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_XC_EXTENSIONS     "mod;def;ob2"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_XDSMAIN           """$(homedir)\\xc.exe"""
+    IDSTR_DIRLIST           "src;obj;sym"
+    IDSTR_DEFMAINMOD        "$(projname).mod"
+    IDSTR_TEMPLATE          """$(xdsdir)\\$(xdsname).tpr"""
+    IDSTR_STDREDFILE        """$(xdsdir)\\$(xdsname).trd"""
+    IDSTR_EXEFILE           """$(projdir)\\$(projname).exe"""
+    IDSTR_EXEFILE_NOPROJ    """$(filedir)\\$(filename).exe"""
+    IDSTR_RUNDIR            "$(projdir)"
+    IDSTR_RUNDIR_NOPROJ     "$(filedir)"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_OPEN_FILTER "*.mod;*.def=Modula-2 source files"
+    IDSTR_OPEN_FILTER+1 "*.ob2=Oberon-2 source files"
+    IDSTR_OPEN_FILTER+2 "*.prj=XDS project files"
+    IDSTR_OPEN_FILTER+3 "*.sty=XDS style sheets"
+    IDSTR_OPEN_FILTER+4 "*.c;*.cpp;*.h;*.hpp=C/C++ source files"
+    IDSTR_OPEN_FILTER+5 "*.asm=Assembly language files"
+    IDSTR_OPEN_FILTER+6 "*.java=Java files"
+    IDSTR_OPEN_FILTER+7 "*.rc=Resource scripts"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDSTR_SAMPLE_FILES    "c:\\project\\src\\crocodile.mod"
+    IDSTR_SAMPLE_FILES+1  "c:\\project\\src\\parrot.ob2"
+    IDSTR_SAMPLE_FILES+2  "c:\\project\\src\\turtle.mod"
+    
+    IDSTR_SAMPLE_MESSAGES "Error in line 153 of crocodile.mod: ; expected"
+    IDSTR_SAMPLE_MESSAGES+1 "Warning in line 82 of turtle.mod: code has no effect"
+    IDSTR_SAMPLE_MESSAGES+2 "Warning in line 82 of parrot.ob2: variable declared but never used"
+END

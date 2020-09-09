@@ -1,0 +1,33 @@
+% Copyright (c) XDS Team 1997. All rights reserved.
+%
+% IEEE Std 1003.1-1988,1990 POSIX.1 macros implementation library 
+%
+% $RCSfile: libmac_posix.prj,v $ $Revision: 1.1.1.1 $ $Date: 1997/10/20 19:32:35 $
+%
+
+% Let's define library project
+-library:+
+-libname!libmac_posix
+
+% We have to generate makefile
+-makefile+
+-mkfname=$(libname)
+-mkfext=mkf
+
+% Own template
+-template = $!/../xds.tem
+
+% Make library
+-link = "make -f %s",mkfname#mkfext
+
+-lookup = *.def|*.mod = $!
+-lookup = *.sym=$(sym_place)
+-lookup = *.o = $(tmp_place)
+-lookup = *.a = $(lib_place)
+-lookup = $(mkfname).$(mkfext) = $(tmp_place)
+
+% Modules list
+!module	mac_stat.mod
+!module	mac_wait.mod
+
+

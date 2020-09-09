@@ -1,0 +1,8 @@
+SOURCE = xds.tex 
+
+TARGET = xds
+CNTLEVEL = 
+
+!include ..\$(FORMAT).inc
+
+

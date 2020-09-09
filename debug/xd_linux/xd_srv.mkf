@@ -1,0 +1,287 @@
+M	= xd_srv.mkf
+XDSDIR	= /home/jek/xds-c
+INCL	= $(XDSDIR)/include
+XDSLIB	= /home/jek/xds-c/lib/C/libxds.a
+
+TSLIBS	= 
+
+TARGET	= xd_srv
+
+CDEFS	= -D_unix -D_linux -DX2C_no_spawn -DX2C_strcmp
+%  ! "CF\t= -O2 -c -g -fno-strength-reduce -I$(INCL)"
+CF	= -c -g -fno-strength-reduce -I$(INCL)
+CC	= gcc
+X11FLAGS	= -I/usr/X11R6/include/X11 -I/usr/X11R6/include
+X11LIBS	= -L/usr/X11R6/lib -lXext -lX11
+XMFLAGS	= -I/usr/X11R6/include/Xm -I/usr/X11R6/include
+XMLIBS	= -L/usr/X11R6/lib -lXm -lXt -lXext -lX11
+
+
+XFLAGS	=
+XLIBS	=
+
+
+# ------------------ objects enumeration ------------------
+#                    -------------------
+
+OBJ= \
+	bin/DI_Types.o \
+	bin/Def_Thrs.o \
+	bin/Events.o \
+	bin/File.o \
+	bin/KrnTypes.o \
+	bin/Krn_Dbg.o \
+	bin/Krn_Mem.o \
+	bin/Krn_Prog.o \
+	bin/Krn_Thrs.o \
+	bin/Linux.o \
+	bin/Media.o \
+	bin/Options.o \
+	bin/OutDebug.o \
+	bin/PrgNames.o \
+	bin/ReadExp.o \
+	bin/RedFile.o \
+	bin/RemTypes.o \
+	bin/Remote.o \
+	bin/Texts.o \
+	bin/Threads.o \
+	bin/Trans.o \
+	bin/Translit.o \
+	bin/Unidata.o \
+	bin/XD_Serv.o \
+	bin/dllRTS.o \
+	bin/xStr.o
+# ------------------- target make rules -------------------
+#                     -----------------
+
+$(TARGET) : $(OBJ) $(TSLIBS) $(XDSLIB)
+#  ! "\t$(CC) -o $(TARGET) $(OBJ) $(TSLIBS) $(XDSLIB) $(XLIBS) -lm -lncurses -lbfd\n"
+	$(CC) -o $(TARGET) $(OBJ) $(TSLIBS) $(XDSLIB) $(XLIBS) -lm -lncurses -lbfd -lthread_db
+
+# ----------------- Dependency information ----------------
+#                   ----------------------
+
+bin/DI_Types.o           : ch/DI_Types.h
+bin/DI_Types.o           : ch/KrnTypes.h
+bin/DI_Types.o           : ch/Texts.h
+bin/DI_Types.o           : ch/Unidata.h
+bin/DI_Types.o           : ch/xStr.h
+bin/DI_Types.o           : $(M) ch/DI_Types.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/DI_Types.o ch/DI_Types.c
+
+bin/Def_Thrs.o           : ch/Def_Thrs.h
+bin/Def_Thrs.o           : ch/Linux.h
+bin/Def_Thrs.o           : $(M) ch/Def_Thrs.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Def_Thrs.o ch/Def_Thrs.c
+
+bin/Events.o             : ch/Events.h
+bin/Events.o             : ch/KrnTypes.h
+bin/Events.o             : ch/Krn_Thrs.h
+bin/Events.o             : ch/Options.h
+bin/Events.o             : ch/Printf.h
+bin/Events.o             : ch/Threads.h
+bin/Events.o             : ch/xStr.h
+bin/Events.o             : $(M) ch/Events.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Events.o ch/Events.c
+
+bin/File.o               : ch/File.h
+bin/File.o               : ch/FileSys.h
+bin/File.o               : ch/TimeConv.h
+bin/File.o               : ch/xStr.h
+bin/File.o               : $(M) ch/File.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/File.o ch/File.c
+
+bin/KrnTypes.o           : ch/KrnTypes.h
+bin/KrnTypes.o           : $(M) ch/KrnTypes.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/KrnTypes.o ch/KrnTypes.c
+
+bin/Krn_Dbg.o            : ch/Krn_Dbg.h
+bin/Krn_Dbg.o            : ch/Linux.h
+bin/Krn_Dbg.o            : ch/xStr.h
+bin/Krn_Dbg.o            : $(M) ch/Krn_Dbg.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Krn_Dbg.o ch/Krn_Dbg.c
+
+bin/Krn_Mem.o            : ch/Events.h
+bin/Krn_Mem.o            : ch/KrnTypes.h
+bin/Krn_Mem.o            : ch/Krn_Dbg.h
+bin/Krn_Mem.o            : ch/Krn_Mem.h
+bin/Krn_Mem.o            : ch/Linux.h
+bin/Krn_Mem.o            : ch/Options.h
+bin/Krn_Mem.o            : ch/Printf.h
+bin/Krn_Mem.o            : ch/Remote.h
+bin/Krn_Mem.o            : ch/Threads.h
+bin/Krn_Mem.o            : $(M) ch/Krn_Mem.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Krn_Mem.o ch/Krn_Mem.c
+
+bin/Krn_Prog.o           : ch/DI_Types.h
+bin/Krn_Prog.o           : ch/Def_Thrs.h
+bin/Krn_Prog.o           : ch/Events.h
+bin/Krn_Prog.o           : ch/File.h
+bin/Krn_Prog.o           : ch/FileSys.h
+bin/Krn_Prog.o           : ch/KrnTypes.h
+bin/Krn_Prog.o           : ch/Krn_Dbg.h
+bin/Krn_Prog.o           : ch/Krn_Mem.h
+bin/Krn_Prog.o           : ch/Krn_Prog.h
+bin/Krn_Prog.o           : ch/Krn_Thrs.h
+bin/Krn_Prog.o           : ch/Linux.h
+bin/Krn_Prog.o           : ch/MsgNo.h
+bin/Krn_Prog.o           : ch/Options.h
+bin/Krn_Prog.o           : ch/OutDebug.h
+bin/Krn_Prog.o           : ch/PrgNames.h
+bin/Krn_Prog.o           : ch/Printf.h
+bin/Krn_Prog.o           : ch/ProgEnv.h
+bin/Krn_Prog.o           : ch/ReadExp.h
+bin/Krn_Prog.o           : ch/Remote.h
+bin/Krn_Prog.o           : ch/Threads.h
+bin/Krn_Prog.o           : ch/xStr.h
+bin/Krn_Prog.o           : $(M) ch/Krn_Prog.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Krn_Prog.o ch/Krn_Prog.c
+
+bin/Krn_Thrs.o           : ch/FormStr.h
+bin/Krn_Thrs.o           : ch/Krn_Dbg.h
+bin/Krn_Thrs.o           : ch/Krn_Thrs.h
+bin/Krn_Thrs.o           : ch/Linux.h
+bin/Krn_Thrs.o           : ch/Options.h
+bin/Krn_Thrs.o           : ch/Printf.h
+bin/Krn_Thrs.o           : ch/Remote.h
+bin/Krn_Thrs.o           : ch/Threads.h
+bin/Krn_Thrs.o           : $(M) ch/Krn_Thrs.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Krn_Thrs.o ch/Krn_Thrs.c
+
+bin/Linux.o              : ch/Linux.h
+bin/Linux.o              : $(M) ch/Linux.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Linux.o ch/Linux.c
+
+bin/Media.o              : ch/FormStr.h
+bin/Media.o              : ch/Media.h
+bin/Media.o              : ch/MsgNo.h
+bin/Media.o              : ch/Options.h
+bin/Media.o              : ch/Printf.h
+bin/Media.o              : ch/RemTypes.h
+bin/Media.o              : ch/Trans.h
+bin/Media.o              : ch/xStr.h
+bin/Media.o              : $(M) ch/Media.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Media.o ch/Media.c
+
+bin/Options.o            : ch/Options.h
+bin/Options.o            : ch/Translit.h
+bin/Options.o            : ch/xStr.h
+bin/Options.o            : $(M) ch/Options.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Options.o ch/Options.c
+
+bin/OutDebug.o           : ch/FormStr.h
+bin/OutDebug.o           : ch/OutDebug.h
+bin/OutDebug.o           : ch/xStr.h
+bin/OutDebug.o           : $(M) ch/OutDebug.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/OutDebug.o ch/OutDebug.c
+
+bin/PrgNames.o           : ch/File.h
+bin/PrgNames.o           : ch/FileSys.h
+bin/PrgNames.o           : ch/FormStr.h
+bin/PrgNames.o           : ch/KrnTypes.h
+bin/PrgNames.o           : ch/Krn_Dbg.h
+bin/PrgNames.o           : ch/Krn_Mem.h
+bin/PrgNames.o           : ch/PrgNames.h
+bin/PrgNames.o           : ch/RedFile.h
+bin/PrgNames.o           : ch/dllRTS.h
+bin/PrgNames.o           : ch/xStr.h
+bin/PrgNames.o           : $(M) ch/PrgNames.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/PrgNames.o ch/PrgNames.c
+
+bin/ReadExp.o            : ch/FormStr.h
+bin/ReadExp.o            : ch/KrnTypes.h
+bin/ReadExp.o            : ch/Linux.h
+bin/ReadExp.o            : ch/Printf.h
+bin/ReadExp.o            : ch/ReadExp.h
+bin/ReadExp.o            : $(M) ch/ReadExp.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/ReadExp.o ch/ReadExp.c
+
+bin/RedFile.o            : ch/File.h
+bin/RedFile.o            : ch/FileSys.h
+bin/RedFile.o            : ch/FormStr.h
+bin/RedFile.o            : ch/ProgEnv.h
+bin/RedFile.o            : ch/RedFile.h
+bin/RedFile.o            : ch/xStr.h
+bin/RedFile.o            : $(M) ch/RedFile.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/RedFile.o ch/RedFile.c
+
+bin/RemTypes.o           : ch/RemTypes.h
+bin/RemTypes.o           : $(M) ch/RemTypes.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/RemTypes.o ch/RemTypes.c
+
+bin/Remote.o             : ch/Events.h
+bin/Remote.o             : ch/FormStr.h
+bin/Remote.o             : ch/KrnTypes.h
+bin/Remote.o             : ch/Krn_Prog.h
+bin/Remote.o             : ch/Krn_Thrs.h
+bin/Remote.o             : ch/Media.h
+bin/Remote.o             : ch/Options.h
+bin/Remote.o             : ch/Printf.h
+bin/Remote.o             : ch/RemTypes.h
+bin/Remote.o             : ch/Remote.h
+bin/Remote.o             : ch/xStr.h
+bin/Remote.o             : $(M) ch/Remote.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Remote.o ch/Remote.c
+
+bin/Texts.o              : ch/FormOut.h
+bin/Texts.o              : ch/FormStr.h
+bin/Texts.o              : ch/RedFile.h
+bin/Texts.o              : ch/Texts.h
+bin/Texts.o              : ch/platform.h
+bin/Texts.o              : ch/xStr.h
+bin/Texts.o              : $(M) ch/Texts.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Texts.o ch/Texts.c
+
+bin/Threads.o            : ch/Def_Thrs.h
+bin/Threads.o            : ch/FormStr.h
+bin/Threads.o            : ch/Krn_Dbg.h
+bin/Threads.o            : ch/Krn_Thrs.h
+bin/Threads.o            : ch/Options.h
+bin/Threads.o            : ch/Remote.h
+bin/Threads.o            : ch/Threads.h
+bin/Threads.o            : $(M) ch/Threads.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Threads.o ch/Threads.c
+
+bin/Trans.o              : ch/Printf.h
+bin/Trans.o              : ch/RemTypes.h
+bin/Trans.o              : ch/SocketW.h
+bin/Trans.o              : ch/Trans.h
+bin/Trans.o              : $(M) ch/Trans.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Trans.o ch/Trans.c
+
+bin/Translit.o           : ch/Translit.h
+bin/Translit.o           : $(M) ch/Translit.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Translit.o ch/Translit.c
+
+bin/Unidata.o            : ch/Printf.h
+bin/Unidata.o            : ch/Unidata.h
+bin/Unidata.o            : $(M) ch/Unidata.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/Unidata.o ch/Unidata.c
+
+bin/XD_Serv.o            : ch/Events.h
+bin/XD_Serv.o            : ch/FormStr.h
+bin/XD_Serv.o            : ch/KrnTypes.h
+bin/XD_Serv.o            : ch/Krn_Mem.h
+bin/XD_Serv.o            : ch/Krn_Prog.h
+bin/XD_Serv.o            : ch/Krn_Thrs.h
+bin/XD_Serv.o            : ch/Media.h
+bin/XD_Serv.o            : ch/Options.h
+bin/XD_Serv.o            : ch/Printf.h
+bin/XD_Serv.o            : ch/ProgEnv.h
+bin/XD_Serv.o            : ch/RemTypes.h
+bin/XD_Serv.o            : ch/Threads.h
+bin/XD_Serv.o            : ch/xStr.h
+bin/XD_Serv.o            : $(M) ch/XD_Serv.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/XD_Serv.o ch/XD_Serv.c
+
+bin/dllRTS.o             : ch/dllRTS.h
+bin/dllRTS.o             : $(M) ch/dllRTS.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/dllRTS.o ch/dllRTS.c
+
+bin/xStr.o               : ch/xStr.h
+bin/xStr.o               : $(M) ch/xStr.c
+	$(CC) $(CDEFS) $(CF) $(XFLAGS) -o bin/xStr.o ch/xStr.c
+
+
+# end of makefile
+

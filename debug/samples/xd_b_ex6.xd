@@ -1,0 +1,15 @@
+ LOAD d:\xds\samples\bench\dry.exe
+
+ MODULE dry
+
+ BREAK 1,ADDR,Proc0,Dialog
+ BREAK 2,ADDR,Proc8,Dialog
+ 
+ WATCH Char1Glob,Array1Glob[8]
+
+ START
+ QUIT
+
+Dialog DIALOG
+       STOP
+ 

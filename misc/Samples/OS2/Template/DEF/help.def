@@ -1,0 +1,49 @@
+(**************************************************************************
+ *  File name  :  help.def
+ *
+ *  Description:  This module contains all the routines for interfacing
+ *                the IPF Help Manager.
+ *
+ *                This module exports the following procedures:
+ *
+ *                InitHelp()
+ *                HelpIndex()
+ *                HelpGeneral()
+ *                HelpUsingHelp()
+ *                HelpKeys()
+ *                HelpTutorial()
+ *                HelpProductInfo()
+ *                DisplayHelpPanel(idPanel)
+ *                DestroyHelpInstance()
+ *
+ *  Concepts   :  help manager
+ *
+ *  Copyright (C) 1996 xTech Ltd. All rights reserved.
+ *  Copyright (C) 1991 IBM Corporation
+ *
+ *      DISCLAIMER OF WARRANTIES.  The following [enclosed] code is
+ *      sample code created by IBM Corporation. This sample code is not
+ *      part of any standard or IBM product and is provided to you solely
+ *      for  the purpose of assisting you in the development of your
+ *      applications.  The code is provided "AS IS", without
+ *      warranty of any kind.  IBM shall not be liable for any damages
+ *      arising out of your use of the sample code, even if they have been
+ *      advised of the possibility of such damages.
+ *************************************************************************)
+
+DEFINITION MODULE help;
+
+IMPORT OS2;
+
+PROCEDURE InitHelp;
+PROCEDURE HelpIndex;
+PROCEDURE HelpGeneral;
+PROCEDURE HelpUsingHelp;
+PROCEDURE HelpKeys;
+PROCEDURE HelpTutorial;
+PROCEDURE HelpProductInfo;
+PROCEDURE DisplayHelpPanel(idPanel : OS2.ULONG);
+PROCEDURE DestroyHelpInstance;
+
+END help.
+

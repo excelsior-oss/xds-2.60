@@ -1,0 +1,25 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=xdsenv.chm
+Contents file=xdsenv.hhc
+Default Window=Main
+Default topic=xdsenv.html
+Display compile progress=No
+Full-text search=Yes
+Language=0x409 English (United States)
+Title=XDS Environment Help
+
+[WINDOWS]
+Main="XDS Environment Help","xdsenv.hhc",,"xdsenv000.html",,,,,,0x2520,,0x300e,[30,30,994,708],,,,,,,0
+
+[ALIAS]
+#include "xdsenv.hha"
+
+[MAP]
+
+[FILES]
+xdsenv.html
+..\default.css
+
+[INFOTYPES]
+

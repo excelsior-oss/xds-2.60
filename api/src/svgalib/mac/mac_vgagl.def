@@ -1,0 +1,28 @@
+(* mac_vgajoystick.mod  Feb 18  12:3:31  1999 *)
+(* Copyright (c) 1999, JSC XDS *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+(* Prototypes for macro implementation *)
+
+DEFINITION MODULE mac_vgagl;
+
+IMPORT SYSTEM;
+
+PROCEDURE ["C"] BYTESPERPIXEL (): INTEGER;
+PROCEDURE ["C"] BYTEWIDTH (): INTEGER;
+PROCEDURE ["C"] WIDTH (): INTEGER;
+PROCEDURE ["C"] HEIGHT (): INTEGER;
+PROCEDURE ["C"] VBUF (): SYSTEM.ADDRESS;
+PROCEDURE ["C"] MODETYPE (): SHORTCARD;
+PROCEDURE ["C"] MODEFLAGS (): SHORTCARD;
+PROCEDURE ["C"] BITSPERPIXEL (): INTEGER;
+PROCEDURE ["C"] COLORS (): INTEGER;
+PROCEDURE ["C"] __clip (): INTEGER;
+PROCEDURE ["C"] __clipx1 (): INTEGER;
+PROCEDURE ["C"] __clipy1 (): INTEGER;
+PROCEDURE ["C"] __clipx2 (): INTEGER;
+PROCEDURE ["C"] __clipy2 (): INTEGER;
+
+END mac_vgagl.

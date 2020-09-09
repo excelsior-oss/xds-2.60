@@ -1,0 +1,123 @@
+XDSX86.TXT                    Copyright (c) 1999-2001 Excelsior.
+----------------------------------------------------------------
+
+                    Native XDS-x86 OS/2 Edition
+                    ---------------------------
+                               v2.50
+
+                           Read Me First!
+
+
+In  the  following text we assume that you have chosen the C:\XDS
+directory for installation. If another directory was used, please
+use the name of that directory instead.
+
+1. Directory structure
+----------------------
+
+The following directory structure is created during installation:
+
+C:\XDS\
+    BIN             executable and system files
+    DEF\            library definition modules:
+        ISO             ISO Modula-2 library
+        OB2             Oberon-2 libraries pseudo-definition modules
+        OS2             OS/2 API
+        PIM             PIM library
+        XDS             XDS library
+    DLL             dynamic link libraries
+    DOC             on-line documentation
+    LIB\
+        X86         Native XDS-x86 libraries
+    README          text files with important information
+    SAMPLES         Modula-2/Oberon-2 code samples
+    SETUP           Setup programs and data
+    SYM\
+        X86         Native XDS-x86 symbol files
+
+
+2. Expanding and shrinking file names
+-------------------------------------
+
+Names of symbol files and files containing definition modules are
+initially FAT-compatible (limited to 8.3). If you have installed
+the XDS package onto a file system that supports long file names
+(e.g. HPFS), you may wish to expand those file names. To do this,
+double click the "Expand/Shrink File Names" icon in the XDS folder.
+You may revert back to short file names any time later by clickng
+that icon again.
+
+If you prefer command line, go to the directory C:\XDS\SETUP and
+invoke
+
+    fatfs -        to expand filenames
+    fatfs +        to shrink file names
+
+NOTE: Whenever you install an additional XDS product or maintain
+      your existing installation, file names are shrinked back
+      to 8.3 automatically, to ensure correct processing. 
+
+
+3. Creating the Working Directory
+---------------------------------
+
+To start working on a new project, create a new directory, make it
+current and invoke the XCWORK script to create the redirection
+file and the appropriate subdirectories:
+
+    c:
+    mkdir \WORK
+    cd \WORK
+    xcwork
+
+
+4. How to start
+----------------
+
+To start the compiler, type
+
+    xc {options | modes} module_or_project_file {options | modes}
+
+at the OS/2 command prompt and press Enter. Specifying no arguments
+will cause a brief help to be printed.
+
+
+5. Optlink calling convention
+-----------------------------
+
+Take into account that XDS-x86 compiler does not support the Optlink
+calling convention used by IBM C Set++ and Visual Age C++ compilers,
+and,  much worse,  in the standard C libraries  suppiled  with these
+compilers.  So  you can not call any functions from these libraries,
+or other C modules compiled by IBM compilers using Optlink, directly
+from your Modula-2 or Oberon-2 code.  In order to call an _Optlink C
+function, you have to write a "wrapper" C function with the  _System
+calling convention.
+
+
+6. See also
+-----------
+
+To view the on-line documentation, type
+
+    view xc             Native XDS-x86 User's Guide
+    view xdslib         XDS Library Guide and Reference
+    view isom2          ISO Modula-2 Language Reference
+    view isolib         ISO Modula-2 Library Reference
+    view o2rep          Oberon-2 Language Report
+    view h2d            H2D User's Guide
+    view xd             XDS Debugger User's Guide
+    view xds            XDS Family of Products Overview
+
+or double-click the correspoding icon in the XDS Information subfolder.
+
+The following text files in the README subdirectory contain additional
+information:
+
+    report.txt       bug reporting
+    samples.txt      samples description
+    whatsnew.txt     what is new in this release
+
+You will find the corresponding WPS objects in the Read Me subfolder.
+
+                     [end of document]

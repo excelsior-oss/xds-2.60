@@ -1,0 +1,11 @@
+LIBRARY FKA
+EXPORTS
+  FKA16INIT                  @64
+  QUERY16FKADISPLAYDETAILS   @65
+  WIN16FKAWNDPROC            @66
+  WIN16LOADFKA               @67
+  WIN16CREATEFKA             @68
+  WIN16SETFKAFORM            @69
+  WIN16QUERYFKAFORM          @70
+  WIN16GOTOFKA               @71
+  WIN16GOFROMFKA             @72

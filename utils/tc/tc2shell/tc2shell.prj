@@ -1,0 +1,10 @@
+-heaplimit   =  0
+
++o2addkwd
++o2extensions
+
+-lookup=*.sym=.\sym
+-lookup=*.obj=.\sym
+
+!module tc2shell
+!module Resources.res

@@ -1,0 +1,23 @@
+:Base xds.hlp
+:Title XDS On-Line Books
+1 XDS Family of Products=title
+:Include xc.cnt
+:Index Native XDS-x86 User's Guide=xc.hlp
+:Include xm.cnt
+:Index XDS-C User's Guide=xm.hlp
+:Include xdslib.cnt
+:Index XDS Library Guide and Reference=xdslib.hlp
+:Include isom2.cnt
+:Index ISO Modula-2 Language Reference=isom2.hlp
+:Include isolib.cnt
+:Index ISO Modula-2 Library Reference=isolib.hlp
+:Include o2rep.cnt
+:Index Oberon-2 Report=o2rep.hlp
+:Include tspn.cnt
+:Index TopSpeed-to-XDS Porting Notes=tspn.hlp
+:Include xd.cnt
+:Index XDS Debugger User's Guide=xd.hlp
+:Include h2d.cnt
+:Index H2D User's Guide=h2d.hlp
+:Include xdsenv.cnt
+:Index Integrated Development Environment=xdsenv.hlp

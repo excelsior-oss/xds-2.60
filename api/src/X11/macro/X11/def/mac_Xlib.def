@@ -1,0 +1,84 @@
+(* Created using H2D v1.00 from X11/Xlib.h.
+ * X11/mac_Xlib.def  Apr 6  12:5:3  1996
+ *
+ * Copyright (c) 1996-1998 XDS Ltd, Russia. All rights reserved.
+ *
+ * $RCSfile: mac_Xlib.def,v $ $Revision: 4 $ $Date: 14.02.98 18:06 $
+ *)
+
+<*+ M2ADDTYPES *>
+<*+ M2EXTENSIONS *>
+
+DEFINITION MODULE mac_Xlib;
+
+IMPORT SYSTEM,Xlib,X;
+
+FROM Xlib IMPORT PtrDisplay, Screen, PtrScreen;
+
+PROCEDURE ["C"] BitmapBitOrder ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] BitmapPad ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] BitmapUnit ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] BlackPixel ( dpy: PtrDisplay;
+                             scr: SYSTEM.int ): LONGCARD;
+PROCEDURE ["C"] BlackPixelOfScreen ( s: PtrScreen ): LONGCARD;
+PROCEDURE ["C"] CellsOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] ConnectionNumber ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] DefaultColormap ( dpy: PtrDisplay;
+                                  scr: SYSTEM.int ): X.Colormap;
+PROCEDURE ["C"] DefaultColormapOfScreen ( s: PtrScreen ): X.Colormap;
+PROCEDURE ["C"] DefaultDepth ( dpy: PtrDisplay;
+                               scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DefaultDepthOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] DefaultGC ( dpy: PtrDisplay;
+                            scr: SYSTEM.int ): Xlib.GC;
+PROCEDURE ["C"] DefaultGCOfScreen ( s: PtrScreen ): Xlib.GC;
+PROCEDURE ["C"] DefaultRootWindow ( dpy: PtrDisplay ): X.Window;
+PROCEDURE ["C"] DefaultScreen ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] DefaultScreenOfDisplay ( dpy: PtrDisplay ): PtrScreen;
+PROCEDURE ["C"] DefaultVisual ( dpy: PtrDisplay;
+                                scr: SYSTEM.int ): Xlib.PtrVisual;
+PROCEDURE ["C"] DefaultVisualOfScreen ( s: PtrScreen ): Xlib.PtrVisual;
+PROCEDURE ["C"] DisplayCells ( dpy: PtrDisplay;
+                               scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DisplayHeight ( dpy: PtrDisplay;
+                                scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DisplayHeightMM ( dpy: PtrDisplay;
+                                  scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DisplayOfScreen ( s: PtrScreen ): PtrDisplay;
+PROCEDURE ["C"] DisplayPlanes ( dpy: PtrDisplay;
+                                scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DisplayString ( dpy: PtrDisplay ): Xlib.PChar;
+PROCEDURE ["C"] DisplayWidth ( dpy: PtrDisplay;
+                               scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DisplayWidthMM ( dpy: PtrDisplay;
+                                 scr: SYSTEM.int ): SYSTEM.int;
+PROCEDURE ["C"] DoesBackingStore ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] DoesSaveUnders ( s: PtrScreen ): BOOLEAN;
+PROCEDURE ["C"] EventMaskOfScreen ( s: PtrScreen ): BITSET;
+PROCEDURE ["C"] HeightMMOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] HeightOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] ImageByteOrder ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] LastKnownRequestProcessed ( dpy: PtrDisplay ): LONGCARD;
+PROCEDURE ["C"] MaxCmapsOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] MinCmapsOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] NextRequest ( dpy: PtrDisplay ): LONGCARD;
+PROCEDURE ["C"] PlanesOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] ProtocolRevision ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] ProtocolVersion ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] QLength ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] RootWindow ( dpy: PtrDisplay;
+                             scr: SYSTEM.int ): X.Window;
+PROCEDURE ["C"] RootWindowOfScreen ( s: PtrScreen ): X.Window;
+PROCEDURE ["C"] ScreenCount ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] ScreenOfDisplay ( dpy: PtrDisplay;
+                                  scr: SYSTEM.int ): PtrScreen;
+PROCEDURE ["C"] ServerVendor ( dpy: PtrDisplay ): Xlib.PChar;
+PROCEDURE ["C"] VendorRelease ( dpy: PtrDisplay ): SYSTEM.int;
+PROCEDURE ["C"] WhitePixel ( dpy: PtrDisplay;
+                             scr: SYSTEM.int ): LONGCARD;
+PROCEDURE ["C"] WhitePixelOfScreen ( s: PtrScreen ): LONGCARD;
+PROCEDURE ["C"] WidthMMOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] WidthOfScreen ( s: PtrScreen ): SYSTEM.int;
+PROCEDURE ["C"] XAllocID ( dpy: PtrDisplay ): X.XID;
+
+END mac_Xlib.

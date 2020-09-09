@@ -1,0 +1,215 @@
+(****************************** Module Header ******************************\
+*
+* Module Name: PMBITMAP.H
+*
+* OS/2 Presentation Manager Bit Map, Icon and Pointer type declarations.
+*
+* Copyright (c) International Business Machines Corporation 1981, 1988-1992
+*
+* ===========================================================================
+*
+* This is the file format structure for Bit Maps, Pointers and Icons
+* as stored in the resource file of a PM application.
+*
+* Notes on file format:
+*
+* Each BITMAPFILEHEADER entry is immediately followed by the color table
+* for the bit map bits it references.
+* Icons and Pointers contain two BITMAPFILEHEADERs for each ARRAYHEADER
+* item.  The first one is for the ANDXOR mask, the second is for the
+* COLOR mask.  All offsets are absolute based on the start of the FILE.
+*
+* For OS/2 Version 2.0 and later BITMAPFILEHEADER2 and the other '2'
+* versions of each structure are recommended. Use the non-2 versions
+* of each structure if compatibility with OS/2 Version 1.X is required.
+*
+* ===========================================================================
+*
+* Comments at the end of each TYPE line give the name tags used in
+* the assembler include version of this file.
+*
+* The assembler include version of this file excludes lines between XLATOFF
+* and XLATON comments.
+*
+\***************************************************************************)
+
+#ifndef PMBITMAP_INCLUDED
+   (* XLATON *)
+   #define PMBITMAP_INCLUDED
+
+   (* XLATOFF *)
+   <* ALIGNMENT = "1" *>          (* pack on wordboundary *)
+   (* XLATON *)
+
+   (* bitmap parameterization used by GpiCreateBitmap and others *)
+   TYPE BITMAPINFOHEADER = RECORD        (* bmp *)
+      cbFix:     ULONG;
+      cx:        USHORT;
+      cy:        USHORT;
+      cPlanes:   USHORT;
+      cBitCount: USHORT;
+   END;
+   TYPE PBITMAPINFOHEADER = POINTER TO BITMAPINFOHEADER;
+
+   (* RGB data for _BITMAPINFO struct *)
+   TYPE RGB = RECORD             (* rgb *)
+      bBlue:  BYTE;
+      bGreen: BYTE;
+      bRed:   BYTE;
+   END;
+
+   (* bitmap data used by GpiSetBitmapBits and others *)
+   TYPE BITMAPINFO = RECORD      (* bmi *)
+      cbFix:     ULONG;
+      cx:        USHORT;
+      cy:        USHORT;
+      cPlanes:   USHORT;
+      cBitCount: USHORT;
+      argbColor: ARRAY [0..0] OF RGB;
+   END;
+   TYPE PBITMAPINFO = POINTER TO BITMAPINFO;
+
+   (* Constants for compression/decompression command *)
+
+   CONST CBD_COMPRESSION    = 1;
+   CONST CBD_DECOMPRESSION  = 2;
+   CONST CBD_BITS           = 0;
+
+   (* Flags for compression/decompression option *)
+
+   CONST CBD_COLOR_CONVERSION   = 000000001H;
+
+   (* Compression scheme in the ulCompression field of the bitmapinfo structure *)
+
+   CONST BCA_UNCOMP         = 0;
+   CONST BCA_HUFFMAN1D      = 3;
+   CONST BCA_RLE4           = 2;
+   CONST BCA_RLE8           = 1;
+   CONST BCA_RLE24          = 4;
+
+   CONST BRU_METRIC         = 0;
+
+   CONST BRA_BOTTOMUP       = 0;
+
+   CONST BRH_NOTHALFTONED   = 0;
+   CONST BRH_ERRORDIFFUSION = 1;
+   CONST BRH_PANDA          = 2;
+   CONST BRH_SUPERCIRCLE    = 3;
+
+   CONST BCE_PALETTE        = 0FFFFFFFFH;
+   CONST BCE_RGB            = 0;
+
+   TYPE BITMAPINFOHEADER2 = RECORD       (* bmp2  *)
+      cbFix:             ULONG; (*  Length of structure                    *)
+      cx:                ULONG; (*  Bit-map width in pels                  *)
+      cy:                ULONG; (*  Bit-map height in pels                 *)
+      cPlanes:           USHORT; (*  Number of bit planes                   *)
+      cBitCount:         USHORT; (*  Number of bits per pel within a plane  *)
+      ulCompression:     ULONG; (*  Compression scheme used to store the bitmap *)
+      cbImage:           ULONG; (*  Length of bit-map storage data in bytes*)
+      cxResolution:      ULONG; (*  x resolution of target device          *)
+      cyResolution:      ULONG; (*  y resolution of target device          *)
+      cclrUsed:          ULONG; (*  Number of color indices used           *)
+      cclrImportant:     ULONG; (*  Number of important color indices      *)
+      usUnits:           USHORT; (*  Units of measure                       *)
+      usReserved:        USHORT; (*  Reserved                               *)
+      usRecording:       USHORT; (*  Recording algorithm                    *)
+      usRendering:       USHORT; (*  Halftoning algorithm                   *)
+      cSize1:            ULONG; (*  Size value 1                           *)
+      cSize2:            ULONG; (*  Size value 2                           *)
+      ulColorEncoding:   ULONG; (*  Color encoding                         *)
+      ulIdentifier:      ULONG; (*  Reserved for application use           *)
+   END;
+   TYPE PBITMAPINFOHEADER2 = POINTER TO BITMAPINFOHEADER2;
+
+   TYPE RGB2 = RECORD        (* rgb2 *)
+      bBlue:               BYTE; (* Blue component of the color definition *)
+      bGreen:              BYTE; (* Green component of the color definition*)
+      bRed:                BYTE; (* Red component of the color definition  *)
+      fcOptions:           BYTE; (* Reserved, must be zero                 *)
+   END;
+   TYPE PRGB2 = POINTER TO RGB2;
+
+   TYPE BITMAPINFO2 = RECORD     (* bmi2 *)
+      cbFix:             ULONG; (* Length of fixed portion of structure   *)
+      cx:                ULONG; (* Bit-map width in pels                  *)
+      cy:                ULONG; (* Bit-map height in pels                 *)
+      cPlanes:           USHORT; (* Number of bit planes                   *)
+      cBitCount:         USHORT; (* Number of bits per pel within a plane  *)
+      ulCompression:     ULONG; (* Compression scheme used to store the bitmap *)
+      cbImage:           ULONG; (* Length of bit-map storage data in bytes*)
+      cxResolution:      ULONG; (* x resolution of target device          *)
+      cyResolution:      ULONG; (* y resolution of target device          *)
+      cclrUsed:          ULONG; (* Number of color indices used           *)
+      cclrImportant:     ULONG; (* Number of important color indices      *)
+      usUnits:           USHORT; (* Units of measure                       *)
+      usReserved:        USHORT; (* Reserved                               *)
+      usRecording:       USHORT; (* Recording algorithm                    *)
+      usRendering:       USHORT; (* Halftoning algorithm                   *)
+      cSize1:            ULONG; (* Size value 1                           *)
+      cSize2:            ULONG; (* Size value 2                           *)
+      ulColorEncoding:   ULONG; (* Color encoding                         *)
+      ulIdentifier:      ULONG; (* Reserved for application use           *)
+      argbColor:         ARRAY [0..0] OF RGB2; (* Color definition record   *)
+   END;
+   TYPE PBITMAPINFO2 = POINTER TO BITMAPINFO2;
+
+   TYPE BITMAPFILEHEADER = RECORD   (* bfh *)
+      usType:   USHORT;
+      cbSize:   ULONG;
+      xHotspot: SHORT;
+      yHotspot: SHORT;
+      offBits:  ULONG;
+      bmp:      BITMAPINFOHEADER;
+   END;
+   TYPE PBITMAPFILEHEADER = POINTER TO BITMAPFILEHEADER;
+
+   TYPE BITMAPARRAYFILEHEADER = RECORD      (* bafh *)
+      usType:    USHORT;
+      cbSize:    ULONG;
+      offNext:   ULONG;
+      cxDisplay: USHORT;
+      cyDisplay: USHORT;
+      bfh:       BITMAPFILEHEADER;
+   END;
+   TYPE PBITMAPARRAYFILEHEADER = POINTER TO BITMAPARRAYFILEHEADER;
+
+   TYPE BITMAPFILEHEADER2 = RECORD   (* bfh2 *)
+      usType:   USHORT;
+      cbSize:   ULONG;
+      xHotspot: SHORT;
+      yHotspot: SHORT;
+      offBits:  ULONG;
+      bmp2:     BITMAPINFOHEADER2;
+   END;
+   TYPE PBITMAPFILEHEADER2 = POINTER TO BITMAPFILEHEADER2;
+
+   TYPE BITMAPARRAYFILEHEADER2 = RECORD   (* bafh2 *)
+      usType:    USHORT;
+      cbSize:    ULONG;
+      offNext:   ULONG;
+      cxDisplay: USHORT;
+      cyDisplay: USHORT;
+      bfh2:      BITMAPFILEHEADER2;
+   END;
+   TYPE PBITMAPARRAYFILEHEADER2 = POINTER TO BITMAPARRAYFILEHEADER2;
+
+   (*************************************************************************
+   * These are the identifying values that go in the usType field of the
+   * BITMAPFILEHEADER(2) and BITMAPARRAYFILEHEADER(2).
+   * (BFT_ => Bit map File Type)
+   *************************************************************************)
+   CONST BFT_ICON         =  04349H;   (* 'IC' *)
+   CONST BFT_BMAP         =  04d42H;   (* 'BM' *)
+   CONST BFT_POINTER      =  05450H;   (* 'PT' *)
+   CONST BFT_COLORICON    =  04943H;   (* 'CI' *)
+   CONST BFT_COLORPOINTER =  05043H;   (* 'CP' *)
+   CONST BFT_BITMAPARRAY  =  04142H;   (* 'BA' *)
+
+   (* XLATOFF *)
+   <* ALIGNMENT = "4" *>         (* reset to default packing *)
+   (* XLATON *)
+
+#endif (* PMBITMAP_INCLUDED *)
+
+(**************************** end of file **********************************)

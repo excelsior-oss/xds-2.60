@@ -1,0 +1,13 @@
+extern  void    Clear_file_list (void);
+extern  void    Add_file_list (int file);
+extern  void    Commit_file_list (void);
+extern  void    Update_file_list (void);
+extern  void    Flist_enable_items (void);
+extern  void    Show_file_list (void);
+extern  BOOL    Hide_file_list (void);
+extern  void    Read_file_list (char * ini_file);
+extern  void    Write_file_list (char * ini_file);
+extern  void    Refresh_file_list (void);
+extern  BOOL    Register_file_list (void);
+extern	int	Get_file_list (int ** list);
+extern	void	Refresh_file_list (void);

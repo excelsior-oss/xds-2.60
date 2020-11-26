@@ -1,0 +1,11 @@
+*.tem  = .; $(CHECKDIR)\xds\bin
+*.cfg  = $(CHECKDIR)\xds\bin
+*.def  = tmp\def
+*.sym  = tmp\sym; $(CHECKDIR)\xds\sym\c
+*.c    = tmp\ch
+*.h    = tmp\ch
+*.mod  = tmp\mod
+*.ob2  = tmp\ob2
+*.obj  = tmp\obj
+*.lib  = $(CHECKDIR)\xds\lib\c
+*.exe  = tmp\exe

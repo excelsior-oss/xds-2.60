@@ -1,2 +1,3 @@
 xdsc
 xdsn
+xdsc_clangcl

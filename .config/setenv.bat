@@ -20,6 +20,7 @@ if not exist "%NASM_HOME%"        call :lbl_Error NASM_HOME         "%NASM_HOME%
 if not exist "%MSBUILD_HOME%"     call :lbl_Error MSBUILD_HOME      "%MSBUILD_HOME%" 
 if not exist "%MSVC_HOME%"        call :lbl_Error MSVC_HOME         "%MSVC_HOME%"       
 if not exist "%XDSDIR%"           call :lbl_Error XDSDIR            "%XDSDIR%"          
+rem if not exist "%LLVM_HOME%"        call :lbl_Error LLVM_HOME         "%LLVM_HOME%"       
 if not exist "%MINGW%"            call :lbl_Error MINGW             "%MINGW%"           
 if not exist "%MSYS%"             call :lbl_Error MSYS              "%MSYS%"            
 rem NOTE: Help generation disabled 
@@ -39,6 +40,9 @@ set PATH=%XDSDIR%\bin;%PATH%
 
 rem === Setup 'PATH' to the Netwide Assembler 
 set PATH=%NASM_HOME%;%PATH%
+
+rem === Setup 'PATH' to LLVM Compiler Infrastructure 
+if exist "%LLVM_HOME%"  set PATH=%LLVM_HOME%\bin;%PATH%
 
 rem === Setup 'PATH' to MinGW  
 set PATH=%MINGW%\bin;%PATH%
@@ -68,6 +72,3 @@ echo *** Environment Error: variable "%1" is undefined or
 echo *** invalid "%~2".
 echo *** Please define it in the "%XDS_ENV_CONFIG_FILE%" 
 exit /B 1
-
-
-

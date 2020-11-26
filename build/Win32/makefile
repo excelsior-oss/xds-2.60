@@ -31,6 +31,8 @@ WATCOMMKF       = enduser\xds\lib\C\watcom.mkf
 WATCOMTSMKF     = enduser\xds\lib\C\watcomts.mkf
 UNIXMKF         = enduser\xds\lib\C\unix.mkf
 UNIXTSMKF       = enduser\xds\lib\C\unixts.mkf
+CLANGMKF        = enduser\xds\lib\C\clangcl.mkf
+CLANGTSMKF      = enduser\xds\lib\C\clangclts.mkf
 
 XM              = enduser\xds\bin\xm.exe
 
@@ -172,6 +174,7 @@ xm_lib:                                \
         $(MSVCMKF)      $(MSVCTSMKF)   \
         $(WATCOMMKF)    $(WATCOMTSMKF) \
         $(UNIXMKF)      $(UNIXTSMKF)   \
+        $(CLANGMKF)     $(CLANGTSMKF)  \
         $(WINSYM_C)     $(POSIXSYM_C)                      
         @echo ====== XDS-C Libraries successfully built =====
         @echo.
@@ -426,6 +429,22 @@ $(UNIXTSMKF): $(LIBTS)
         if exist $@ del $@
         cd enduser\xds\lib\c
         xm ..\..\..\..\src\tslibs\tslib =g -mode:=user -mkf_name:=unixts -env_target= -target_fs=unix -target_family=unix -target_os=unix -libext=a -escape_io_h:+ 1>..\..\..\..\log\unixtsmkf.out 2>&1
+        cd ..\..\..\..
+        @echo ====== MSVCTS.MKF ======== OK!
+        @echo.
+
+$(CLANGMKF): $(LIBXDS)
+        if exist $@ del $@
+        cd enduser\xds\lib\c
+        xm ..\..\..\..\src\m\lib =g -mode:=user -mkf_name:=clangcl -env_target=clangnt -cc=CLangCL 1>..\..\..\..\log\clangclmkf.out 2>&1
+        cd ..\..\..\..
+        @echo ====== MSVC.MKF ======== OK!
+        @echo.
+
+$(CLANGTSMKF): $(LIBTS)
+        if exist $@ del $@
+        cd enduser\xds\lib\c
+        xm ..\..\..\..\src\tslibs\tslib =g -mode:=user -mkf_name:=clangclts -env_target=clangnt -cc=CLangCL 1>..\..\..\..\log\clangcltsmkf.out 2>&1
         cd ..\..\..\..
         @echo ====== MSVCTS.MKF ======== OK!
         @echo.
@@ -989,8 +1008,8 @@ cleanbin: cleanxds cleanc
 
 cleanxds:
         -@del $(LIBXDS)          $(LIBTS)
-        -@del $(MSVCMKF)         $(WATCOMMKF)    $(UNIXMKF)
-        -@del $(MSVCTSMKF)       $(WATCOMTSMKF)  $(UNIXTSMKF)
+        -@del $(MSVCMKF)         $(WATCOMMKF)    $(UNIXMKF)      $(CLANGMKF)
+        -@del $(MSVCTSMKF)       $(WATCOMTSMKF)  $(UNIXTSMKF)    $(CLANGTSMKF)
         -@del $(XM)              
         -@del $(RMSYM)
         -@del $(MERGE)

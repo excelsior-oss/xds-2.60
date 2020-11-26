@@ -625,7 +625,7 @@
 !if (backend="C") then
   !module X2C xrcCrtnStart x2cLib xrcO2MM xrcRTS
   !module xrcChecks xrcACMPLX xrcIncDec xrcArythmetics
-  !if (env_target="winnt") or (env_target="alpha") then
+  !if (env_target="winnt") or (env_target="alpha") or (env_target="clangnt") then
     !module xrcAri64 xrcIncDec64
   !end
   !if (env_target="linux") and (native_setjump or native_library) then

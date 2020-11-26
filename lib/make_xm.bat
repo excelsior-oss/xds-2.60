@@ -19,6 +19,15 @@ xcopy /R /Y src\xr\C\*.c          ch\C\       1>nul 2>nul || exit /B 1
 xcopy /R /Y src\xr\C\*.h          include\C\  1>nul 2>nul || exit /B 1
 xcopy /R /Y ..\API\src\Win32\*.h  include\C\  1>nul 2>nul || exit /B 1
 
+xcopy /R /Y src\os\posix\*.c      enduser\C\C\        1>nul 2>nul || exit /B 1 
+xcopy /R /Y src\xr\C\*.c          enduser\C\C\        1>nul 2>nul || exit /B 1
+xcopy /R /Y src\os\posix\*.h      enduser\include\C\  1>nul 2>nul || exit /B 1
+xcopy /R /Y src\xr\C\*.h          enduser\include\C\  1>nul 2>nul || exit /B 1
+xcopy /R /Y ..\API\src\Win32\*.h  enduser\include\C\  1>nul 2>nul || exit /B 1
+
+xcopy /R /Y src\TSlibs\POSIX\*.c  enduser\C\C\        1>nul 2>nul || exit /B 1 
+
+
 rem ============================================= Make MSVC library
 :lbl_msvc_lib
 set TASK_NAME=msvc_lib
@@ -40,18 +49,28 @@ set XDS_OPT=-cc=MSVC -env_target=winnt -decor=rht
 set TARGET_OPT=-target_fs=unc -target_family=win32 -target_os=winnt  
 set MAKE_OPTIONS=-mkf_name:=msvc %XDS_OPT% %TARGET_OPT%
 
-xcopy /R /Y src\os\posix\*.c      enduser\C\        1>nul 2>nul || exit /B 1 
-xcopy /R /Y src\xr\C\*.c          enduser\C\        1>nul 2>nul || exit /B 1
-xcopy /R /Y src\os\posix\*.h      enduser\include\  1>nul 2>nul || exit /B 1
-xcopy /R /Y src\xr\C\*.h          enduser\include\  1>nul 2>nul || exit /B 1
-xcopy /R /Y ..\API\src\Win32\*.h  enduser\include\  1>nul 2>nul || exit /B 1
+pushd enduser\lib\C
+echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+if errorlevel 1  call :lbl_Error %TASK_NAME%
+popd
 
-xcopy /R /Y ch\C\*.c      enduser\C\        1>nul 2>nul || exit /B 1 
-xcopy /R /Y include\*.h   enduser\include\  1>nul 2>nul || exit /B 1 
+xcopy /R /Y ch\C\*.c        enduser\C\C\        1>nul 2>nul || exit /B 1 
+xcopy /R /Y include\C\*.h   enduser\include\C\  1>nul 2>nul || exit /B 1 
+
+
+rem ============================================= Generate LLVM makefile
+:lbl_clangcl_mkf
+set TASK_NAME=clangcl.mkf
+echo Build %TASK_NAME%
+
+set XDS_OPT=-cc=CLangCL -env_target=clangnt -decor=rht 
+set TARGET_OPT=-target_fs=unc -target_family=win32 -target_os=winnt  
+set MAKE_OPTIONS=-mkf_name:=clangcl %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 
@@ -66,8 +85,8 @@ set TARGET_OPT=-target_fs=unix -target_family=unix -target_os=unix -libext=a
 set MAKE_OPTIONS=-mkf_name:=unix %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 
@@ -82,8 +101,8 @@ set TARGET_OPT=-target_family=win32
 set MAKE_OPTIONS=-mkf_name:=watcom %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\m\lib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\m\lib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 
@@ -114,19 +133,28 @@ set XDS_OPT=-cc=MSVC -env_target=winnt -decor=rht
 set TARGET_OPT=-target_fs=unc -target_family=win32 -target_os=winnt  
 set MAKE_OPTIONS=-mkf_name:=msvcts %XDS_OPT% %TARGET_OPT%
 
-xcopy /R /Y src\TSlibs\POSIX\*.c  enduser\C\        1>nul 2>nul || exit /B 1 
-xcopy /R /Y src\os\posix\*.c      enduser\C\        1>nul 2>nul || exit /B 1 
-xcopy /R /Y src\xr\C\*.c          enduser\C\        1>nul 2>nul || exit /B 1
-xcopy /R /Y src\os\posix\*.h      enduser\include\  1>nul 2>nul || exit /B 1
-xcopy /R /Y src\xr\C\*.h          enduser\include\  1>nul 2>nul || exit /B 1
-xcopy /R /Y ..\API\src\Win32\*.h  enduser\include\  1>nul 2>nul || exit /B 1
+pushd enduser\lib\C
+echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+if errorlevel 1  call :lbl_Error %TASK_NAME%
+popd
 
-xcopy /R /Y ch\C\*.c      enduser\C\        1>nul 2>nul || exit /B 1 
-xcopy /R /Y include\*.h   enduser\include\  1>nul 2>nul || exit /B 1 
+xcopy /R /Y ch\C\*.c        enduser\C\C\        1>nul 2>nul || exit /B 1 
+xcopy /R /Y include\C\*.h   enduser\include\C\  1>nul 2>nul || exit /B 1 
+
+
+rem ============================================= Generate TopSpeed LLVM makefile
+:lbl_clangclts_mkf
+set TASK_NAME=clangclts.mkf
+echo Build %TASK_NAME%
+
+set XDS_OPT=-cc=CLangCL -env_target=clangnt -decor=rht
+set TARGET_OPT=-target_fs=unc -target_family=win32 -target_os=winnt
+set MAKE_OPTIONS=-mkf_name:=clangclts %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 
@@ -141,8 +169,8 @@ set TARGET_OPT=-target_fs=unix -target_family=unix -target_os=unix -libext=a
 set MAKE_OPTIONS=-mkf_name:=unixts %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 
@@ -157,8 +185,8 @@ set TARGET_OPT=-target_family=win32
 set MAKE_OPTIONS=-mkf_name:=watcomts %XDS_OPT% %TARGET_OPT%
 
 pushd enduser\lib\C
-echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
-xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=make_file %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
+echo xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%  1>  "%LOG_DIR%\%TASK_NAME%.log" 2>&1
+xm.exe ..\..\..\src\TSlibs\tslib.prj =g -mode:=user %MAKE_OPTIONS%       1>> "%LOG_DIR%\%TASK_NAME%.log" 2>>&1
 if errorlevel 1  call :lbl_Error %TASK_NAME%
 popd
 

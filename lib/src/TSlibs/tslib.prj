@@ -261,7 +261,7 @@
   -lookup = *.sym = $!/../../sym/C
 
   -lookup = *.h   = $!/../../include/C
-  -lookup = *.c   = $!/../../ch/C/C
+  -lookup = *.c   = $!/../../ch/C
   -lookup = *.lnk = $!/../../ch/C
   -lookup = *.obj = $!/../../ch/C
   -lookup = *.o   = $!/../../ch/C

@@ -13,7 +13,7 @@ DEFINITION MODULE ["StdCall"] WinSvc;
 
 FROM WinDef IMPORT DWORD, BOOL, WCHAR, HANDLE, PVOID,
                    PSTR, PWSTR, PCSTR, PCWSTR;
-FROM WinNT IMPORT SERVICE_NODE_TYPE, SERVICE_LOAD_TYPE, SERVICE_ERROR_TYPE, 
+FROM WinNT IMPORT SERVICE_NODE_TYPE, SERVICE_LOAD_TYPE, SERVICE_ERROR_TYPE,
                   ACCESS_MASK, ACCESS_ENUM,
                   STANDARD_RIGHTS_REQUIRED, SECURITY_INFORMATION,
                   PSECURITY_DESCRIPTOR;
@@ -568,7 +568,7 @@ PROCEDURE QueryServiceStatus (hService          : SC_HANDLE;
                               VAR ServiceStatus : SERVICE_STATUS) : BOOL;
 
 
-PROCEDURE RegisterServiceCtrlHandlerA (ServiceName : ARRAY OF CHAR;
+PROCEDURE RegisterServiceCtrlHandlerA (lpServiceName : ARRAY OF CHAR;
                                        lpHandlerProc : HANDLER_FUNCTION
           ) : SERVICE_STATUS_HANDLE;
 
@@ -614,6 +614,11 @@ PROCEDURE StartServiceW (hService              : SC_HANDLE;
                          dwNumServiceArgs      : DWORD;
                          VAR [NIL] ServiceArgVectors : ARRAY OF PCWSTR) : BOOL;
 
+<* IF DEFINED (UNICODE) THEN *>
+      CONST StartService = StartServiceW;
+<* ELSE *>
+      CONST StartService = StartServiceA;
+<* END *>
 
 PROCEDURE UnlockServiceDatabase (ScLock : SC_LOCK) : BOOL;
 

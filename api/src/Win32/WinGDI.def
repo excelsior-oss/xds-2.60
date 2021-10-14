@@ -50,21 +50,23 @@ CONST R2_LAST = R2_WHITE;
 
 TYPE ROP = DWORD;
 
-CONST SRCCOPY      = ROP (00CC0020h); (* dest = source                   *)
-      SRCPAINT     = ROP (00EE0086h); (* dest = source OR dest           *)
-      SRCAND       = ROP (008800C6h); (* dest = source AND dest          *)
-      SRCINVERT    = ROP (00660046h); (* dest = source XOR dest          *)
-      SRCERASE     = ROP (00440328h); (* dest = source AND (NOT dest )   *)
-      NOTSRCCOPY   = ROP (00330008h); (* dest = (NOT source)             *)
-      NOTSRCERASE  = ROP (001100A6h); (* dest = (NOT src) AND (NOT dest) *)
-      MERGECOPY    = ROP (00C000CAh); (* dest = (source AND pattern)     *)
-      MERGEPAINT   = ROP (00BB0226h); (* dest = (NOT source) OR dest     *)
-      PATCOPY      = ROP (00F00021h); (* dest = pattern                  *)
-      PATPAINT     = ROP (00FB0A09h); (* dest = DPSnoo                   *)
-      PATINVERT    = ROP (005A0049h); (* dest = pattern XOR dest         *)
-      DSTINVERT    = ROP (00550009h); (* dest = (NOT dest)               *)
-      BLACKNESS    = ROP (00000042h); (* dest = BLACK                    *)
-      WHITENESS    = ROP (00FF0062h); (* dest = WHITE                    *)
+CONST SRCCOPY        = ROP (00CC0020h); (* dest = source                   *)
+      SRCPAINT       = ROP (00EE0086h); (* dest = source OR dest           *)
+      SRCAND         = ROP (008800C6h); (* dest = source AND dest          *)
+      SRCINVERT      = ROP (00660046h); (* dest = source XOR dest          *)
+      SRCERASE       = ROP (00440328h); (* dest = source AND (NOT dest )   *)
+      NOTSRCCOPY     = ROP (00330008h); (* dest = (NOT source)             *)
+      NOTSRCERASE    = ROP (001100A6h); (* dest = (NOT src) AND (NOT dest) *)
+      MERGECOPY      = ROP (00C000CAh); (* dest = (source AND pattern)     *)
+      MERGEPAINT     = ROP (00BB0226h); (* dest = (NOT source) OR dest     *)
+      PATCOPY        = ROP (00F00021h); (* dest = pattern                  *)
+      PATPAINT       = ROP (00FB0A09h); (* dest = DPSnoo                   *)
+      PATINVERT      = ROP (005A0049h); (* dest = pattern XOR dest         *)
+      DSTINVERT      = ROP (00550009h); (* dest = (NOT dest)               *)
+      BLACKNESS      = ROP (00000042h); (* dest = BLACK                    *)
+      WHITENESS      = ROP (00FF0062h); (* dest = WHITE                    *)
+      NOMIRRORBITMAP = ROP (80000000h); (* Do not mirror the bitmap        *)
+      CAPTUREBLT     = ROP (40000000h); (* Include layered windows         *)
 
 (* Quaternary raster codes *)
 TYPE ROP4 = DWORD;
@@ -2983,11 +2985,11 @@ PROCEDURE CreateHatchBrush   (Style : HS_ENUM; Color : COLORREF) : HBRUSH;
 PROCEDURE CreateICA (Driver : PCSTR;
                      Device : ARRAY OF CHAR;
                      Output : PCSTR;
-         (* IN NIL*) InitData : PDEVMODEA) : HDC;
+        (* IN NIL *) InitData : PDEVMODEA) : HDC;
 
-PROCEDURE CreateICW (Driver : PCSTR;
+PROCEDURE CreateICW (Driver : PCWSTR;
                      Device : ARRAY OF WCHAR;
-                     Output : PCSTR;
+                     Output : PCWSTR;
         (* IN NIL *) InitData : PDEVMODEW) : HDC;
 
 <* IF DEFINED (UNICODE) THEN *>
@@ -3038,9 +3040,9 @@ PROCEDURE CreateRoundRectRgn (LeftRect, TopRect,
 PROCEDURE CreateScalableFontResourceA (Hidden      : BOOL;
                                        FontRes     : ARRAY OF CHAR;
                                        FontFile    : ARRAY OF CHAR;
-                             (* NIL *) CurrentPath : PSTR) : BOOL;
+                             (* NIL *) CurrentPath : PCSTR) : BOOL;
 PROCEDURE CreateScalableFontResourceW (Hidden      : BOOL;
-                                       FontRes     : ARRAY OF CHAR;
+                                       FontRes     : ARRAY OF WCHAR;
                                        FontFile    : ARRAY OF WCHAR;
                              (* NIL *) CurrentPath : PCWSTR) : BOOL;
 

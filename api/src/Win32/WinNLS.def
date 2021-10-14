@@ -166,7 +166,7 @@ CONST NORM_IGNORECASE     = NORM_SET {NORM__IGNORECASE    }; (* 00000001h *)
       NORM_IGNOREKANATYPE = NORM_SET {NORM__IGNOREKANATYPE}; (* 00010000h *)
       NORM_IGNOREWIDTH    = NORM_SET {NORM__IGNOREWIDTH   }; (* 00020000h *)
 
-(* Locale Independent Mapping Flags. *) 
+(* Locale Independent Mapping Flags. *)
 
 TYPE MAP_ENUM = (MAP__0, MAP__1,
                  MAP__2, MAP__3,
@@ -463,15 +463,24 @@ CONST TIME_NOMINUTESORSECONDS = TIME_SET {TIME__NOMINUTESORSECONDS}; (* 00000001
  *  Date Flags for GetDateFormatW.
  *)
 
-TYPE DATE_ENUM = (DATE__SHORTDATE,         (* 0 - use short date picture *)
-                  DATE__LONGDATE,          (* 1 - use long date picture *)
-                  DATE__USE_ALT_CALENDAR); (* 2 - use alternate calendar (if any) *)
+TYPE DATE_ENUM = (DATE__SHORTDATE,       (* 0 - use short date picture *)
+                  DATE__LONGDATE,        (* 1 - use long date picture *)
+                  DATE__USE_ALT_CALENDAR (* 2 - use alternate calendar (if any) *)
+                  DATE__YEARMONTH        (* 3 - use year month picture *)
+                  DATE__LTRREADING       (* 4 - add marks for left to right reading order layout *)
+                  DATE__RTLREADING       (* 5 - add marks for right to left reading order layout *)
+                  DATE__AUTOLAYOUT       (* 6 - add appropriate marks for left-to-right or right-to-left reading order layout *)
+                 );
 
      DATE_SET = SET OF DATE_ENUM;
 
 CONST DATE_SHORTDATE        = DATE_SET {DATE__SHORTDATE       }; (* 00000001h *)
       DATE_LONGDATE         = DATE_SET {DATE__LONGDATE        }; (* 00000002h *)
       DATE_USE_ALT_CALENDAR = DATE_SET {DATE__USE_ALT_CALENDAR}; (* 00000004h *)
+      DATE_YEARMONTH        = DATE_SET {DATE__YEARMONTH       }; (* 00000008h *)
+      DATE_LTRREADING       = DATE_SET {DATE__LTRREADING      }; (* 00000010h *)
+      DATE_RTLREADING       = DATE_SET {DATE__RTLREADING      }; (* 00000020h *)
+      DATE_AUTOLAYOUT       = DATE_SET {DATE__AUTOLAYOUT      }; (* 00000040h *)
 
 
 (*
@@ -780,7 +789,7 @@ PROCEDURE GetLocaleInfoA (Locale   : LCID;
 
 PROCEDURE GetLocaleInfoW (Locale   : LCID;
                           LCType   : LCTYPE;
-                          lpLCData : PWSTR;
+                          LCData   : PWSTR;
                           cchData  : INTEGER) : INTEGER;
 
 <* IF DEFINED (UNICODE) THEN *>
@@ -823,19 +832,19 @@ PROCEDURE GetTimeFormatW (Locale    : LCID;
       CONST GetTimeFormat = GetTimeFormatA;
 <* END *>
 
-PROCEDURE GetDateFormatA (Locale    : LCID;
-                          Flags     : DATE_SET;
-                          lpTime    : PSYSTEMTIME; (* IN NIL *)
-                          lpFormat  : PCSTR;
-                          lpDateStr : PSTR;
-                          cchDate   : INTEGER) : INTEGER;
+PROCEDURE GetDateFormatA (Locale        : LCID;
+                          Flags         : DATE_SET;
+                          lpTime        : PSYSTEMTIME; (* IN NIL *)
+                          lpFormat      : PCSTR;
+                          VAR lpDateStr : ARRAY OF CHAR;
+                          cchDate       : INTEGER) : INTEGER;
 
-PROCEDURE GetDateFormatW (Locale    : LCID;
-                          Flags     : TIME_SET;
-                          lpTime    : PSYSTEMTIME; (* IN NIL *)
-                          lpFormat  : PCWSTR;
-                          lpDateStr : PWSTR;
-                          cchDate   : INTEGER) : INTEGER;
+PROCEDURE GetDateFormatW (Locale        : LCID;
+                          Flags         : DATE_SET;
+                          lpTime        : PSYSTEMTIME; (* IN NIL *)
+                          lpFormat      : PCWSTR;
+                          VAR lpDateStr : ARRAY OF WCHAR;
+                          cchDate       : INTEGER) : INTEGER;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST GetDateFormat = GetDateFormatW;
@@ -883,7 +892,7 @@ PROCEDURE GetCurrencyFormatW (Locale      : LCID;
       CONST GetCurrencyFormat = GetCurrencyFormatA;
 <* END *>
 
-PROCEDURE EnumCalendarInfoA (pCalInfoEnumProc : CALINFO_ENUMPROCA;
+PROCEDURE EnumCalendarInfoA (CalInfoEnumProc : CALINFO_ENUMPROCA;
                              Locale   : LCID;
                              Calendar : CALID;
                              CalType  : CALTYPE) : BOOL;
@@ -933,6 +942,8 @@ PROCEDURE GetThreadLocale () : LCID;
 PROCEDURE SetThreadLocale (Locale : LCID) : BOOL;
 PROCEDURE GetSystemDefaultLangID () : LANGID;
 PROCEDURE GetUserDefaultLangID   () : LANGID;
+PROCEDURE GetSystemDefaultUILanguage() : LANGID;
+PROCEDURE GetUserDefaultUILanguage  () : LANGID;
 PROCEDURE GetSystemDefaultLCID   () : LCID;
 PROCEDURE GetUserDefaultLCID     () : LCID;
 

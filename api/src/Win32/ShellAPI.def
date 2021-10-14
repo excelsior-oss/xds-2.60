@@ -12,7 +12,7 @@ DEFINITION MODULE ["StdCall"] ShellAPI;
 ******************************************************************************)
 
 FROM WinDef IMPORT UINT, BOOL, WORD, DWORD, PVOID, WCHAR,
-                   PSTR, PWSTR, PCSTR, PCWSTR, PPWSTR, 
+                   PSTR, PWSTR, PCSTR, PCWSTR, PPWSTR,
                    POINT, RECT, HANDLE, HWND, HINSTANCE, HICON, LPARAM, MAX_PATH;
 FROM WinUser IMPORT SW_ENUM;
 FROM WinReg  IMPORT HKEY;
@@ -629,6 +629,131 @@ PROCEDURE SHGetNewLinkInfoW (pszLinkTo    : PCWSTR;
 (***
 **** End SHGetFileInfo
 ***)
+
+(* SHGetSpecialFolderLocation *)
+
+CONST CSIDL_DESKTOP                   = 0000h;  (* <desktop> *)
+      CSIDL_INTERNET                  = 0001h;  (* Internet Explorer (icon on desktop) *)
+      CSIDL_PROGRAMS                  = 0002h;  (* Start Menu\Programs *)
+      CSIDL_CONTROLS                  = 0003h;  (* My Computer\Control Panel *)
+      CSIDL_PRINTERS                  = 0004h;  (* My Computer\Printers *)
+      CSIDL_PERSONAL                  = 0005h;  (* My Documents *)
+      CSIDL_FAVORITES                 = 0006h;  (* <user name>\Favorites *)
+      CSIDL_STARTUP                   = 0007h;  (* Start Menu\Programs\Startup *)
+      CSIDL_RECENT                    = 0008h;  (* <user name>\Recent *)
+      CSIDL_SENDTO                    = 0009h;  (* <user name>\SendTo *)
+      CSIDL_BITBUCKET                 = 000Ah;  (* <desktop>\Recycle Bin *)
+      CSIDL_STARTMENU                 = 000Bh;  (* <user name>\Start Menu *)
+      CSIDL_MYDOCUMENTS               = CSIDL_PERSONAL; (* Personal was just a silly name for My Documents *)
+      CSIDL_MYMUSIC                   = 000Dh;  (* "My Music" folder *)
+      CSIDL_MYVIDEO                   = 000Eh;  (* "My Videos" folder *)
+      CSIDL_DESKTOPDIRECTORY          = 0010h;  (* <user name>\Desktop *)
+      CSIDL_DRIVES                    = 0011h;  (* My Computer *)
+      CSIDL_NETWORK                   = 0012h;  (* Network Neighborhood (My Network Places) *)
+      CSIDL_NETHOOD                   = 0013h;  (* <user name>\nethood *)
+      CSIDL_FONTS                     = 0014h;  (* windows\fonts *)
+      CSIDL_TEMPLATES                 = 0015h;
+      CSIDL_COMMON_STARTMENU          = 0016h;  (* All Users\Start Menu *)
+      CSIDL_COMMON_PROGRAMS           = 0017h;  (* All Users\Start Menu\Programs *)
+      CSIDL_COMMON_STARTUP            = 0018h;  (* All Users\Startup *)
+      CSIDL_COMMON_DESKTOPDIRECTORY   = 0019h;  (* All Users\Desktop *)
+      CSIDL_APPDATA                   = 001Ah;  (* <user name>\Application Data *)
+      CSIDL_PRINTHOOD                 = 001Bh;  (* <user name>\PrintHood *)
+
+<* IF NOT DEFINED (CSIDL_LOCAL_APPDATA) THEN *>
+      CSIDL_LOCAL_APPDATA             = 001Ch;  (* <user name>\Local Settings\Applicaiton Data (non roaming) *)
+<* END *> (* NOT DEFINED (CSIDL_LOCAL_APPDATA) *)
+
+      CSIDL_ALTSTARTUP                = 001Dh;  (* non localized startup *)
+      CSIDL_COMMON_ALTSTARTUP         = 001Eh;  (* non localized common startup *)
+      CSIDL_COMMON_FAVORITES          = 001Fh;
+
+<* IF NOT DEFINED (_SHFOLDER_H_) THEN *>
+      CSIDL_INTERNET_CACHE            = 0020h;
+      CSIDL_COOKIES                   = 0021h;
+      CSIDL_HISTORY                   = 0022h;
+      CSIDL_COMMON_APPDATA            = 0023h;  (* All Users\Application Data *)
+      CSIDL_WINDOWS                   = 0024h;  (* GetWindowsDirectory() *)
+      CSIDL_SYSTEM                    = 0025h;  (* GetSystemDirectory() *)
+      CSIDL_PROGRAM_FILES             = 0026h;  (* C:\Program Files *)
+      CSIDL_MYPICTURES                = 0027h;  (* C:\Program Files\My Pictures *)
+<* END *> (* NOT DEFINED (_SHFOLDER_H_) *)
+
+      CSIDL_PROFILE                   = 0028h;  (* USERPROFILE *)
+      CSIDL_SYSTEMX86                 = 0029h;  (* x86 system directory on RISC *)
+      CSIDL_PROGRAM_FILESX86          = 002Ah;  (* x86 C:\Program Files on RISC *)
+
+<* IF NOT DEFINED (_SHFOLDER_H_) THEN *>
+      CSIDL_PROGRAM_FILES_COMMON      = 002Bh;  (* C:\Program Files\Common *)
+<* END *> (* NOT DEFINED (_SHFOLDER_H_) *)
+
+      CSIDL_PROGRAM_FILES_COMMONX86   = 002Ch;  (* x86 Program Files\Common on RISC *)
+      CSIDL_COMMON_TEMPLATES          = 002Dh;  (* All Users\Templates *)
+
+<* IF NOT DEFINED (_SHFOLDER_H_) THEN *>
+      CSIDL_COMMON_DOCUMENTS          = 002Eh;  (* All Users\Documents *)
+      CSIDL_COMMON_ADMINTOOLS         = 002Fh;  (* All Users\Start Menu\Programs\Administrative Tools *)
+      CSIDL_ADMINTOOLS                = 0030h;  (* <user name>\Start Menu\Programs\Administrative Tools  *)
+<* END *> (* NOT DEFINED (_SHFOLDER_H_) *)
+
+      CSIDL_CONNECTIONS               = 0031h;  (* Network and Dial-up Connections *)
+      CSIDL_COMMON_MUSIC              = 0035h;  (* All Users\My Music *)
+      CSIDL_COMMON_PICTURES           = 0036h;  (* All Users\My Pictures *)
+      CSIDL_COMMON_VIDEO              = 0037h;  (* All Users\My Video *)
+      CSIDL_RESOURCES                 = 0038h;  (* Resource Direcotry *)
+
+<* IF NOT DEFINED (_SHFOLDER_H_) THEN *>
+      CSIDL_RESOURCES_LOCALIZED       = 0039h;  (* Localized Resource Direcotry *)
+<* END *> (* NOT DEFINED (_SHFOLDER_H_) *)
+
+      CSIDL_COMMON_OEM_LINKS          = 003Ah;  (* Links to All Users OEM specific apps *)
+      CSIDL_CDBURN_AREA               = 003Bh;  (* USERPROFILE\Local Settings\Application Data\Microsoft\CD Burning *)
+(* unused                             = 003Ch; *)
+      CSIDL_COMPUTERSNEARME           = 003Dh;  (* Computers Near Me (computered from Workgroup membership) *)
+
+<* IF NOT DEFINED (_SHFOLDER_H_) THEN *>
+      CSIDL_FLAG_CREATE               = 8000h;  (* combine with CSIDL_ value to force folder creation in SHGetFolderPath() *)
+<* END *> (* NOT DEFINED (_SHFOLDER_H_) *)
+
+      CSIDL_FLAG_DONT_VERIFY          = 4000h;  (* combine with CSIDL_ value to return an unverified folder path *)
+      CSIDL_FLAG_DONT_UNEXPAND        = 2000h;  (* combine with CSIDL_ value to avoid unexpanding environment variables *)
+      CSIDL_FLAG_NO_ALIAS             = 1000h;  (* combine with CSIDL_ value to insure non-alias versions of the pidl *)
+      CSIDL_FLAG_PER_USER_INIT        = 0800h;  (* combine with CSIDL_ value to indicate per-user init (eg. upgrade) *)
+
+      CSIDL_FLAG_MASK                 = 0FF00h; (* mask for all possible flag values *)
+
+TYPE SHGFP_TYPE = (SHGFP_TYPE_CURRENT,  (* 0, current value for user, verify it exists *)
+                   SHGFP_TYPE_DEFAULT); (* 1, default value, may not exist *)
+
+PROCEDURE SHGetFolderPathA(hwnd        : HWND;
+                           csidl       : UINT;
+                           hToken      : HANDLE;
+                           dwFlags     : SHGFP_TYPE;
+                           VAR pszPath : ARRAY OF CHAR) : HRESULT;
+
+PROCEDURE SHGetFolderPathW(hwnd        : HWND;
+                           csidl       : UINT;
+                           hToken      : HANDLE;
+                           dwFlags     : SHGFP_TYPE;
+                           VAR pszPath : ARRAY OF WCHAR) : HRESULT;
+
+<* IF DEFINED (UNICODE) THEN *>
+      CONST SHGetFolderPath = SHGetFolderPathW;
+<* ELSE *>
+      CONST SHGetFolderPath = SHGetFolderPathA;
+<* END *>
+
+PROCEDURE SHCreateDirectoryExA (hWnd : HWND; pszPath : PCSTR;
+                                psa : PSECURITY_ATTRIBUTES) : HRESULT;
+
+PROCEDURE SHCreateDirectoryExW (hWnd : HWND; pszPath : PCWSTR;
+                                psa : PSECURITY_ATTRIBUTES) : HRESULT;
+
+<* IF DEFINED (UNICODE) THEN *>
+      CONST SHCreateDirectoryEx = SHCreateDirectoryExW;
+<* ELSE *>
+      CONST SHCreateDirectoryEx = SHCreateDirectoryExA;
+<* END *>
 
 <* POP *> (* back to alignment = 8 *)
 

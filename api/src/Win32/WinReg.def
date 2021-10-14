@@ -158,7 +158,7 @@ PROCEDURE RegCreateKeyA (hKey        : HKEY;
 
 PROCEDURE RegCreateKeyW (hKey        : HKEY;
                          SubKey      : PCWSTR; (* NIL *)
-                         VAR kResult : HKEY) : LONG;
+                         VAR hResult : HKEY) : LONG;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST RegCreateKey = RegCreateKeyW;
@@ -212,7 +212,7 @@ PROCEDURE RegDeleteValueW (hKey : HKEY; ValueName : PCWSTR) : LONG;  (* NIL *)
 
 PROCEDURE RegEnumKeyA (hKey     : HKEY;
                        dwIndex  : DWORD;
-                       VAR Name : ARRAY OF WCHAR;
+                       VAR Name : ARRAY OF CHAR;
                        cbName   : DWORD) : LONG;
 
 PROCEDURE RegEnumKeyW (hKey     : HKEY;
@@ -425,7 +425,7 @@ PROCEDURE RegQueryValueExW (hKey       : HKEY;
 <* END *>
 
 PROCEDURE RegReplaceKeyA (hKey    : HKEY;
-                          SubKey  : PCWSTR; (* NIL *)
+                          SubKey  : PCSTR; (* NIL *)
                           NewFile : ARRAY OF CHAR;
                           OldFile : ARRAY OF CHAR) : LONG;
 
@@ -544,8 +544,8 @@ PROCEDURE InitiateSystemShutdownW (MachineName          : PCWSTR; (* NIL *)
       CONST InitiateSystemShutdown = InitiateSystemShutdownA;
 <* END *>
 
-PROCEDURE AbortSystemShutdownA (MachineName   : PCSTR)  : BOOL;  (* NIL *)
-PROCEDURE AbortSystemShutdownW (lpMachineName : PCWSTR) : BOOL;  (* NIL *)
+PROCEDURE AbortSystemShutdownA (MachineName : PCSTR)  : BOOL;  (* NIL *)
+PROCEDURE AbortSystemShutdownW (MachineName : PCWSTR) : BOOL;  (* NIL *)
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST AbortSystemShutdown = AbortSystemShutdownW;

@@ -184,6 +184,19 @@ END set_size;
 PROCEDURE ^ record_size (t: pc.STRUCT; VAR sz: LONGINT; VAR align: SHORTINT);
 PROCEDURE ^ type_definition (o: pc.OBJECT);
 
+PROCEDURE get_align_by_size * (sz: LONGINT): ir.AlignType;
+VAR align: ir.AlignType;
+BEGIN
+  CASE sz OF
+  | 1:   align := 1;
+  | 2:   align := 2;
+  | 3,4: align := 4;
+  ELSE   align := tune.max_alignment;
+  END;
+  RETURN align;
+END get_align_by_size;
+
+--------------------------------------------------------------------------------
 PROCEDURE bytes(t : pc.STRUCT; VAR sz : LONGINT; VAR align : SHORTINT);
   VAR n_align, t_align : SHORTINT;
 BEGIN
@@ -280,7 +293,7 @@ BEGIN
   IF t_align < align   THEN align   := t_align END;
 END bytes;
 
-PROCEDURE type_size* (t: pc.STRUCT): LONGINT;
+PROCEDURE type_size* (t: pc.STRUCT; bySize:=TRUE: BOOLEAN): LONGINT;
   VAR sz: LONGINT; align: SHORTINT;
 BEGIN
   align := at.default_alignment;
@@ -288,7 +301,7 @@ BEGIN
   RETURN sz
 END type_size;
 
-PROCEDURE type_align* (t: pc.STRUCT): SHORTINT;
+PROCEDURE type_align* (t: pc.STRUCT; bySize:=TRUE: BOOLEAN): SHORTINT;
   VAR sz: LONGINT; t_align : SHORTINT;
 BEGIN
   t_align := t.align;

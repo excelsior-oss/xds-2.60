@@ -1,0 +1,15 @@
+*.msg  = $! 
+*.cfg  = .; $! 
+*.tem  = .; $! 
+*.l    = .; $!/../lib/ppc;
+*.sym  = .; $!/../sym/ppc; 
+*.def  = .; src;
+*.mod  = .; src;
+*.ob2  = .; src;
+*.prj  = .; src;
+*.o    = .; obj;
+*.s    = .; obj;
+*.ld   = .; $!;
+*.lnk  = .
+*.mkf  = .
+*.res  = .

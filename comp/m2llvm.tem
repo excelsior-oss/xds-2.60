@@ -1,0 +1,171 @@
+! "M\t= %s\n",mkfname#>mkfext
+
+! "XDSDIR\t= %s\n",XDSDIR
+! "LIBDIR\t= $(XDSDIR)/lib/ppc\n"
+
+!if not defined testlibrary then
+  !new testlibrary-
+!end
+!if not defined genasm then
+  !new genasm-
+!end
+
+! "LIBTRP\t= $(LIBDIR)/libtrp.%s\n",libext
+!if testlibrary or defined tcsmodule then
+  ! "LIBBRD\t= \n"
+  ! "LIBTST\t= $(LIBDIR)/libtst.%s\n",libext
+!else
+  ! "LIBBRD\t= $(LIBDIR)/libbrd.%s\n",libext
+  ! "LIBTST\t=\n"
+!end
+! "LIBRTS\t= $(LIBDIR)/librts.%s\n",libext
+! "LIBISO\t= $(LIBDIR)/libiso.%s\n",libext
+
+
+!if genlib then
+  ! "TARGET\t= %s\n",libname#>libext
+!elsif defined exename and (exename#"") then
+  ! "TARGET\t= %s\n",exename#>exeext
+!elsif defined project and (project#"") then
+  ! "TARGET\t= %s\n",project#>exeext
+!else
+  ! { main : "TARGET\t= %s\n",#>exeext }
+!end
+
+!if cc="CLang" then
+  !if gendebug or lineno then
+    ! "CDEBUG\t= -g -gdwarf-2\n"
+  !else
+    ! "CDEBUG\t= \n"
+  !end
+  ! "CPU\t= --target=%s -m32 -mcpu=ppc32\n",llvm_target_triple
+  ! "CDEFS\t= -DX2C_strcmp -DX2C_no_profile -DX2C_divide\n"
+  ! "CF\t= $(CPU) -fno-builtin -ffreestanding" 
+  !if defined include and (include # "") then
+    ! " -I%s",include
+  !end
+  !if not procinline then
+    ! " -fno-inline"
+  !end
+  !if defined ccomp_options and (ccomp_options # "") then
+    ! " %s",ccomp_options
+  !else
+    ! " -momit-leaf-frame-pointer -Os" 
+  !end
+    ! "\n"
+  ! "CC\t= clang.exe\n"
+  !if genasm then
+    !new ccomp = $$(CC) $$(CDEFS) $$(CF) $$(CDEBUG) -o %s -S %s
+  !else
+    !new ccomp = $$(CC) $$(CDEFS) $$(CF) $$(CDEBUG) -o %s -c %s
+  !end
+  !new llvmasm = $$(CC) $$(CPU) $$(CDEBUG) -o %s -c %s
+
+!else
+  !if gendebug or lineno then
+    ! "CDEBUG\t= -g -gdwarf-2\n"
+  !else
+    ! "CDEBUG\t= \n"
+  !end
+  ! "CDEFS\t= -DX2C_strcmp -DX2C_no_profile -DX2C_divide\n"
+  ! "CF\t= -ansi -m32 -mbig -mcpu=powerpc"
+  !if defined include and (include # "") then
+    ! " -I%s",include
+  !end
+  !if not procinline then
+    ! " -fno-inline"
+  !end
+  !if defined ccomp_options and (ccomp_options # "") then
+    ! " %s",ccomp_options
+  !end
+    ! "\n"
+  ! "CC\t= powerpc-eabi-gcc.exe\n"
+  !if genasm then
+    !new ccomp = $$(CC) $$(CDEFS) $$(CF) $$(CDEBUG) -o %s -S %s
+  !else
+    !new ccomp = $$(CC) $$(CDEFS) $$(CF) $$(CDEBUG) -o %s -c %s
+  !end
+!end
+
+
+!if gendebug or lineno then
+  ! "ADEBUG\t= -g --gdwarf-2\n"
+!else
+  ! "ADEBUG\t= \n"
+!end
+! "AF\t= -m7450 -a32 -mbig\n"
+! "AS\t= powerpc-eabi-as.exe\n"
+!new asmcomp1 = $$(AS) $$(AF) -o %s %s
+!new asmcomp2 = $$(AS) $$(AF) $$(ADEBUG) -o %s %s
+
+
+!if defined mainname and (mainname # "") then
+  ! "ENTRY\t= -e %s\n",mainname
+!else
+  ! "ENTRY\t= -e main\n"
+!end
+!if defined exename and (exename#"") then
+  ! "MAP_FILE\t= -Map=%s\n",exename#>"map"
+!elsif defined project and (project#"") then
+  ! "MAP_FILE\t= -Map=%s\n",project#>"map"
+!else
+  ! { main : "MAP_FILE\t= -Map=%s\n",#>"map" }
+!end
+
+! "SCRIPT_FILE\t= %s\n","board"#"ld"
+
+! "LF\t= $(ENTRY) $(MAP_FILE) -u X2C_TRAP_F\n"
+! "LD\t= powerpc-eabi-ld.exe\n"
+
+
+
+# ------------------ objects enumeration ------------------
+#                    -------------------
+
+! "OBJ="
+!if defined tcsmodule then
+  ! " \\\n\t%s",tcsmodule#>objext
+!end
+! { obj asm : " \\\n\t%s",#>objext }
+
+
+# ------------------- target make rules -------------------
+#                     -----------------
+
+! "$(TARGET) : $(M) $(OBJ) $(LIBRTS) $(LIBBRD) $(LIBTST) $(LIBISO)\n"
+!if genlib then
+  ! "\tpowerpc-eabi-ar.exe q $(TARGET) $(OBJ)\n"
+  ! "\tpowerpc-eabi-ranlib.exe $(TARGET)\n"
+!else
+  ! "\t$(LD) -T $(SCRIPT_FILE) $(LF) -o $(TARGET) $(OBJ) $(LIBTST) $(LIBISO) $(LIBRTS) $(LIBBRD) --whole-archive $(LIBTRP)\n"
+!end
+
+# ----------------- Dependency information ----------------
+#                   ----------------------
+!if genasm then
+  ! { main imp oberon : "%-12s : ",#>objext; " %s\n\t",#asmext,#; llvmasm,#>objext,#asmext; "\n\n" }
+  !if cc="CLang" then
+    ! { c : "%-12s : ",#>objext; " %s\n\t",#asmext,#; llvmasm,#>objext,#asmext; "\n\n" }
+  !else
+    ! { c : "%-12s : ",#>objext; " %s\n\t",#asmext,#; asmcomp1,#>objext,#asmext; "\n\n" }
+  !end
+  ! { c : { header : "%-24s : %s\n",^#>asmext,#header } \
+      "%-24s : $(M) %s\n\t",#>asmext,#; ccomp,#>asmext,#; "\n\n" }
+  !if defined tcsmodule then
+    ! "%-12s : ",tcsmodule#>objext; " %s\n\t",tcsmodule#>asmext; asmcomp2,tcsmodule#>objext,tcsmodule#asmext; "\n\n"
+  !end
+
+!else
+  ! { c : { header : "%-24s : %s\n",^#>objext,#header } \
+      "%-24s : $(M) %s\n\t",#>objext,#; ccomp,#>objext,#; "\n\n" }
+!end
+
+!if genasm then
+  ! { main imp oberon : "%-12s : ",#>asmext; " %s\n\t",#"ll",#; ccomp,#>asmext,#"ll"; "\n\n" }
+!else
+  ! { main imp oberon : "%-12s : ",#>objext; " %s\n\t",#"ll",#; ccomp,#>objext,#"ll"; "\n\n" }
+!end
+
+! { asm : "%-12s : ",#>objext; " %s\n\t",#asmext; asmcomp2,#>objext,#asmext; "\n\n" }
+
+# end of makefile

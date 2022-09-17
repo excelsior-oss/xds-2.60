@@ -25,7 +25,7 @@ IMPORT
   RelManager,
 <* END *>
   Polymorph; -- do not remove this import!!! It is not redundant!
-<* IF TARGET_386 THEN *> IMPORT xProfRTS; <* END *>
+<* IF TARGET_386 OR TARGET_LLVM THEN *> IMPORT xProfRTS; <* END *>
 
 <* IF DEFINED(OVERDYE) AND OVERDYE THEN *> -- FIXME
 IMPORT od := OverDye;
@@ -35,8 +35,15 @@ IMPORT od := OverDye;
   IMPORT TOC;
 <* END *>
 
+<* IF TARGET_LLVM THEN *>
+IMPORT llvmCode;
+IMPORT llvmModify;  
+IMPORT plt := xmPlatform;
+<* ELSE *>
+IMPORT Select := Iselect;
+<* END *>
+
 IMPORT
-  Select := Iselect,
   KillDead,
 <* IF db_code OR pcvis THEN *> io := opIO,     <* END *>
 <* IF pcvis THEN *>            pcVis,          <* END *>
@@ -413,6 +420,27 @@ BEGIN
   Optimize.Init();
   gr.KillDead;
 
+<* IF TARGET_LLVM THEN *>
+  gr.FindLoops;
+  ir.WriteTest ("m", "Before Modify.Decompose (m)");
+  llvmModify.Decompose();
+
+  ir.WriteTest ("p", "before PrepGen (p)");
+  PrepGen.Prepare();
+
+  ir.WriteTest ("f", "final (f)");
+  IF ~env.shell.Active () & (env.dc_progress IN env.decor) THEN
+     env.info.print("\rGenerating");
+  END;
+
+  llvmCode.Generate();
+
+  IF ~env.shell.Active () & (env.dc_progress IN env.decor) THEN
+    env.info.print("\r");
+  END;
+  RETURN;
+
+<* ELSE *>  
   IF at.COMP_MODE * at.CompModeSet{at.debug, at.SPACE} = at.CompModeSet{} THEN
     Modify.UnrollFors;
   END;
@@ -425,12 +453,12 @@ BEGIN
   ssa.ConvertToSSA (try_block);
   WriteTest ("s", "after ConvertToSSA (s)");
 
-<* IF TARGET_IDB THEN *>
+  <* IF TARGET_IDB THEN *>
   IF env.InterViewMode THEN
    -- RelManager.after_convert_to_SSA();
     RETURN;
   END;
-<* END *>
+  <* END *>
 
   KillDead.KillDeadCode;
   IF NOT (at.nooptimize IN at.COMP_MODE) THEN
@@ -465,17 +493,17 @@ BEGIN
   ir.MarkAllocatedLocals;   -- fills ir.allocatedLocals
   WriteTest ("f", "final (f)");
 
- <* IF DEFINED(OVERDYE) AND OVERDYE THEN *> -- FIXME
+  <* IF DEFINED(OVERDYE) AND OVERDYE THEN *> -- FIXME
   IF at.DbgRefine IN at.COMP_MODE THEN
     -- Calculate node positions order...
     od.SetInitialNodePos;
     -- ...and reorder triades positions for each node
     od.SmoothTriadePositions;
-   <* IF gen_qfile THEN *>
+    <* IF gen_qfile THEN *>
     TestIO.WriteNodeOrder (2, nm);
-   <* END *>
+     <* END *>
   END;
- <* END *>
+  <* END *>
 
   IF ~env.shell.Active () & (env.dc_progress IN env.decor) THEN
      env.info.print("\rGenerating");
@@ -492,9 +520,10 @@ BEGIN
   Color.RegAllocOk   := FALSE;
 
   Select.IDB.ClearAll;
-  IF ~env.shell.Active () & (env.dc_progress IN env.decor) THEN
+	  IF ~env.shell.Active () & (env.dc_progress IN env.decor) THEN
     env.info.print("\r");
   END;
+<* END *> -- TARGET_LLVM
 END Optim_Do;
 
 (** ------------- s t a n d a r d   p r o c e d u r e s ---------- *)
@@ -2189,6 +2218,21 @@ BEGIN
 END except_attr_prepare;
 
 <* ELSE *>  -- TARGET_386
+(* !!!Hady2022 -- looks like this code was never compiled with TARGET_x86- *)
+PROCEDURE raw_object (name-: ARRAY OF CHAR; m: pc.OB_MODE; size: LONGINT): pc.OBJECT;
+VAR t: pc.STRUCT;
+BEGIN
+  t := pc.new_type( pc.ty_array );
+  t.base := pcO.shortcard;
+  t.len := size;
+  RETURN at.new_work_object(at.make_name(name), t, at.curr_mod.type, m, FALSE);
+END raw_object;
+
+PROCEDURE set_raw_segm (o: pc.OBJECT; seg:cmd.CODE_SEGM);
+BEGIN
+  o.type.len := seg.code_len;
+  cmd.set_ready(o, seg);
+END set_raw_segm;
 
 <* PUSH *>
 <* WOFF301+ *>
@@ -3156,7 +3200,9 @@ BEGIN
     mark_intrinsic(mem);
   END;
 
+<* IF NOT TARGET_LLVM THEN *>
   Select.InitOutput;
+<* END *>
 
  <* IF TARGET_RISC OR TARGET_SPARC THEN *>
   TOC.Start;

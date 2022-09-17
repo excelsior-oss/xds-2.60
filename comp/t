@@ -1,0 +1,9 @@
+O2/M2 development system v2.60 TS  (c) 1991-2011 Excelsior, LLC. (build 16.11.2011)
+Make project "ml.prj"
+XDS Oberon-2 v2.40 [x86, v1.50] - build 16.11.2011
+Compiling "src\be_krnl\opCode.ob2"
+
+* [src\be_krnl\opCode.ob2 2657.16 E020]
+* undeclared identifier "profilingMode"
+           (at.$profilingMode # xProfRTS.PROF_MODE_NONE))
+errors  1, no warnings, lines 3307, time  0.03

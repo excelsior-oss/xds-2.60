@@ -160,6 +160,8 @@ VAR
   shortint  -: pc.STRUCT;
   integer   -: pc.STRUCT;
   longint   -: pc.STRUCT;
+  int8      -: pc.STRUCT;
+  card8     -: pc.STRUCT;
   real      -: pc.STRUCT;
   longreal  -: pc.STRUCT;
   ld_real   -: pc.STRUCT;
@@ -1039,6 +1041,9 @@ BEGIN
     std(word4     ,pc.ty_array     ,42);
     std_cp(longlongcard , pc.longlongcard_type, 43);
     std(set64     ,pc.ty_set       ,44);
+
+    std(card8, pc.ty_range, 45);
+    std(int8,  pc.ty_range, 46);
   END;
 
   IF pc.code.int16 THEN
@@ -1129,6 +1134,18 @@ BEGIN
   lens_t32.min:=one;
   lens_t32.max:=size_t32.max;
   protection.base:=integer;
+
+  set_type_base(card8, shortcard);
+  card8.min := pc.value.new(env.null_pos,shortcard);
+  card8.min.set_integer (0);
+  card8.max := pc.value.new(env.null_pos,shortcard);
+  card8.max.set_integer (255);
+
+  set_type_base(int8, shortint);
+  int8.min := pc.value.new(env.null_pos,shortcard);
+  int8.min.set_integer (-128);
+  int8.max := pc.value.new(env.null_pos,shortcard);
+  int8.max.set_integer (127);
 
   align := old_align;
 END ini_std_types;
@@ -2521,8 +2538,8 @@ PROCEDURE ini*( lang: pc.Lang;
     standard("NEW",fn_sysnew);
     standard("DISPOSE",fn_sysdispose);
     IF oberon THEN type(addr,"PTR") END;
-    type(shortint,"INT8");
-    type(shortcard,"CARD8");
+    type(int8,"INT8");
+    type(card8,"CARD8");
     type(integer,"INT16");
     type(cardinal,"CARD16");
 <* IF MCS THEN *>
@@ -2661,8 +2678,8 @@ BEGIN
     type(m2_int,"INTEGER");
     type(m2_card,"CARDINAL");
     IF env.config.Option("M2ADDTYPES") THEN
-      type(shortint,"SHORTINT");  type(longint,"LONGINT"); type(longlongint,"LONGLONGINT"); type(longlongcard,"LONGLONGCARD");
-      type(shortcard,"SHORTCARD");  type(longcard,"LONGCARD");
+      type(int8,"SHORTINT");  type(longint,"LONGINT"); type(longlongint,"LONGLONGINT"); type(longlongcard,"LONGLONGCARD");
+      type(card8,"SHORTCARD");  type(longcard,"LONGCARD");
     END;
   END;
 

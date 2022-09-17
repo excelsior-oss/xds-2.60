@@ -56,6 +56,7 @@ CONST
   objGO32*    = "GO32";
   objASM*     = "ASM";
   objGAS*     = "GAS";
+  objLLVM*    = "LLVM";
 
 VAR
   DefaultOBJFMT* : ARRAY 24 OF CHAR;
@@ -81,6 +82,7 @@ CONST
   dbg_DWARF_2*= "DWARF2.0";
   dbg_REF    *= "REF";
   dbg_GO32   *= "GO32";
+  dbg_LLVM   *= "LLVM";
 
   -- Текстовый формат представления отладочной информации,
   -- используется только для отладочных целей

@@ -10,7 +10,7 @@ IMPORT pc  := pcK,
        xcStr,
  <* IF db_attrs THEN *> io := Printf, <* END *>
        SYSTEM;
- <* IF TARGET_386 THEN *> IMPORT xProfRTS; <* END *>
+ <* IF TARGET_386 OR TARGET_LLVM THEN *> IMPORT xProfRTS; <* END *>
 (* -------------------------------------------------------------------------- *)
 
 CONST CODE_VERSION* =
@@ -88,6 +88,13 @@ TYPE CompModeType *= (
        DOREORDER,          (* perform command reordering *)
 <* IF TARGET_RISC OR TARGET_SPARC THEN *>
        DOPEEPHOLE,         (* perform pipehole optimization *)
+<* ELSIF TARGET_PPC OR TARGET_LLVM THEN *>
+       DOPEEPHOLE,         (* perform peephole optimization *)
+       use_trap_cmd,       (* use trap instruction to invoke trap handler, 
+                              in other case function call is used *)
+       use_toc,            (* use module local TOC *)
+       use_pool,           (* collect public globals to global variables pool *)
+       use_far_call,       (* switch to generate absolute address calls 32-bit *)
 <* END *>
                            (* --- object file modes ----------------------- *)
        new_segment,        (* new code segment for each procedure *)
@@ -132,7 +139,7 @@ TYPE CompModeType *= (
 VAR
   COMP_MODE* : CompModeSet;
 
-<* IF TARGET_386 THEN *>
+<* IF TARGET_386 OR TARGET_LLVM THEN *>
   profilingMode*: xProfRTS.ProfilingModeType;
 <* END *>
 
@@ -156,7 +163,37 @@ CONST
   mc68060 *     = 21;
 
 (* ------- PowerPC Application Binary Interface ---------- *)
-<* IF TARGET_RISC THEN *>
+<* IF TARGET_PPC OR TARGET_LLVM THEN *>  -- PowerPC Application Binary Interface
+TYPE
+  AbiType *= ( -- NOTE: these values correspond to 'VAL_ABI_...' constant in Options.ob2
+     PowerOpen   
+  ,  V4ABI      -- Unix System V Release 4 ABI
+  ,  EABI       -- Embedded ABI
+  ,  MWABI      -- Microware OS-9 ABI
+  );
+  AbiSet *= PACKEDSET OF AbiType;
+
+VAR
+  ABI *: AbiType;  -- type of PowerPC ABI 
+
+CONST
+  StandardABI *= EABI;  -- Embedded ABI is standard ABI for PowerPC platform
+  LangsWithVariableABI *= pc.LangSet{pc.flag_m2, pc.flag_o2 (*, pc.flag_oscall, pc.flag_rtscall !!! hack to insert LLVM back into repository. PPC back does not exist *)};
+
+--------------------------------------------------------------------------------
+TYPE
+  TextName = ARRAY 16 OF CHAR;
+  AbiNameArray = ARRAY AbiType OF TextName; 
+  
+CONST
+  AbiName *= AbiNameArray {  -- NOTE: must be synchronized with 'AbiType' from opAttrs.ob2
+    "PowerOpen" -- PowerOpen 
+  , "V4ABI"     -- v4abi
+  , "EABI"      -- eabi
+  , "MVABI"     -- mwabi
+  };  
+
+<* ELSIF TARGET_RISC THEN *>
 
 VAR
   ABI*    : SHORTINT;  (* type of PowerPC ABI *)
@@ -214,6 +251,7 @@ CONST
 (* и в sym-файлы не записываются                                *)
 
   omark_used*         = pc.omark_aux10; (* объект использован в программе *)
+  omark_not_used*     = pc.omark_retthis;
   omark_allocated*    = pc.omark_aux11; (* глобальной переменной приписан offset *)
   omark_nested_read*  = pc.omark_aux12; (* вложенные доступаются к локалам процедуры *)
   omark_nested_write* = pc.omark_aux13; (* вложенные доступаются к локалам процедуры *)
@@ -232,9 +270,10 @@ CONST
 (* значения tmark используются только во время одной трансляции *)
 (* и в sym-файлы не записываются                                *)
 
-  tmark_processed*  = pc.tmark_aux10; (* тип обработан   *)
-  tmark_prototyped* = pc.tmark_aux11; (* создан прототип *)
-  tmark_db_index*   = pc.tmark_aux12; (* has index number for debug info *)
+  tmark_processed *= pc.tmark_aux10; (* тип обработан   *)
+  tmark_db_passed *= pc.tmark_aux11; (* пройден при обходе дебаг эмиттера *)
+  tmark_db_index  *= pc.tmark_aux12; (* has index number for debug info *)
+  tmark_llvm_defined *= pc.tmark_aux13; (* type defined in LLVM code *)
 
 (** ----------------- A L I G N M E N T --------------------------------- *)
 
@@ -255,13 +294,16 @@ CONST  (* -- в и д ы   а т р и б у т о в -- *)
    a_globOFFS*    = 10;  (* размещение глобальной переменной *)      (* size_ext *)
    a_name*        = 11;  (* object's external name *)                (* name_ext *)
    a_TOCoffs*     = 12;  (* offset in TOC *)                         (* TOC_ext  *)
-   a_adr_glob*    = 13;  (* variable - address of SL-1 global *) (* inf_ext - use only 'name' *)
+   a_codeOFFS*    = 13;  (* offset in code *)                        (* offs_ext *)
+   a_param_no*    = 14;  (* parameter number in prototype *)         (* size_ext *)
 
    a_mybase*      = 16;  (* база переменных процедуры *)             (* inf_ext  *)
    a_base*        = a_mybase+1; (*!!*)
                          (* a_base+i  --  база i-го охват. блока *)  (* inf_ext  *)
    a_len*         = 48;
                          (* a_len+i  -- длина по i-ому измерению *)  (* inf_ext  *)
+
+   a_ABI*         = 70;  (* application binary interface *)          (* abi_ext *)
 
    a_index*       = 80;  (* index in debug information *)            (* size_ext *)
    a_index2*      = 81;  (* additional index in debug information *) (* size_ext *)
@@ -298,6 +340,10 @@ TYPE
   PROT_EXT* = POINTER TO proto_ext_rec;   (* для процедурных типов *)
   DBG_EXT*  = POINTER TO dbg_ext_rec;     (* для объектов, прежде всего переменных *) 
 
+<* IF TARGET_PPC OR TARGET_SPARC OR TARGET_MIPS OR TARGET_LLVM THEN *>  
+  ABI_EXT  *= POINTER TO abi_ext_rec;     (* для процедур и процедурных типов *)
+<* END *>
+
   InfExtName *= ir.VarNum;
 CONST
   ZEROInfExtName *= InfExtName{ 0 };
@@ -331,6 +377,21 @@ TYPE
                      info*: ir.DebugInfo;    -- displacement
                   END; 
   END;
+
+<* IF TARGET_PPC OR TARGET_SPARC OR TARGET_MIPS OR TARGET_LLVM THEN *>
+--------------------------------------------------------------------------------
+TYPE
+  abi_ext_rec = RECORD (attr_ext_rec)
+    abi *: AbiType;
+  END;
+
+PROCEDURE (att: ABI_EXT) out *(file: xfs.SymFile);
+BEGIN
+  file.WriteInt(a_ABI);
+  file.WriteInt(ORD(att.abi));
+  att.out^(file);
+END out;
+<* END *>
 
 PROCEDURE (att: OFFS_EXT) out*(file: xfs.SymFile);
 BEGIN
@@ -591,6 +652,64 @@ PROCEDURE skip_globOFFS(f: xfs.SymFile);
 BEGIN
   f.ReadInt(offset);
 END skip_globOFFS;
+
+<* IF TARGET_PPC OR TARGET_SPARC OR TARGET_MIPS OR TARGET_LLVM THEN *>
+-- @param[in] flang: source language 
+PROCEDURE GetAbiByLang (lang: pc.Lang): AbiType;
+VAR abi: AbiType; 
+BEGIN
+  IF (lang IN LangsWithVariableABI) THEN
+    abi := ABI;    
+  ELSE   
+    abi := StandardABI;
+  END;                     
+  RETURN abi;
+END GetAbiByLang; 
+
+--------------------------------------------------------------------------------
+PROCEDURE GetABI *(o: pc.OBJECT): AbiType;
+VAR att: ATTR_EXT;
+    abi: AbiType; 
+BEGIN
+  att := attr(o.ext, a_ABI);
+  IF att # NIL THEN  
+    abi := att(ABI_EXT).abi;
+  ELSIF (o.mode = pc.ob_module) & main THEN 
+    abi := StandardABI;
+  ELSIF (o.mode IN pc.VARs) THEN
+    abi := GetAbiByLang(o.type.flag);
+  ELSE
+    abi := GetAbiByLang(o.flag);
+  END;
+  RETURN abi;
+END GetABI;
+
+--------------------------------------------------------------------------------
+PROCEDURE HasABI *(o: pc.OBJECT; abi: AbiType): BOOLEAN;
+VAR o_abi: AbiType;
+BEGIN
+  o_abi := GetABI(o);
+  RETURN o_abi = abi;
+END HasABI;
+
+--------------------------------------------------------------------------------
+PROCEDURE SetABI (o: pc.OBJECT; abi: AbiType);
+VAR att: ABI_EXT;
+BEGIN
+  NEW(att);
+  att.abi := abi;
+  app_attr(o.ext, att, a_ABI);
+END SetABI;
+
+--------------------------------------------------------------------------------
+PROCEDURE read_ABI (f: xfs.SymFile; o: pc.OBJECT);
+VAR i: LONGINT;
+BEGIN
+  f.ReadInt(i);
+  SetABI(o, VAL(AbiType, i));
+END read_ABI;
+<* END *>
+
 
 (**---- DLL-exported Flag ----*)
 

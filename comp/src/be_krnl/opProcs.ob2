@@ -5,8 +5,11 @@ IMPORT
        ir,
        pc := pcK,
      tune := opTune,
-      cd := CodeDef,
-<* IF TARGET_SPARC THEN *>
+       cd := CodeDef,
+<* IF TARGET_LLVM THEN *>
+       rgs := PPCreg,
+(*       asm := AsmPPC, *)
+<* ELSIF TARGET_SPARC THEN *>
     SPARCDefs,
 <* ELSIF TARGET_RISC THEN *>
        ArgRes,
@@ -21,6 +24,9 @@ IMPORT SYSTEM;
 <* IF TARGET_RISC THEN *>
 TYPE RegMask = ArgRes.RegMask;
          Reg *= [0..31];
+<* ELSIF TARGET_LLVM THEN *>
+TYPE RegMask = rgs.RegSet;
+     Reg   *= rgs.Reg;
 <* ELSIF TARGET_SPARC THEN *>
 TYPE RegMask = SPARCDefs.RegMask;
          Reg *= [0..31];
@@ -99,10 +105,11 @@ TYPE
              ind*  : SHORTINT;    (* для param: (ind # 0) - нужен адрес *)
                                   (* для len:    ind - номер измерения *)
                                   (* для base:   ind - число уровней вверх *)
-             type* : ir.TypeType; (* тип параметра *)
-             size* : ir.SizeType; (* размер параметра ?? *)
+             type *: ir.TypeType; (* тип параметра *)
+             size *: ir.SizeType; (* размер параметра ?? *)
              where*: MemType;     (* где находится параметр *)
-             offs* : LONGINT;     (* смещение на стеке *)
+             offs *: LONGINT;     (* смещение на стеке *)
+             obj  *: pc.OBJECT;   (* объект соответствующий параметру *)
            END;
 
   params* = POINTER TO ARRAY OF param;
@@ -131,7 +138,7 @@ TYPE
 (*??*) bases*         : Bases;      (* базы каких процедур следует передавать *)
        npar*          : INTEGER;  (* число параметров *)
        par*           : params;   (* параметры *)
-<* IF TARGET_RISC OR TARGET_SPARC THEN *>
+<* IF TARGET_RISC OR TARGET_SPARC OR TARGET_LLVM THEN *>
        par_regs*      : RegMask;  (* множество регистров,
                                      используемых для передачи параметров
                                   *)
@@ -147,7 +154,7 @@ VAR
   ProtoList* : ProtoListRef;
   NProto*    : ProtoNum;
 
-<* IF TARGET_RISC OR TARGET_SPARC THEN *>
+<* IF TARGET_RISC OR TARGET_LLVM OR TARGET_SPARC THEN *>
 
 VAR
   EvalProto* : PROCEDURE (p: ProtoNum);  (* target-dependent processing *)
@@ -245,6 +252,32 @@ PROCEDURE ProcObj* (num: ProcNum): pc.OBJECT;
 BEGIN
   RETURN ProcList[num].obj
 END ProcObj;
+
+--------------------------------------------------------------------------------
+PROCEDURE ProcProto *(type: pc.STRUCT): Proto; 
+VAR a: at.ATTR_EXT;
+    proto_num: ProtoNum;
+BEGIN
+  IF type # NIL THEN
+    a := at.attr(type.ext, at.a_prot);
+    IF a # NIL THEN
+      proto_num := a(at.PROT_EXT).proto;
+      RETURN ProtoList[proto_num];
+    END;  
+  END;
+  RETURN NIL;
+END ProcProto;
+
+--------------------------------------------------------------------------------
+PROCEDURE ProcProtoByObj *(obj: pc.OBJECT): Proto; 
+VAR proto: Proto;
+BEGIN 
+  proto := ProcProto(obj.type);
+  IF proto = NIL THEN
+    proto := ProtoList[ProcProtoNum(ProcNumByObj(obj))];
+  END;
+  RETURN proto; 
+END ProcProtoByObj; 
 
 PROCEDURE NumParams*(p: ProcNum): INTEGER;
   VAR prot: Proto;
@@ -872,6 +905,13 @@ BEGIN
     RETURN ProtoList[p^.Prototype].par[i-1].type;
   END;
 END CallParamType;
+
+--------------------------------------------------------------------------------
+PROCEDURE GetParamType * (p: ir.ParamPtr): ir.TypeType;
+BEGIN
+  ASSERT( p.triade.Op = ir.o_call );
+  RETURN CallParamType(p.triade, p.paramnumber);
+END GetParamType;
 
 PROCEDURE CallParamSize(p : ir.TriadePtr; i : ir.INT) : ir.SizeType;
 VAR q : ir.ParamPtr;

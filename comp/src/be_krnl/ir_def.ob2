@@ -29,7 +29,10 @@ CONST MaxVarSize    *= 10;
 
 TYPE TypeTypeSet    *= PACKEDSET OF TypeType;
      SizeType       *= SHORTINT;
+     AlignType      *= SHORTINT;
      SizeTypeRange  *= SizeType[0..MaxVarSize];
+
+CONST AlignUNDEFINED *= 0;
 
 TYPE ArrayTypeTypeOfString6 = ARRAY TypeType OF ARRAY 6 OF CHAR;
 

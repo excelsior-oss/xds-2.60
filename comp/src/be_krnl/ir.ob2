@@ -30,6 +30,7 @@ TYPE
         NameType       *= pc.STRING;                    (* ??? *)
         TypeType       *= ir_def.TypeType;
         SizeType       *= ir_def.SizeType;
+        AlignType      *= ir_def.AlignType;
 
         Node           *= INT;
         TriadePtr      *= POINTER TO Triade;
@@ -48,6 +49,9 @@ TYPE
         TypeTypeSet    *= ir_def.TypeTypeSet;
         SizeTypeRange  *= ir_def.SizeTypeRange;
 
+        ProtoParNumber *= LONGINT;
+
+CONST   AlignUNDEFINED *= ir_def.AlignUNDEFINED;
 
 CONST   MaxVarSize *= ir_def.MaxVarSize;
 
@@ -208,6 +212,12 @@ TYPE Operation      *=
                                          call x2j_trap_division()
                                   *)
 
+<* IF TARGET_LLVM THEN *>
+---- LLVM instruction
+        ,o_getelementptr          (* r = x [index1, index2, ...] 
+                                     get the address of a subelement of an aggregate data structure.
+                                  *)
+<* END *>                                  
     );
 
 CONST   max_op_code    *= MAX(Operation);
@@ -323,6 +333,9 @@ CONST   OpProperties *= OpPropertiesArray {
                 {isRead, isPrelive},                            (* o_seqpoint *)
                 {},                                             (* o_constr *)
                 {isMovable, isPrelive}                          (* o_checkneq *)
+              <* IF TARGET_LLVM THEN *>
+              , {}                                              (* o_getelementptr *)
+              <* END *>
         };        
 
 
@@ -467,8 +480,11 @@ TYPE Option *=
 *)
 
         o_Debug,                -- Используется при выдаче отладочной информации
---      o_Volatile
-        o_IsChecknil
+--      o_Volatile,
+        o_IsChecknil,
+        o_RefAligned,
+        o_ParameterLen          -- Ставится на локал, соответствующий параметру которым 
+                                -- передается длина открытого массива пор доному измерению  
        );
 
 TYPE    OptionsSet     *= PACKEDSET OF Option;
@@ -499,7 +515,9 @@ TYPE
     ParamOption *=
     (
         popt_LastUse,
-        popt_Checking
+        popt_Checking,
+        popt_FixedAddr,
+        popt_RefAligned
     );
     ParamOptionsSet     *= PACKEDSET OF ParamOption;
 
@@ -523,8 +541,15 @@ TYPE
                          triade     *: TriadePtr;
 <* END *>
                          paramnumber*: INTEGER;
-                         position   *: TPOS;        (* For o_fi only *)
+                         protoparnum*: ProtoParNumber;  (* for o_call only, parameter number in procedure prototype *)
+                         position   *: TPOS;            (* For o_fi only *)
                          options    *: ParamOptionsSet;
+<* IF SOURCE_JAVA THEN *>
+                         type       -: TypeType;
+                         size       -: SizeType;
+<* ELSE *>                         
+                         type       -: pc.STRUCT;
+<* END *>
                      END;
 
     ParamArray *= POINTER TO ARRAY OF ParamPtr;
@@ -558,7 +583,11 @@ TYPE
                          Params      *: ParamArray;
                          Position    *: TPOS;
                          NPar        *: SHORTINT;       (* For o_getpar only *)
-                 END;                                   (* NPar for o_copy - alignment *)
+                                                        (* NPar for o_copy - alignment *)
+                         align       *: AlignType;      (* alignment of result *)
+                         type        *: pc.STRUCT;
+                 END; 
+                                  
 
 TYPE
     Loc *= (
@@ -602,7 +631,9 @@ TYPE
 
           o_InFixReg,
           o_SpilledByByte,
-          o_Backwards
+          o_Backwards,
+
+          o_DiscardRefAligned
         );
         VarOptionsSet   *= PACKEDSET OF VarOption;
 
@@ -657,6 +688,7 @@ TYPE    NodeType *= RECORD
        NodeRefs  *= POINTER TO ARRAY OF NodeType;  -- INDEXED BY "Node"
 
 CONST  UndefLoop      *= Loop   { -1};
+       UndefLocal     *= Local  { -1};
        UndefNode      *= MAX (Node);
        UndefTSNode    *= TSNode { -1};
        UNDEFINED      *= VarNum { -1};
@@ -697,6 +729,9 @@ VAR
        AllocatedLocals-   : BitVect.BitVector;
 
        modname_local*     :Local;
+
+VAR 
+  WriteTest *: PROCEDURE (id: CHAR; name-: ARRAY OF CHAR);   -- q-file writer
 
 PROCEDURE (tr: TriadePtr) IsRead*(): BOOLEAN;
 BEGIN
@@ -973,6 +1008,12 @@ BEGIN
   p.reverse    := FALSE;
   p.position   := NullPos;
   p.tag        := y_Nothing;
+<* IF SOURCE_JAVA THEN *>
+  p.type       := t_invalid;
+  p.size       := -1;
+<* ELSE *>  
+  p.type       := NIL;
+<* END *>
 END Init;
 
 
@@ -1044,7 +1085,11 @@ BEGIN
     | o_call:       IF i = 0 THEN
                         RETURN t_ref;
                     ELSE
+<* IF SOURCE_JAVA THEN *>
+                        RETURN p.Params[i].type;
+<* ELSE *>
                         RETURN CallParamType(p, i);
+<* END *>
                     END;
     | o_val,
       o_cast,
@@ -1168,6 +1213,7 @@ BEGIN
         NewParamPtr  (p^[i]);
         p^[i].triade      := q;
         p^[i].paramnumber := SHORT (i);
+        p^[i].protoparnum := VAL(ProtoParNumber, i) - 1;
     END;
     RETURN p;
 END NewParams;
@@ -1194,6 +1240,16 @@ BEGIN
     p^.tag  := y_Variable;
     p^.name := v;
     p^.reverse := reverse;
+<* IF SOURCE_JAVA THEN *>
+    IF Vars[v].Def # NIL THEN
+      p^.type := Vars[v].Def.ResType;
+      p^.size := Vars[v].Def.ResSize;
+    END;
+<* ELSE *>    
+    IF Vars[v].Def # NIL THEN
+      p^.type := Vars[v].Def.type;
+    END;
+<* END *>
     IF addUse THEN
       AddUse (p);
     END;
@@ -1207,8 +1263,22 @@ END MakeParVar;
 PROCEDURE MakeParNum* (p: ParamPtr; u: VALUE);
 BEGIN
     p.Init();
+<* IF SOURCE_JAVA THEN *>
+    IF Calc.Type(u) = t_float THEN
+      p^.tag   := y_RealConst;
+    ELSE
+      p^.tag   := y_NumConst;
+    END;
+    p^.value := u;
+    p^.type  := Calc.Type(u);
+    p^.size  := Calc.Size(u);
+<* ELSE *>
+    IF u.is_RR() THEN  p^.tag := y_RealConst;
+    ELSE               p^.tag := y_NumConst;
+    END;
     p^.tag   := y_NumConst;
     p^.value := u;
+<* END *>
     p^.reverse := FALSE;
 END MakeParNum;
 
@@ -1285,6 +1355,7 @@ END CopyParamWithRev;
 
 PROCEDURE CopyParam* (s, d: ParamPtr);
 BEGIN
+(* !!!HADY2022 saved 
     d^.tag     := s^.tag;
     d^.value   := s^.value;
     d^.name    := s^.name;
@@ -1292,6 +1363,28 @@ BEGIN
     IF d^.tag = y_Variable THEN
         AddUse (d);
     END;
+*)
+    ASSERT(d.next = NIL);
+    ASSERT(d.prev = NIL);
+    d^.tag     := s^.tag;
+    d^.value   := s^.value;
+    d^.name    := s^.name;
+    d^.offset  := s^.offset;
+<* IF SOURCE_JAVA THEN *>
+    d^.type    := s^.type;
+    d^.size    := s^.size;
+<* ELSE *>    
+    d^.type    := s^.type;
+<* END *>
+    IF NOT s^.position.IsNull() THEN
+      d^.position := s^.position;
+    END;
+    IF d^.tag = y_Variable THEN
+        AddUse (d);
+    END;
+    IF (s.triade # NIL) AND (s.triade.Op = o_call) THEN
+      d^.protoparnum := s^.protoparnum;
+    END;  
 END CopyParam;
 
 (*
@@ -1319,6 +1412,12 @@ VAR rev: BOOLEAN;
     val: VALUE;
     nam: VarNum;
     ofs: LONGINT;
+<* IF SOURCE_JAVA THEN *>
+    type : TypeType;
+    size : SizeType;
+<* ELSE *>           
+    type : pc.STRUCT;
+<* END *>
 BEGIN
     IF d^.tag = y_Variable THEN
         RemoveUse(d);
@@ -1341,6 +1440,20 @@ BEGIN
     ofs        := d^.offset;
     d^.offset  := s^.offset;
     s^.offset  := ofs;
+
+<* IF SOURCE_JAVA THEN *>
+    type       := d^.type;
+    d^.type    := s^.type;
+    s^.type    := type;
+
+    size       := d^.size;
+    d^.size    := s^.size;
+    s^.size    := size;
+<* ELSE *>           
+    type       := d^.type;
+    d^.type    := s^.type;
+    s^.type    := type;    
+<* END *>
 
     IF d^.tag = y_Variable THEN
         AddUse (d);
@@ -1509,6 +1622,18 @@ BEGIN
   q.Op := op;
   RETURN q
 END NewTriadeOp;
+
+<* IF TARGET_LLVM THEN *>
+PROCEDURE NewTriadeGEP *(nparams: INT; type: pc.STRUCT): TriadePtr; 
+VAR q: TriadePtr;
+BEGIN 
+  q := NewTriadeInit(nparams, o_getelementptr, tune.addr_ty, tune.addr_sz);
+  q.OpType    := t_int;
+  q.type      := pc.new_type(pc.ty_pointer);
+  q.type.base := type;
+  RETURN q;
+END NewTriadeGEP; 
+<* END *>
 
 (* -------------------------------------------------------------------------- *)
 (* -------------------------------------------------------------------------- *)

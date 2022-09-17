@@ -23,6 +23,10 @@ IMPORT pc   := pcK,
        FormStr,
        SYSTEM;
 
+<* IF TARGET_LLVM THEN *>
+IMPORT llvm := llvmDefs;
+<* END *>
+
 <* IF TARGET_386 THEN *> IMPORT xProfRTS; <* END *>
 
 TYPE 
@@ -39,6 +43,8 @@ CONST
   GREEN_HILLS = "GHS";  -- options: generate green hills assembler
 <* END *>
 
+VAR
+  LINE_COMMENT_CHAR -: CHAR; -- Assembler line comment symbol
 
 VAR
   ret_node *: ir.Node; -- node number with RET instruction
@@ -167,6 +173,12 @@ VAR
 
 CONST
   prof_info_elem_len *= SIZE(xProfRTS.X2C_Profile_STR);
+
+<* ELSE *> (* !!!Hady2022 - looks like this front was never compiled with TARGET_X86- *)
+VAR
+  excepttable *: pc.OBJECT;
+  excepttable_segm *: CODE_SEGM;
+
 <* END *>
 
 TYPE
@@ -214,6 +226,10 @@ TYPE
                 casetable*      : def.CTs;
                 casetable_len*  : LONGINT;
 <* END *>
+              <* IF TARGET_LLVM THEN *>
+                labels     *: llvm.LHs;
+                labels_len *: LONGINT;
+              <* END *>
               END;
 
 PROCEDURE fxup_length*(fx-: fixup_desc): INTEGER;
@@ -283,7 +299,7 @@ BEGIN
   END;
 END Realloc;
 
-PROCEDURE GenInstr * (s- : ARRAY OF CHAR);
+PROCEDURE GenInstr * (s- : ARRAY OF CHAR; doDoubleSlashes:=FALSE: BOOLEAN);
 BEGIN
   IF c_seg.code_len = LEN(c_seg.acode^) THEN Realloc; END;
   DStrings.Assign (s, c_seg.acode[c_seg.code_len]);
@@ -387,15 +403,27 @@ CONST
   str_begin = '        .ascii  "';
 <* END *>
 
+<* IF TARGET_PPC OR TARGET_MIPS OR TARGET_SPARC OR TARGET_LLVM THEN *>
+VAR 
+  -- Assembler directive
+  ADIR_STR:  ARRAY 32 OF CHAR;  -- Inserts the string as data into the assembly
+  ADIR_STRZ: ARRAY 32 OF CHAR;  -- Like .ascii, but follows the string with a zero byte
+<* ELSE *>
+CONST  
+  -- Assembler directive
+  ADIR_STR  = '        .ascii  "';  -- inserts the string as data into the assembly
+  ADIR_STRZ = '        .asciiz "';  -- Like .ascii, but follows the string with a zero byte
+<* END *>
+
 VAR
   ss_cnt : INT;
   ss : ARRAY 256 OF CHAR;
-<* IF TARGET_RISC THEN *>
+<* IF TARGET_RISC OR TARGET_LLVM THEN *>
   Quota: BOOLEAN;
   WasStart : BOOLEAN;
 <* END *>
 
-<* IF TARGET_RISC THEN *>
+<* IF TARGET_RISC OR TARGET_LLVM THEN *>
 
 PROCEDURE GenStartStringA0();
   CONST str_begin = '        .byte   ';  -- to override value above
@@ -1332,6 +1360,11 @@ BEGIN
   longreal_type.pos := ir.NullPos;
   longreal_type.end := ir.NullPos;
   InitVal_AuxConst;
+<* ELSIF  TARGET_LLVM THEN *>   
+  -- it cannot be placed in begin part of module because in this case env.config is not defined yet
+  LINE_COMMENT_CHAR := ";";
+  COPY('c"', ADIR_STR);
+  COPY('c"', ADIR_STRZ);
 <* END *>
 END Init;
 

@@ -385,8 +385,8 @@ TYPE (** type tags *)
      ttag_aux21,
      ttag_aux22,
      ttag_aux23,
-     ttag_aux24,
      ttag_strictcallconv,
+     ttag_anonim,
      ttag_alwaysinline,
      ttag_neverinline,
      ttag_volatile,--*    =TTAG{ 28 }; (** volatile type                  *)
@@ -490,7 +490,9 @@ TYPE
                          module      : import
              J record    : interfaces implemented
                      *)
-    ext* : BEXT;     (** for back-end only              *)
+    use_import* : USAGE; (** module: used objects from imported modules *)
+                     
+  ext* : BEXT;     (** for back-end only              *)
 <* IF target_idb THEN *>
     eno* : LONGINT;      (* id of corresponding entity *)
 <* END *>
@@ -542,11 +544,11 @@ TYPE
     otag_aux18,     --= OTAG{ 25 };
     otag_haveExceptTable,     --= OTAG{ 26 }; -- module uses SYSTEM.EXCEPTTABLE inside
     otag_aux20,     --= OTAG{ 27 };
-    otag_volatile,  --=OTAG{ 28 }; (** volatile variable                            *)
-    otag_reexported,--=OTAG{ 29 }; (** reexporeted (non-primitive) constant         *)
-    otag_secretvar, --=OTAG{ 30 }; (** auxiliaury var - does not exist in code      *)
+    otag_volatile,  --= OTAG{ 28 }; (** volatile variable                            *)
+    otag_ref_aligned,--=OTAG{ 29 };(** all var values are claimed to be aligned     *)    otag_reexported,--=OTAG{ 29 }; (** reexporeted (non-primitive) constant         *)
+    otag_secretvar, --= OTAG{ 30 }; (** auxiliaury var - does not exist in code      *)
       -- in oberon compiler - nameless function parameter
-    otag_aux21     --= OTAG{ 31 };
+    otag_aux21      --= OTAG{ 31 };
   );
 
   OTAG_SET *= PACKEDSET OF OTAG;
@@ -1308,6 +1310,29 @@ BEGIN
        & (o.host.mode = ty_enum)
        & (otag_public IN o.host.obj.tags);
 END is_public;
+
+-----------------------------------------------------------------------------
+--  Object belongs to module's global scope
+PROCEDURE (o: OBJECT) is_global * ():  BOOLEAN;
+BEGIN
+  RETURN o.lev = 0;
+END is_global;
+
+-----------------------------------------------------------------------------
+--  Object belongs to procedure's local scope
+PROCEDURE (o: OBJECT) is_local * ():  BOOLEAN;
+BEGIN
+  RETURN o.lev > 0;
+END is_local;
+
+-----------------------------------------------------------------------------
+--  Object is explicit initialized variable
+PROCEDURE (o: OBJECT) is_initvar * ():  BOOLEAN;
+BEGIN
+  RETURN (o.mode = ob_var)
+       & (o.val # NIL)
+       & NOT (otag_with IN o.tags);
+END is_initvar;
 
 -----------------------------------------------------------------------------
 

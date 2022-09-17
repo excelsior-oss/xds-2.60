@@ -4278,6 +4278,7 @@ BEGIN  (* ---- g e n _ v a l u e ----- *)
     |pc.nd_lconv:
       gen_value_cast(n, md, arg);
 
+<* IF TARGET_386 THEN *>
     |pc.nd_sproc:
       IF n.sub = pc.sp_callerIPref THEN
         ASSERT(def.REF IN md);
@@ -4289,6 +4290,7 @@ BEGIN  (* ---- g e n _ v a l u e ----- *)
         gen_sequence(n, TRUE, TRUE, dd);
         arg.tag := ir.y_Nothing;  -- to prevent incorrect 'arg' usage
       END;
+<* END *>
 
   ELSE
     IF (n.mode = pc.nd_if) & (n.type.mode # pc.ty_void) THEN

@@ -157,7 +157,7 @@ END module_body_name;
 
 <* IF TARGET_68k THEN *>   -- replace non-alphanum symbols
 
-PROCEDURE replace_non_alpha(VAR name: ARRAY OF CHAR);
+PROCEDURE replace_non_alpha*(VAR name: ARRAY OF CHAR);
   VAR i: INT; ch: CHAR;
 BEGIN
   i := 0;
@@ -173,9 +173,9 @@ BEGIN
   END;
 END replace_non_alpha;
 
-<* ELSIF TARGET_RISC THEN *>   -- replace non-alphanum symbols
+<* ELSIF TARGET_RISC OR TARGET_MIPS OR TARGET_LLVM THEN *>   -- replace non-alphanum symbols
 
-PROCEDURE replace_non_alpha(VAR name: ARRAY OF CHAR);
+PROCEDURE replace_non_alpha*(VAR name: ARRAY OF CHAR);
   VAR i: INT; ch: CHAR;
 BEGIN
   i := 0;

@@ -35,7 +35,7 @@ IMPORT sys:= SYSTEM,
        bv := BitVect;
 
 TYPE
-    LCNum*      = D.LCNum;
+    LCNum*      = ir.LCNum;
     BaseNum*    = INTEGER;
     ConstScale* = bv.BitVector;
 
@@ -54,13 +54,17 @@ CONST
       y_PseudoNumConst *= SUCC(y_PseudoRealConst);
       y_LastConst      *= y_PseudoNumConst;
 
-      UNDEFINED        *= D.UNDEFINED;
+      UNDEFINED        *= ir.UNDEFINED;
 
       ConstTags        *= {ir.y_NumConst,
                            ir.y_AddrConst,
                            ir.y_RealConst,
                            ir.y_ProcConst,
                            y_BaseConst..y_LastConst};
+
+      RealConstTags    *= {ir.y_RealConst, y_PseudoRealConst};
+
+
 CONST U2F* = VAL(ir.LCNum, 0);
       I2F* = VAL(ir.LCNum, 1);
       F2U* = VAL(ir.LCNum, 2);

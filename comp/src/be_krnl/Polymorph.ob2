@@ -1,10 +1,15 @@
 (* initialization of target defined interface for target 386 *)
 MODULE Polymorph;
 
-IMPORT DAG_I,
-       PrepGen_I,
-       opTune_I,
-       Iselect_I;
+<* IF NOT TARGET_LLVM THEN *>
+IMPORT DAG_I;
+<* END *>
+IMPORT PrepGen_I;
+IMPORT opTune_I;
+<* IF NOT TARGET_LLVM THEN *>
+IMPORT Iselect_I;
+<* END *>
+       
 <* IF TARGET_386 THEN *>
 IMPORT RDefs_I;
 <* END *>

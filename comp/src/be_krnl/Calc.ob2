@@ -84,7 +84,7 @@ VAR
         RROne,
         NilValue,
 
-        MinusOne, Zero, One, Two : VALUE;
+        MinusOne, Zero-, One-, Two- : VALUE;
 
         IntegerValue,
         CardinalValue,

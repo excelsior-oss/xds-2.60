@@ -54,7 +54,7 @@ VAR
         curr_proc_name*: pc.STRING;
         need_proc_name: pc.STRING;
 TYPE
-    ArrayOfString = ARRAY ir.Operation OF ARRAY 14 OF CHAR;
+    ArrayOfString = ARRAY ir.Operation OF ARRAY 16 OF CHAR;
 CONST
     TriadeName* = ArrayOfString
     { "o_invalid",
@@ -148,6 +148,9 @@ CONST
       "o_SEQPOINT",
       "o_CONSTR",
       "o_CHECKNEQ"
+<* IF TARGET_LLVM THEN *>    
+    , "o_GETELEMENTPTR"
+<* END *>  
        };
 
 (* -------------------------------------------------------------------------- *)
@@ -159,7 +162,8 @@ VAR
         file:   SeqFile.ChanId;
         fname:  ARRAY 256 OF CHAR;    -- name of a Q-file
         qfileNo:LONGINT; -- number of current qfile from the compiler run
-
+        outstr: DStrings.String;  -- output string in 'StringMode'  
+        StringMode: BOOLEAN; 
 
 (* -------------------------------------------------------------------------- *)
 
@@ -190,18 +194,26 @@ END Close;
 
 PROCEDURE WrChar (c: CHAR);
 BEGIN
+  IF StringMode THEN
+    DStrings.Append (c, outstr);    
+  ELSE  
     TextIO.WriteChar (file, c);
 --    DStrings.Append (c, nodeLabel);
     INC (pos);
+  END
 END WrChar;
 
 (* -------------------------------------------------------------------------- *)
 
 PROCEDURE Ln;
 BEGIN
+  IF StringMode THEN
+    DStrings.Append ("\n", outstr);
+  ELSE  
     TextIO.WriteLn (file);
 --    DStrings.Append ("\n", nodeLabel);
     pos := 0;
+  END
 END Ln;
 
 (* -------------------------------------------------------------------------- *)
@@ -997,6 +1009,26 @@ BEGIN
     WrTail (p);
 END WrTriade;
 
+--------------------------------------------------------------------------------
+PROCEDURE GetTriadeInfo *(tr: ir.TriadePtr): DStrings.String;
+VAR res: DStrings.String;
+    saved_pos: INT;
+BEGIN
+  StringMode := TRUE;
+  DStrings.Assign("", res);
+  outstr := res;
+  saved_pos := pos;
+  pos := 0;
+  
+  WrTriade(tr);
+  
+  StringMode := FALSE;
+  res := outstr;
+  outstr := NIL;
+  pos := saved_pos;
+  RETURN res;
+END GetTriadeInfo;  
+
 (* -------------------------------------------------------------------------- *)
 
 PROCEDURE WrBitVect (p: BitVect.BitVector);
@@ -1465,6 +1497,9 @@ VAR    i: INTEGER;
       qfile_string, fname_string  : pc.STRING;   (* for generating *.Q file *)
   VAR dir,name,ext: pc.STRING;
 BEGIN
+  outstr := NIL;
+  StringMode := FALSE;
+
   env.config^.Equation("QFILE_PROC", need_proc_name);
   env.config^.Equation("QFILE",      qfile_string);
   IF qfile_string # NIL THEN

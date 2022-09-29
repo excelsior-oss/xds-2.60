@@ -3280,6 +3280,7 @@ PROCEDURE Set*;
   VAR code: CODE;
 BEGIN
   ope.gen_sequence := gen_sequence;
+  ir.WriteTest := WriteTest;
   Color.WriteTest := WriteTest;
   Analysis.WriteTest := WriteTest;
   NEW(code);

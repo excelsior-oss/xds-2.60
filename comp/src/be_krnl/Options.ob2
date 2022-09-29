@@ -592,6 +592,10 @@ BEGIN
   CheckFlag ("GENASM",     at.GENASM);
 <* END *>
 
+<* IF TARGET_LLVM THEN *>
+  DefaultOBJFMT := objLLVM;
+  env.config.SetEquation(EQU_OBJFMT, DefaultOBJFMT);
+<* ELSE *>  
   IF at.GENASM IN at.COMP_MODE THEN
   <* IF TARGET_RISC THEN *>
     IF at.ABI = at.PowerOpen
@@ -617,6 +621,7 @@ BEGIN
     DefaultOBJFMT := objOMF;
   <* END *>
   END;
+<* END *> -- TARGET_LLVM
 
 (* -- turn off optimize traps - it nullifies traps' lineno & filenames
   -- doreorder и nooptimizetraps не должны быть включены одновременно

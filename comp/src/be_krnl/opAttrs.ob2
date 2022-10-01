@@ -603,8 +603,8 @@ END skip_names;
 
 PROCEDURE bit_field_info * (f: pc.OBJECT;
               VAR offset     : LONGINT;
-              VAR bit_offset : SHORTINT;
-              VAR bit_width  : SHORTINT);
+              VAR bit_offset : SYSTEM.INT8;
+              VAR bit_width  : SYSTEM.INT8);
   VAR wofs, bofs, bwidth :pc.VALUE;
 BEGIN
   ASSERT(f.mode = pc.ob_field_bts);
@@ -614,8 +614,8 @@ BEGIN
   bofs   := f.attr(pc.NODE).l.l.val;
 
   offset      := BYTES_PER_WORD * wofs.get_integer();
-  bit_offset  := VAL (SHORTINT, bofs.get_integer());
-  bit_width   := VAL (SHORTINT, bwidth.get_integer());
+  bit_offset  := VAL (SYSTEM.INT8, bofs.get_integer());
+  bit_width   := VAL (SYSTEM.INT8, bwidth.get_integer());
 END bit_field_info;
 
 (* --------  G l o b a l   V a r i a b l e s   A l l o c a t i o n  --------- *)

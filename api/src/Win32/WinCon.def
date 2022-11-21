@@ -132,7 +132,7 @@ TYPE FOCUS_EVENT_RECORD = RECORD
 *)
 
 (* This type hasn't been converted into setbecause it doesn't have set
-   semantics: only one bit may be set at a time; it is also intended to be used 
+   semantics: only one bit may be set at a time; it is also intended to be used
    as a variant record key field which isn't allowed for set type
 *)
 
@@ -310,9 +310,9 @@ PROCEDURE WriteConsoleInputA (hConsoleInput : HANDLE;
                               VAR NumberOfEventsWritten : DWORD) : BOOL;
 
 PROCEDURE WriteConsoleInputW (hConsoleInput : HANDLE;
-                              Bufrer        : ARRAY OF INPUT_RECORD;
+                              Buffer        : ARRAY OF INPUT_RECORD;
                               nLength       : DWORD;
-                              VAR lpNumberOfEventsWritten : DWORD) : BOOL;
+                              VAR NumberOfEventsWritten : DWORD) : BOOL;
 
 <* IF DEFINED  (UNICODE) THEN *>
       CONST WriteConsoleInput = WriteConsoleInputW;

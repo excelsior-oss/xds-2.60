@@ -833,13 +833,16 @@ PROCEDURE OpenPrinterW (pPrinterName      : PWSTR;
 <* IF BACKEND # "C" THEN *>
 PROCEDURE ResetPrinterA (hPrinter : HANDLE;
                          Default  : PRINTER_DEFAULTSA) : BOOL;
+
+PROCEDURE ResetPrinterW (hPrinter : HANDLE;
+                         Default  : PRINTER_DEFAULTSW) : BOOL;
 <* ELSE *>
 PROCEDURE ResetPrinterA (hPrinter : HANDLE;
                          Default  : PPRINTER_DEFAULTSA) : BOOL;
-<* END *>
 
 PROCEDURE ResetPrinterW (hPrinter : HANDLE;
                          Default  : PPRINTER_DEFAULTSW) : BOOL;
+<* END *>
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST ResetPrinter = ResetPrinterW;
@@ -1690,13 +1693,13 @@ PROCEDURE AddPortW (pName        : PWSTR;
       CONST AddPort = AddPortA;
 <* END *>
 
-PROCEDURE ConfigurePortA (pName     : PSTR;
-                          hWnd      : HWND;
-                          pPortName : PSTR) : BOOL;
+PROCEDURE ConfigurePortA (pServerName : PSTR;
+                          hWnd        : HWND;
+                          pPortName   : ARRAY OF CHAR) : BOOL;
 
-PROCEDURE ConfigurePortW (pName     : PSTR;
-                          hWnd      : HWND;
-                          pPortName : PSTR) : BOOL;
+PROCEDURE ConfigurePortW (pServerName : PWSTR;
+                          hWnd        : HWND;
+                          pPortName   : ARRAY OF WCHAR) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST ConfigurePort = ConfigurePortW;

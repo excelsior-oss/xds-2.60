@@ -259,43 +259,43 @@ PROCEDURE WNetGetConnectionW (LocalName  : ARRAY OF WCHAR;
 <* END *>
 
 <* IF BACKEND # "C" THEN *>
-PROCEDURE WNetUseConnectionA (hwndOwner     : HWND;
-                             NetResource    : NETRESOURCEA;
-                             UserID         : PCSTR;
-                             Password       : PCSTR;
-                             dwFlags        : CONNECT_SET;
-                             AccessName     : PSTR;
-                             VAR BufferSize : DWORD;
-                             VAR Result     : DWORD) : DWORD;
+PROCEDURE WNetUseConnectionA (hwndOwner           : HWND;
+                             NetResource          : NETRESOURCEA;
+                             Password             : PCSTR;
+                             UserID               : PCSTR;
+                             dwFlags              : CONNECT_SET;
+                             VAR [NIL] AccessName : ARRAY OF CHAR;
+                             VAR BufferSize       : DWORD;
+                             VAR Result           : DWORD) : DWORD;
 <* ELSE *>
-PROCEDURE WNetUseConnectionA (hwndOwner     : HWND;
-                             NetResource    : PNETRESOURCEA;
-                             UserID         : PCSTR;
-                             Password       : PCSTR;
-                             dwFlags        : CONNECT_SET;
-                             AccessName     : PSTR;
-                             VAR BufferSize : DWORD;
-                             VAR Result     : DWORD) : DWORD;
+PROCEDURE WNetUseConnectionA (hwndOwner           : HWND;
+                             NetResource          : PNETRESOURCEA;
+                             Password             : PCSTR;
+                             UserID               : PCSTR;
+                             dwFlags              : CONNECT_SET;
+                             AccessName           : PSTR;
+                             VAR BufferSize       : DWORD;
+                             VAR Result           : DWORD) : DWORD;
 <* END *>
 
 <* IF BACKEND # "C" THEN *>
-PROCEDURE WNetUseConnectionW (hwndOwner     : HWND;
-                             NetResource    : NETRESOURCEA;
-                             UserID         : PCWSTR;
-                             Password       : PCWSTR;
-                             dwFlags        : CONNECT_SET;
-                             AccessName     : PWSTR;
-                             VAR BufferSize : DWORD;
-                             VAR Result     : DWORD) : DWORD;
+PROCEDURE WNetUseConnectionW (hwndOwner           : HWND;
+                             NetResource          : NETRESOURCEW;
+                             Password             : PCWSTR;
+                             UserID               : PCWSTR;
+                             dwFlags              : CONNECT_SET;
+                             VAR [NIL] AccessName : ARRAY OF WCHAR;
+                             VAR BufferSize       : DWORD;
+                             VAR Result           : DWORD) : DWORD;
 <* ELSE *>
-PROCEDURE WNetUseConnectionW (hwndOwner     : HWND;
-                             NetResource    : PNETRESOURCEA;
-                             UserID         : PCWSTR;
-                             Password       : PCWSTR;
-                             dwFlags        : CONNECT_SET;
-                             AccessName     : PWSTR;
-                             VAR BufferSize : DWORD;
-                             VAR Result     : DWORD) : DWORD;
+PROCEDURE WNetUseConnectionW (hwndOwner           : HWND;
+                             NetResource          : PNETRESOURCEW;
+                             Password             : PCWSTR;
+                             UserID               : PCWSTR;
+                             dwFlags              : CONNECT_SET;
+                             AccessName           : PWSTR;
+                             VAR BufferSize       : DWORD;
+                             VAR Result           : DWORD) : DWORD;
 <* END *>
 
 <* IF DEFINED (UNICODE) THEN *>

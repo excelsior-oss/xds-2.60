@@ -3219,7 +3219,7 @@ PROCEDURE GetPrivateProfileSectionNamesA (VAR ReturnBuffer : ARRAY OF CHAR;
 
 PROCEDURE GetPrivateProfileSectionNamesW (VAR ReturnBuffer : ARRAY OF WCHAR;
                                           nSize            : DWORD;
-                                          lpFileName       : ARRAY OF WCHAR) : DWORD;
+                                          FileName         : ARRAY OF WCHAR) : DWORD;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST GetPrivateProfileSectionNames = GetPrivateProfileSectionNamesW;
@@ -3370,7 +3370,7 @@ PROCEDURE GetDiskFreeSpaceExW (DirectoryName                    : PCWSTR;       
 PROCEDURE CreateDirectoryA (PathName             : ARRAY OF CHAR;
                             lpSecurityAttributes : PSECURITY_ATTRIBUTES) : BOOL;
 
-PROCEDURE CreateDirectoryW (lpPathName           : ARRAY OF WCHAR;
+PROCEDURE CreateDirectoryW (PathName             : ARRAY OF WCHAR;
                             lpSecurityAttributes : PSECURITY_ATTRIBUTES) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>
@@ -3472,7 +3472,7 @@ PROCEDURE CreateFileA (FileName              : ARRAY OF CHAR;
                        hTemplateFile         : HANDLE
                                                       ) : HANDLE;
 
-PROCEDURE CreateFileW (lpFileName            : ARRAY OF WCHAR;
+PROCEDURE CreateFileW (FileName              : ARRAY OF WCHAR;
                        dwDesiredAccess       : ACCESS_MASK;
                        dwShareMode           : FILE_SHARE_MODE;
                        lpSecurityAttributes  : PSECURITY_ATTRIBUTES;
@@ -3608,15 +3608,15 @@ PROCEDURE SearchPathA (Path           : PCSTR;
                        Extension      : PCSTR;
                        nBufferLength  : DWORD;
                        VAR Buffer     : ARRAY OF CHAR;
-                       VAR lpFilePart : PSTR)
+                       VAR FilePart   : PSTR)
                                               : DWORD;
 
-PROCEDURE SearchPathW (Path           : PCSTR;
+PROCEDURE SearchPathW (Path           : PCWSTR;
                        FileName       : ARRAY OF WCHAR;
                        Extension      : PCWSTR;
                        nBufferLength  : DWORD;
                        VAR Buffer     : ARRAY OF WCHAR;
-                       VAR lpFilePart : PWSTR)
+                       VAR FilePart   : PWSTR)
                                                : DWORD;
 
 <* IF DEFINED (UNICODE) THEN *>
@@ -3840,7 +3840,7 @@ PROCEDURE GetVolumeInformationW (lpRootPathName               : PCWSTR; (* IN NI
                                  VAR [NIL] VolumeSerialNumber : DWORD;
                                  VAR MaximumComponentLength   : DWORD;
                                  VAR FileSystemFlags          : FILESYSTEM_FLAGS;
-                                 VAR FileSystemNameBuffe      : ARRAY OF WCHAR;
+                                 VAR FileSystemNameBuffer     : ARRAY OF WCHAR;
                                  nFileSystemNameSize          : DWORD) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>
@@ -3892,7 +3892,7 @@ PROCEDURE GetOldestEventLogRecord (hEventLog : HANDLE;
                                    VAR OldestRecord : DWORD) : BOOL;
 
 PROCEDURE OpenEventLogA (lpUNCServerName : PCSTR; (* IN NIL *)
-                         SourceName      : ARRAY OF CHAR) : HANDLE;
+                         lpSourceName    : ARRAY OF CHAR) : HANDLE;
 
 PROCEDURE OpenEventLogW (lpUNCServerName : PCWSTR; (* IN NIL *)
                          lpSourceName    : ARRAY OF WCHAR) : HANDLE;
@@ -4613,14 +4613,14 @@ PROCEDURE LookupPrivilegeNameW (lpSystemName : ARRAY OF WCHAR;
       CONST LookupPrivilegeName = LookupPrivilegeNameA;
 <* END *>
 
-PROCEDURE LookupPrivilegeDisplayNameA (SystemName        : ARRAY OF CHAR;
+PROCEDURE LookupPrivilegeDisplayNameA (SystemName        : PCSTR;
                                        Name              : ARRAY OF CHAR;
                                        VAR DisplayName   : ARRAY OF CHAR;
                                        VAR cbDisplayName : DWORD;
                                        VAR lpLanguageId  : DWORD) : BOOL;
 
-PROCEDURE LookupPrivilegeDisplayNameW (VAR SystemName    : ARRAY OF WCHAR;
-                                       VAR Name          : ARRAY OF WCHAR;
+PROCEDURE LookupPrivilegeDisplayNameW (SystemName        : PCWSTR;
+                                       Name              : ARRAY OF WCHAR;
                                        VAR DisplayName   : ARRAY OF WCHAR;
                                        VAR cbDisplayName : DWORD;
                                        VAR lpLanguageId  : DWORD) : BOOL;
@@ -4654,11 +4654,11 @@ PROCEDURE BuildCommDCBAndTimeoutsA (Def          : ARRAY OF CHAR;
 <* END *>  (*!*)
 
 <* IF BACKEND # "C" THEN *>
-PROCEDURE BuildCommDCBAndTimeoutsW (Def          : ARRAY OF CHAR;
+PROCEDURE BuildCommDCBAndTimeoutsW (Def          : ARRAY OF WCHAR;
                                     VAR DCB      : DCB;
                                     CommTimeouts : COMMTIMEOUTS) : BOOL;
 <* ELSE *>
-PROCEDURE BuildCommDCBAndTimeoutsW (Def          : ARRAY OF CHAR;
+PROCEDURE BuildCommDCBAndTimeoutsW (Def          : ARRAY OF WCHAR;
                                     VAR DCB      : DCB;
                                     CommTimeouts : PCOMMTIMEOUTS) : BOOL;
 <* END *>  (*!*)
@@ -4732,7 +4732,7 @@ PROCEDURE SetDefaultCommConfigW (Name   : ARRAY OF WCHAR;
 CONST MAX_COMPUTERNAME_LENGTH = 15;
 
 PROCEDURE GetComputerNameA (VAR Buffer : ARRAY OF CHAR; VAR Size : DWORD) : BOOL;
-PROCEDURE GetComputerNameW (VAR Buffer : ARRAY OF CHAR; VAR Size : DWORD) : BOOL;
+PROCEDURE GetComputerNameW (VAR Buffer : ARRAY OF WCHAR; VAR Size : DWORD) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST GetComputerName = GetComputerNameW;
@@ -4819,7 +4819,7 @@ PROCEDURE CreateProcessAsUserW (hToken                 : HANDLE;
                                 dwCreationFlags        : CREATE_SET;
                                 lpEnvironment          : PVOID;
                                 lpCurrentDirectory     : PCWSTR; (* IN NIL *)
-                                VAR StartupInfo        : STARTUPINFOA; (* IN *)
+                                VAR StartupInfo        : STARTUPINFOW; (* IN *)
                                 VAR ProcessInformation : PROCESS_INFORMATION) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>

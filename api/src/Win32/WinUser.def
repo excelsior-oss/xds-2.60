@@ -620,7 +620,7 @@ PROCEDURE CreateDesktopA (Desktop           : ARRAY OF CHAR;
 
 PROCEDURE CreateDesktopW (Desktop           : ARRAY OF WCHAR;
                           lpszDevice        : PCWSTR; (* NIL *)
-                          VAR [NIL] Devmode : DEVMODEA; (* must be NIL *)
+                          VAR [NIL] Devmode : DEVMODEW; (* must be NIL *)
                           dwFlags           : DF_SET;
                           dwDesiredAccess   : DESKTOP_SET;
                           lpsa              : PSECURITY_ATTRIBUTES) : HDESK;
@@ -1095,6 +1095,8 @@ CONST  WM_NOTIFY                =      004Eh;
        WM_NCACTIVATE            =      0086h;
        WM_GETDLGCODE            =      0087h;
 
+       WM_SYNCPAINT             =      0088h;
+
        WM_NCMOUSEMOVE           =      00A0h;
        WM_NCLBUTTONDOWN         =      00A1h;
        WM_NCLBUTTONUP           =      00A2h;
@@ -1105,6 +1107,9 @@ CONST  WM_NOTIFY                =      004Eh;
        WM_NCMBUTTONDOWN         =      00A7h;
        WM_NCMBUTTONUP           =      00A8h;
        WM_NCMBUTTONDBLCLK       =      00A9h;
+       WM_NCXBUTTONDOWN         =      00ABh;
+       WM_NCXBUTTONUP           =      00ACh;
+       WM_NCXBUTTONDBLCLK       =      00ADh;
 
        WM_KEYFIRST              =      0100h;
        WM_KEYDOWN               =      0100h;
@@ -1116,6 +1121,7 @@ CONST  WM_NOTIFY                =      004Eh;
        WM_SYSCHAR               =      0106h;
        WM_SYSDEADCHAR           =      0107h;
        WM_KEYLAST               =      0108h;
+       WM_UNICHAR               =      0109h;
 
        WM_IME_STARTCOMPOSITION  =      010Dh;
        WM_IME_ENDCOMPOSITION    =      010Eh;
@@ -1133,6 +1139,11 @@ CONST  WM_NOTIFY                =      004Eh;
        WM_MENUSELECT            =      011Fh;
        WM_MENUCHAR              =      0120h;
        WM_ENTERIDLE             =      0121h;
+       WM_MENURBUTTONUP         =      0122h;
+       WM_MENUDRAG              =      0123h;
+       WM_MENUGETOBJECT         =      0124h;
+       WM_UNINITMENUPOPUP       =      0125h;
+       WM_MENUCOMMAND           =      0126h;
 
        WM_CTLCOLORMSGBOX        =      0132h;
        WM_CTLCOLOREDIT          =      0133h;
@@ -1154,12 +1165,16 @@ CONST  WM_NOTIFY                =      004Eh;
        WM_MBUTTONUP             =      0208h;
        WM_MBUTTONDBLCLK         =      0209h;
        WM_MOUSEWHEEL            =      020Ah;
-       WM_MOUSELAST             =      020Ah;
+       WM_XBUTTONDOWN           =      020Bh;
+       WM_XBUTTONUP             =      020Ch;
+       WM_XBUTTONDBLCLK         =      020Dh;
+       WM_MOUSEHWHEEL           =      020Eh; (* Vista+ *)
+       WM_MOUSELAST             =      020Eh; (* Vista+ *)
 
-CONST WHEEL_DELTA               =      120;            (*  Value for rolling one detent *)
+CONST WHEEL_DELTA               =      120;            (* Value for rolling one detent *)
       WHEEL_PAGESCROLL          =      MAX (CARDINAL); (* Scroll one page *)
 
-CONST  WM_PARENTNOTIFY          =      0210h;
+CONST  WM_PARENTNOTIFY          =      0210h; (* W8+ *)
            MENULOOP_WINDOW = 0;
            MENULOOP_POPUP  = 1;
        WM_ENTERMENULOOP         =      0211h;
@@ -1221,7 +1236,9 @@ CONST  WM_SIZING                =      0214h;
        WM_DROPFILES             =      0233h;
        WM_MDIREFRESHMENU        =      0234h;
 
+       WM_NCMOUSEHOVER          =      02A0h;
        WM_MOUSEHOVER            =      02A1h;
+       WM_NCMOUSELEAVE          =      02A2h;
        WM_MOUSELEAVE            =      02A3h;
 
        WM_CUT                   =      0300h;
@@ -1247,6 +1264,10 @@ CONST  WM_SIZING                =      0214h;
        WM_PRINT                 =      0317h;
        WM_PRINTCLIENT           =      0318h;
 
+       WM_APPCOMMAND            =      0319h;
+
+       WM_GETTITLEBARINFOEX     =      033Fh;
+
        WM_HANDHELDFIRST         =      0358h;
        WM_HANDHELDLAST          =      035Fh;
 
@@ -1257,6 +1278,8 @@ CONST  WM_SIZING                =      0214h;
        WM_PENWINLAST            =      038Fh;
 
        WM_APP                   =      8000h;
+
+       MN_GETHMENU              =      01E1h;
 
 (* NOTE: All Message Numbers below 0x0400 are RESERVED.
  *
@@ -1540,7 +1563,15 @@ TYPE WS_EX_ENUM =  (WS_EX__DLGMODALFRAME,   (* 0 *)
                     WS_EX__15,
                     WS_EX__CONTROLPARENT,   (* 16 *)
                     WS_EX__STATICEDGE,      (* 17 *)
-                    WS_EX__APPWINDOW);      (* 18 *)
+                    WS_EX__APPWINDOW,       (* 18 *)
+                    WS_EX__LAYERED,         (* 19 *)
+                    WS_EX__NOINHERITLAYOUT, (* 20 *)
+                    WS_EX__NOREDIRECTIONBITMAP, (* 21 *)
+                    WS_EX__LAYOUTRTL,       (* 22 *)
+                    WS_EX__23,
+                    WS_EX__24,
+                    WS_EX__COMPOSITED,      (* 25 *)
+                    WS_EX__NOACTIVATE);     (* 27 *)
 
      WS_EX_SET = SET OF WS_EX_ENUM; (* assumed 32-bit set *)
 
@@ -1563,6 +1594,12 @@ CONST WS_EX_DLGMODALFRAME  = WS_EX_SET {WS_EX__DLGMODALFRAME};  (* 0x00000001L *
       WS_EX_CONTROLPARENT  = WS_EX_SET {WS_EX__CONTROLPARENT};  (* 0x00010000L *)
       WS_EX_STATICEDGE     = WS_EX_SET {WS_EX__STATICEDGE};     (* 0x00020000L *)
       WS_EX_APPWINDOW      = WS_EX_SET {WS_EX__APPWINDOW};      (* 0x00040000L *)
+      WS_EX_LAYERED        = WS_EX_SET {WS_EX__LAYERED};	(* 0x00080000L *)
+      WS_EX_NOINHERITLAYOUT= WS_EX_SET {WS_EX__NOINHERITLAYOUT};(* 0x00100000L *)
+      WS_EX_NOREDIRECTIONBITMAP = WS_EX_SET {WS_EX__NOREDIRECTIONBITMAP};(* 0x00200000L *)
+      WS_EX_LAYOUTRTL      = WS_EX_SET {WS_EX__LAYOUTRTL};	(* 0x00400000L *)
+      WS_EX_COMPOSITED     = WS_EX_SET {WS_EX__COMPOSITED};	(* 0x02000000L *)
+      WS_EX_NOACTIVATE     = WS_EX_SET {WS_EX__NOACTIVATE};	(* 0x08000000L *)
 
       WS_EX_OVERLAPPEDWINDOW = WS_EX_WINDOWEDGE + WS_EX_CLIENTEDGE;
       WS_EX_PALETTEWINDOW    = WS_EX_WINDOWEDGE + WS_EX_TOOLWINDOW + WS_EX_TOPMOST;
@@ -2145,7 +2182,8 @@ PROCEDURE SendMessageTimeoutA (hWnd : HWND; Msg : UINT;
 PROCEDURE SendMessageTimeoutW (hWnd : HWND; Msg : UINT;
                                wParam : WPARAM; lParam : LPARAM;
                                fuFlags : SMTO_SET; TimeOut : UINT;
-                               VAR Result : DWORD);
+                               VAR Result : DWORD)
+                                                   : LRESULT;
 
 PROCEDURE SendNotifyMessageA (hWnd : HWND; Msg : UINT;
                               wParam : WPARAM; lParam : LPARAM) : BOOL;
@@ -2166,12 +2204,12 @@ PROCEDURE SendMessageCallbackW (hWnd : HWND; Msg : UINT;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST SendMessage         = SendMessageW;
-            SendMessageTimeOut  = SendMessageTimeoutW;
+            SendMessageTimeout  = SendMessageTimeoutW;
             SendNotifyMessage   = SendNotifyMessageW;
             SendMessageCallback = SendMessageCallbackW;
 <* ELSE *>
       CONST SendMessage         = SendMessageA;
-            SendMessageTimeOut  = SendMessageTimeoutA;
+            SendMessageTimeout  = SendMessageTimeoutA;
             SendNotifyMessage   = SendNotifyMessageA;
             SendMessageCallback = SendMessageCallbackA;
 <* END *>
@@ -2330,7 +2368,7 @@ PROCEDURE GetClassInfoExW (hInstance : HINSTANCE;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST RegisterClassEx = RegisterClassExW;
-            GetClassInfoEx = GetClassInfoW;
+            GetClassInfoEx = GetClassInfoExW;
 <* ELSE *>
       CONST RegisterClassEx = RegisterClassExA;
             GetClassInfoEx = GetClassInfoExA;
@@ -2787,11 +2825,11 @@ PROCEDURE CharToOemA     (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF CHAR) : BOOL;
 PROCEDURE CharToOemW     (Src : ARRAY OF WCHAR; VAR Dst : ARRAY OF CHAR) : BOOL;
 PROCEDURE OemToCharA     (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF CHAR) : BOOL;
 PROCEDURE OemToCharW     (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF WCHAR): BOOL;
-PROCEDURE CharToOemBuffA (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF CHAR;
-                          DstLength : DWORD) : BOOL;
-PROCEDURE CharToOemBuffW (Src : ARRAY OF WCHAR; VAR Dst : ARRAY OF CHAR; DstLength : DWORD) : BOOL;
-PROCEDURE OemToCharBuffA (Src : ARRAY OF CHAR; Dst : ARRAY OF CHAR; DstLength : DWORD) : BOOL;
-PROCEDURE OemToCharBuffW (Src : ARRAY OF CHAR; Dst : ARRAY OF WCHAR; DstLength : DWORD) : BOOL;
+PROCEDURE CharToOemBuffA (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF CHAR;  DstLength : DWORD) : BOOL;
+PROCEDURE CharToOemBuffW (Src : ARRAY OF WCHAR; VAR Dst : ARRAY OF CHAR;  DstLength : DWORD) : BOOL;
+PROCEDURE OemToCharBuffA (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF CHAR;  DstLength : DWORD) : BOOL;
+PROCEDURE OemToCharBuffW (Src : ARRAY OF CHAR;  VAR Dst : ARRAY OF WCHAR; DstLength : DWORD) : BOOL;
+
 <* IF DEFINED (UNICODE) THEN *>
       CONST CharToOem = CharToOemW;
             OemToChar = OemToCharW;
@@ -2843,6 +2881,12 @@ PROCEDURE CharLowerBuffW (VAR s : ARRAY OF WCHAR; Length : DWORD) : DWORD;
 
 PROCEDURE CharNextA (cur : PSTR) : PSTR;
 PROCEDURE CharNextW (cur : PWSTR) : PWSTR;
+<* IF DEFINED (UNICODE) THEN *>
+      CONST CharNext = CharNextW;
+<* ELSE *>
+      CONST CharNext = CharNextA;
+<* END *>
+
 PROCEDURE CharPrevA (start, cur : PSTR) : PSTR;
 PROCEDURE CharPrevW (start, cur : PWSTR) : PWSTR;
 <* IF DEFINED (UNICODE) THEN *>
@@ -2850,7 +2894,6 @@ PROCEDURE CharPrevW (start, cur : PWSTR) : PWSTR;
 <* ELSE *>
       CONST CharPrev = CharPrevA;
 <* END *>
-
 
 PROCEDURE CharNextExA (CodePage : WORD;
                        lpCurrentChar : PCSTR;
@@ -2874,12 +2917,12 @@ CONST AnsiToOem     = CharToOemA;
 
 PROCEDURE IsCharAlphaA (ch :  CHAR) : BOOL;
 PROCEDURE IsCharAlphaW (ch : WCHAR) : BOOL;
-PROCEDURE IsCharAlphaNumericA (ch : CHAR) : BOOL;
+PROCEDURE IsCharAlphaNumericA (ch :  CHAR) : BOOL;
 PROCEDURE IsCharAlphaNumericW (ch : WCHAR) : BOOL;
-PROCEDURE IsCharUpperA (ch : CHAR) : BOOL;
-PROCEDURE IsCharUpperW (ch : CHAR) : BOOL;
-PROCEDURE IsCharLowerA (ch : CHAR) : BOOL;
-PROCEDURE IsCharLowerW (ch : CHAR) : BOOL;
+PROCEDURE IsCharUpperA (ch :  CHAR) : BOOL;
+PROCEDURE IsCharUpperW (ch : WCHAR) : BOOL;
+PROCEDURE IsCharLowerA (ch :  CHAR) : BOOL;
+PROCEDURE IsCharLowerW (ch : WCHAR) : BOOL;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST IsCharAlpha        = IsCharAlphaW;
@@ -3209,7 +3252,33 @@ TYPE SM_ENUM = (SM_CXSCREEN,          (*  0 *)
                 SM_SLOWMACHINE,       (* 73 *)
                 SM_MIDEASTENABLED,    (* 74 *)
                 SM_MOUSEWHEELPRESENT, (* 75 *)
-                SM_CMETRICS);         (* 76 *)
+                SM_XVIRTUALSCREEN,    (* 76 *)
+                SM_YVIRTUALSCREEN,    (* 77 *)
+                SM_CXVIRTUALSCREEN,   (* 78 *)
+                SM_CYVIRTUALSCREEN,   (* 79 *)
+                SM_CMONITORS,         (* 80 *)
+                SM_SAMEDISPLAYFORMAT, (* 81 *)
+                SM_IMMENABLED,        (* 82 *)
+                SM_CXFOCUSBORDER,     (* 83 *)
+                SM_CYFOCUSBORDER,     (* 84 *)
+                SM_85,
+                SM_TABLETPC,          (* 86 *)
+                SM_MEDIACENTER,       (* 87 *)
+                SM_STARTER,           (* 88 *)
+                SM_SERVERR2,          (* 89 *)
+                SM_90,
+                SM_MOUSEHORIZONTALWHEELPRESENT, (* 91 *)
+                SM_CXPADDEDBORDER,    (* 92 *)
+                SM_93,
+                SM_DIGITIZER,         (* 94 *)
+                SM_MAXIMUMTOUCHES,    (* 95 *)
+                SM_96,
+                SM_CMETRICS);         (* 97 *)
+
+CONST SM_REMOTESESSION        = SYSTEM.CAST(SM_ENUM, 1000H);
+      SM_SHUTTINGDOWN         = SYSTEM.CAST(SM_ENUM, 2000H);
+      SM_REMOTECONTROL        = SYSTEM.CAST(SM_ENUM, 2001H);
+      SM_CARETBLINKINGENABLED = SYSTEM.CAST(SM_ENUM, 2002H);
 
 CONST SM_CXFIXEDFRAME = SM_CXDLGFRAME;  (* win40 name change *)
       SM_CYFIXEDFRAME = SM_CYDLGFRAME;  (* win40 name change *)
@@ -4158,7 +4227,7 @@ PROCEDURE MessageBoxExA (hWnd : HWND;
                          Type : MB_SET;
                          LanguageId : WORD) : INTEGER;
 PROCEDURE MessageBoxExW (hWnd : HWND;
-                         Text : ARRAY OF CHAR;
+                         Text : ARRAY OF WCHAR;
                          Caption : PCWSTR; (* NIL *)
                          Type : MB_SET;
                          LanguageId : WORD) : INTEGER;
@@ -4319,7 +4388,13 @@ TYPE COLOR_TYPE = (COLOR_SCROLLBAR,           (*  0 *)
                    COLOR_3DDKSHADOW,          (* 21 *)
                    COLOR_3DLIGHT,             (* 22 *)
                    COLOR_INFOTEXT,            (* 23 *)
-                   COLOR_INFOBK               (* 24 *)
+                   COLOR_INFOBK,              (* 24 *)
+                   COLOR_BTNALTFACE,          (* 25 *)
+                   COLOR_HOTLIGHT,            (* 26 *)
+                   COLOR_GRADIENTACTIVECAPTION,  (* 27 *)
+                   COLOR_GRADIENTINACTIVECAPTION,(* 28 *)
+                   COLOR_MENUHILIGHT,         (* 29 *)
+                   COLOR_MENUBAR              (* 30 *)
      );
 
 CONST COLOR_DESKTOP     = COLOR_BACKGROUND;
@@ -4431,6 +4506,11 @@ PROCEDURE SetWindowPtrW (hWnd : HWND; Index : INTEGER; NewLong : SYSTEM.ADDRESS)
             GetWindowPtr  = GetWindowPtrA;
 <* END *>
 
+CONST LWA_COLORKEY = 1;
+      LWA_ALPHA    = 2;
+
+PROCEDURE SetLayeredWindowAttributes(hWnd : HWND; crKey : COLORREF; bAlpha : BYTE; dwFlags : DWORD) : BOOL;
+
 PROCEDURE GetClassWord  (hWnd : HWND; Index : INTEGER) : WORD;
 PROCEDURE SetClassWord  (hWnd : HWND; Index : INTEGER; NewWord : WORD) : WORD;
 PROCEDURE GetClassLongA (hWnd : HWND; Index : INTEGER) : DWORD;
@@ -4464,10 +4544,10 @@ PROCEDURE FindWindowW (ClassName : ATOMWSTR; WindowName : PCWSTR (* NIL *)) : HW
 <* END *>
 
 PROCEDURE FindWindowExA (parent : HWND; ChildAfter : HWND;
-                         Class : ATOMSTR; WindowName : PCSTR (* NIL *)) : HWND;
+                         Class : PCSTR; WindowName : PCSTR (* NIL *)) : HWND;
 
 PROCEDURE FindWindowExW (parent : HWND; ChildAfter : HWND;
-                         Class : ATOMWSTR; WindowName : PCSTR (* NIL *)) : HWND;
+                         Class : PCWSTR; WindowName : PCWSTR (* NIL *)) : HWND;
 
 <* IF DEFINED (UNICODE) THEN *>
       CONST FindWindowEx = FindWindowExW;
@@ -4616,6 +4696,22 @@ PROCEDURE LoadCursorFromFileW (FileName : ARRAY OF WCHAR) : HCURSOR;
             LoadCursor         = LoadCursorA;
             LoadCursorFromFile = LoadCursorFromFileA;
 <* END *>
+
+(*
+ * Information about the global cursor.
+ *)
+TYPE CURSORINFO = RECORD
+                         cbSize      : DWORD;
+                         flags       : DWORD;
+                         hCursor     : HCURSOR;
+                         ptScreenPos : POINT;
+                  END;
+     PCURSORINFO  = POINTER TO CURSORINFO;
+     LPCURSORINFO = POINTER TO CURSORINFO;
+
+CONST CURSOR_SHOWING = 1;
+
+PROCEDURE GetCursorInfo (VAR pci : CURSORINFO) : BOOL;
 
 PROCEDURE CreateCursor (hInst : HINSTANCE;
                         xHotSpot, yHotSpot,
@@ -5578,8 +5674,8 @@ PROCEDURE CreateMDIWindowA (ClassName     : ATOMSTR;
                             hInstance     : HINSTANCE;
                             lParam        : LPARAM)    : HWND;
 
-PROCEDURE CreateMDIWindowW (lpClassName   : ATOMWSTR;
-                            lpWindowName  : ARRAY OF WCHAR;
+PROCEDURE CreateMDIWindowW (ClassName     : ATOMWSTR;
+                            WindowName    : ARRAY OF WCHAR;
                             Style         : WS_SET;
                             X, Y,
                             Width, Height : INTEGER;
@@ -5718,7 +5814,7 @@ CONST SPI_GETBEEP               =  1;
       SPI_SETMOUSE              =  4;
       SPI_GETBORDER             =  5;
       SPI_SETBORDER             =  6;
-      SPI_GETKEYBOARDSPEED      =  0;
+      SPI_GETKEYBOARDSPEED      = 10;
       SPI_SETKEYBOARDSPEED      = 11;
       SPI_LANGDRIVER            = 12;
       SPI_ICONHORIZONTALSPACING = 13;
@@ -5786,7 +5882,8 @@ CONST SPI_GETBEEP               =  1;
       SPI_GETWINDOWSEXTENSION   = 92;
       SPI_SETMOUSETRAILS        = 93;
       SPI_GETMOUSETRAILS        = 94;
-      SPI_SCREENSAVERRUNNING    = 97;
+      SPI_SETSCREENSAVERRUNNING = 97;
+      SPI_SCREENSAVERRUNNING    = SPI_SETSCREENSAVERRUNNING;
 
       SPI_GETFILTERKEYS         = 50;
       SPI_SETFILTERKEYS         = 51;
@@ -5814,6 +5911,134 @@ CONST SPI_GETBEEP               =  1;
       SPI_SETMOUSEHOVERTIME     =103;
       SPI_GETWHEELSCROLLLINES   =104;
       SPI_SETWHEELSCROLLLINES   =105;
+      SPI_GETMENUSHOWDELAY      =106;
+      SPI_SETMENUSHOWDELAY      =107;
+      SPI_GETWHEELSCROLLCHARS   =108;
+      SPI_SETWHEELSCROLLCHARS   =109;
+      SPI_GETSHOWIMEUI          =110;
+      SPI_SETSHOWIMEUI          =111;
+      SPI_GETMOUSESPEED         =112;
+      SPI_SETMOUSESPEED         =113;
+      SPI_GETSCREENSAVERRUNNING =114;
+      SPI_GETDESKWALLPAPER      =115;
+      SPI_GETAUDIODESCRIPTION   =116;
+      SPI_SETAUDIODESCRIPTION   =117;
+      SPI_GETSCREENSAVESECURE   =118;
+      SPI_SETSCREENSAVESECURE   =119;
+
+      SPI_GETHUNGAPPTIMEOUT     =120;
+      SPI_SETHUNGAPPTIMEOUT     =121;
+      SPI_GETWAITTOKILLTIMEOUT  =122;
+      SPI_SETWAITTOKILLTIMEOUT  =123;
+      SPI_GETWAITTOKILLSERVICETIMEOUT =124;
+      SPI_SETWAITTOKILLSERVICETIMEOUT =125;
+      SPI_GETMOUSEDOCKTHRESHOLD =126;
+      SPI_SETMOUSEDOCKTHRESHOLD =127;
+      SPI_GETPENDOCKTHRESHOLD   =128;
+      SPI_SETPENDOCKTHRESHOLD   =129;
+      SPI_GETWINARRANGING       =130;
+      SPI_SETWINARRANGING       =131;
+      SPI_GETMOUSEDRAGOUTTHRESHOLD =132;
+      SPI_SETMOUSEDRAGOUTTHRESHOLD =133;
+      SPI_GETPENDRAGOUTTHRESHOLD   =134;
+      SPI_SETPENDRAGOUTTHRESHOLD   =135;
+      SPI_GETMOUSESIDEMOVETHRESHOLD =136;
+      SPI_SETMOUSESIDEMOVETHRESHOLD =137;
+      SPI_GETPENSIDEMOVETHRESHOLD  =138;
+      SPI_SETPENSIDEMOVETHRESHOLD  =139;
+      SPI_GETDRAGFROMMAXIMIZE      =140;
+      SPI_SETDRAGFROMMAXIMIZE      =141;
+      SPI_GETSNAPSIZING            =142;
+      SPI_SETSNAPSIZING            =143;
+      SPI_GETDOCKMOVING            =144;
+      SPI_SETDOCKMOVING            =145;
+
+      SPI_GETACTIVEWINDOWTRACKING   =1000h;
+      SPI_SETACTIVEWINDOWTRACKING   =1001h;
+      SPI_GETMENUANIMATION          =1002h;
+      SPI_SETMENUANIMATION          =1003h;
+      SPI_GETCOMBOBOXANIMATION      =1004h;
+      SPI_SETCOMBOBOXANIMATION      =1005h;
+      SPI_GETLISTBOXSMOOTHSCROLLING =1006h;
+      SPI_SETLISTBOXSMOOTHSCROLLING =1007h;
+      SPI_GETGRADIENTCAPTIONS       =1008h;
+      SPI_SETGRADIENTCAPTIONS       =1009h;
+      SPI_GETKEYBOARDCUES           =100Ah;
+      SPI_SETKEYBOARDCUES           =100Bh;
+      SPI_GETMENUUNDERLINES = SPI_GETKEYBOARDCUES;
+      SPI_SETMENUUNDERLINES = SPI_SETKEYBOARDCUES;
+      SPI_GETACTIVEWNDTRKZORDER     =100Ch;
+      SPI_SETACTIVEWNDTRKZORDER     =100Dh;
+      SPI_GETHOTTRACKING            =100Eh;
+      SPI_SETHOTTRACKING            =100Fh;
+
+      SPI_GETMENUFADE               =1012h;
+      SPI_SETMENUFADE               =1013h;
+      SPI_GETSELECTIONFADE          =1014h;
+      SPI_SETSELECTIONFADE          =1015h;
+      SPI_GETTOOLTIPANIMATION       =1016h;
+      SPI_SETTOOLTIPANIMATION       =1017h;
+      SPI_GETTOOLTIPFADE            =1018h;
+      SPI_SETTOOLTIPFADE            =1019h;
+      SPI_GETCURSORSHADOW           =101Ah;
+      SPI_SETCURSORSHADOW           =101Bh;
+      SPI_GETMOUSESONAR             =101Ch;
+      SPI_SETMOUSESONAR             =101Dh;
+      SPI_GETMOUSECLICKLOCK         =101Eh;
+      SPI_SETMOUSECLICKLOCK         =101Fh;
+      SPI_GETMOUSEVANISH            =1020h;
+      SPI_SETMOUSEVANISH            =1021h;
+      SPI_GETFLATMENU               =1022h;
+      SPI_SETFLATMENU               =1023h;
+      SPI_GETDROPSHADOW             =1024h;
+      SPI_SETDROPSHADOW             =1025h;
+      SPI_GETBLOCKSENDINPUTRESETS   =1026h;
+      SPI_SETBLOCKSENDINPUTRESETS   =1027h;
+
+      SPI_GETUIEFFECTS              =103Eh;
+      SPI_SETUIEFFECTS              =103Fh;
+      SPI_GETDISABLEOVERLAPPEDCONTENT =1040h;
+      SPI_SETDISABLEOVERLAPPEDCONTENT =1041h;
+      SPI_GETCLIENTAREAANIMATION    =1042h;
+      SPI_SETCLIENTAREAANIMATION    =1043h;
+
+      SPI_GETCLEARTYPE              =1048h;
+      SPI_SETCLEARTYPE              =1049h;
+      SPI_GETSPEECHRECOGNITION      =104Ah;
+      SPI_SETSPEECHRECOGNITION      =104Bh;
+
+      SPI_GETFOREGROUNDLOCKTIMEOUT  =2000h;
+      SPI_SETFOREGROUNDLOCKTIMEOUT  =2001h;
+      SPI_GETACTIVEWNDTRKTIMEOUT    =2002h;
+      SPI_SETACTIVEWNDTRKTIMEOUT    =2003h;
+      SPI_GETFOREGROUNDFLASHCOUNT   =2004h;
+      SPI_SETFOREGROUNDFLASHCOUNT   =2005h;
+      SPI_GETCARETWIDTH             =2006h;
+      SPI_SETCARETWIDTH             =2007h;
+      SPI_GETMOUSECLICKLOCKTIME     =2008h;
+      SPI_SETMOUSECLICKLOCKTIME     =2009h;
+      SPI_GETFONTSMOOTHINGTYPE      =200Ah;
+      SPI_SETFONTSMOOTHINGTYPE      =200Bh;
+      SPI_GETFONTSMOOTHINGCONTRAST  =200Ch;
+      SPI_SETFONTSMOOTHINGCONTRAST  =200Dh;
+      SPI_GETFOCUSBORDERWIDTH       =200Eh;
+      SPI_SETFOCUSBORDERWIDTH       =200Fh;
+      SPI_GETFOCUSBORDERHEIGHT      =2010h;
+      SPI_SETFOCUSBORDERHEIGHT      =2011h;
+      SPI_GETFONTSMOOTHINGORIENTATION =2012h;
+      SPI_SETFONTSMOOTHINGORIENTATION =2013h;
+      SPI_GETMINIMUMHITRADIUS       =2014h;
+      SPI_SETMINIMUMHITRADIUS       =2015h;
+      SPI_GETMESSAGEDURATION        =2016h;
+      SPI_SETMESSAGEDURATION        =2017h;
+
+(* constants for SPI_GETFONTSMOOTHINGTYPE and SPI_SETFONTSMOOTHINGTYPE: *)
+      FE_FONTSMOOTHINGSTANDARD  = 1;
+      FE_FONTSMOOTHINGCLEARTYPE = 2;
+
+(* constants for SPI_GETFONTSMOOTHINGORIENTATION and SPI_SETFONTSMOOTHINGORIENTATION: *)
+      FE_FONTSMOOTHINGORIENTATIONBGR = 0;
+      FE_FONTSMOOTHINGORIENTATIONRGB = 1;
 
 TYPE  SPIF_ENUM = (SPIF__UPDATEINIFILE,     (* 0 *)
                    SPIF__SENDWININICHANGE); (* 1 *)
@@ -6351,5 +6576,28 @@ TYPE TOGGLEKEYS = RECORD
 PROCEDURE SetDebugErrorLevel (dwLevel : DWORD);
 
 PROCEDURE SetLastErrorEx (dwErrCode : DWORD; dwType : SLE_ENUM);
+
+(*
+ * Window information snapshot
+ *)
+
+TYPE WINDOWINFO = RECORD
+                         cbSize          : DWORD;
+                         rcWindow        : RECT;
+                         rcClient        : RECT;
+                         dwStyle         : DWORD;
+                         dwExStyle       : DWORD;
+                         dwWindowStatus  : DWORD;
+                         cxWindowBorders : UINT;
+                         cyWindowBorders : UINT;
+                         atomWindowType  : ATOM;
+                         wCreatorVersion : WORD;
+                  END;
+    PWINDOWINFO = POINTER TO WINDOWINFO;
+    LPWINDOWINFO = POINTER TO WINDOWINFO;
+
+CONST WS_ACTIVECAPTION = 1;
+
+PROCEDURE GetWindowInfo(hwnd : HWND; VAR wi : WINDOWINFO) : BOOL;
 
 END WinUser.
